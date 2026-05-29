@@ -1,0 +1,56 @@
+[
+  {
+    "id": "bluggy",
+    "name": "Bluggy",
+    "type": "Frostberry",
+    "habitat": "Mountain",
+    "foods": [
+      "Radishes",
+      "Dried Radish",
+      "Critters Delight"
+    ],
+    "activeAt": "Winter 21 to Spring 28",
+    "description": "Beloved by herbalists in winter, these resilient Bluggies lie nestled among frost-covered forageables, warming them just enough to break through the snow.",
+    "image": "/critters/bluggy_frostberry.png"
+  },
+  {
+    "id": "alpheep",
+    "name": "Alpheep",
+    "type": "Cloudtail",
+    "habitat": "Highland pastures",
+    "foods": [
+      "Clover",
+      "Alpine grasses"
+    ],
+    "activeAt": "Daytime",
+    "description": "A fluffy, cloud-shaped grazer known for its faintly luminous wool. Travels in small flocks and bleats only when startled.",
+    "image": "/critters/alpheep.svg"
+  },
+  {
+    "id": "girtle",
+    "name": "Girtle",
+    "type": "Mossback",
+    "habitat": "Slow-moving rivers and forest ponds",
+    "foods": [
+      "Lily pads",
+      "Freshwater snails"
+    ],
+    "activeAt": "Midday",
+    "description": "A patient, long-lived reptile whose mossy shell often hides tiny gardens of fern and clover that grow undisturbed for years.",
+    "image": "/critters/girtle.svg"
+  },
+  {
+    "id": "chikree",
+    "name": "Chikree",
+    "type": "Silverdown",
+    "habitat": "Hedgerows and orchard edges",
+    "foods": [
+      "Seeds",
+      "Berries",
+      "Beetles"
+    ],
+    "activeAt": "Dawn",
+    "description": "A small, plucky ground bird with sun-warm plumage. Chirps in quick bursts and is fond of stealing dropped grain from carts.",
+    "image": "/critters/chikree.svg"
+  }
+]

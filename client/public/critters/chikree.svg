@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Chikree placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <ellipse cx="200" cy="180" rx="70" ry="60" fill="#fde047"/>
+  <ellipse cx="200" cy="180" rx="70" ry="60" fill="none" stroke="#78350f" stroke-width="4"/>
+  <circle cx="200" cy="115" r="40" fill="#fde047"/>
+  <circle cx="200" cy="115" r="40" fill="none" stroke="#78350f" stroke-width="4"/>
+  <circle cx="187" cy="108" r="6" fill="#1c1917"/>
+  <circle cx="213" cy="108" r="6" fill="#1c1917"/>
+  <polygon points="195,125 205,125 200,140" fill="#f97316" stroke="#78350f" stroke-width="2"/>
+  <path d="M140 200 Q120 195 130 215" fill="#fde047" stroke="#78350f" stroke-width="3"/>
+  <path d="M260 200 Q280 195 270 215" fill="#fde047" stroke="#78350f" stroke-width="3"/>
+  <line x1="185" y1="240" x2="180" y2="260" stroke="#78350f" stroke-width="4" stroke-linecap="round"/>
+  <line x1="215" y1="240" x2="220" y2="260" stroke="#78350f" stroke-width="4" stroke-linecap="round"/>
+  <text x="200" y="55" text-anchor="middle" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="white">Chikree</text>
+  <text x="200" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" letter-spacing="2" fill="rgba(255,255,255,0.8)">PLACEHOLDER IMAGE</text>
+</svg>
