@@ -1,29 +1,32 @@
 import { useAuth } from '../context/AuthContext';
 
+const sampleCharacter = {
+  id: 'sample',
+  character_name: 'Sample Character',
+};
+
 export default function CharacterSelector() {
   const { characters, selectedCharacterId, setSelectedCharacterId } = useAuth();
-
-  if (characters.length === 0) {
-    return null;
-  }
-
-  const selectedCharacter = characters.find((c) => c.id === selectedCharacterId);
+  const hasCharacters = characters.length > 0;
+  const options = hasCharacters ? characters : [sampleCharacter];
+  const value = selectedCharacterId ?? options[0].id;
+  const selectedCharacter = options.find((c) => c.id === value) || sampleCharacter;
 
   return (
     <div className="flex items-center gap-2">
       <select
-        value={selectedCharacterId || ''}
+        value={value}
         onChange={(e) => setSelectedCharacterId(e.target.value)}
         className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
-        {characters.map((character) => (
+        {options.map((character) => (
           <option key={character.id} value={character.id}>
             {character.character_name}
           </option>
         ))}
       </select>
       <span className="text-sm text-gray-600">
-        {selectedCharacter && `Playing as ${selectedCharacter.character_name}`}
+        {`Viewing ${selectedCharacter.character_name}`}
       </span>
     </div>
   );

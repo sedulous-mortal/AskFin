@@ -7,6 +7,4 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_KEY');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey, {
-  realtime: { transport: 'websockets' },
-});
+export const supabase = createClient(supabaseUrl, supabaseKey);

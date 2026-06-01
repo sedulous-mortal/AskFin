@@ -1,61 +1,38 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { Link } from 'react-router-dom';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
-      // Sign up the user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
+      const response = await fetch('http://localhost:4000/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, username }),
       });
 
-      if (authError) {
-        setError(authError.message);
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || 'Signup failed.');
         return;
       }
 
-      if (!authData.user) {
-        setError('Failed to create account');
-        return;
-      }
-
-      // Create a profile for the user
-      const { error: profileError } = await supabase.from('profiles').insert({
-        id: authData.user.id,
-        username: username || null,
-      });
-
-      if (profileError) {
-        console.error('Failed to create profile:', profileError);
-        // Don't fail the signup, the profile can be created later
-      }
-
-      // Create an initial character for the user
-      const { error: characterError } = await supabase.from('characters').insert({
-        user_id: authData.user.id,
-        character_name: username || 'Character',
-      });
-
-      if (characterError) {
-        console.error('Failed to create character:', characterError);
-        // Don't fail the signup, the character can be created later
-      }
-
-      // Redirect to dashboard after successful signup
-      navigate('/dashboard');
+      setSuccess(result.message || 'Signup successful. Check your email to complete registration.');
+      setEmail('');
+      setPassword('');
+      setUsername('');
     } catch (err) {
       setError('An unexpected error occurred');
       console.error(err);
@@ -76,6 +53,11 @@ export default function SignUp() {
           {error && (
             <div className="rounded-md bg-red-50 p-4">
               <p className="text-sm font-medium text-red-800">{error}</p>
+            </div>
+          )}
+          {success && (
+            <div className="rounded-md bg-green-50 p-4">
+              <p className="text-sm font-medium text-green-800">{success}</p>
             </div>
           )}
 
