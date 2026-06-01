@@ -1,0 +1,177 @@
+{
+  "event_message": "GET | 200 | https://tsfvaiepnmnlijamkeua.supabase.co/rest/v1/email_invites?select=created_at&email=neq.__RATE_LIMIT_EXCEEDED__&created_at=gte.2026-05-29T21%3A27%3A48.270Z | node",
+  "metadata": [
+    {
+      "load_balancer_experimental_routing": null,
+      "load_balancer_geo_aware_info": [],
+      "load_balancer_redirect_identifier": null,
+      "logflare_worker": [],
+      "request": [
+        {
+          "cf": [
+            {
+              "asOrganization": "CABLE CO-OP",
+              "asn": null,
+              "botManagement": [
+                {
+                  "corporateProxy": null,
+                  "detectionIds": [],
+                  "ja3Hash": "70cb5ca646080902703ffda87036a5ea",
+                  "ja4": "t13d5912h1_a33745022dd6_dbd39dd1d406",
+                  "ja4Signals": [],
+                  "jsDetection": [],
+                  "score": null,
+                  "staticResource": null,
+                  "verifiedBot": null
+                }
+              ],
+              "city": "Oberlin",
+              "clientAcceptEncoding": null,
+              "clientTcpRtt": null,
+              "clientTrustScore": 1,
+              "colo": "YYZ",
+              "continent": null,
+              "country": "US",
+              "edgeRequestKeepAliveStatus": null,
+              "httpProtocol": "HTTP/1.1",
+              "isEUCountry": null,
+              "latitude": null,
+              "longitude": null,
+              "metroCode": null,
+              "postalCode": "44074",
+              "region": "Ohio",
+              "regionCode": null,
+              "requestPriority": null,
+              "timezone": "America/New_York",
+              "tlsCipher": null,
+              "tlsClientAuth": [],
+              "tlsClientCiphersSha1": null,
+              "tlsClientExtensionsSha1": null,
+              "tlsClientExtensionsSha1Le": null,
+              "tlsClientHelloLength": null,
+              "tlsClientRandom": null,
+              "tlsExportedAuthenticator": [],
+              "tlsVersion": null,
+              "verifiedBotCategory": null
+            }
+          ],
+          "headers": [
+            {
+              "accept": "*/*",
+              "cf_cache_status": null,
+              "cf_connecting_ip": "104.152.96.31",
+              "cf_ipcountry": "US",
+              "cf_ray": "a038edbebeb8cf1c",
+              "content_length": null,
+              "content_location": null,
+              "content_range": null,
+              "content_type": null,
+              "date": null,
+              "host": "tsfvaiepnmnlijamkeua.supabase.co",
+              "prefer": "count=exact",
+              "range": null,
+              "referer": null,
+              "sb_forwarded_for": null,
+              "sb_gateway_mode": null,
+              "sb_gateway_version": null,
+              "traceparent": null,
+              "transfer_encoding": null,
+              "user_agent": "node",
+              "x_amz_content_sha256": null,
+              "x_amz_date": null,
+              "x_client_info": "supabase-js-node/2.106.2",
+              "x_forwarded_for": null,
+              "x_forwarded_host": null,
+              "x_forwarded_proto": "https",
+              "x_forwarded_user_agent": null,
+              "x_kong_proxy_latency": null,
+              "x_kong_upstream_latency": null,
+              "x_real_ip": "104.152.96.31"
+            }
+          ],
+          "host": "tsfvaiepnmnlijamkeua.supabase.co",
+          "method": "GET",
+          "path": "/rest/v1/email_invites",
+          "port": null,
+          "protocol": "https:",
+          "sb": [
+            {
+              "apikey": [],
+              "auth_user": null,
+              "aws_v4": [],
+              "jwt": [
+                {
+                  "apikey": [
+                    {
+                      "invalid": null,
+                      "payload": [
+                        {
+                          "algorithm": "HS256",
+                          "expires_at": 2095578946,
+                          "issued_at": 1780002946,
+                          "issuer": "supabase",
+                          "key_id": null,
+                          "role": "service_role",
+                          "session_id": null,
+                          "signature_prefix": "0xVXcK",
+                          "subject": null
+                        }
+                      ]
+                    }
+                  ],
+                  "authorization": [
+                    {
+                      "invalid": null,
+                      "payload": [
+                        {
+                          "algorithm": "HS256",
+                          "expires_at": 2095578946,
+                          "issued_at": 1780002946,
+                          "issuer": "supabase",
+                          "key_id": null,
+                          "role": "service_role",
+                          "session_id": null,
+                          "signature_prefix": "0xVXcK",
+                          "subject": null
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "search": "?select=created_at&email=neq.__RATE_LIMIT_EXCEEDED__&created_at=gte.2026-05-29T21%3A27%3A48.270Z",
+          "url": "https://tsfvaiepnmnlijamkeua.supabase.co/rest/v1/email_invites?select=created_at&email=neq.__RATE_LIMIT_EXCEEDED__&created_at=gte.2026-05-29T21%3A27%3A48.270Z"
+        }
+      ],
+      "response": [
+        {
+          "headers": [
+            {
+              "cf_cache_status": "DYNAMIC",
+              "cf_ray": "a038edbed9afcf1c-YYZ",
+              "content_length": "48",
+              "content_location": "/email_invites?created_at=gte.2026-05-29T21%3A27%3A48.270Z&email=neq.__RATE_LIMIT_EXCEEDED__&select=created_at",
+              "content_range": "0-0/1",
+              "content_type": "application/json; charset=utf-8",
+              "date": "Fri, 29 May 2026 22:27:50 GMT",
+              "proxy_status": null,
+              "sb_gateway_mode": null,
+              "sb_gateway_version": "1",
+              "sb_request_id": null,
+              "server_timing": null,
+              "transfer_encoding": null,
+              "x_kong_proxy_latency": null,
+              "x_kong_upstream_latency": null,
+              "x_sb_error_code": null
+            }
+          ],
+          "origin_time": 92,
+          "status_code": 200
+        }
+      ]
+    }
+  ],
+  "timestamp": "2026-05-29T22:27:50.197000"
+}
