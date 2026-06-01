@@ -3,6 +3,7 @@ import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 import ws from 'ws';
 import dotenv from 'dotenv';
+import { toClientCritters } from './helpers/critterReformatter.js';
 
 dotenv.config();
 
@@ -452,6 +453,28 @@ app.post('/api/forgot-password', async (req, res) => {
   }
 });
 
+// Get all critters (reference data for critter types)
+app.get('/api/critters', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('critters')
+      .select('*, critter_foods ( forageables ( * ) )')
+      .order('critter_type', { ascending: true })
+      .order('subtype', { ascending: true });
+
+    if (error) {
+      console.error('Supabase error (critters):', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Reformat snake_case DB rows into the client-facing Critter shape.
+    res.json(toClientCritters(data || []));
+  } catch (err) {
+    console.error('Server error (critters):', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Get all quests
 app.get('/api/quests', async (req, res) => {
   try {
@@ -477,4 +500,5 @@ app.listen(PORT, () => {
   console.log(`Health check: http://localhost:${PORT}/api/health`);
   console.log(`Test Supabase: http://localhost:${PORT}/api/test-supabase`);
   console.log(`Quests endpoint: http://localhost:${PORT}/api/quests`);
+  console.log(`Critters endpoint: http://localhost:${PORT}/api/critters`);
 });
