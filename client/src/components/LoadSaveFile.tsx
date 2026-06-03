@@ -29,7 +29,7 @@ export default function LoadSaveFile() {
       <button
         type="button"
         onClick={handleClick}
-        className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-200 hover:bg-slate-600 hover:text-white transition-colors"
+        className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-600 active:bg-teal-800"
       >
         Load Game Files
       </button>

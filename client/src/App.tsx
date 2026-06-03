@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-route
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DateProvider } from './context/DateContext';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import Events from './pages/Events';
@@ -81,9 +82,9 @@ export default function App() {
     <BrowserRouter>
       <DateProvider>
         <AuthProvider>
-          <div className="min-h-screen bg-gradient-to-br from-[#b88968] to-white text-slate-900">
+          <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#b88968] to-white text-slate-900">
             <Header />
-            <main className="mx-auto max-w-6xl px-8 py-10">
+            <main className="mx-auto w-full max-w-6xl flex-1 px-8 py-10">
               <Routes>
                 <Route
                   path="/login"
@@ -146,6 +147,7 @@ export default function App() {
                 />
               </Routes>
             </main>
+            <Footer />
           </div>
         </AuthProvider>
       </DateProvider>

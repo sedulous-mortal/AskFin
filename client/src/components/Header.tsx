@@ -30,8 +30,13 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-900/40 bg-slate-700 shadow-md">
-      <nav className="mx-auto flex max-w-6xl items-center gap-2 px-8 py-4">
+      {/* Top strip — Supabase tracker pinned to the top-left */}
+      <div className="flex px-8 pt-1.5">
         <RateLimitIndicator />
+      </div>
+
+      {/* Main nav row */}
+      <nav className="mx-auto flex max-w-6xl items-center gap-2 px-8 pb-3 pt-1">
         <NavLink to={user ? '/dashboard' : '/'} className="mr-6 flex items-center">
           <img src="/grimshire-logo.png" alt="Grimshire" className="h-20 w-auto" />
         </NavLink>
@@ -56,7 +61,7 @@ export default function Header() {
               ))}
             </div>
 
-            <div className="flex items-center gap-4 ml-auto">
+            <div className="ml-auto flex items-center gap-3">
               {isGuestSession && (
                 <span className="rounded-full bg-yellow-300 px-3 py-1 text-xs font-semibold text-slate-900">
                   Guest mode
@@ -64,10 +69,10 @@ export default function Header() {
               )}
               <DatePicker />
               <CharacterSelector />
-              {showAuthenticatedNav && <LoadSaveFile />}
+              <LoadSaveFile />
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-200 hover:bg-slate-600 hover:text-white transition-colors"
+                className="rounded-lg border border-slate-400 px-4 py-2 text-sm font-semibold text-slate-200 transition-colors hover:border-slate-300 hover:bg-slate-600 hover:text-white"
               >
                 Logout
               </button>

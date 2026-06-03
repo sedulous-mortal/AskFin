@@ -25,9 +25,6 @@ export default function CharacterSelector() {
           </option>
         ))}
       </select>
-      <span className="text-sm text-gray-600">
-        {`Viewing ${selectedCharacter.character_name}`}
-      </span>
     </div>
   );
 }
