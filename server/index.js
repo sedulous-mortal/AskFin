@@ -538,6 +538,52 @@ app.get('/api/debug/critter-foods', async (req, res) => {
   }
 });
 
+// Get source types (foraging, farming, etc.) for a given edible by name.
+// Mirrors: SELECT st.id, st.name FROM edibles e
+//          JOIN edibles_source es ON es.edible_id = e.id
+//          JOIN source_types st ON st.id = es.source_id
+//          WHERE LOWER(e.name) = LOWER(:name) ORDER BY st.name
+app.get('/api/edibles/:name/sources', async (req, res) => {
+  const edibleName = req.params.name;
+
+  try {
+    const { data: edible, error: edibleError } = await supabase
+      .from('edibles')
+      .select('id, name')
+      .ilike('name', edibleName)
+      .maybeSingle();
+
+    if (edibleError) {
+      console.error('Supabase error (edibles lookup):', edibleError.message);
+      return res.status(500).json({ error: edibleError.message });
+    }
+
+    if (!edible) {
+      return res.status(404).json({ error: `No edible found with name "${edibleName}".` });
+    }
+
+    const { data: junctionRows, error: sourcesError } = await supabase
+      .from('edibles_source')
+      .select('source_types ( id, name )')
+      .eq('edible_id', edible.id);
+
+    if (sourcesError) {
+      console.error('Supabase error (edibles_source):', sourcesError.message);
+      return res.status(500).json({ error: sourcesError.message });
+    }
+
+    const sources = (junctionRows || [])
+      .filter((row) => row.source_types)
+      .map((row) => row.source_types)
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    res.json({ edible: { id: edible.id, name: edible.name }, sources });
+  } catch (err) {
+    console.error('Server error (edible sources):', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Get all quests
 app.get('/api/quests', async (req, res) => {
   try {
@@ -564,4 +610,5 @@ app.listen(PORT, () => {
   console.log(`Test Supabase: http://localhost:${PORT}/api/test-supabase`);
   console.log(`Quests endpoint: http://localhost:${PORT}/api/quests`);
   console.log(`Critters endpoint: http://localhost:${PORT}/api/critters`);
+  console.log(`Edible sources: http://localhost:${PORT}/api/edibles/:name/sources`);
 });
