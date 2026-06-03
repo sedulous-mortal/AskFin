@@ -453,25 +453,88 @@ app.post('/api/forgot-password', async (req, res) => {
   }
 });
 
-// Get all critters (reference data for critter types)
+// Get all critters with their taming foods.
+// Two explicit queries are used instead of a single embedded-resource select so
+// that the join works regardless of what the FK column in critter_foods is named.
 app.get('/api/critters', async (req, res) => {
   try {
-    const { data, error } = await supabase
+    // 1. Base critter rows
+    const { data: critters, error: crittersError } = await supabase
       .from('critters')
-      .select('*, critter_foods ( forageables ( * ) )')
+      .select('id, critter_type, subtype, sprite, habitat, active_at, description')
       .order('critter_type', { ascending: true })
       .order('subtype', { ascending: true });
 
-    if (error) {
-      console.error('Supabase error (critters):', error.message);
-      return res.status(500).json({ error: error.message });
+    if (crittersError) {
+      console.error('Supabase error (critters):', crittersError.message);
+      return res.status(500).json({ error: crittersError.message });
     }
 
-    // Reformat snake_case DB rows into the client-facing Critter shape.
-    res.json(toClientCritters(data || []));
+    // 2. Junction rows joined to edibles for name + image_location
+    const { data: critterFoods, error: foodsError } = await supabase
+      .from('critter_foods')
+      .select('critter_id, edibles ( id, name, image_path )');
+
+    if (foodsError) {
+      console.error('Supabase error (critter_foods):', foodsError.message);
+      return res.status(500).json({ error: foodsError.message });
+    }
+
+    // 3. Index foods by critter_id, keeping the shape toClientCritters expects
+    const foodsByCritterId = (critterFoods || []).reduce((acc, cf) => {
+      if (!cf.edibles) return acc;
+      if (!acc[cf.critter_id]) acc[cf.critter_id] = [];
+      acc[cf.critter_id].push({ edibles: cf.edibles });
+      return acc;
+    }, {});
+
+    // 4. Attach foods, then reformat into the client-facing Critter shape
+    const crittersWithFoods = (critters || []).map((c) => ({
+      ...c,
+      critter_foods: foodsByCritterId[c.id] ?? [],
+    }));
+
+    res.json(toClientCritters(crittersWithFoods));
   } catch (err) {
     console.error('Server error (critters):', err);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Diagnostic: returns raw critters + critter_foods + edibles data before any
+// reformatting, so you can verify IDs match up correctly in the DB.
+// Remove this endpoint once the data has been confirmed correct.
+app.get('/api/debug/critter-foods', async (req, res) => {
+  try {
+    const { data: critters, error: e1 } = await supabase
+      .from('critters')
+      .select('id, critter_type, subtype')
+      .order('critter_type', { ascending: true })
+      .order('subtype', { ascending: true });
+    if (e1) return res.status(500).json({ error: e1.message });
+
+    const { data: junctionRows, error: e2 } = await supabase
+      .from('critter_foods')
+      .select('critter_id, edibles ( id, name )');
+    if (e2) return res.status(500).json({ error: e2.message });
+
+    // Show each critter alongside the food rows the junction table maps to it
+    const foodsByCritterId = (junctionRows || []).reduce((acc, cf) => {
+      if (!acc[cf.critter_id]) acc[cf.critter_id] = [];
+      if (cf.edibles) acc[cf.critter_id].push(cf.edibles);
+      return acc;
+    }, {});
+
+    const report = (critters || []).map((c) => ({
+      critter_id: c.id,
+      critter_type: c.critter_type,
+      subtype: c.subtype,
+      foods_from_junction: foodsByCritterId[c.id] ?? [],
+    }));
+
+    res.json(report);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

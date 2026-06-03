@@ -77,65 +77,95 @@ export default function Critters() {
               key={critterType}
               className="overflow-hidden rounded-2xl border border-slate-900/10 bg-white shadow-sm transition-shadow hover:shadow-md"
             >
-              {/* One column per subtype row — up to four fill the grid */}
-              <div className="grid grid-cols-1 divide-y divide-slate-900/10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:divide-x lg:divide-y-0">
-                {variants.map((variant) => (
-                  <article key={variant.id} className="flex flex-col">
-                    {/* Image area — never highlighted */}
-                    <div className="flex h-28 items-center justify-center overflow-hidden px-6 pt-6">
-                      <img
-                        src={variant.image}
-                        alt={`${variant.subtype} ${variant.critterType}`}
-                        className="max-h-full max-w-[120px] rounded-lg object-contain"
-                      />
-                    </div>
-                    {/* Content area — pale yellow when active on the selected date */}
-                    <div className={`flex flex-col gap-4 p-6 pt-3 transition-colors duration-200${daysRemainingInRange(variant.activeAt, getCurrentDateString()) > 0 ? ' bg-yellow-50' : ''}`}>
-                      <h2 className="font-bold text-slate-900">
-                        {variant.subtype} {variant.critterType}
-                      </h2>
-                      <dl className="space-y-3 text-sm">
-                        <div>
-                          <dt className="font-semibold uppercase tracking-wide text-slate-500">Tame With</dt>
-                          <dd className="mt-1 text-slate-800">
-                            {[...variant.foods, ...CUSTOM_CRITTER_FOODS].length === 0 ? (
-                              <span className="italic text-slate-400">None listed</span>
-                            ) : (
-                              <ul className="space-y-1">
-                                {[...variant.foods, ...CUSTOM_CRITTER_FOODS].map((food, i) => (
-                                  <li key={i} className="flex items-center gap-2">
-                                    {food.image && (
-                                      <img
-                                        src={food.image}
-                                        alt={food.name}
-                                        className="h-5 w-5 flex-shrink-0 rounded object-contain"
-                                      />
-                                    )}
-                                    <span>{food.name}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="font-semibold uppercase tracking-wide text-slate-500">Habitat</dt>
-                          <dd className="mt-1 text-slate-800">{variant.habitat}</dd>
-                        </div>
-                        <div>
-                          <dt className="font-semibold uppercase tracking-wide text-slate-500">Active</dt>
-                          <dd className="mt-1 text-slate-800">{variant.activeAt}</dd>
-                        </div>
-                      </dl>
-                      <p className="text-slate-700">{variant.description}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-
-              <div className="border-t border-slate-900/10 bg-slate-300 p-6">
+              <div className="border-b border-slate-900/10 bg-slate-300 p-6 text-center">
                 <p className="text-xl font-semibold text-slate-900">{critterType} Variants</p>
               </div>
+
+              {/*
+                6 subgrid rows: sprite | name | tame-with | habitat | active | description
+                On lg+ each article spans all 6 rows and uses subgrid so every section
+                aligns horizontally across all columns regardless of name wrap.
+              */}
+              <div className="grid grid-cols-1 divide-y divide-slate-900/10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0">
+                {variants.map((variant) => {
+                  const isActive = daysRemainingInRange(variant.activeAt, getCurrentDateString()) > 0;
+                  const bg = `transition-colors duration-200${isActive ? ' bg-yellow-50' : ''}`;
+                  const foods = [...variant.foods, ...CUSTOM_CRITTER_FOODS];
+
+                  return (
+                    <article key={variant.id} className="flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-6">
+
+                      {/* Row 1: Sprite — never highlighted */}
+                      <div className="flex h-36 items-center justify-center overflow-hidden px-6 pt-6">
+                        <img
+                          src={variant.image}
+                          alt={`${variant.subtype} ${variant.critterType}`}
+                          className={`rounded-lg object-contain ${variant.critterType === 'Bluggy' ? 'max-h-[72px] max-w-[90px]' : 'max-h-full max-w-[180px]'}`}
+                        />
+                      </div>
+
+                      {/* Row 2: Name */}
+                      <div className={`px-6 pt-3 ${bg}`}>
+                        <h2 className="font-bold text-slate-900">
+                          {variant.subtype} {variant.critterType}
+                        </h2>
+                      </div>
+
+                      {/* Row 3: Tame With */}
+                      <div className={`px-6 pt-4 ${bg}`}>
+                        <dt className="font-semibold uppercase tracking-wide text-slate-500">Tame With</dt>
+                        <dd className="mt-1 text-slate-800">
+                          {foods.length === 0 ? (
+                            <span className="italic text-slate-400">None listed</span>
+                          ) : (
+                            <ul className="space-y-1">
+                              {foods.map((food, i) => (
+                                <li key={i} className="flex items-center gap-2">
+                                  {food.image && (
+                                    <img
+                                      src={food.image}
+                                      alt={food.name}
+                                      className="h-9 w-9 flex-shrink-0 rounded object-contain"
+                                    />
+                                  )}
+                                  <span>{food.name}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </dd>
+                      </div>
+
+                      {/* Row 4: Habitat */}
+                      <div className={`px-6 pt-4 ${bg}`}>
+                        <dt className="font-semibold uppercase tracking-wide text-slate-500">Habitat</dt>
+                        <dd className="mt-1 text-slate-800">{variant.habitat}</dd>
+                      </div>
+
+                      {/* Row 5: Active */}
+                      <div className={`px-6 pt-4 ${bg}`}>
+                        <dt className="font-semibold uppercase tracking-wide text-slate-500">Active</dt>
+                        <dd className="mt-1 text-slate-800">
+                          {variant.activeAt.includes(' to ') ? (
+                            <>
+                              {variant.activeAt.split(' to ')[0]}
+                              <br />
+                              {'to ' + variant.activeAt.split(' to ')[1]}
+                            </>
+                          ) : variant.activeAt}
+                        </dd>
+                      </div>
+
+                      {/* Row 6: Description */}
+                      <div className={`px-6 pt-4 pb-6 ${bg}`}>
+                        <p className="text-sm italic text-slate-700">{variant.description}</p>
+                      </div>
+
+                    </article>
+                  );
+                })}
+              </div>
+
             </section>
           ))}
         </div>
