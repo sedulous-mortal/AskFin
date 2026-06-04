@@ -119,9 +119,20 @@ AskFin/
 
 ## Environment Variables
 
-Two `.env` files are required — one for each service. Neither should ever be committed to version control. If you need a public key to get started, reach out to alisonnicolestuart@gmail.com.
+Both `.env` files are listed in `.gitignore` and will **not** be present after cloning — you must create them manually. Neither should ever be committed to version control. If you need a key to get started, reach out to alisonnicolestuart@gmail.com.
 
-**`server/.env`**
+### Which key does what?
+
+AskFin uses two separate Supabase keys, each with a different scope:
+
+- **Anon/publishable key (`VITE_SUPABASE_KEY`)** — used by the browser-side client in `client/src/lib/supabase.ts`. This key handles all auth flows the user touches directly: signing in, session management, sign out, and password reset. It is safe to ship to the browser because Supabase's Row-Level Security policies restrict what it can access.
+- **Service-role key (`SUPABASE_SERVICE_ROLE_KEY`)** — used by the Express server only. It bypasses RLS and is used for privileged operations like creating users, reading game data tables, and rate-limit tracking. This key must never be exposed to the browser or committed to version control.
+
+### File locations and contents
+
+Create the following two files by hand after cloning:
+
+**`AskFin/server/.env`**
 ```
 SUPABASE_URL=https://tsfvaiepnmnlijamkeua.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
@@ -131,10 +142,10 @@ EMAIL_RATE_LIMIT_MAX=2
 EMAIL_RATE_LIMIT_WINDOW=3600
 ```
 
-**`client/.env`**
+**`AskFin/client/.env.local`**
 ```
 VITE_SUPABASE_URL=https://tsfvaiepnmnlijamkeua.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_KEY=your-anon-publishable-key
 VITE_API_URL=http://localhost:4000
 ```
 
