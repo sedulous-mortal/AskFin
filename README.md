@@ -111,6 +111,7 @@ AskFin/
 * Ability for users to reset their password with a magic link from SupaBase to their email
 * "Days remaining" calculations for finding fish/seasonal forage for Adeline's research (this is built but not being shown on the front end at this time, as it will integrate with Forageables tab which is not complete yet)
 * Critter encyclopedia on Critters tab in navigation header
+* When you interact with the datepicker in the header on the Critters tab, the associated possible critters that could be active in the game get an instant pale-yellow background highlight, so you know what to skim for easily
 
 ---
 
