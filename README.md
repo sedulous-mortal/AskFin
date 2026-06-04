@@ -1,4 +1,6 @@
-# 🌱 AskFin
+<img src="AskFin.png" alt="Placeholder for Fin Image" style="width: 50%;">
+
+# AskFin
 
 Welcome to **AskFin** — your cozy companion app for exploring, organizing, and interacting with your Grimshire game world data.
 
@@ -6,7 +8,7 @@ AskFin is designed to help players upload their save/game files, browse critters
 
 ---
 
-## 🐾 Goals of the Project
+## Goals of the Project
 
 AskFin aims to:
 
@@ -18,7 +20,7 @@ AskFin aims to:
 
 ---
 
-# 🧸 Tech Stack
+# Tech Stack
 
 * Frontend: React / Vite / TypeScript
 * Backend: Node.js / Express
@@ -27,7 +29,7 @@ AskFin aims to:
 
 ---
 
-# 🚀 Getting Started
+# Getting Started
 
 ## 1. Clone the Repository
 
@@ -38,7 +40,7 @@ cd AskFin
 
 ---
 
-# 🌼 Running the Frontend
+# Running the Frontend
 
 Open a terminal and run:
 
@@ -52,7 +54,7 @@ This will start the frontend development server.
 
 ---
 
-# 🔧 Running the Backend
+# Running the Backend
 
 Open a second terminal and run:
 
@@ -66,7 +68,7 @@ This will start the backend server.
 
 ---
 
-# 💾 Uploading Your Game File
+# Uploading Your Game File
 > Coming soon!
 
 To load your game data into AskFin:
@@ -105,13 +107,13 @@ AskFin/
 
 ---
 
-# 🛠 Development Notes
+# Development Notes
 
 > Coming eventually: Contributor guidelines, environment variables, database setup, API docs, etc.
 
 ---
 
-# 💖 Contributing
+# Contributing
 
 Contributions, ideas, and bug reports are welcome!
 
@@ -119,7 +121,7 @@ Contributions, ideas, and bug reports are welcome!
 
 ---
 
-# 📜 License
+# License
 
 Note: This content is not to be republished/repurposed for any kind of monetization, it is solely a fan-created web app for educational purposes. I do not have rights to any of this Grimshire content, nor will I be monetizing in any way the deployment of this content to a public-facing hosted URL. Please ensure you also do not monetize this content, as the Acute Owl dev team behind Grimshire works very hard to keep their game great, and they would not appreciate having to waste time on legal stuff.
 
