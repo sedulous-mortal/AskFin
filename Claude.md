@@ -20,28 +20,31 @@ The central feature of AskFin is: user uploads a `.grimshire` save file → app 
 - `LoadSaveFile.tsx` sends the file to the server and shows a success/error message.
 - Supabase `characters` table schema updated (see `server/sql/characters_schema.sql`).
 
-### Blocking gap — integer ID mappings
+### ID mappings — status
+
 The save file stores progress as arrays of integer IDs, e.g.:
 - `fishDiscovered: [228, 483, 671, ...]`
 - `crittersDiscovered: [...]`
 - `unlockedCraftingRecipes: [1453, 1454, 427, ...]`
 - `itemsDiscovered: [...]`
 
-Without a lookup table (ID → name), these are useless in the UI.
-**The ID mappings live in the Grimshire game assembly.** Use dnSpy to decompile `Grimshire_Data/Managed/Assembly-CSharp.dll` and find the classes that map these IDs to game objects — likely named something like `SaveManager`, `SaveData`, `ItemDatabase`, `FishDatabase`, `CritterDatabase`, or `GameData`.
-Export those classes (File → Export to Project in dnSpy) or paste them into Claude's chat.
+**RESOLVED for items/fish/recipes:** ID → name mappings have been extracted and live at `server/helpers/game_id_maps.json`. 701 item names mapped (fish are InventoryItems so they're included). The extraction script is `server/helpers/extractGameData.py` — a Python/UnityPy script that reads the game's Unity Addressables localization bundles from `Grimshire_Data/StreamingAssets/aa/StandaloneWindows64/`.
 
-### dnSpy note
-Claude cannot open or control dnSpy (it is a GUI tool). To collaborate:
-- Option A: Export decompiled project to disk → Claude can read the .cs files.
-- Option B: Copy-paste the relevant C# class bodies into the chat.
+**Still needed — critter species names:** `crittersDiscovered` IDs map to `CritterData` ScriptableObjects whose `displayName` is NOT in the localization tables. The `CritterNames` table in the localization bundles contains tamed critter pet names (Apollo, Mochi, etc.), not species names. Options:
+- A) Accept that we can't show critter species names for now and skip them in the UI.
+- B) Manually build a small static JSON of critter ID → species name by loading the game and checking which critters are discoverable in-game.
+
+### How the extraction works (for reference)
+- The game uses Unity Addressables + Unity Localization. Item names are in `InventoryItems Shared Data` (key: `{id}_name`) and `InventoryItems_en` (numeric key → localized string). The Python script joins these two bundles to produce `{game_id: name}`.
+- The decompiled C# is in `grimshire-decompiled/Assembly-CSharp/` — useful for understanding save file structure. Key files: `GameData.cs`, `SaveObject.cs`, `ResourceManager.cs`.
+- **Do NOT use dnSpy advice from old notes** — that was superseded. The extraction is done via the Python script above.
 
 ### Remaining to-do (in order)
-1. Get ID → name mappings from dnSpy (see above) — **BLOCKER**
-2. Extend `parseSaveFile.js` to extract the array fields (fishDiscovered, crittersDiscovered, etc.)
-3. Populate Supabase reference tables (or static JSON) with the ID mappings
-4. Store per-character discovered/unlocked data in Supabase
-5. Wire up the UI to show personalised data per character (e.g., highlight undiscovered critters)
+1. ~~Get ID → name mappings~~ — **DONE**, see `server/helpers/game_id_maps.json`
+2. Extend `parseSaveFile.js` to extract the array fields (`fishDiscovered`, `crittersDiscovered`, `unlockedCraftingRecipes`, `itemsDiscovered`) from the XOR-decrypted save text
+3. Populate Supabase reference tables (or use the static JSON directly) with item/fish ID → name from `game_id_maps.json`
+4. Store per-character discovered/unlocked arrays in Supabase (new columns on `characters` table)
+5. Wire up the UI to show personalised data per character (e.g., highlight undiscovered fish, show unlocked recipes)
 
 ## Authentication System Implementation
 

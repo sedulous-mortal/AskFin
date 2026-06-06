@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Recurse \"c:\\\\Users\\\\ansob\\\\claude-tests\\\\AskFin\\\\grimshire-decompiled\")",
+      "Bash(Select-Object FullName, Length)",
+      "Bash(Format-Table -AutoSize)",
+      "PowerShell(\\(Get-ChildItem -Recurse -File \"c:\\\\Users\\\\ansob\\\\claude-tests\\\\AskFin\\\\grimshire-decompiled\"\\).Count)",
+      "Read(//c/Program Files \\(x86\\)/Steam/steamapps/common/Grimshire/Grimshire_Data/**)"
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+Loading shared bundle...
+  Shared table 'Miscellaneous Shared Data': 160 keys
+  Shared table 'CharacterTable Shared Data': 126 keys
+  Shared table 'QuestsTable Shared Data': 129 keys
+  Shared table 'TutorialsTable Shared Data': 71 keys
+  Shared table 'Controls Shared Data': 66 keys
+  Shared table 'AnimDicts Shared Data': 77 keys
+  Shared table 'CritterNames Shared Data': 50 keys
+  Shared table 'MainMenu Shared Data': 105 keys
+  Shared table 'Skills Shared Data': 70 keys
+  Shared table 'InventoryItems Shared Data': 1404 keys
+  Shared table 'FishCatchMsgTable Shared Data': 99 keys
+  Shared table 'YSTable Shared Data': 5809 keys
+  Shared table 'AnimalsTable Shared Data': 72 keys
+  Shared table 'ToolsTable Shared Data': 32 keys
+  Shared table 'DateAndTimeTable Shared Data': 34 keys
+  Shared table 'BuildingsTable Shared Data': 24 keys
+  Shared table 'PauseMenu Shared Data': 97 keys
+  Shared table 'MailTable Shared Data': 35 keys
+  Shared table 'PlantDataTable Shared Data': 101 keys
+Shared tables loaded: ['Miscellaneous Shared Data', 'CharacterTable Shared Data', 'QuestsTable Shared Data', 'TutorialsTable Shared Data', 'Controls Shared Data', 'AnimDicts Shared Data', 'CritterNames Shared Data', 'MainMenu Shared Data', 'Skills Shared Data', 'InventoryItems Shared Data', 'FishCatchMsgTable Shared Data', 'YSTable Shared Data', 'AnimalsTable Shared Data', 'ToolsTable Shared Data', 'DateAndTimeTable Shared Data', 'BuildingsTable Shared Data', 'PauseMenu Shared Data', 'MailTable Shared Data', 'PlantDataTable Shared Data']
+
+Loading English bundle...
+  Table 'InventoryItems_en': 701 named entries
+  Table 'CharacterTable_en': 2 named entries
+  Table 'PlantDataTable_en': 58 named entries
+  Table 'MailTable_en': 18 named entries
+  Table 'BuildingsTable_en': 10 named entries
+  Table 'QuestsTable_en': 61 named entries
+  Table 'Skills_en': 35 named entries
+  Table 'TutorialsTable_en': 19 named entries
+
+Total tables with data: 8
+Table names: ['InventoryItems_en', 'CharacterTable_en', 'PlantDataTable_en', 'MailTable_en', 'BuildingsTable_en', 'QuestsTable_en', 'Skills_en', 'TutorialsTable_en']
+
+Sample from 'InventoryItems_en': {"2": "Dried Meat", "3": "Egg", "4": "Feather", "255": "Tender Meat", "5": "Manure"}
+
+Written to C:\Users\ansob\claude-tests\AskFin\server\helpers\game_id_maps.json
