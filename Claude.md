@@ -1,25 +1,55 @@
+## Supabase Access Note
+
+**Login with alex.bee.obie@gmail.com via email/password — do NOT use the GitHub-connected login button**, or you will not have access to the project.
+
+Dashboard: https://supabase.com/dashboard/project/tsfvaiepnmnlijamkeua
+
+## Core Feature — Save File Pipeline (Status & To-Do)
+
+The central feature of AskFin is: user uploads a `.grimshire` save file → app reads their in-game progress → UI shows personalised data (discovered critters, fish, recipes, etc.).
+
+### What is working
+- `server/helpers/parseSaveFile.js` — XOR decryptor + regex field extraction is live and confirmed working.
+  Verified output from `ExampleSave.grimshire`:
+  ```
+  playerName: "Felix", farmName: "Farmy Mc. FarmFace", saveFileVersion: 4,
+  exp: 23300, playerSpeciesId: 1373, difficulty: 3,
+  totalPlayTimeSeconds: 72411, playerPronouns: 1
+  ```
+- `POST /api/save/parse` endpoint accepts a base64-encoded file, parses it, and upserts into the `characters` table.
+- `LoadSaveFile.tsx` sends the file to the server and shows a success/error message.
+- Supabase `characters` table schema updated (see `server/sql/characters_schema.sql`).
+
+### Blocking gap — integer ID mappings
+The save file stores progress as arrays of integer IDs, e.g.:
+- `fishDiscovered: [228, 483, 671, ...]`
+- `crittersDiscovered: [...]`
+- `unlockedCraftingRecipes: [1453, 1454, 427, ...]`
+- `itemsDiscovered: [...]`
+
+Without a lookup table (ID → name), these are useless in the UI.
+**The ID mappings live in the Grimshire game assembly.** Use dnSpy to decompile `Grimshire_Data/Managed/Assembly-CSharp.dll` and find the classes that map these IDs to game objects — likely named something like `SaveManager`, `SaveData`, `ItemDatabase`, `FishDatabase`, `CritterDatabase`, or `GameData`.
+Export those classes (File → Export to Project in dnSpy) or paste them into Claude's chat.
+
+### dnSpy note
+Claude cannot open or control dnSpy (it is a GUI tool). To collaborate:
+- Option A: Export decompiled project to disk → Claude can read the .cs files.
+- Option B: Copy-paste the relevant C# class bodies into the chat.
+
+### Remaining to-do (in order)
+1. Get ID → name mappings from dnSpy (see above) — **BLOCKER**
+2. Extend `parseSaveFile.js` to extract the array fields (fishDiscovered, crittersDiscovered, etc.)
+3. Populate Supabase reference tables (or static JSON) with the ID mappings
+4. Store per-character discovered/unlocked data in Supabase
+5. Wire up the UI to show personalised data per character (e.g., highlight undiscovered critters)
+
 ## Authentication System Implementation
 
 **Status**: AuthContext.tsx created; database schema ready (profiles, characters tables). Pending: client-side auth UI and routing still needs debugging.
 
 **Next Steps:**
 
-1. can you modify the expectations on the code side here so that "name" is actually a composite of subtype + critter_type (in that order) from the db? or better yet, can we pull the critter_type (e.g. Bluggy) and subtype separately as a part of the db call, and then concat them in the front end to have the critters page show their "names" as expected with the unique subtype listed on each of the four vertical subsections of the critter_Type section? 
-
-the image is called sprite in the critters table. the critters table will only be returning 'bluggy_frostberry.png', for example, so on our side we will need to always prepend '/critters/' to the image path, or it won't render, since the images will be stored locally on the client side in the public/critters folder (as the samples are now).
-
-Also, can you update "foods" to be pulled from critter_foods and do some sort of join on our side to embed the data as expected? I haven't finished populating the table, but as a sample I currently have critter_id and forageable_id and both are foreign key references and that's all the table contains.
-
-I confirmed all of the below:
-critters table: critter_type (e.g. Bluggy) + subtype (e.g. Frostberry) as separate columns; sprite (bare filename like bluggy_frostberry.png); plus habitat, active_at, description.
-Display name = subtype + " " + critter_type ("Frostberry Bluggy"), composed on the client.
-Each critter_type is one section; its subtype rows become the four vertical subsections (replacing the old fake buildVariants stubs — these are now real rows grouped by critter_type).
-sprite → prepend /critters/ to get the renderable path.
-foods → join critter_foods (critter_id, forageable_id) → forageables, embedded server-side via PostgREST. forageables name column is just called name.
-
-All of the below are items for us to test later on (2. through 5.):
-
-2. **For us to test later on: Fix password reset functionality** - something is wrong with the execution of the password reset; SupaBase does send a link to the email provided, and the link points to http://localhost:5173/#access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6ImVjOTk4NDhiLTdhNDAtNGRkZS1hYTdmLTdkYTBlMTExMmM0YyIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3RzZnZhaWVwbm1ubGlqYW1rZXVhLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIwYzBmNjNhNy1kNWVmLTQ2MjYtOGUzYi02N2E5NWNhMDU0YzciLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzgwMTcxODczLCJpYXQiOjE3ODAxNjgyNzMsImVtYWlsIjoiYWxleC5iZWUub2JpZUBnbWFpbC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsIjoiYWxleC5iZWUub2JpZUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGhvbmVfdmVyaWZpZWQiOmZhbHNlLCJzdWIiOiIwYzBmNjNhNy1kNWVmLTQ2MjYtOGUzYi02N2E5NWNhMDU0YzcifSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJvdHAiLCJ0aW1lc3RhbXAiOjE3ODAxNjgyNzN9XSwic2Vzc2lvbl9pZCI6Ijg1NTQ3YTc5LWFhMmYtNDA0ZC1hMGI3LTk2Mjg5M2RjNjBiZSIsImlzX2Fub255bW91cyI6ZmFsc2V9.Ju5EXZCyfQjmZYg5RA86Kahb7yR0-PAtXubs3GN_evEi9DRoHW-IX-JkD7KidXtzgoz1hiSKnbojcMlvBsivIg&expires_at=1780171873&expires_in=3600&refresh_token=onjp3xhfxkl4&sb=&token_type=bearer&type=recovery, but when I try to actually execute the click on that link, it takes me to a version of the app that just has a permanent loading circle. I need you to build out an actual password reset component and have it point to that instead. Let me know if you need me to change anything in SupaBase settings to help fix this.
+All of the below are items for us to test later on 
 
 3. **Complete the functionality for dropdown selector for character switching in header** —  Once I have run the necessary SQL to populate some sample data onto an existing real profile in the profiles table in SupaBase, I will need you to complete the functionality in the app code here to get the 'name' value returned and displayed as a line item in the dropdown selector for each item in the characters array for a given profile or user who is logged in.
 

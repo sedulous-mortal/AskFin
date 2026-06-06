@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import ws from 'ws';
 import dotenv from 'dotenv';
 import { toClientCritters } from './helpers/critterReformatter.js';
+import { parseSaveFile } from './helpers/parseSaveFile.js';
 
 dotenv.config();
 
@@ -192,7 +193,8 @@ async function getInviteRateInfo() {
 }
 
 app.use(cors());
-app.use(express.json());
+// Limit raised to 20 MB to accommodate base64-encoded .grimshire save files.
+app.use(express.json({ limit: '20mb' }));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -602,6 +604,79 @@ app.get('/api/quests', async (req, res) => {
     console.error('Server error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+// Parse a .grimshire save file and (optionally) upsert character data into Supabase.
+// Body: { fileData: string (base64), userId?: string }
+// Returns: { character: CharacterData, saved: boolean }
+app.post('/api/save/parse', async (req, res) => {
+  const { fileData, userId } = req.body;
+
+  if (!fileData) {
+    return res.status(400).json({ error: 'fileData is required.' });
+  }
+
+  let buffer;
+  try {
+    buffer = Buffer.from(fileData, 'base64');
+  } catch {
+    return res.status(400).json({ error: 'Invalid base64 file data.' });
+  }
+
+  let character;
+  try {
+    character = parseSaveFile(buffer);
+  } catch (err) {
+    console.error('Save file parse error:', err);
+    return res.status(422).json({ error: 'Failed to parse save file.' });
+  }
+
+  if (!character.playerName) {
+    return res.status(422).json({ error: 'Could not extract player name from save file.' });
+  }
+
+  if (userId) {
+    try {
+      // Check whether this character already exists for the user.
+      const { data: existing } = await supabase
+        .from('characters')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('character_name', character.playerName)
+        .maybeSingle();
+
+      const payload = {
+        farm_name: character.farmName,
+        exp: character.exp,
+        player_species_id: character.playerSpeciesId,
+        difficulty: character.difficulty,
+        total_play_time_seconds: character.totalPlayTimeSeconds,
+        player_pronouns: character.playerPronouns,
+        save_file_version: character.saveFileVersion,
+        updated_at: new Date().toISOString(),
+      };
+
+      if (existing) {
+        const { error: updateError } = await supabase
+          .from('characters')
+          .update(payload)
+          .eq('id', existing.id);
+        if (updateError) throw updateError;
+      } else {
+        const { error: insertError } = await supabase
+          .from('characters')
+          .insert({ user_id: userId, character_name: character.playerName, ...payload });
+        if (insertError) throw insertError;
+      }
+
+      return res.json({ character, saved: true });
+    } catch (err) {
+      console.error('Failed to save character to Supabase:', err);
+      return res.json({ character, saved: false, error: 'Parsed OK but failed to save to database.' });
+    }
+  }
+
+  return res.json({ character, saved: false });
 });
 
 app.listen(PORT, () => {

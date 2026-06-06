@@ -14,6 +14,7 @@ type AuthContextType = {
   characters: Character[];
   selectedCharacterId: string | null;
   setSelectedCharacterId: (id: string) => void;
+  refreshCharacters: () => Promise<void>;
   logout: () => Promise<void>;
   enterWithoutLogin: () => void;
   isGuestSession: boolean;
@@ -179,6 +180,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSelectedCharacterId: (id: string) => {
       setSelectedCharacterId(id);
       localStorage.setItem('selectedCharacterId', id);
+    },
+    refreshCharacters: async () => {
+      const userId = effectiveUser?.id;
+      if (userId && userId !== 'guest-user') {
+        await fetchCharacters(userId);
+      }
     },
     logout,
     enterWithoutLogin,
