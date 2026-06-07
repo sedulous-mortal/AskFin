@@ -39,13 +39,6 @@ The save file stores progress as arrays of integer IDs, e.g.:
 - The decompiled C# is in `grimshire-decompiled/Assembly-CSharp/` — useful for understanding save file structure. Key files: `GameData.cs`, `SaveObject.cs`, `ResourceManager.cs`.
 - **Do NOT use dnSpy advice from old notes** — that was superseded. The extraction is done via the Python script above.
 
-### Remaining to-do (in order)
-1. ~~Get ID → name mappings~~ — **DONE**, see `server/helpers/game_id_maps.json`
-2. ~~Extend `parseSaveFile.js` to extract the array fields~~ — **DONE**. `extractArray()` added; `parseSaveFile()` now returns `fishDiscovered`, `crittersDiscovered`, `itemsDiscovered`, `unlockedCraftingRecipes`, `unlockedCookingRecipes` as `number[]`.
-3. ~~Populate Supabase reference tables~~ — **DONE (static JSON approach)**. ID→name lookups use `game_id_maps.json` server-side; no separate Supabase reference table needed.
-4. ~~Store per-character discovered/unlocked arrays in Supabase~~ — **Schema ready, pending SQL run**. Five `integer[]` columns added to `server/sql/characters_schema.sql` and the `POST /api/save/parse` payload updated to write them. **Action needed: run the ALTER TABLE block from `characters_schema.sql` in the Supabase SQL editor** to add the columns to the live table.
-5. Wire up the UI to show personalised data per character (e.g., highlight undiscovered fish, show unlocked recipes)
-
 ## Authentication System Implementation
 
 **Status**: AuthContext.tsx created; database schema ready (profiles, characters tables). Pending: client-side auth UI and routing still needs debugging.
@@ -54,7 +47,11 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 All of the below are items for us to test later on 
 
-3. **Complete the functionality for dropdown selector for character switching in header** —  Once I have run the necessary SQL to populate some sample data onto an existing real profile in the profiles table in SupaBase, I will need you to complete the functionality in the app code here to get the 'name' value returned and displayed as a line item in the dropdown selector for each item in the characters array for a given profile or user who is logged in.
+1. **Show Users the grimshire filenames they have uploaded** can we have an on-hover effect next to each character name in the selector dropdown, so that when they hover on an icon for info next to the character name (to the left of it ideally), they see the actual filename from the DB, like "GS1405_76561198238464092" so they can confirm which files they have already uploaded?
+
+2. **Get the quest data out of the grimshire game data files** - we need to know the names and details of quests for all days in the in-game calendar, and store them somewhere locally in the codebase to reference, or maybe in SupaBase if it makes more sense. so far our architecture is to save the reference ID data for all critters/fish/recipes, etc in a local JSON, so I don't see why we would move away from that now.
+
+3. **Create a User-Level Settings Tab** - we want the users to be able to choose whether they see spoilers or not. We will need a toggle for each "type" of spoilers, which hooks up to our render functions for the dashboard and other tabs. we will need toggles for "see undiscovered fish" "see undiscovered cooking recipes" "see undiscovered quests" "see undiscovered items" "see undiscovered forageables" "see undiscovered crafting recipes", etc, in some order that makes sense, maybe grouped by where they show up in the app (e.g. anything that affects Dashboard data goes together, anything that affects Forageables data goes together, based on nav)
 
 4. **Pull live data from forageables and quests tables in SupaBase when loading the foreageables and quests web app pages, respectively** — I will stub out the data with SQL editor directly into SupaBase, and then confirm that's completed so that I can have you update the code here to pull that data live into the pages.
 

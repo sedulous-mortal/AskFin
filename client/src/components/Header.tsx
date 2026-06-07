@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import CharacterSelector from './CharacterSelector';
 import LoadSaveFile from './LoadSaveFile';
 import DatePicker from './DatePicker';
-import RateLimitIndicator from './RateLimitIndicator';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -37,11 +36,6 @@ export default function Header() {
       */}
       <div className="mx-auto grid w-full max-w-screen-xl grid-cols-[1fr_auto] px-6 pt-1">
 
-        {/* Row 1 left — Supabase tracker */}
-        <div className="flex items-center pt-2 pb-1">
-          <RateLimitIndicator />
-        </div>
-
         {/* Row 1 right — user controls */}
         {showAuthenticatedNav ? (
           <div className="flex items-center gap-5 pt-2 pb-1">
@@ -66,7 +60,7 @@ export default function Header() {
         {/* Row 2 left — logo + nav */}
         <nav className="flex items-center gap-2 pb-3 pt-1">
           <NavLink to={user ? '/dashboard' : '/'} className="mr-6 flex shrink-0 items-center">
-            <img src="/grimshire-logo.png" alt="Grimshire" className="h-20 w-auto" />
+            <img src="/askfinlogo1.png" alt="AskFin" className="h-20 w-auto" />
           </NavLink>
 
           {showAuthenticatedNav && (
