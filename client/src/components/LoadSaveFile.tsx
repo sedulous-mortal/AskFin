@@ -5,7 +5,7 @@ import { uploadSaveFile } from '../api/characters';
 type UploadStatus =
   | { type: 'idle' }
   | { type: 'loading' }
-  | { type: 'success'; characterName: string }
+  | { type: 'success' }
   | { type: 'error'; message: string };
 
 export default function LoadSaveFile() {
@@ -26,11 +26,10 @@ export default function LoadSaveFile() {
     setStatus({ type: 'loading' });
 
     try {
-      const result = await uploadSaveFile(file, user?.id ?? null);
-      const characterName = result.character.playerName ?? 'Unknown';
+      await uploadSaveFile(file, user?.id ?? null);
       await refreshCharacters();
       await refreshSelectedCharacter();
-      setStatus({ type: 'success', characterName });
+      setStatus({ type: 'success' });
     } catch (err) {
       setStatus({ type: 'error', message: err instanceof Error ? err.message : 'Upload failed.' });
     }
@@ -84,11 +83,6 @@ export default function LoadSaveFile() {
         </div>
       </div>
 
-      {status.type === 'success' && (
-        <p className="text-xs text-green-400">
-          Loaded <span className="font-semibold">{status.characterName}</span>
-        </p>
-      )}
       {status.type === 'error' && (
         <p className="text-xs text-red-400">{status.message}</p>
       )}

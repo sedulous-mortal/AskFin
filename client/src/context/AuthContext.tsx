@@ -8,6 +8,8 @@ type Character = {
   id: string;
   user_id: string;
   character_name: string;
+  save_file_name: string | null;
+  updated_at: string | null;
 };
 
 export type ResolvedItem = { id: number; name: string | null };
@@ -60,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [characterDetailLoading, setCharacterDetailLoading] = useState(false);
 
   const guestCharacters: Character[] = [
-    { id: 'guest-character', user_id: 'guest-user', character_name: 'Guest Adventurer' },
+    { id: 'guest-character', user_id: 'guest-user', character_name: 'Guest Adventurer', save_file_name: null, updated_at: null },
   ];
 
   const guestUser = {

@@ -52,7 +52,7 @@ export default function Header() {
         </NavLink>
 
         {/* Col 2, row 1 — Fin quote */}
-        <p className="flex items-end pb-1 text-[1.3125rem] italic text-white/70">
+        <p className="flex items-end pb-1 text-[1.05rem] italic text-white/70">
           "{quote}"
         </p>
 
