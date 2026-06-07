@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import CharacterSelector from './CharacterSelector';
 import LoadSaveFile from './LoadSaveFile';
 import DatePicker from './DatePicker';
+import finQuotes from '../data/finQuotes.json';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -16,6 +18,10 @@ export default function Header() {
   const { user, loading, logout, isGuestSession } = useAuth();
   const navigate = useNavigate();
   const showAuthenticatedNav = !loading && Boolean(user);
+  const quote = useMemo(
+    () => finQuotes[Math.floor(Math.random() * finQuotes.length)],
+    [],
+  );
 
   const handleLogout = async () => {
     try {
@@ -30,15 +36,29 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-900/40 bg-slate-700 shadow-md">
       {/*
-        Two-row grid: left column takes all remaining space, right column is
-        auto-sized to its widest row — this keeps the controls and DatePicker
-        in the same right-side column without any manual width guessing.
+        Three-column grid: [logo | nav/center | controls]
+        Logo spans both rows so it fills the full header height.
+        Center col: row 1 = spacer, row 2 = nav links.
+        Right col:  row 1 = user controls, row 2 = DatePicker.
       */}
-      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-[1fr_auto] px-6 pt-1">
+      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-[auto_1fr_auto] px-6 py-4">
 
-        {/* Row 1 right — user controls */}
+        {/* Col 1, rows 1+2 — Logo fills full header height */}
+        <NavLink
+          to={user ? '/dashboard' : '/'}
+          className="row-span-2 mr-8 flex items-center self-stretch"
+        >
+          <img src="/askfinlogo1.png" alt="AskFin" className="h-full max-h-40 w-auto" />
+        </NavLink>
+
+        {/* Col 2, row 1 — Fin quote */}
+        <p className="flex items-end pb-1 text-sm italic text-white/70">
+          "{quote}"
+        </p>
+
+        {/* Col 3, row 1 — user controls */}
         {showAuthenticatedNav ? (
-          <div className="flex items-center gap-5 pt-2 pb-1">
+          <div className="flex items-center gap-5 pb-1">
             {isGuestSession && (
               <span className="rounded-full bg-yellow-300 px-3 py-1 text-xs font-semibold text-slate-900">
                 Guest mode
@@ -57,36 +77,32 @@ export default function Header() {
           <div />
         )}
 
-        {/* Row 2 left — logo + nav */}
-        <nav className="flex items-center gap-2 pb-3 pt-1">
-          <NavLink to={user ? '/dashboard' : '/'} className="mr-6 flex shrink-0 items-center">
-            <img src="/askfinlogo1.png" alt="AskFin" className="h-20 w-auto" />
-          </NavLink>
-
-          {showAuthenticatedNav && (
-            <div className="flex items-center gap-1">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `rounded-lg px-5 py-3 text-base font-semibold transition-colors ${
-                      isActive
-                        ? 'bg-slate-900 text-white shadow-sm'
-                        : 'text-slate-200 hover:bg-slate-600 hover:text-white'
-                    }`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-            </div>
-          )}
-        </nav>
-
-        {/* Row 2 right — DatePicker, aligned under the user controls */}
+        {/* Col 2, row 2 — nav links */}
         {showAuthenticatedNav ? (
-          <div className="flex items-center justify-end pb-3 pt-1">
+          <nav className="flex items-center gap-1 pt-1">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `rounded-lg px-5 py-3 text-base font-semibold transition-colors ${
+                    isActive
+                      ? 'bg-slate-900 text-white shadow-sm'
+                      : 'text-slate-200 hover:bg-slate-600 hover:text-white'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        ) : (
+          <div />
+        )}
+
+        {/* Col 3, row 2 — DatePicker */}
+        {showAuthenticatedNav ? (
+          <div className="flex items-center justify-end pt-1">
             <DatePicker />
           </div>
         ) : (

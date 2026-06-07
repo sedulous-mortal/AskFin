@@ -247,14 +247,11 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold tracking-tight text-slate-900">
           {selectedCharacter.character_name}
         </h1>
-        <p className="mt-1 text-lg text-slate-600">
-          {selectedCharacter.farm_name ?? 'Unknown Farm'}
-          {selectedCharacter.exp != null && (
-            <span className="ml-4 text-base text-slate-400">
-              {selectedCharacter.exp.toLocaleString()} EXP
-            </span>
-          )}
-        </p>
+        {selectedCharacter.exp != null && (
+          <p className="mt-1 text-base text-slate-600">
+            {selectedCharacter.exp.toLocaleString()} EXP
+          </p>
+        )}
       </header>
 
       {!hasSaveData ? (
