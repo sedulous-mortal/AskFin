@@ -77,16 +77,12 @@ export default function Critters() {
               key={critterType}
               className="overflow-hidden rounded-2xl border border-slate-900/10 bg-white shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="border-b border-slate-900/10 bg-slate-300 p-6 text-center">
-                <p className="text-xl font-semibold text-slate-900">{critterType} Variants</p>
-              </div>
-
               {/*
                 6 subgrid rows: sprite | name | tame-with | habitat | active | description
                 On lg+ each article spans all 6 rows and uses subgrid so every section
                 aligns horizontally across all columns regardless of name wrap.
               */}
-              <div className="grid grid-cols-1 divide-y divide-slate-900/10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0">
+              <div className="grid grid-cols-1 divide-y divide-slate-900/10 px-4 pt-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0">
                 {variants.map((variant) => {
                   const isActive = daysRemainingInRange(variant.activeAt, getCurrentDateString()) > 0;
                   const bg = `transition-colors duration-200${isActive ? ' bg-yellow-50' : ''}`;
