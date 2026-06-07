@@ -1,5 +1,5 @@
-<img src="AskFin-Cropped.png" alt="Placeholder for Fin Image" style="width: 160px">
-<img src="client\public\grimshire-logo.png" alt="Placeholder for Grimshire Logo" style="width: 460px;">
+<img src="AskFinLogo1.png" alt="Placeholder for AskFin Logo" style="width: 260px">
+
 
 
 # AskFin
