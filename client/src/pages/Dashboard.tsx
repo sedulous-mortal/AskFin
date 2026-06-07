@@ -21,7 +21,10 @@ function DonutChart({
   const cy = 50;
   const circ = 2 * Math.PI * r;
   const fraction = total && total > 0 ? Math.min(discovered / total, 1) : 0;
-  const discoveredArc = fraction * circ;
+  // When total is known use the real fraction; when unknown show a fixed
+  // representative arc (45% of circle) so the colored segment is visible
+  // and clickable even though the exact proportion isn't known.
+  const discoveredArc = total !== null ? fraction * circ : discovered > 0 ? circ * 0.45 : 0;
   // SVG circles start at 3 o'clock; offset by 25% to start at 12 o'clock
   const startOffset = circ * 0.25;
 
@@ -31,7 +34,7 @@ function DonutChart({
       className="w-36 h-36 shrink-0"
       aria-label={`${discovered} of ${total ?? '?'} discovered`}
     >
-      {/* Track (undiscovered) */}
+      {/* Track (undiscovered) — always a full circle; colored arc overlays it */}
       <circle
         cx={cx} cy={cy} r={r}
         fill="none"
@@ -39,16 +42,9 @@ function DonutChart({
         strokeWidth="11"
         className={onUndiscoveredClick ? 'cursor-pointer hover:stroke-slate-300' : ''}
         onClick={onUndiscoveredClick}
-        strokeDasharray={total == null ? `${circ * 0.85} ${circ * 0.15}` : undefined}
       />
-      {/* Undiscovered label when no total known */}
-      {total == null && (
-        <text x={cx} y={cy + 26} textAnchor="middle" fontSize="7" fill="#94a3b8">
-          total unknown
-        </text>
-      )}
       {/* Discovered arc */}
-      {discoveredArc > 0 && (
+      {discovered > 0 && (
         <circle
           cx={cx} cy={cy} r={r}
           fill="none"
@@ -62,12 +58,14 @@ function DonutChart({
         />
       )}
       {/* Center: count */}
-      <text x={cx} y={cy - 3} textAnchor="middle" fontSize="16" fontWeight="bold" fill="#1e293b">
+      <text x={cx} y={cy + 4} textAnchor="middle" fontSize="16" fontWeight="bold" fill="#1e293b">
         {discovered}
       </text>
-      <text x={cx} y={cy + 12} textAnchor="middle" fontSize="8" fill="#64748b">
-        {total != null ? `of ${total}` : 'discovered'}
-      </text>
+      {total != null && (
+        <text x={cx} y={cy + 16} textAnchor="middle" fontSize="8" fill="#64748b">
+          of {total}
+        </text>
+      )}
     </svg>
   );
 }
@@ -120,6 +118,7 @@ function CategorySection({
   const [view, setView] = useState<DrillView>('chart');
 
   if (view !== 'chart') {
+    const isUndiscoveredUnknown = view === 'undiscovered' && undiscovered === null;
     const items = view === 'discovered' ? discovered : (undiscovered ?? []);
     const label = view === 'discovered' ? `Discovered ${title}` : `Undiscovered ${title}`;
     return (
@@ -134,10 +133,19 @@ function CategorySection({
           <h2 className="text-lg font-bold tracking-tight text-slate-800">
             <span aria-hidden className="mr-1">{icon}</span>
             {label}
-            <span className="ml-2 text-sm font-normal text-slate-400">({items.length})</span>
+            {!isUndiscoveredUnknown && (
+              <span className="ml-2 text-sm font-normal text-slate-400">({items.length})</span>
+            )}
           </h2>
         </div>
-        <ItemGrid items={items} />
+        {isUndiscoveredUnknown ? (
+          <p className="text-sm text-slate-500">
+            We don't have the full list of {title.toLowerCase()} in the game yet, so we can't
+            show which ones are undiscovered. Total count coming soon.
+          </p>
+        ) : (
+          <ItemGrid items={items} />
+        )}
       </section>
     );
   }
@@ -157,7 +165,7 @@ function CategorySection({
           total={total}
           color={color}
           onDiscoveredClick={() => setView('discovered')}
-          onUndiscoveredClick={undiscovered !== null ? () => setView('undiscovered') : undefined}
+          onUndiscoveredClick={() => setView('undiscovered')}
         />
 
         <div className="flex flex-col gap-3">
@@ -171,22 +179,18 @@ function CategorySection({
             </span>
           </button>
 
-          {undiscovered !== null ? (
-            <button
-              onClick={() => setView('undiscovered')}
-              className="flex items-center gap-2 text-left group"
-            >
-              <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200" />
-              <span className="text-sm text-slate-500 group-hover:text-slate-700 transition-colors">
-                <span className="font-semibold">{undiscoveredCount}</span> undiscovered
-              </span>
-            </button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200" />
-              <span className="text-sm text-slate-400 italic">total unknown</span>
-            </div>
-          )}
+          <button
+            onClick={() => setView('undiscovered')}
+            className="flex items-center gap-2 text-left group"
+          >
+            <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200" />
+            <span className="text-sm text-slate-500 group-hover:text-slate-700 transition-colors">
+              {undiscovered !== null
+                ? <><span className="font-semibold">{undiscoveredCount}</span> undiscovered</>
+                : <span className="italic">undiscovered (total unknown)</span>
+              }
+            </span>
+          </button>
         </div>
       </div>
     </section>
