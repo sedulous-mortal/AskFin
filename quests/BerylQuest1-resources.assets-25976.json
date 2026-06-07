@@ -1,0 +1,156 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "BerylQuest1",
+  "Id": 1091,
+  "displayTitle": "Chicory Coffee",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 9335
+  },
+  "description": "Beryl wants some Chicory.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25179
+        },
+        "amount": 5,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 1,
+    "firstDay": 25,
+    "endSeason": 2,
+    "lastDay": 11
+  },
+  "startDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 60,
+  "rewardItems": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25573
+        },
+        "amount": 3,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24921
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": [
+      {
+        "descriptionDevReadOnly": "Start",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24921
+        },
+        "YSNode": "BerylQuest1Available",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "5 Chicory for Beryl",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24921
+        },
+        "YSNode": "BerylQuest1Incomplete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": [
+            {
+              "item": {
+                "m_FileID": 0,
+                "m_PathID": 25179
+              },
+              "amount": 5,
+              "playerDonationAmount": 0.0
+            }
+          ]
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24921
+        },
+        "YSNode": "BerylQuest1Complete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      }
+    ]
+  },
+  "townQuest": 0,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": []
+  }
+}

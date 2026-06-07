@@ -1,0 +1,156 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "RufusQuest1",
+  "Id": 1081,
+  "displayTitle": "Bluggy Egg",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 5307
+  },
+  "description": "Rufus wants a bluggy egg.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25165
+        },
+        "amount": 1,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 0,
+    "firstDay": 14,
+    "endSeason": 3,
+    "lastDay": 28
+  },
+  "startDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 60,
+  "rewardItems": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25629
+        },
+        "amount": 20,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24941
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": [
+      {
+        "descriptionDevReadOnly": "Start",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24941
+        },
+        "YSNode": "RufusQuest1Available",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Egg for Rufus",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24941
+        },
+        "YSNode": "RufusQuest1Incomplete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": [
+            {
+              "item": {
+                "m_FileID": 0,
+                "m_PathID": 25165
+              },
+              "amount": 1,
+              "playerDonationAmount": 0.0
+            }
+          ]
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24941
+        },
+        "YSNode": "RufusQuest1Complete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      }
+    ]
+  },
+  "townQuest": 0,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": []
+  }
+}

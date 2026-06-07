@@ -1,0 +1,22 @@
+Loaded 61 quest names from game_id_maps.json
+
+Loading localization bundles for quest descriptions...
+  QuestsTable shared keys: 129
+  Quest descriptions found in localization: 49
+
+Scanning main game data files for Quest ScriptableObjects...
+Files to scan: ['resources.assets', 'sharedassets0.assets', 'sharedassets1.assets', 'sharedassets10.assets', 'sharedassets11.assets', 'sharedassets12.assets', 'sharedassets13.assets', 'sharedassets14.assets', 'sharedassets15.assets', 'sharedassets16.assets', 'sharedassets17.assets', 'sharedassets18.assets', 'sharedassets19.assets', 'sharedassets2.assets', 'sharedassets20.assets', 'sharedassets21.assets', 'sharedassets22.assets', 'sharedassets23.assets', 'sharedassets24.assets', 'sharedassets25.assets', 'sharedassets26.assets', 'sharedassets27.assets', 'sharedassets28.assets', 'sharedassets29.assets', 'sharedassets3.assets', 'sharedassets30.assets', 'sharedassets31.assets', 'sharedassets32.assets', 'sharedassets4.assets', 'sharedassets5.assets', 'sharedassets6.assets', 'sharedassets7.assets', 'sharedassets8.assets', 'sharedassets9.assets']
+
+Extracted 0 quest ScriptableObjects total
+  NOTE: No ScriptableObject data found.
+  Possible causes:
+    - Type trees stripped in this build (check with a Unity asset viewer)
+    - Quest assets stored in a different file
+  Output will still contain names and any descriptions from localization.
+
+Building output...
+
+Written to C:\Users\ansob\claude-tests\AskFin\server\helpers\quests.json
+  Total quests:              61
+  With ScriptableObject data (dates/rewards/flags): 0
+  With descriptions from localization:              49

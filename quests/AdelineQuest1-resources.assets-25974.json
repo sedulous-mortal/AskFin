@@ -1,0 +1,172 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "AdelineQuest1",
+  "Id": 1090,
+  "displayTitle": "Good Students",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 4106
+  },
+  "description": "Adeline asked for a Sapphire and Sunflower.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25435
+        },
+        "amount": 1,
+        "playerDonationAmount": 0.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25212
+        },
+        "amount": 1,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 1,
+    "firstDay": 23,
+    "endSeason": 2,
+    "lastDay": 9
+  },
+  "startDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 60,
+  "rewardItems": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25412
+        },
+        "amount": 3,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24919
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": [
+      {
+        "descriptionDevReadOnly": "Start",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "AdelineQuest1Available",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Sapphire and Sunflower for Adeline",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "AdelineQuest1Incomplete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": [
+            {
+              "item": {
+                "m_FileID": 0,
+                "m_PathID": 25435
+              },
+              "amount": 1,
+              "playerDonationAmount": 0.0
+            },
+            {
+              "item": {
+                "m_FileID": 0,
+                "m_PathID": 25212
+              },
+              "amount": 1,
+              "playerDonationAmount": 0.0
+            }
+          ]
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "AdelineQuest1Complete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      }
+    ]
+  },
+  "townQuest": 0,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": []
+  }
+}

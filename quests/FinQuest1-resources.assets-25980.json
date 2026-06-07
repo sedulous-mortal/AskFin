@@ -1,0 +1,156 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "FinQuest1",
+  "Id": 1092,
+  "displayTitle": "Sailors Request",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 12271
+  },
+  "description": "Fin asked for some Chicory Seeds.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25688
+        },
+        "amount": 5,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 1,
+    "firstDay": 28,
+    "endSeason": 2,
+    "lastDay": 28
+  },
+  "startDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 60,
+  "rewardItems": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25095
+        },
+        "amount": 3,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24925
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": [
+      {
+        "descriptionDevReadOnly": "Start",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24925
+        },
+        "YSNode": "FinQuest1Available",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "5 Chicory Seeds for Fin",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24925
+        },
+        "YSNode": "FinQuest1Incomplete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": [
+            {
+              "item": {
+                "m_FileID": 0,
+                "m_PathID": 25688
+              },
+              "amount": 5,
+              "playerDonationAmount": 0.0
+            }
+          ]
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24925
+        },
+        "YSNode": "FinQuest1Complete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      }
+    ]
+  },
+  "townQuest": 0,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": []
+  }
+}

@@ -1,0 +1,449 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "ResearchQuestMaster",
+  "Id": 1331,
+  "displayTitle": "Research",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 13434
+  },
+  "description": "Donate specimens for Research. Items can be dropped off in the box in the entryway of the manor.",
+  "requirements": {
+    "Array": []
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 0,
+    "firstDay": 1,
+    "endSeason": 3,
+    "lastDay": 28
+  },
+  "startDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 20,
+  "rewardItems": {
+    "Array": []
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24919
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 24921
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": [
+      {
+        "descriptionDevReadOnly": "Start",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuestMasterStart",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 15 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest1InProgress",
+        "donationAmountRequired": 15,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest1Complete",
+        "donationAmountRequired": 15,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 30 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest2InProgress",
+        "donationAmountRequired": 30,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest2Complete",
+        "donationAmountRequired": 30,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 45 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest3InProgress",
+        "donationAmountRequired": 45,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest3Complete",
+        "donationAmountRequired": 45,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 60 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest4InProgress",
+        "donationAmountRequired": 60,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest4Complete",
+        "donationAmountRequired": 60,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 75 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest5InProgress",
+        "donationAmountRequired": 75,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest5Complete",
+        "donationAmountRequired": 75,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 90 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest6InProgress",
+        "donationAmountRequired": 90,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest6Complete",
+        "donationAmountRequired": 90,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 105 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest7InProgress",
+        "donationAmountRequired": 105,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest7Complete",
+        "donationAmountRequired": 105,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 120 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest8InProgress",
+        "donationAmountRequired": 120,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest8Complete",
+        "donationAmountRequired": 120,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Donate 148 Specimens",
+        "segmentType": 4,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest9InProgress",
+        "donationAmountRequired": 148,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24919
+        },
+        "YSNode": "ResearchQuest9Complete",
+        "donationAmountRequired": 148,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      }
+    ]
+  },
+  "townQuest": 0,
+  "donationQuest": 1,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": []
+  }
+}

@@ -1,0 +1,1760 @@
+{
+  "meta": {
+    "total_quests": 61,
+    "quests_with_so_data": 54,
+    "quests_with_descriptions": 49,
+    "quests_with_requirements": 40,
+    "quests_with_reward_items": 29
+  },
+  "quests": [
+    {
+      "id": 350,
+      "name": "Herb Garden",
+      "description": "Help gather materials for the Herb Garden. Deliver items to the box next to the Healer's.",
+      "display_title": "Herb Garden",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 4,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25442)",
+          "amount": 300
+        },
+        {
+          "name": "Unknown item (path_id=25444)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25408)",
+          "amount": 50
+        },
+        {
+          "name": "Unknown item (path_id=25148)",
+          "amount": 50
+        },
+        {
+          "name": "Unknown item (path_id=25192)",
+          "amount": 20
+        },
+        {
+          "name": "Unknown item (path_id=25199)",
+          "amount": 20
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 416,
+      "name": "Carrots for Beatrix",
+      "description": "Deliver 5 Carrots to Beatrix. (If you need help, there is a farming tutorial in the tutorial tab of the pause menu.)",
+      "display_title": "Carrots for Beatrix",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25174)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 417,
+      "name": "Dig Deep",
+      "description": "Gruff the blacksmith has asked for 5 Copper Ore. (If you need help, there is a mining tutorial in the tutorial tab of the pause menu.)",
+      "display_title": "Dig Deep",
+      "available_start_season": 3,
+      "available_start_season_name": "Winter",
+      "available_first_day": 1,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25422)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 418,
+      "name": "Fisher-Bun",
+      "description": "Catch a Whitefish, prove yourself to Wilfred. (If you need help, there is a fishing tutorial in the tutorials tab of the pause menu.)",
+      "display_title": "Fisher-Bun",
+      "available_start_season": 3,
+      "available_start_season_name": "Winter",
+      "available_first_day": 1,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25160)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 433,
+      "name": "Meet And Greet",
+      "description": "The villagers of Grimshire wish to welcome me to their village. I've been told that they've prepared gifts for me. <br>I should talk to Theo when I'm done.",
+      "display_title": "Meet And Greet",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 10,
+      "requirements": [],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25488)",
+          "amount": 1
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 439,
+      "name": "Mushroom Hut",
+      "description": "Help gather materials for the Mushroom Hut. Deliver items to the box next to the Healer's.",
+      "display_title": "Mushroom Hut",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 4,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25446)",
+          "amount": 150
+        },
+        {
+          "name": "Unknown item (path_id=25447)",
+          "amount": 150
+        },
+        {
+          "name": "Unknown item (path_id=25148)",
+          "amount": 75
+        },
+        {
+          "name": "Unknown item (path_id=25442)",
+          "amount": 200
+        },
+        {
+          "name": "Unknown item (path_id=25408)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25193)",
+          "amount": 10
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 440,
+      "name": "Rowan's Lumber",
+      "description": "Collect Medium Wood for Rowan. Chop down Maple trees with your axe and then bring them to Rowan!",
+      "display_title": "Rowan's Lumber",
+      "available_start_season": 3,
+      "available_start_season_name": "Winter",
+      "available_first_day": 1,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25447)",
+          "amount": 20
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25653)",
+          "amount": 1
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 517,
+      "name": "Research Specimens",
+      "description": "Donate specimens for Research. Items can be dropped off in the box in the entryway of the manor.",
+      "display_title": "Research Specimens",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 518,
+      "name": "Donate 50 Specimens",
+      "description": "Donate 50 specimens for Adeline's Research. Items can be dropped off in the box in the entryway of the manor.",
+      "display_title": "Donate 50 Specimens",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 582,
+      "name": "Fish Farm",
+      "description": "Help gather materials to build a fish farm. Deliver items to the box next to the Mayor's house.",
+      "display_title": "Fish Farm",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 25,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25437)",
+          "amount": 200
+        },
+        {
+          "name": "Unknown item (path_id=25406)",
+          "amount": 150
+        },
+        {
+          "name": "Unknown item (path_id=25442)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25629)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25413)",
+          "amount": 40
+        },
+        {
+          "name": "Unknown item (path_id=25415)",
+          "amount": 20
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 583,
+      "name": "Redtide Remediation",
+      "description": "Help gather materials for the Redtide Remediation. Deliver items to the box next to the Tavern.",
+      "display_title": "Redtide Remediation",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 25,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25437)",
+          "amount": 200
+        },
+        {
+          "name": "Unknown item (path_id=25444)",
+          "amount": 200
+        },
+        {
+          "name": "Unknown item (path_id=25446)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25408)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25208)",
+          "amount": 40
+        },
+        {
+          "name": "Unknown item (path_id=25175)",
+          "amount": 20
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 584,
+      "name": "Crow Repellent",
+      "description": "Help gather materials to build a crow repellent. Deliver items to the box in front of the Manor.",
+      "display_title": "Crow Repellent",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 10,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25448)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25447)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25413)",
+          "amount": 60
+        },
+        {
+          "name": "Unknown item (path_id=25419)",
+          "amount": 50
+        },
+        {
+          "name": "Unknown item (path_id=25176)",
+          "amount": 30
+        },
+        {
+          "name": "Unknown item (path_id=25179)",
+          "amount": 30
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 585,
+      "name": "Crow Traps",
+      "description": "Help gather materials to build crow traps. Deliver items to the box in front of the Manor.",
+      "display_title": "Crow Traps",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 10,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25446)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25406)",
+          "amount": 60
+        },
+        {
+          "name": "Unknown item (path_id=25413)",
+          "amount": 40
+        },
+        {
+          "name": "Unknown item (path_id=25415)",
+          "amount": 30
+        },
+        {
+          "name": "Unknown item (path_id=25412)",
+          "amount": 10
+        },
+        {
+          "name": "Unknown item (path_id=25220)",
+          "amount": 10
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 586,
+      "name": "Predator Taming",
+      "description": "Help gather materials to tame the predator. Deliver items to the box in front of the Mayor's house.",
+      "display_title": "Predator Taming",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 16,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25406)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25415)",
+          "amount": 20
+        },
+        {
+          "name": "Unknown item (path_id=25413)",
+          "amount": 40
+        },
+        {
+          "name": "Unknown item (path_id=25418)",
+          "amount": 10
+        },
+        {
+          "name": "Unknown item (path_id=25162)",
+          "amount": 20
+        },
+        {
+          "name": "Unknown item (path_id=25220)",
+          "amount": 10
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 587,
+      "name": "Hunting Party",
+      "description": "Help gather materials needed for the hunt. Deliver items to the box in front of the Mayor's house.",
+      "display_title": "Hunting Party",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 16,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 30,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25406)",
+          "amount": 150
+        },
+        {
+          "name": "Unknown item (path_id=25419)",
+          "amount": 100
+        },
+        {
+          "name": "Unknown item (path_id=25413)",
+          "amount": 40
+        },
+        {
+          "name": "Unknown item (path_id=25415)",
+          "amount": 30
+        },
+        {
+          "name": "Unknown item (path_id=25418)",
+          "amount": 10
+        },
+        {
+          "name": "Unknown item (path_id=25410)",
+          "amount": 20
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 615,
+      "name": "Last Stand",
+      "description": "Help gather all the materials for the last stand! Deliver items to the box next to the Temple.",
+      "display_title": "Last Stand",
+      "available_start_season": 3,
+      "available_start_season_name": "Winter",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 26,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25406)",
+          "amount": 300
+        },
+        {
+          "name": "Unknown item (path_id=25446)",
+          "amount": 200
+        },
+        {
+          "name": "Unknown item (path_id=25442)",
+          "amount": 200
+        },
+        {
+          "name": "Unknown item (path_id=25437)",
+          "amount": 200
+        },
+        {
+          "name": "Unknown item (path_id=25413)",
+          "amount": 50
+        },
+        {
+          "name": "Unknown item (path_id=25418)",
+          "amount": 40
+        }
+      ],
+      "reward_items": [],
+      "is_town_quest": true,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 863,
+      "name": "Donate 75 Specimens",
+      "description": "Donate 75 specimens for Adeline's Research. Items can be dropped off in the box in the entryway of the manor.",
+      "display_title": "Donate 75 Specimens",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 864,
+      "name": "Donate 100 Specimens",
+      "description": "Donate 100 specimens for Adeline's Research. Items can be dropped off in the box in the entryway of the manor.",
+      "display_title": "Donate 100 Specimens",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 865,
+      "name": "Donate 125 Specimens",
+      "description": "Donate 125 specimens for Adeline's Research. Items can be dropped off in the box in the entryway of the manor.",
+      "display_title": "Donate 125 Specimens",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 866,
+      "name": "Donate 148 Specimens",
+      "description": "Donate 148 specimens for Adeline's Research. Items can be dropped off in the box in the entryway of the manor.",
+      "display_title": "Donate 148 Specimens",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1077,
+      "name": "Forage for Pepperwort ",
+      "description": "Forage 5 Pepperwort for Hazel.",
+      "display_title": "Forage for Pepperwort ",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 8,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 19,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25199)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25705)",
+          "amount": 10
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1081,
+      "name": "Bluggy Egg",
+      "description": "Rufus wants a bluggy egg.",
+      "display_title": "Bluggy Egg",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 14,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25165)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25629)",
+          "amount": 20
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1082,
+      "name": "A snack for Percy",
+      "description": "Percy requested some Smoked Maple Seeds.",
+      "display_title": "A snack for Percy",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 22,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 8,
+      "reward_money": 50,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25302)",
+          "amount": 8
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25302)",
+          "amount": 2
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1083,
+      "name": "Forestry with Rowan",
+      "description": "Rowan wants to plants trees, bring him 30 Maple Seeds.",
+      "display_title": "Forestry with Rowan",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 23,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 9,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25698)",
+          "amount": 30
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25678)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1084,
+      "name": "Lavender For Lila",
+      "description": "Lila asked for some Lavender.",
+      "display_title": "Lavender For Lila",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 27,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 13,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25191)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25572)",
+          "amount": 3
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1085,
+      "name": "Dairy Farmer",
+      "description": "Logan asked for some milk.",
+      "display_title": "Dairy Farmer",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 14,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25219)",
+          "amount": 3
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25626)",
+          "amount": 20
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1086,
+      "name": "Lynx Hunter",
+      "description": "Kai asked for 1 Blood.",
+      "display_title": "Lynx Hunter",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 10,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 24,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25162)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25370)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1087,
+      "name": "Yarrow For Edgar",
+      "description": "Edgar wants some Yarrow.",
+      "display_title": "Yarrow For Edgar",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 12,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 26,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25216)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25633)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1088,
+      "name": "Poppy's Surprise",
+      "description": "Poppy asked for some Wool to make a present for Logan.",
+      "display_title": "Poppy's Surprise",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 14,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 27,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25449)",
+          "amount": 3
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25709)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1089,
+      "name": "Peanut Gift",
+      "description": "Tano asked for some peanuts so he can make peanut butter for Logan's birthday.",
+      "display_title": "Peanut Gift",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 15,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 27,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25197)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25275)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1090,
+      "name": "Good Students",
+      "description": "Adeline asked for a Sapphire and Sunflower.",
+      "display_title": "Good Students",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 23,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 9,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25435)",
+          "amount": 1
+        },
+        {
+          "name": "Unknown item (path_id=25212)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25412)",
+          "amount": 3
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1091,
+      "name": "Chicory Coffee",
+      "description": "Beryl wants some Chicory.",
+      "display_title": "Chicory Coffee",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 25,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 11,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25179)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25573)",
+          "amount": 3
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1092,
+      "name": "Sailors Request",
+      "description": "Fin asked for some Chicory Seeds.",
+      "display_title": "Sailors Request",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 28,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25688)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25095)",
+          "amount": 3
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1093,
+      "name": "Ginger Ale",
+      "description": "Greta asked for some Ginger.",
+      "display_title": "Ginger Ale",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 3,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 17,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25187)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25237)",
+          "amount": 6
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1094,
+      "name": "Apple Pressing",
+      "description": "Wallace wants some Apples.",
+      "display_title": "Apple Pressing",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 1,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 13,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25167)",
+          "amount": 15
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25223)",
+          "amount": 6
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1095,
+      "name": "Legendary Fish",
+      "description": "Wilfred challenged you to catch a Wels Catfish, which can be found in the deep forest.",
+      "display_title": "Legendary Fish",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 11,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25159)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25623)",
+          "amount": 10
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1096,
+      "name": "Adeline's Present",
+      "description": "Jack has asked for 1 Small Smoked Fish.",
+      "display_title": "Adeline's Present",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 8,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 17,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25279)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25423)",
+          "amount": 1
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1097,
+      "name": "Bounty Of Fall",
+      "description": "Willow wants some Rosehip Juice.",
+      "display_title": "Bounty Of Fall",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 11,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 24,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25351)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25358)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1098,
+      "name": "Lovely Flowers",
+      "description": "Oliver asked you to help him gather some chamomile.",
+      "display_title": "Lovely Flowers",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 15,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 26,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25176)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25269)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1099,
+      "name": "Crafters Request",
+      "description": "Ericka asked for 1 Wine.",
+      "display_title": "Crafters Request",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 24,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 10,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25375)",
+          "amount": 1
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25413)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1100,
+      "name": "Anniversary Surprise",
+      "description": "Beatrix wants some Hawthorn Berries.",
+      "display_title": "Anniversary Surprise",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 17,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 2,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25188)",
+          "amount": 10
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25375)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1101,
+      "name": "Cranberries For A Raccoon",
+      "description": "Theo needs Cranberries for a secret project.",
+      "display_title": "Cranberries For A Raccoon",
+      "available_start_season": 3,
+      "available_start_season_name": "Winter",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 13,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25181)",
+          "amount": 10
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25248)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1102,
+      "name": "An Apology Gift",
+      "description": "Rusty wants some Cheese.",
+      "display_title": "An Apology Gift",
+      "available_start_season": 3,
+      "available_start_season_name": "Winter",
+      "available_first_day": 2,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25247)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25412)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1103,
+      "name": "Another Anniversary Surprise",
+      "description": "Dudley wants some Hawthorn Berries.",
+      "display_title": "Another Anniversary Surprise",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 17,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 2,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25188)",
+          "amount": 10
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25287)",
+          "amount": 5
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1104,
+      "name": "Iron Ore For Gruff",
+      "description": "Gruff requested 5 Iron Ore. He mentioned it can be found in the mine shaft located in the Marsh.",
+      "display_title": "Iron Ore For Gruff",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 15,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 13,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25424)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25411)",
+          "amount": 10
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1105,
+      "name": "Cherry Pie",
+      "description": "Prudence wants 15 Cherry to make some sweet treats.",
+      "display_title": "Cherry Pie",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 15,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 1,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25178)",
+          "amount": 15
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25495)",
+          "amount": 3
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1106,
+      "name": "Bumper Crops",
+      "description": "Grow 5 cabbages for Rose.",
+      "display_title": "Bumper Crops",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 7,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 19,
+      "reward_money": 0,
+      "reward_relationship_points": 60,
+      "requirements": [
+        {
+          "name": "Unknown item (path_id=25172)",
+          "amount": 5
+        }
+      ],
+      "reward_items": [
+        {
+          "name": "Unknown item (path_id=25644)",
+          "amount": 1
+        }
+      ],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1116,
+      "name": "Defenders Ration 2",
+      "description": null,
+      "display_title": "Defenders Ration 2",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 15,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 22,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1117,
+      "name": "Defenders Ration 1",
+      "description": null,
+      "display_title": "Defenders Ration 1",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 8,
+      "available_end_season": 0,
+      "available_end_season_name": "Spring",
+      "available_last_day": 15,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1118,
+      "name": "Defenders Ration 3",
+      "description": null,
+      "display_title": "Defenders Ration 3",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 22,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 1,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1119,
+      "name": "Defenders Ration 4",
+      "description": null,
+      "display_title": "Defenders Ration 4",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 1,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 8,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1120,
+      "name": "Defenders Ration 5",
+      "description": null,
+      "display_title": "Defenders Ration 5",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 8,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 15,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1121,
+      "name": "Defenders Ration 6",
+      "description": null,
+      "display_title": "Defenders Ration 6",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 15,
+      "available_end_season": 1,
+      "available_end_season_name": "Summer",
+      "available_last_day": 22,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1122,
+      "name": "Defenders Ration 7",
+      "description": null,
+      "display_title": "Defenders Ration 7",
+      "available_start_season": 1,
+      "available_start_season_name": "Summer",
+      "available_first_day": 22,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 1,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1123,
+      "name": "Defenders Ration 8",
+      "description": null,
+      "display_title": "Defenders Ration 8",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 1,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 8,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1124,
+      "name": "Defenders Ration 9",
+      "description": null,
+      "display_title": "Defenders Ration 9",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 8,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 15,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1125,
+      "name": "Defenders Ration 10",
+      "description": null,
+      "display_title": "Defenders Ration 10",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 15,
+      "available_end_season": 2,
+      "available_end_season_name": "Fall",
+      "available_last_day": 22,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1126,
+      "name": "Defenders Ration 11",
+      "description": null,
+      "display_title": "Defenders Ration 11",
+      "available_start_season": 2,
+      "available_start_season_name": "Fall",
+      "available_first_day": 22,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 1,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1127,
+      "name": "Siege Stockpile",
+      "description": null,
+      "display_title": "Siege Stockpile",
+      "available_start_season": 3,
+      "available_start_season_name": "Winter",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 8,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": false,
+      "is_rootcellar_quest": true,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1323,
+      "name": "Donate 30 Specimens",
+      "description": "Donate 30 specimens for Research.",
+      "display_title": "Donate 30 Specimens",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 0,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    },
+    {
+      "id": 1331,
+      "name": "Research",
+      "description": "Donate specimens for Research. Items can be dropped off in the box in the entryway of the manor.",
+      "display_title": "Research",
+      "available_start_season": 0,
+      "available_start_season_name": "Spring",
+      "available_first_day": 1,
+      "available_end_season": 3,
+      "available_end_season_name": "Winter",
+      "available_last_day": 28,
+      "reward_money": 0,
+      "reward_relationship_points": 20,
+      "requirements": [],
+      "reward_items": [],
+      "is_town_quest": false,
+      "is_donation_quest": true,
+      "is_rootcellar_quest": false,
+      "is_vip_quest": false
+    }
+  ]
+}

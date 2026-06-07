@@ -19,6 +19,8 @@ import { parseSaveFile } from './helpers/parseSaveFile.js';
 const require = createRequire(import.meta.url);
 const gameIdMaps = require('./helpers/game_id_maps.json');
 const ediblesRaw = require('./helpers/edibles_ids.json');
+const questsFile = require('./helpers/quests.json');
+const questsList = questsFile.quests || [];
 const itemNames = gameIdMaps['InventoryItems_en'] || {};
 const plantNames = gameIdMaps['PlantDataTable_en'] || {};
 const allFishIds = new Set(gameIdMaps['fish_ids'] || []);
@@ -640,24 +642,9 @@ app.get('/api/edibles/:name/sources', async (req, res) => {
   }
 });
 
-// Get all quests
-app.get('/api/quests', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('quests')
-      .select('*')
-      .order('id', { ascending: true });
-
-    if (error) {
-      console.error('Supabase error:', error.message);
-      return res.status(500).json({ error: error.message });
-    }
-
-    res.json(data || []);
-  } catch (err) {
-    console.error('Server error:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+// Get all quests — served from local quests.json (extracted from game files)
+app.get('/api/quests', (req, res) => {
+  res.json(questsList);
 });
 
 // Parse a .grimshire save file and (optionally) upsert character data into Supabase.

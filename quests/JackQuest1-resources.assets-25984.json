@@ -1,0 +1,156 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "JackQuest1",
+  "Id": 1096,
+  "displayTitle": "Adeline's Present",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 5630
+  },
+  "description": "Jack has asked for 1 Small Smoked Fish.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25279
+        },
+        "amount": 1,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 2,
+    "firstDay": 8,
+    "endSeason": 2,
+    "lastDay": 17
+  },
+  "startDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 1,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 60,
+  "rewardItems": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25423
+        },
+        "amount": 1,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24929
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": [
+      {
+        "descriptionDevReadOnly": "Start",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24929
+        },
+        "YSNode": "JackQuest1Available",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Small Smoked Fish for Jack",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24929
+        },
+        "YSNode": "JackQuest1Incomplete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": [
+            {
+              "item": {
+                "m_FileID": 0,
+                "m_PathID": 25279
+              },
+              "amount": 1,
+              "playerDonationAmount": 0.0
+            }
+          ]
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      },
+      {
+        "descriptionDevReadOnly": "Complete",
+        "segmentType": 0,
+        "speakToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 24929
+        },
+        "YSNode": "JackQuest1Complete",
+        "donationAmountRequired": 0,
+        "deliverItemsToNPC": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        },
+        "itemsToDeliver": {
+          "Array": []
+        },
+        "NPCGiveItemsToPlayer": {
+          "Array": []
+        }
+      }
+    ]
+  },
+  "townQuest": 0,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": []
+  }
+}

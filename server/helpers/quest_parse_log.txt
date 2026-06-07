@@ -1,0 +1,219 @@
+Loaded 61 quest names
+
+Collecting item path IDs referenced in quest dumps...
+  Found 74 unique item path IDs to resolve
+Building item path-ID -> name map from resources.assets (raw bytes)...
+  Indexing all objects (this may take a moment)...
+  Indexed 27616 objects
+  path_id=25216: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25219: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25220: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25442: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25095: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25223: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25351: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25358: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25488: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25444: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25237: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25495: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25623: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25370: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25626: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25629: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25375: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25247: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25633: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25248: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25644: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25653: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25269: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25275: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25148: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25406: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25279: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25408: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25410: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25411: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25412: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25413: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25287: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25160: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25415: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25162: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25419: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25418: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25165: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25422: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25423: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25424: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25678: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25167: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25172: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25174: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25302: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25688: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25176: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25178: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25179: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25435: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25181: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25437: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25175: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25698: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25187: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25188: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25573: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25572: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25191: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25447: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25705: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25449: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25448: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25446: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25709: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25197: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25199: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25192: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25193: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25159: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25208: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  path_id=25212: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
+  Resolved 0 of 74 item path IDs
+
+Loading descriptions from localization bundle...
+  Found 49 descriptions
+
+Found 54 dump files in C:\Users\ansob\claude-tests\AskFin\quests
+  Parsed quest 1090: Good Students  (reqs=2, reward_items=1)
+  Parsed quest 1100: Anniversary Surprise  (reqs=1, reward_items=1)
+  Parsed quest 1091: Chicory Coffee  (reqs=1, reward_items=1)
+  Parsed quest 1103: Another Anniversary Surprise  (reqs=1, reward_items=1)
+  Parsed quest 1087: Yarrow For Edgar  (reqs=1, reward_items=1)
+  Parsed quest 1099: Crafters Request  (reqs=1, reward_items=1)
+  Parsed quest 416: Carrots for Beatrix  (reqs=1, reward_items=0)
+  Parsed quest 1092: Sailors Request  (reqs=1, reward_items=1)
+  Parsed quest 418: Fisher-Bun  (reqs=1, reward_items=0)
+  Parsed quest 1093: Ginger Ale  (reqs=1, reward_items=1)
+  Parsed quest 1104: Iron Ore For Gruff  (reqs=1, reward_items=1)
+  Parsed quest 1077: Forage for Pepperwort   (reqs=1, reward_items=1)
+  Parsed quest 1096: Adeline's Present  (reqs=1, reward_items=1)
+  Parsed quest 1086: Lynx Hunter  (reqs=1, reward_items=1)
+  Parsed quest 1084: Lavender For Lila  (reqs=1, reward_items=1)
+  Parsed quest 1085: Dairy Farmer  (reqs=1, reward_items=1)
+  Parsed quest 440: Rowan's Lumber  (reqs=1, reward_items=1)
+  Parsed quest 433: Meet And Greet  (reqs=0, reward_items=1)
+  Parsed quest 417: Dig Deep  (reqs=1, reward_items=0)
+  Parsed quest 1098: Lovely Flowers  (reqs=1, reward_items=1)
+  Parsed quest 1082: A snack for Percy  (reqs=1, reward_items=1)
+  Parsed quest 1088: Poppy's Surprise  (reqs=1, reward_items=1)
+  Parsed quest 1105: Cherry Pie  (reqs=1, reward_items=1)
+  Parsed quest 1331: Research  (reqs=0, reward_items=0)
+  Parsed quest 1117: Defenders Ration 1  (reqs=0, reward_items=0)
+  Parsed quest 1125: Defenders Ration 10  (reqs=0, reward_items=0)
+  Parsed quest 1126: Defenders Ration 11  (reqs=0, reward_items=0)
+  Parsed quest 1127: Siege Stockpile  (reqs=0, reward_items=0)
+  Parsed quest 1116: Defenders Ration 2  (reqs=0, reward_items=0)
+  Parsed quest 1118: Defenders Ration 3  (reqs=0, reward_items=0)
+  Parsed quest 1119: Defenders Ration 4  (reqs=0, reward_items=0)
+  Parsed quest 1120: Defenders Ration 5  (reqs=0, reward_items=0)
+  Parsed quest 1121: Defenders Ration 6  (reqs=0, reward_items=0)
+  Parsed quest 1122: Defenders Ration 7  (reqs=0, reward_items=0)
+  Parsed quest 1123: Defenders Ration 8  (reqs=0, reward_items=0)
+  Parsed quest 1124: Defenders Ration 9  (reqs=0, reward_items=0)
+  Parsed quest 1106: Bumper Crops  (reqs=1, reward_items=1)
+  Parsed quest 1083: Forestry with Rowan  (reqs=1, reward_items=1)
+  Parsed quest 1081: Bluggy Egg  (reqs=1, reward_items=1)
+  Parsed quest 1102: An Apology Gift  (reqs=1, reward_items=1)
+  Parsed quest 1089: Peanut Gift  (reqs=1, reward_items=1)
+  Parsed quest 1101: Cranberries For A Raccoon  (reqs=1, reward_items=1)
+  Parsed quest 584: Crow Repellent  (reqs=6, reward_items=0)
+  Parsed quest 585: Crow Traps  (reqs=6, reward_items=0)
+  Parsed quest 350: Herb Garden  (reqs=6, reward_items=0)
+  Parsed quest 587: Hunting Party  (reqs=6, reward_items=0)
+  Parsed quest 583: Redtide Remediation  (reqs=6, reward_items=0)
+  Parsed quest 615: Last Stand  (reqs=6, reward_items=0)
+  Parsed quest 582: Fish Farm  (reqs=6, reward_items=0)
+  Parsed quest 439: Mushroom Hut  (reqs=6, reward_items=0)
+  Parsed quest 586: Predator Taming  (reqs=6, reward_items=0)
+  Parsed quest 1094: Apple Pressing  (reqs=1, reward_items=1)
+  Parsed quest 1095: Legendary Fish  (reqs=1, reward_items=1)
+  Parsed quest 1097: Bounty Of Fall  (reqs=1, reward_items=1)
+
+Successfully parsed 54 quest objects
+  Quest 350 requirements: [{'name': 'Unknown item (path_id=25442)', 'amount': 300}, {'name': 'Unknown item (path_id=25444)', 'amount': 100}, {'name': 'Unknown item (path_id=25408)', 'amount': 50}, {'name': 'Unknown item (path_id=25148)', 'amount': 50}, {'name': 'Unknown item (path_id=25192)', 'amount': 20}, {'name': 'Unknown item (path_id=25199)', 'amount': 20}]
+  Quest 416 requirements: [{'name': 'Unknown item (path_id=25174)', 'amount': 5}]
+  Quest 417 requirements: [{'name': 'Unknown item (path_id=25422)', 'amount': 5}]
+  Quest 418 requirements: [{'name': 'Unknown item (path_id=25160)', 'amount': 1}]
+  Quest 433 reward items: [{'name': 'Unknown item (path_id=25488)', 'amount': 1}]
+  Quest 439 requirements: [{'name': 'Unknown item (path_id=25446)', 'amount': 150}, {'name': 'Unknown item (path_id=25447)', 'amount': 150}, {'name': 'Unknown item (path_id=25148)', 'amount': 75}, {'name': 'Unknown item (path_id=25442)', 'amount': 200}, {'name': 'Unknown item (path_id=25408)', 'amount': 100}, {'name': 'Unknown item (path_id=25193)', 'amount': 10}]
+  Quest 440 requirements: [{'name': 'Unknown item (path_id=25447)', 'amount': 20}]
+  Quest 440 reward items: [{'name': 'Unknown item (path_id=25653)', 'amount': 1}]
+  Quest 582 requirements: [{'name': 'Unknown item (path_id=25437)', 'amount': 200}, {'name': 'Unknown item (path_id=25406)', 'amount': 150}, {'name': 'Unknown item (path_id=25442)', 'amount': 100}, {'name': 'Unknown item (path_id=25629)', 'amount': 100}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25415)', 'amount': 20}]
+  Quest 583 requirements: [{'name': 'Unknown item (path_id=25437)', 'amount': 200}, {'name': 'Unknown item (path_id=25444)', 'amount': 200}, {'name': 'Unknown item (path_id=25446)', 'amount': 100}, {'name': 'Unknown item (path_id=25408)', 'amount': 100}, {'name': 'Unknown item (path_id=25208)', 'amount': 40}, {'name': 'Unknown item (path_id=25175)', 'amount': 20}]
+  Quest 584 requirements: [{'name': 'Unknown item (path_id=25448)', 'amount': 100}, {'name': 'Unknown item (path_id=25447)', 'amount': 100}, {'name': 'Unknown item (path_id=25413)', 'amount': 60}, {'name': 'Unknown item (path_id=25419)', 'amount': 50}, {'name': 'Unknown item (path_id=25176)', 'amount': 30}, {'name': 'Unknown item (path_id=25179)', 'amount': 30}]
+  Quest 585 requirements: [{'name': 'Unknown item (path_id=25446)', 'amount': 100}, {'name': 'Unknown item (path_id=25406)', 'amount': 60}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25415)', 'amount': 30}, {'name': 'Unknown item (path_id=25412)', 'amount': 10}, {'name': 'Unknown item (path_id=25220)', 'amount': 10}]
+  Quest 586 requirements: [{'name': 'Unknown item (path_id=25406)', 'amount': 100}, {'name': 'Unknown item (path_id=25415)', 'amount': 20}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25418)', 'amount': 10}, {'name': 'Unknown item (path_id=25162)', 'amount': 20}, {'name': 'Unknown item (path_id=25220)', 'amount': 10}]
+  Quest 587 requirements: [{'name': 'Unknown item (path_id=25406)', 'amount': 150}, {'name': 'Unknown item (path_id=25419)', 'amount': 100}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25415)', 'amount': 30}, {'name': 'Unknown item (path_id=25418)', 'amount': 10}, {'name': 'Unknown item (path_id=25410)', 'amount': 20}]
+  Quest 615 requirements: [{'name': 'Unknown item (path_id=25406)', 'amount': 300}, {'name': 'Unknown item (path_id=25446)', 'amount': 200}, {'name': 'Unknown item (path_id=25442)', 'amount': 200}, {'name': 'Unknown item (path_id=25437)', 'amount': 200}, {'name': 'Unknown item (path_id=25413)', 'amount': 50}, {'name': 'Unknown item (path_id=25418)', 'amount': 40}]
+  Quest 1077 requirements: [{'name': 'Unknown item (path_id=25199)', 'amount': 5}]
+  Quest 1077 reward items: [{'name': 'Unknown item (path_id=25705)', 'amount': 10}]
+  Quest 1081 requirements: [{'name': 'Unknown item (path_id=25165)', 'amount': 1}]
+  Quest 1081 reward items: [{'name': 'Unknown item (path_id=25629)', 'amount': 20}]
+  Quest 1082 requirements: [{'name': 'Unknown item (path_id=25302)', 'amount': 8}]
+  Quest 1082 reward items: [{'name': 'Unknown item (path_id=25302)', 'amount': 2}]
+  Quest 1083 requirements: [{'name': 'Unknown item (path_id=25698)', 'amount': 30}]
+  Quest 1083 reward items: [{'name': 'Unknown item (path_id=25678)', 'amount': 5}]
+  Quest 1084 requirements: [{'name': 'Unknown item (path_id=25191)', 'amount': 5}]
+  Quest 1084 reward items: [{'name': 'Unknown item (path_id=25572)', 'amount': 3}]
+  Quest 1085 requirements: [{'name': 'Unknown item (path_id=25219)', 'amount': 3}]
+  Quest 1085 reward items: [{'name': 'Unknown item (path_id=25626)', 'amount': 20}]
+  Quest 1086 requirements: [{'name': 'Unknown item (path_id=25162)', 'amount': 1}]
+  Quest 1086 reward items: [{'name': 'Unknown item (path_id=25370)', 'amount': 5}]
+  Quest 1087 requirements: [{'name': 'Unknown item (path_id=25216)', 'amount': 5}]
+  Quest 1087 reward items: [{'name': 'Unknown item (path_id=25633)', 'amount': 5}]
+  Quest 1088 requirements: [{'name': 'Unknown item (path_id=25449)', 'amount': 3}]
+  Quest 1088 reward items: [{'name': 'Unknown item (path_id=25709)', 'amount': 5}]
+  Quest 1089 requirements: [{'name': 'Unknown item (path_id=25197)', 'amount': 5}]
+  Quest 1089 reward items: [{'name': 'Unknown item (path_id=25275)', 'amount': 5}]
+  Quest 1090 requirements: [{'name': 'Unknown item (path_id=25435)', 'amount': 1}, {'name': 'Unknown item (path_id=25212)', 'amount': 1}]
+  Quest 1090 reward items: [{'name': 'Unknown item (path_id=25412)', 'amount': 3}]
+  Quest 1091 requirements: [{'name': 'Unknown item (path_id=25179)', 'amount': 5}]
+  Quest 1091 reward items: [{'name': 'Unknown item (path_id=25573)', 'amount': 3}]
+  Quest 1092 requirements: [{'name': 'Unknown item (path_id=25688)', 'amount': 5}]
+  Quest 1092 reward items: [{'name': 'Unknown item (path_id=25095)', 'amount': 3}]
+  Quest 1093 requirements: [{'name': 'Unknown item (path_id=25187)', 'amount': 5}]
+  Quest 1093 reward items: [{'name': 'Unknown item (path_id=25237)', 'amount': 6}]
+  Quest 1094 requirements: [{'name': 'Unknown item (path_id=25167)', 'amount': 15}]
+  Quest 1094 reward items: [{'name': 'Unknown item (path_id=25223)', 'amount': 6}]
+  Quest 1095 requirements: [{'name': 'Unknown item (path_id=25159)', 'amount': 1}]
+  Quest 1095 reward items: [{'name': 'Unknown item (path_id=25623)', 'amount': 10}]
+  Quest 1096 requirements: [{'name': 'Unknown item (path_id=25279)', 'amount': 1}]
+  Quest 1096 reward items: [{'name': 'Unknown item (path_id=25423)', 'amount': 1}]
+  Quest 1097 requirements: [{'name': 'Unknown item (path_id=25351)', 'amount': 1}]
+  Quest 1097 reward items: [{'name': 'Unknown item (path_id=25358)', 'amount': 5}]
+  Quest 1098 requirements: [{'name': 'Unknown item (path_id=25176)', 'amount': 5}]
+  Quest 1098 reward items: [{'name': 'Unknown item (path_id=25269)', 'amount': 5}]
+  Quest 1099 requirements: [{'name': 'Unknown item (path_id=25375)', 'amount': 1}]
+  Quest 1099 reward items: [{'name': 'Unknown item (path_id=25413)', 'amount': 5}]
+  Quest 1100 requirements: [{'name': 'Unknown item (path_id=25188)', 'amount': 10}]
+  Quest 1100 reward items: [{'name': 'Unknown item (path_id=25375)', 'amount': 5}]
+  Quest 1101 requirements: [{'name': 'Unknown item (path_id=25181)', 'amount': 10}]
+  Quest 1101 reward items: [{'name': 'Unknown item (path_id=25248)', 'amount': 5}]
+  Quest 1102 requirements: [{'name': 'Unknown item (path_id=25247)', 'amount': 5}]
+  Quest 1102 reward items: [{'name': 'Unknown item (path_id=25412)', 'amount': 5}]
+  Quest 1103 requirements: [{'name': 'Unknown item (path_id=25188)', 'amount': 10}]
+  Quest 1103 reward items: [{'name': 'Unknown item (path_id=25287)', 'amount': 5}]
+  Quest 1104 requirements: [{'name': 'Unknown item (path_id=25424)', 'amount': 5}]
+  Quest 1104 reward items: [{'name': 'Unknown item (path_id=25411)', 'amount': 10}]
+  Quest 1105 requirements: [{'name': 'Unknown item (path_id=25178)', 'amount': 15}]
+  Quest 1105 reward items: [{'name': 'Unknown item (path_id=25495)', 'amount': 3}]
+  Quest 1106 requirements: [{'name': 'Unknown item (path_id=25172)', 'amount': 5}]
+  Quest 1106 reward items: [{'name': 'Unknown item (path_id=25644)', 'amount': 1}]
+
+Written to C:\Users\ansob\claude-tests\AskFin\server\helpers\quests.json
+  Total:                61
+  With SO data:         54
+  With description:     49
+  With requirements:    40
+  With reward items:    29

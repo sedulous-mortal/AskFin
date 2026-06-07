@@ -1,0 +1,134 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "TownProject_Lila",
+  "Id": 583,
+  "displayTitle": "Redtide Remediation",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 8018
+  },
+  "description": "Help gather materials for the Redtide Remediation. Deliver items to the box next to the Tavern.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25437
+        },
+        "amount": 200,
+        "playerDonationAmount": 100.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25444
+        },
+        "amount": 200,
+        "playerDonationAmount": 100.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25446
+        },
+        "amount": 100,
+        "playerDonationAmount": 50.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25408
+        },
+        "amount": 100,
+        "playerDonationAmount": 30.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25208
+        },
+        "amount": 40,
+        "playerDonationAmount": 0.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25175
+        },
+        "amount": 20,
+        "playerDonationAmount": 0.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 0,
+    "firstDay": 25,
+    "endSeason": 3,
+    "lastDay": 14
+  },
+  "startDonationsDate": {
+    "Day": 25,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 13,
+    "Season": 1,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 30,
+  "rewardItems": {
+    "Array": []
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24931
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": []
+  },
+  "townQuest": 1,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": [
+      {
+        "m_FileID": 0,
+        "m_PathID": 25175
+      },
+      {
+        "m_FileID": 0,
+        "m_PathID": 25186
+      },
+      {
+        "m_FileID": 0,
+        "m_PathID": 25200
+      },
+      {
+        "m_FileID": 0,
+        "m_PathID": 25208
+      }
+    ]
+  }
+}

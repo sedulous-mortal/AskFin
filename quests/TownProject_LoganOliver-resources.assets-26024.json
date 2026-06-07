@@ -1,0 +1,117 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "TownProject_LoganOliver",
+  "Id": 615,
+  "displayTitle": "Last Stand",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 6415
+  },
+  "description": "Help gather all the materials for the last stand! Deliver items to the box next to the Temple.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25406
+        },
+        "amount": 300,
+        "playerDonationAmount": 100.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25446
+        },
+        "amount": 200,
+        "playerDonationAmount": 50.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25442
+        },
+        "amount": 200,
+        "playerDonationAmount": 100.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25437
+        },
+        "amount": 200,
+        "playerDonationAmount": 50.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25413
+        },
+        "amount": 50,
+        "playerDonationAmount": 20.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25418
+        },
+        "amount": 40,
+        "playerDonationAmount": 10.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 3,
+    "firstDay": 1,
+    "endSeason": 3,
+    "lastDay": 26
+  },
+  "startDonationsDate": {
+    "Day": 1,
+    "Season": 3,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 15,
+    "Season": 3,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 0,
+  "rewardItems": {
+    "Array": []
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24946
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": []
+  },
+  "townQuest": 1,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": []
+  }
+}

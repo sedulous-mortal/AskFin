@@ -1,0 +1,5 @@
+Already exported (54): ['adelinequest1', 'beatrixquest1', 'berylquest1', 'dudleyquest1', 'edgarquest1', 'erickaquest1', 'farmquest', 'finquest1', 'fishquest', 'gretaquest1', 'gruffquest1', 'hazelquest1', 'jackquest1', 'kaiquest1', 'lilaquest1', 'loganquest1', 'lumberquest', 'meeteveryonequest', 'minequest', 'oliverquest1', 'percyquest1', 'poppyquest1', 'prudencequest1', 'researchquestmaster', 'rootcellarquest1', 'rootcellarquest10', 'rootcellarquest11', 'rootcellarquest12', 'rootcellarquest2', 'rootcellarquest3', 'rootcellarquest4', 'rootcellarquest5', 'rootcellarquest6', 'rootcellarquest7', 'rootcellarquest8', 'rootcellarquest9', 'rosequest1', 'rowanquest1', 'rufusquest1', 'rustyquest1', 'tanoquest1', 'theoquest1', 'townproject_adeline', 'townproject_beryl', 'townproject_hazel', 'townproject_kai', 'townproject_lila', 'townproject_loganoliver', 'townproject_percy', 'townproject_rose', 'townproject_tano', 'wallacequest1', 'wilfredquest1', 'willowquest1']
+
+Total MonoBehaviours in resources.assets: 2746
+
+--- MonoBehaviours with 'quest' in name ---

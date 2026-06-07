@@ -1,0 +1,103 @@
+=== QuestsTable Shared Keys ===
+Table: QuestsTable Shared Data  (129 entries)
+  m_Id=264876735479324683  m_Key=1077_descr
+  m_Id=264876735479324682  m_Key=1077_name
+  m_Id=264876735483518987  m_Key=1081_descr
+  m_Id=264876735483518986  m_Key=1081_name
+  m_Id=264876735483518977  m_Key=1082_descr
+  m_Id=264876735483518976  m_Key=1082_name
+  m_Id=264876735483518985  m_Key=1083_descr
+  m_Id=264876735483518984  m_Key=1083_name
+  m_Id=264876735479324689  m_Key=1084_descr
+  m_Id=264876735479324688  m_Key=1084_name
+  m_Id=264876735479324691  m_Key=1085_descr
+  m_Id=264876735479324690  m_Key=1085_name
+  m_Id=264876735479324687  m_Key=1086_descr
+  m_Id=264876735479324686  m_Key=1086_name
+  m_Id=264876735479324673  m_Key=1087_descr
+  m_Id=264876735479324672  m_Key=1087_name
+  m_Id=264876735483518979  m_Key=1088_descr
+  m_Id=264876735483518978  m_Key=1088_name
+  m_Id=264876735483518991  m_Key=1089_descr
+  m_Id=264876735483518990  m_Key=1089_name
+  m_Id=264876735470936064  m_Key=1090_descr
+  m_Id=264876735441575936  m_Key=1090_name
+  m_Id=264876735475130369  m_Key=1091_descr
+  m_Id=264876735475130368  m_Key=1091_name
+  m_Id=264876735479324677  m_Key=1092_descr
+  m_Id=264876735479324676  m_Key=1092_name
+  m_Id=264876735479324679  m_Key=1093_descr
+  m_Id=264876735479324678  m_Key=1093_name
+  m_Id=264876735487713281  m_Key=1094_descr
+  m_Id=264876735487713280  m_Key=1094_name
+  m_Id=264876735487713283  m_Key=1095_descr
+  m_Id=264876735487713282  m_Key=1095_name
+  m_Id=264876735479324685  m_Key=1096_descr
+  m_Id=264876735479324684  m_Key=1096_name
+  m_Id=264876735487713285  m_Key=1097_descr
+  m_Id=264876735487713284  m_Key=1097_name
+  m_Id=264876735479324693  m_Key=1098_descr
+  m_Id=264876735479324692  m_Key=1098_name
+  m_Id=264876735479324675  m_Key=1099_descr
+  m_Id=264876735479324674  m_Key=1099_name
+  m_Id=264876735470936066  m_Key=1100_descr
+  m_Id=264876735470936065  m_Key=1100_name
+  m_Id=264876735483518993  m_Key=1101_descr
+  m_Id=264876735483518992  m_Key=1101_name
+  m_Id=264876735483518989  m_Key=1102_descr
+  m_Id=264876735483518988  m_Key=1102_name
+  m_Id=264876735475130371  m_Key=1103_descr
+  m_Id=264876735475130370  m_Key=1103_name
+  m_Id=264876735479324681  m_Key=1104_descr
+  m_Id=264876735479324680  m_Key=1104_name
+  m_Id=264876735483518981  m_Key=1105_descr
+  m_Id=264876735483518980  m_Key=1105_name
+  m_Id=264876735483518983  m_Key=1106_descr
+  m_Id=264876735483518982  m_Key=1106_name
+  m_Id=264876735491907599  m_Key=1116_descr
+  m_Id=264876735491907598  m_Key=1116_name
+  m_Id=264876735491907591  m_Key=1117_descr
+  m_Id=264876735491907590  m_Key=1117_name
+  m_Id=264876735491907601  m_Key=1118_descr
+  m_Id=264876735491907600  m_Key=1118_name
+  ... and 69 more
+
+=== resources.assets MonoBehaviour sample ===
+Total objects in resources.assets: 27616
+  MB #1: read_typetree() failed
+  MB #2: read_typetree() failed
+  MB #3: read_typetree() failed
+  MB #4: read_typetree() failed
+  MB #5: read_typetree() failed
+  MB #6: read_typetree() failed
+  MB #7: read_typetree() failed
+  MB #8: read_typetree() failed
+  MB #9: read_typetree() failed
+  MB #10: read_typetree() failed
+  MB #11: read_typetree() failed
+  MB #12: read_typetree() failed
+  MB #13: read_typetree() failed
+  MB #14: read_typetree() failed
+  MB #15: read_typetree() failed
+  MB #16: read_typetree() failed
+  MB #17: read_typetree() failed
+  MB #18: read_typetree() failed
+  MB #19: read_typetree() failed
+  MB #20: read_typetree() failed
+  MB #21: read_typetree() failed
+  MB #22: read_typetree() failed
+  MB #23: read_typetree() failed
+  MB #24: read_typetree() failed
+  MB #25: read_typetree() failed
+  MB #26: read_typetree() failed
+  MB #27: read_typetree() failed
+  MB #28: read_typetree() failed
+  MB #29: read_typetree() failed
+  MB #30: read_typetree() failed
+
+Total MonoBehaviours: 2746
+Quest candidates (Id + availableDateRange): 0
+
+=== Unity version from resources.assets ===
+Unity version: UnityVersion 2022.3f2
+  C:\Program Files (x86)\Steam\steamapps\common\Grimshire\Grimshire_Data\resources.assets: version=2022.3.62f2

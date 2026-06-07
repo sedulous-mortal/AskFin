@@ -68,42 +68,52 @@ function MultiDonutChart({
   const r = 38;
   const cx = 50;
   const cy = 50;
-  const circ = 2 * Math.PI * r;
-  const startOffset = circ * 0.25;
+  const strokeW = 11;
 
   const totalDiscovered = segments.reduce((s, seg) => s + seg.count, 0);
 
-  let cumulative = 0;
-  const arcs = segments.map((seg) => {
-    const arc = total > 0 ? (seg.count / total) * circ : 0;
-    const offset = startOffset - cumulative;
-    cumulative += arc;
-    return { ...seg, arc, offset };
-  });
+  function polarToXY(deg: number) {
+    const rad = ((deg - 90) * Math.PI) / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+
+  function arcPath(startDeg: number, endDeg: number) {
+    const s = polarToXY(startDeg);
+    const e = polarToXY(endDeg);
+    const large = endDeg - startDeg > 180 ? 1 : 0;
+    return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+  }
+
+  let startDeg = 0;
+  const arcs = segments
+    .filter((seg) => seg.count > 0 && total > 0)
+    .map((seg) => {
+      const spanDeg = (seg.count / total) * 360;
+      const endDeg = startDeg + spanDeg;
+      const d = arcPath(startDeg, endDeg);
+      startDeg = endDeg;
+      return { ...seg, d };
+    });
 
   return (
     <svg viewBox="0 0 100 100" className="w-36 h-36 shrink-0"
       aria-label={`${totalDiscovered} of ${total} edibles discovered`}>
       {/* Gray track — clicking uncovered area = undiscovered drilldown */}
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth="11"
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={strokeW}
         className="cursor-pointer hover:stroke-slate-300"
         onClick={onUndiscoveredClick} />
-      {/* Colored segments overlay the track */}
-      {arcs.map((seg, i) =>
-        seg.arc > 0 ? (
-          <circle key={i}
-            cx={cx} cy={cy} r={r}
-            fill="none"
-            stroke={seg.color}
-            strokeWidth="11"
-            strokeDasharray={`${seg.arc} ${circ}`}
-            strokeDashoffset={seg.offset}
-            strokeLinecap="butt"
-            className="cursor-pointer transition-opacity hover:opacity-80"
-            onClick={seg.onClick}
-          />
-        ) : null
-      )}
+      {/* Colored arc paths share exact endpoints — no dashoffset gaps */}
+      {arcs.map((seg, i) => (
+        <path key={i}
+          d={seg.d}
+          fill="none"
+          stroke={seg.color}
+          strokeWidth={strokeW}
+          strokeLinecap="butt"
+          className="cursor-pointer transition-opacity hover:opacity-80"
+          onClick={seg.onClick}
+        />
+      ))}
       <text x={cx} y={cy + 4} textAnchor="middle" fontSize="16" fontWeight="bold" fill="#1e293b">
         {totalDiscovered}
       </text>

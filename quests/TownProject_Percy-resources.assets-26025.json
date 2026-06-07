@@ -1,0 +1,134 @@
+{
+  "m_GameObject": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "m_Enabled": 1,
+  "m_Script": {
+    "m_FileID": 1,
+    "m_PathID": 358
+  },
+  "m_Name": "TownProject_Percy",
+  "Id": 582,
+  "displayTitle": "Fish Farm",
+  "displayIcon": {
+    "m_FileID": 0,
+    "m_PathID": 18529
+  },
+  "description": "Help gather materials to build a fish farm. Deliver items to the box next to the Mayor's house.",
+  "requirements": {
+    "Array": [
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25437
+        },
+        "amount": 200,
+        "playerDonationAmount": 100.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25406
+        },
+        "amount": 150,
+        "playerDonationAmount": 75.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25442
+        },
+        "amount": 100,
+        "playerDonationAmount": 40.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25629
+        },
+        "amount": 100,
+        "playerDonationAmount": 20.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25413
+        },
+        "amount": 40,
+        "playerDonationAmount": 10.0
+      },
+      {
+        "item": {
+          "m_FileID": 0,
+          "m_PathID": 25415
+        },
+        "amount": 20,
+        "playerDonationAmount": 10.0
+      }
+    ]
+  },
+  "prereqQuestsList": {
+    "Array": []
+  },
+  "availableDateRange": {
+    "startSeason": 0,
+    "firstDay": 25,
+    "endSeason": 3,
+    "lastDay": 14
+  },
+  "startDonationsDate": {
+    "Day": 25,
+    "Season": 0,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "endDonationsDate": {
+    "Day": 13,
+    "Season": 1,
+    "Year": 1,
+    "Minute": 360.0
+  },
+  "prereqRelationshipLvl": 0,
+  "rewardMoney": 0,
+  "rewardRelationshipPoints": 30,
+  "rewardItems": {
+    "Array": []
+  },
+  "owner": {
+    "m_FileID": 0,
+    "m_PathID": 24934
+  },
+  "ownerSecondary": {
+    "m_FileID": 0,
+    "m_PathID": 0
+  },
+  "activatedInCutscene": 0,
+  "questSegments": {
+    "Array": []
+  },
+  "townQuest": 1,
+  "donationQuest": 0,
+  "rootcellarQuest": 0,
+  "isVIPQuest": 0,
+  "rootcellarDonationItems": {
+    "Array": [
+      {
+        "m_FileID": 0,
+        "m_PathID": 25110
+      },
+      {
+        "m_FileID": 0,
+        "m_PathID": 25138
+      },
+      {
+        "m_FileID": 0,
+        "m_PathID": 25112
+      },
+      {
+        "m_FileID": 0,
+        "m_PathID": 25133
+      }
+    ]
+  }
+}
