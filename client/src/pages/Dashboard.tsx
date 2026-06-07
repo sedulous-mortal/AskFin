@@ -277,8 +277,8 @@ export default function Dashboard() {
               icon="🐟"
               color="#0369a1"
               discovered={selectedCharacter.fish_discovered}
-              undiscovered={selectedCharacter.fish_undiscovered}
-              total={selectedCharacter.fish_total}
+              undiscovered={selectedCharacter.fish_undiscovered ?? null}
+              total={selectedCharacter.fish_total ?? null}
             />
             <CategorySection
               title="Cooking Recipes"

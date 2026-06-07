@@ -3,6 +3,15 @@ import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 import ws from 'ws';
 import dotenv from 'dotenv';
+
+// Prevent unhandled WebSocket / network errors (e.g. Supabase realtime
+// reconnection failures) from crashing the server process.
+process.on('uncaughtException', (err) => {
+  console.error('[uncaughtException]', err.message);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('[unhandledRejection]', reason);
+});
 import { createRequire } from 'module';
 import { toClientCritters } from './helpers/critterReformatter.js';
 import { parseSaveFile } from './helpers/parseSaveFile.js';
