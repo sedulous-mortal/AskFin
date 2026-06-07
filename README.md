@@ -1,4 +1,4 @@
-<img src="AskFinLogo1.png" alt="Placeholder for AskFin Logo" style="width: 260px">
+<img src="client\public\askfinlogo1.png" alt="Placeholder for AskFin Logo" style="width: 320px">
 
 
 
