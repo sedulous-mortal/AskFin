@@ -52,7 +52,7 @@ export default function Header() {
         </NavLink>
 
         {/* Col 2, row 1 — Fin quote */}
-        <p className="flex items-end pb-1 text-sm italic text-white/70">
+        <p className="flex items-end pb-1 text-[1.3125rem] italic text-white/70">
           "{quote}"
         </p>
 
@@ -85,10 +85,9 @@ export default function Header() {
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  `rounded-lg px-5 py-3 text-base font-semibold transition-colors ${
-                    isActive
-                      ? 'bg-slate-900 text-white shadow-sm'
-                      : 'text-slate-200 hover:bg-slate-600 hover:text-white'
+                  `rounded-lg px-5 py-3 text-base font-semibold transition-colors ${isActive
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'text-slate-200 hover:bg-slate-600 hover:text-white'
                   }`
                 }
               >

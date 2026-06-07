@@ -18,8 +18,16 @@ import { parseSaveFile } from './helpers/parseSaveFile.js';
 
 const require = createRequire(import.meta.url);
 const gameIdMaps = require('./helpers/game_id_maps.json');
+const ediblesRaw = require('./helpers/edibles_ids.json');
 const itemNames = gameIdMaps['InventoryItems_en'] || {};
+const plantNames = gameIdMaps['PlantDataTable_en'] || {};
 const allFishIds = new Set(gameIdMaps['fish_ids'] || []);
+
+// Build a Map of edible item id → source category
+const allEdibles = new Map();
+for (const id of (ediblesRaw.forageable || [])) allEdibles.set(id, 'forageable');
+for (const id of (ediblesRaw.farmable || [])) allEdibles.set(id, 'farmable');
+for (const id of (ediblesRaw.both || [])) allEdibles.set(id, 'both');
 
 function resolveIds(ids) {
   return (ids || []).map(id => ({ id, name: itemNames[id] ?? null }));
@@ -31,6 +39,25 @@ function resolveFishUndiscovered(discoveredIds) {
     .filter(id => !discovered.has(id))
     .sort((a, b) => a - b)
     .map(id => ({ id, name: itemNames[id] ?? null }));
+}
+
+function resolveEdibles(discoveredItemIds) {
+  const discoveredSet = new Set(discoveredItemIds || []);
+  const discovered = [];
+  const undiscovered = [];
+  for (const [id, source] of allEdibles) {
+    // Some forageable plant items are only named in PlantDataTable_en, not InventoryItems_en.
+    const name = itemNames[id] ?? plantNames[id] ?? null;
+    const item = { id, name, source };
+    if (discoveredSet.has(id)) {
+      discovered.push(item);
+    } else {
+      undiscovered.push(item);
+    }
+  }
+  discovered.sort((a, b) => a.id - b.id);
+  undiscovered.sort((a, b) => a.id - b.id);
+  return { discovered, undiscovered, total: allEdibles.size };
 }
 
 dotenv.config();
@@ -749,6 +776,7 @@ app.get('/api/characters/:id', async (req, res) => {
     if (!data) return res.status(404).json({ error: 'Character not found.' });
 
     const fishDiscovered = resolveIds(data.fish_discovered);
+    const edibles = resolveEdibles(data.items_discovered);
     return res.json({
       id: data.id,
       character_name: data.character_name,
@@ -763,6 +791,9 @@ app.get('/api/characters/:id', async (req, res) => {
       items_discovered: resolveIds(data.items_discovered),
       unlocked_crafting_recipes: resolveIds(data.unlocked_crafting_recipes),
       unlocked_cooking_recipes: resolveIds(data.unlocked_cooking_recipes),
+      edibles_discovered: edibles.discovered,
+      edibles_undiscovered: edibles.undiscovered,
+      edibles_total: edibles.total,
     });
   } catch (err) {
     console.error('Failed to fetch character detail:', err);

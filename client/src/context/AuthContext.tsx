@@ -11,6 +11,8 @@ type Character = {
 };
 
 export type ResolvedItem = { id: number; name: string | null };
+export type EdibleSource = 'forageable' | 'farmable' | 'both';
+export type EdibleItem = { id: number; name: string | null; source: EdibleSource };
 
 export type CharacterDetail = {
   id: string;
@@ -26,6 +28,9 @@ export type CharacterDetail = {
   items_discovered: ResolvedItem[];
   unlocked_crafting_recipes: ResolvedItem[];
   unlocked_cooking_recipes: ResolvedItem[];
+  edibles_discovered: EdibleItem[];
+  edibles_undiscovered: EdibleItem[];
+  edibles_total: number;
 };
 
 type AuthContextType = {
