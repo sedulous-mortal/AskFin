@@ -99,15 +99,16 @@ AskFin/
 * Critter checklisting capability to track which you have on your farm
 * Forageable tracking and tips (maps of where to expect to find all cherry trees, for example)
 * Seasonal activity timelines (what to stock for upcoming villager birthdays, etc, and when to stock them so they don't go bad before turn-in)
-* Save-file parsing (this will be a heavy lift but is kind of the point of the web app)
 * Search + filtering (this will be for the "Ask Fin" capability to quickly get correct answers since Googling leads to false AI results)
-* Analytics/dashboard views of stats across your characters (this is blocked until gamefile upload is functional)
+* Analytics/dashboard views of stats *across* your characters, not just a single character at a time
 
 ---
 
 # ✅ Completed Features
 
+* Ability to view the app without logging in, by hitting "enter as guest" to use the tools as a reference but not share unique character data from your gameplay
 * User profiles (hosted in SupaBase) with the ability to create a new profile (sign up)
+* Save-file parsing (this will be a heavy lift to fully complete, but a basic version of it is fully operational, and impacts what the Dashboard shows for each character you select from the dropdown -- the goal is to have it impact what you see on every tab)
 * Ability for users to reset their password with a magic link from SupaBase to their email
 * "Days remaining" calculations for finding fish/seasonal forage for Adeline's research (this is built but not being shown on the front end at this time, as it will integrate with Forageables tab which is not complete yet)
 * Critter encyclopedia on Critters tab in navigation header
