@@ -10,7 +10,7 @@ type UploadStatus =
 
 export default function LoadSaveFile() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { user, refreshCharacters } = useAuth();
+  const { user, refreshCharacters, refreshSelectedCharacter } = useAuth();
   const [status, setStatus] = useState<UploadStatus>({ type: 'idle' });
 
   const handleClick = () => {
@@ -29,6 +29,7 @@ export default function LoadSaveFile() {
       const result = await uploadSaveFile(file, user?.id ?? null);
       const characterName = result.character.playerName ?? 'Unknown';
       await refreshCharacters();
+      await refreshSelectedCharacter();
       setStatus({ type: 'success', characterName });
     } catch (err) {
       setStatus({ type: 'error', message: err instanceof Error ? err.message : 'Upload failed.' });

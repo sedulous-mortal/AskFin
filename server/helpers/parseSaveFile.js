@@ -28,9 +28,22 @@ function extractNumber(text, fieldName) {
   return cleaned ? Number(cleaned) : null;
 }
 
+function extractArray(text, fieldName) {
+  const pattern = new RegExp(`"${fieldName}"\\s*[=:;,]\\s*\\[([^\\]]*)\\]`, "s");
+  const match = text.match(pattern);
+  if (!match) return [];
+  return match[1]
+    .split(",")
+    .map(s => s.replace(/>/g, "").trim())
+    .filter(s => /\d/.test(s))
+    .map(s => parseInt(s.replace(/\D/g, ""), 10))
+    .filter(n => !isNaN(n));
+}
+
 export function parseSaveFile(buffer) {
   const text = xorDecrypt(buffer);
   return {
+    fileName: extractString(text, "fileName"),
     playerName: extractString(text, "playerName"),
     farmName: extractString(text, "farmName"),
     saveFileVersion: extractNumber(text, "saveFileVersion"),
@@ -39,5 +52,10 @@ export function parseSaveFile(buffer) {
     difficulty: extractNumber(text, "difficulty"),
     totalPlayTimeSeconds: extractNumber(text, "totalPlayTimeSeconds"),
     playerPronouns: extractNumber(text, "playerPronouns"),
+    fishDiscovered: extractArray(text, "fishDiscovered"),
+    crittersDiscovered: extractArray(text, "crittersDiscovered"),
+    itemsDiscovered: extractArray(text, "itemsDiscovered"),
+    unlockedCraftingRecipes: extractArray(text, "unlockedCraftingRecipes"),
+    unlockedCookingRecipes: extractArray(text, "unlockedCookingRecipes"),
   };
 }

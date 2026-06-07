@@ -3,8 +3,26 @@ import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 import ws from 'ws';
 import dotenv from 'dotenv';
+import { createRequire } from 'module';
 import { toClientCritters } from './helpers/critterReformatter.js';
 import { parseSaveFile } from './helpers/parseSaveFile.js';
+
+const require = createRequire(import.meta.url);
+const gameIdMaps = require('./helpers/game_id_maps.json');
+const itemNames = gameIdMaps['InventoryItems_en'] || {};
+const allFishIds = new Set(gameIdMaps['fish_ids'] || []);
+
+function resolveIds(ids) {
+  return (ids || []).map(id => ({ id, name: itemNames[id] ?? null }));
+}
+
+function resolveFishUndiscovered(discoveredIds) {
+  const discovered = new Set(discoveredIds || []);
+  return [...allFishIds]
+    .filter(id => !discovered.has(id))
+    .sort((a, b) => a - b)
+    .map(id => ({ id, name: itemNames[id] ?? null }));
+}
 
 dotenv.config();
 
@@ -637,15 +655,33 @@ app.post('/api/save/parse', async (req, res) => {
 
   if (userId) {
     try {
-      // Check whether this character already exists for the user.
-      const { data: existing } = await supabase
-        .from('characters')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('character_name', character.playerName)
-        .maybeSingle();
+      // Look up by (user_id, save_file_name) — the fileName field is embedded
+      // in the save file by the game itself and is stable regardless of what
+      // the user names the file on disk. Fall back to character name only when
+      // save_file_name is absent (e.g. rows created before this field existed).
+      let existing = null;
+      if (character.fileName) {
+        const { data } = await supabase
+          .from('characters')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('save_file_name', character.fileName)
+          .maybeSingle();
+        existing = data;
+      }
+      if (!existing) {
+        const { data } = await supabase
+          .from('characters')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('character_name', character.playerName)
+          .maybeSingle();
+        existing = data;
+      }
 
       const payload = {
+        user_id: userId,
+        save_file_name: character.fileName ?? null,
         farm_name: character.farmName,
         exp: character.exp,
         player_species_id: character.playerSpeciesId,
@@ -654,22 +690,32 @@ app.post('/api/save/parse', async (req, res) => {
         player_pronouns: character.playerPronouns,
         save_file_version: character.saveFileVersion,
         updated_at: new Date().toISOString(),
+        fish_discovered: character.fishDiscovered,
+        critters_discovered: character.crittersDiscovered,
+        items_discovered: character.itemsDiscovered,
+        unlocked_crafting_recipes: character.unlockedCraftingRecipes,
+        unlocked_cooking_recipes: character.unlockedCookingRecipes,
       };
 
+      let characterId;
       if (existing) {
         const { error: updateError } = await supabase
           .from('characters')
           .update(payload)
           .eq('id', existing.id);
         if (updateError) throw updateError;
+        characterId = existing.id;
       } else {
-        const { error: insertError } = await supabase
+        const { data: inserted, error: insertError } = await supabase
           .from('characters')
-          .insert({ user_id: userId, character_name: character.playerName, ...payload });
+          .insert({ character_name: character.playerName, ...payload })
+          .select('id')
+          .single();
         if (insertError) throw insertError;
+        characterId = inserted?.id;
       }
 
-      return res.json({ character, saved: true });
+      return res.json({ character, saved: true, characterId });
     } catch (err) {
       console.error('Failed to save character to Supabase:', err);
       return res.json({ character, saved: false, error: 'Parsed OK but failed to save to database.' });
@@ -677,6 +723,42 @@ app.post('/api/save/parse', async (req, res) => {
   }
 
   return res.json({ character, saved: false });
+});
+
+// Get a single character's full data with integer IDs resolved to item names.
+app.get('/api/characters/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { data, error } = await supabase
+      .from('characters')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error?.code === 'PGRST116') return res.status(404).json({ error: 'Character not found.' });
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Character not found.' });
+
+    const fishDiscovered = resolveIds(data.fish_discovered);
+    return res.json({
+      id: data.id,
+      character_name: data.character_name,
+      farm_name: data.farm_name,
+      exp: data.exp,
+      player_pronouns: data.player_pronouns,
+      total_play_time_seconds: data.total_play_time_seconds,
+      fish_discovered: fishDiscovered,
+      fish_undiscovered: resolveFishUndiscovered(data.fish_discovered),
+      fish_total: allFishIds.size,
+      critters_discovered: data.critters_discovered || [],
+      items_discovered: resolveIds(data.items_discovered),
+      unlocked_crafting_recipes: resolveIds(data.unlocked_crafting_recipes),
+      unlocked_cooking_recipes: resolveIds(data.unlocked_cooking_recipes),
+    });
+  } catch (err) {
+    console.error('Failed to fetch character detail:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
 });
 
 app.listen(PORT, () => {

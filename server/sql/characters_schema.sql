@@ -19,14 +19,25 @@ create table if not exists public.characters (
 
 -- If the table already existed without these columns, add them:
 alter table public.characters
-  add column if not exists farm_name               text,
-  add column if not exists exp                     integer,
-  add column if not exists player_species_id       integer,
-  add column if not exists difficulty              integer,
-  add column if not exists total_play_time_seconds float,
-  add column if not exists player_pronouns         integer,
-  add column if not exists save_file_version       integer,
-  add column if not exists updated_at              timestamptz not null default now();
+  add column if not exists farm_name                  text,
+  add column if not exists exp                        integer,
+  add column if not exists player_species_id          integer,
+  add column if not exists difficulty                 integer,
+  add column if not exists total_play_time_seconds    float,
+  add column if not exists player_pronouns            integer,
+  add column if not exists save_file_version          integer,
+  add column if not exists updated_at                 timestamptz not null default now(),
+  add column if not exists save_file_name             text,
+  add column if not exists fish_discovered            integer[]   default '{}',
+  add column if not exists critters_discovered        integer[]   default '{}',
+  add column if not exists items_discovered           integer[]   default '{}',
+  add column if not exists unlocked_crafting_recipes  integer[]   default '{}',
+  add column if not exists unlocked_cooking_recipes   integer[]   default '{}';
+
+-- Unique save file per user (nulls excluded so rows without a name don't conflict).
+create unique index if not exists characters_user_save_file_unique
+  on public.characters (user_id, save_file_name)
+  where save_file_name is not null;
 
 -- Row-level security (server-side endpoints use the service role key and bypass
 -- RLS automatically; these policies protect direct client-side queries).

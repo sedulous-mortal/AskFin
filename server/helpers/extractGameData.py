@@ -100,6 +100,59 @@ for key in results:
         sample = dict(list(results[key].items())[:5])
         log(f"\nSample from '{key}': {json.dumps(sample, ensure_ascii=False)}")
 
+# Step 3: Extract category-specific IDs from the shared localization bundle.
+#
+# FishCatchMsgTable Shared Data — keys are "{id}_{fish_name}" for every catchable
+# item (fish, crustaceans, frogs, etc.).  The numeric prefix is the game item ID.
+#
+# AnimalsTable Shared Data — keys are "{id}_descr" / "{id}_variation" for every
+# tameable critter species.  The numeric prefix is the critter data ID.
+log("\nExtracting category IDs from shared localization bundle...")
+
+fish_ids = []
+critter_ids = []
+
+for obj in shared_env.objects:
+    if obj.type.name != "MonoBehaviour":
+        continue
+    try:
+        tree = obj.read_typetree()
+        name = tree.get("m_Name", "")
+        entries = tree.get("m_Entries", [])
+        if not entries:
+            continue
+
+        if "FishCatchMsgTable" in name:
+            seen = set()
+            for entry in entries:
+                key = entry.get("m_Key", "") if isinstance(entry, dict) else ""
+                # Keys like "228_Atlantic Salmon" — numeric prefix is the fish ID
+                numeric = key.split("_")[0]
+                if numeric.isdigit() and numeric not in seen:
+                    seen.add(numeric)
+                    fish_ids.append(int(numeric))
+
+        if "AnimalsTable" in name:
+            seen = set()
+            for entry in entries:
+                key = entry.get("m_Key", "") if isinstance(entry, dict) else ""
+                # Keys like "469_descr", "469_variation"
+                numeric = key.split("_")[0]
+                if numeric.isdigit() and numeric not in seen:
+                    seen.add(numeric)
+                    critter_ids.append(int(numeric))
+
+    except Exception:
+        continue
+
+log(f"  Fish/catchable IDs: {len(fish_ids)}")
+log(f"  Critter IDs:        {len(critter_ids)}")
+
+if fish_ids:
+    results["fish_ids"] = sorted(fish_ids)
+if critter_ids:
+    results["critter_ids"] = sorted(critter_ids)
+
 with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(results, f, indent=2, ensure_ascii=False)
 log(f"\nWritten to {OUTPUT_PATH}")

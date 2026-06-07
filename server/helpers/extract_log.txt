@@ -35,4 +35,8 @@ Table names: ['InventoryItems_en', 'CharacterTable_en', 'PlantDataTable_en', 'Ma
 
 Sample from 'InventoryItems_en': {"2": "Dried Meat", "3": "Egg", "4": "Feather", "255": "Tender Meat", "5": "Manure"}
 
+Extracting category IDs from shared localization bundle...
+  Fish/catchable IDs: 75
+  Critter IDs:        20
+
 Written to C:\Users\ansob\claude-tests\AskFin\server\helpers\game_id_maps.json

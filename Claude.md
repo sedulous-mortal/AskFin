@@ -41,9 +41,9 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 ### Remaining to-do (in order)
 1. ~~Get ID → name mappings~~ — **DONE**, see `server/helpers/game_id_maps.json`
-2. Extend `parseSaveFile.js` to extract the array fields (`fishDiscovered`, `crittersDiscovered`, `unlockedCraftingRecipes`, `itemsDiscovered`) from the XOR-decrypted save text
-3. Populate Supabase reference tables (or use the static JSON directly) with item/fish ID → name from `game_id_maps.json`
-4. Store per-character discovered/unlocked arrays in Supabase (new columns on `characters` table)
+2. ~~Extend `parseSaveFile.js` to extract the array fields~~ — **DONE**. `extractArray()` added; `parseSaveFile()` now returns `fishDiscovered`, `crittersDiscovered`, `itemsDiscovered`, `unlockedCraftingRecipes`, `unlockedCookingRecipes` as `number[]`.
+3. ~~Populate Supabase reference tables~~ — **DONE (static JSON approach)**. ID→name lookups use `game_id_maps.json` server-side; no separate Supabase reference table needed.
+4. ~~Store per-character discovered/unlocked arrays in Supabase~~ — **Schema ready, pending SQL run**. Five `integer[]` columns added to `server/sql/characters_schema.sql` and the `POST /api/save/parse` payload updated to write them. **Action needed: run the ALTER TABLE block from `characters_schema.sql` in the Supabase SQL editor** to add the columns to the live table.
 5. Wire up the UI to show personalised data per character (e.g., highlight undiscovered fish, show unlocked recipes)
 
 ## Authentication System Implementation

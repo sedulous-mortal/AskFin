@@ -2,10 +2,30 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
 type Character = {
   id: string;
   user_id: string;
   character_name: string;
+};
+
+export type ResolvedItem = { id: number; name: string | null };
+
+export type CharacterDetail = {
+  id: string;
+  character_name: string;
+  farm_name: string | null;
+  exp: number | null;
+  player_pronouns: number | null;
+  total_play_time_seconds: number | null;
+  fish_discovered: ResolvedItem[];
+  fish_undiscovered: ResolvedItem[];
+  fish_total: number;
+  critters_discovered: number[];
+  items_discovered: ResolvedItem[];
+  unlocked_crafting_recipes: ResolvedItem[];
+  unlocked_cooking_recipes: ResolvedItem[];
 };
 
 type AuthContextType = {
@@ -13,8 +33,11 @@ type AuthContextType = {
   loading: boolean;
   characters: Character[];
   selectedCharacterId: string | null;
+  selectedCharacter: CharacterDetail | null;
+  characterDetailLoading: boolean;
   setSelectedCharacterId: (id: string) => void;
   refreshCharacters: () => Promise<void>;
+  refreshSelectedCharacter: () => Promise<void>;
   logout: () => Promise<void>;
   enterWithoutLogin: () => void;
   isGuestSession: boolean;
@@ -28,6 +51,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<CharacterDetail | null>(null);
+  const [characterDetailLoading, setCharacterDetailLoading] = useState(false);
 
   const guestCharacters: Character[] = [
     { id: 'guest-character', user_id: 'guest-user', character_name: 'Guest Adventurer' },
@@ -99,14 +124,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!selectedCharacterId || selectedCharacterId === 'guest-character') {
+      setSelectedCharacter(null);
+      return;
+    }
+
+    let cancelled = false;
+    setSelectedCharacter(null);
+    setCharacterDetailLoading(true);
+
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/characters/${selectedCharacterId}`);
+        if (!res.ok) throw new Error('Failed to fetch character detail');
+        const data: CharacterDetail = await res.json();
+        if (!cancelled) setSelectedCharacter(data);
+      } catch {
+        if (!cancelled) setSelectedCharacter(null);
+      } finally {
+        if (!cancelled) setCharacterDetailLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [selectedCharacterId]);
+
   const fetchCharacters = async (userId: string) => {
     try {
+      console.log('[fetchCharacters] querying for userId:', userId);
       const { data, error } = await supabase
         .from('characters')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: true });
 
+      console.log('[fetchCharacters] result — data:', data, 'error:', error);
       if (error) throw error;
       setCharacters(data || []);
 
@@ -172,11 +225,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshSelectedCharacter = async () => {
+    const id = selectedCharacterId;
+    if (!id || id === 'guest-character') return;
+    setCharacterDetailLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/characters/${id}`);
+      if (!res.ok) throw new Error('Failed');
+      const data: CharacterDetail = await res.json();
+      setSelectedCharacter(data);
+    } catch {
+      // leave existing data in place on error
+    } finally {
+      setCharacterDetailLoading(false);
+    }
+  };
+
   const value: AuthContextType = {
     user: effectiveUser,
     loading,
     characters,
     selectedCharacterId,
+    selectedCharacter,
+    characterDetailLoading,
     setSelectedCharacterId: (id: string) => {
       setSelectedCharacterId(id);
       localStorage.setItem('selectedCharacterId', id);
@@ -187,6 +258,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await fetchCharacters(userId);
       }
     },
+    refreshSelectedCharacter,
     logout,
     enterWithoutLogin,
     isGuestSession,

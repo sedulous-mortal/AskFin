@@ -12,7 +12,6 @@ interface DateContextType {
 
 const DateContext = createContext<DateContextType | undefined>(undefined);
 
-const SEASONS: Season[] = ['Spring', 'Summer', 'Fall', 'Winter'];
 const SEASON_ICONS: Record<Season, string> = {
   Spring: '🌸',
   Summer: '☀️',

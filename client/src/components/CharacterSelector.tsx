@@ -10,7 +10,6 @@ export default function CharacterSelector() {
   const hasCharacters = characters.length > 0;
   const options = hasCharacters ? characters : [sampleCharacter];
   const value = selectedCharacterId ?? options[0].id;
-  const selectedCharacter = options.find((c) => c.id === value) || sampleCharacter;
 
   return (
     <div className="flex items-center gap-2">
