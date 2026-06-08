@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DateProvider } from './context/DateContext';
+import { SettingsProvider } from './context/SettingsContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -9,6 +10,7 @@ import Events from './pages/Events';
 import Forageables from './pages/Forageables';
 import Critters from './pages/Critters';
 import Quests from './pages/Quests';
+import Settings from './pages/Settings';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
@@ -82,6 +84,7 @@ export default function App() {
     <BrowserRouter>
       <DateProvider>
         <AuthProvider>
+          <SettingsProvider>
           <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#b88968] to-white text-slate-900">
             <Header />
             <main className="mx-auto w-full max-w-6xl flex-1 px-8 py-10">
@@ -145,10 +148,19 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
               </Routes>
             </main>
             <Footer />
           </div>
+          </SettingsProvider>
         </AuthProvider>
       </DateProvider>
     </BrowserRouter>

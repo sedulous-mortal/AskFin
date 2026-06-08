@@ -32,7 +32,10 @@ alter table public.characters
   add column if not exists critters_discovered        integer[]   default '{}',
   add column if not exists items_discovered           integer[]   default '{}',
   add column if not exists unlocked_crafting_recipes  integer[]   default '{}',
-  add column if not exists unlocked_cooking_recipes   integer[]   default '{}';
+  add column if not exists unlocked_cooking_recipes   integer[]   default '{}',
+  add column if not exists quest_data                 jsonb       default '[]'::jsonb,
+  add column if not exists current_day                integer,
+  add column if not exists current_season             integer;
 
 -- Unique save file per user (nulls excluded so rows without a name don't conflict).
 create unique index if not exists characters_user_save_file_unique

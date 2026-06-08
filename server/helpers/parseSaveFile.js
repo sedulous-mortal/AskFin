@@ -40,6 +40,33 @@ function extractArray(text, fieldName) {
     .filter(n => !isNaN(n));
 }
 
+function extractQuestData(text) {
+  const pattern = new RegExp(`"questData"\\s*[=:;,]\\s*\\[([^\\]]*)\\]`, "s");
+  const match = text.match(pattern);
+  if (!match) return [];
+  const result = [];
+  const objPattern = /\{([^}]*)\}/g;
+  let objMatch;
+  while ((objMatch = objPattern.exec(match[1])) !== null) {
+    const s = objMatch[1];
+    const idMatch = s.match(/"ID"\s*[=:;,]\s*([>0-9]+)/);
+    const statusMatch = s.match(/"status"\s*[=:;,]\s*([>0-9]+)/);
+    if (idMatch && statusMatch) {
+      const id = parseInt(idMatch[1].replace(/>/g, ""), 10);
+      const status = parseInt(statusMatch[1].replace(/>/g, ""), 10);
+      if (!isNaN(id) && !isNaN(status)) result.push({ id, status });
+    }
+  }
+  return result;
+}
+
+function extractNestedNumber(text, parentField, childField) {
+  const blockPattern = new RegExp(`"${parentField}"\\s*[=:;,]\\s*\\{([^}]*)\\}`, "s");
+  const blockMatch = text.match(blockPattern);
+  if (!blockMatch) return null;
+  return extractNumber(blockMatch[1], childField);
+}
+
 export function parseSaveFile(buffer) {
   const text = xorDecrypt(buffer);
   return {
@@ -57,5 +84,8 @@ export function parseSaveFile(buffer) {
     itemsDiscovered: extractArray(text, "itemsDiscovered"),
     unlockedCraftingRecipes: extractArray(text, "unlockedCraftingRecipes"),
     unlockedCookingRecipes: extractArray(text, "unlockedCookingRecipes"),
+    questData: extractQuestData(text),
+    currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
+    currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),
   };
 }

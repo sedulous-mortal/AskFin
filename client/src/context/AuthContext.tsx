@@ -16,6 +16,8 @@ export type ResolvedItem = { id: number; name: string | null };
 export type EdibleSource = 'forageable' | 'farmable' | 'both';
 export type EdibleItem = { id: number; name: string | null; source: EdibleSource };
 
+export type QuestStatus = { id: number; status: number };
+
 export type CharacterDetail = {
   id: string;
   character_name: string;
@@ -33,6 +35,10 @@ export type CharacterDetail = {
   edibles_discovered: EdibleItem[];
   edibles_undiscovered: EdibleItem[];
   edibles_total: number;
+  quest_data: QuestStatus[];
+  current_day: number | null;
+  current_season: number | null;
+  updated_at: string | null;
 };
 
 type AuthContextType = {
@@ -64,6 +70,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const guestCharacters: Character[] = [
     { id: 'guest-character', user_id: 'guest-user', character_name: 'Guest Adventurer', save_file_name: null, updated_at: null },
   ];
+
+  const guestCharacterDetail: CharacterDetail = {
+    id: 'guest-character',
+    character_name: 'Guest Adventurer',
+    farm_name: 'Sample Farm',
+    exp: 12500,
+    player_pronouns: 1,
+    total_play_time_seconds: 36000,
+    fish_discovered: [
+      { id: 228, name: 'Trout' }, { id: 483, name: 'Bass' }, { id: 671, name: 'Carp' },
+      { id: 112, name: 'Salmon' }, { id: 345, name: 'Perch' },
+    ],
+    fish_undiscovered: [
+      { id: 501, name: 'Pike' }, { id: 602, name: 'Catfish' }, { id: 700, name: 'Tuna' },
+    ],
+    fish_total: 8,
+    critters_discovered: [1001, 1002, 1003, 1004],
+    items_discovered: [
+      { id: 34, name: 'Carrot' }, { id: 36, name: 'Dandelions' }, { id: 165, name: 'Fiddlehead Fern' },
+      { id: 169, name: 'Morel' }, { id: 278, name: 'Cherry' }, { id: 302, name: 'Raspberry' },
+    ],
+    unlocked_crafting_recipes: [
+      { id: 1453, name: 'Wooden Fence' }, { id: 1454, name: 'Stone Path' }, { id: 427, name: 'Scarecrow' },
+    ],
+    unlocked_cooking_recipes: [
+      { id: 201, name: 'Salad' }, { id: 202, name: 'Soup' }, { id: 203, name: 'Pie' },
+    ],
+    edibles_discovered: [
+      { id: 34, name: 'Carrot', source: 'farmable' },
+      { id: 36, name: 'Dandelions', source: 'forageable' },
+      { id: 302, name: 'Raspberry', source: 'both' },
+    ],
+    edibles_undiscovered: [
+      { id: 162, name: 'Cattail', source: 'forageable' },
+      { id: 169, name: 'Morel', source: 'forageable' },
+    ],
+    edibles_total: 5,
+    quest_data: [
+      { id: 350, status: 3 },
+      { id: 351, status: 1 },
+    ],
+    current_day: 14,
+    current_season: 0,
+    updated_at: null,
+  };
 
   const guestUser = {
     id: 'guest-user',
@@ -132,8 +183,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!selectedCharacterId || selectedCharacterId === 'guest-character') {
+    if (!selectedCharacterId) {
       setSelectedCharacter(null);
+      return;
+    }
+    if (selectedCharacterId === 'guest-character') {
+      setSelectedCharacter(guestCharacterDetail);
       return;
     }
 

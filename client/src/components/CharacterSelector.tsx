@@ -1,15 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 
 const sampleCharacter = {
   id: 'sample',
   character_name: 'Sample Character',
   user_id: '',
   save_file_name: null as string | null,
+  updated_at: null as string | null,
 };
 
 export default function CharacterSelector() {
   const { characters, selectedCharacterId, setSelectedCharacterId } = useAuth();
+  const { preferences } = useSettings();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -82,6 +85,7 @@ export default function CharacterSelector() {
                         <div className="mt-0.5 text-slate-400">
                           last load:{' '}
                           {new Date(character.updated_at).toLocaleString(undefined, {
+                            timeZone: preferences.timezone,
                             day: 'numeric',
                             month: 'short',
                             year: 'numeric',

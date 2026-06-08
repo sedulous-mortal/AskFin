@@ -7,10 +7,10 @@ export default function Footer() {
       </p>
       <p className="mt-1">
         <em>Grimshire</em> and all related game content, characters, names, imagery, and assets are
-        the intellectual property of Acute Owl Studio and their respective rights holders. All rights
-        reserved. No copyright infringement is intended.
-      </p>
-      <p className="mt-1">
+        the intellectual property of Acute Owl Studio and their respective rights holders. 
+      </p> 
+      <p className="mt-1"> 
+        All rights reserved. No copyright infringement is intended.
         This site is provided solely for personal and educational fan use and is not monetized in any form.
       </p>
     </footer>

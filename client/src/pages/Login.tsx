@@ -162,20 +162,10 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div className="relative">
+        <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to your account
           </h2>
-          <button
-            type="button"
-            onClick={() => {
-              enterWithoutLogin();
-              navigate('/dashboard');
-            }}
-            className="absolute right-0 top-0 rounded-full border border-blue-600 bg-white px-3 py-1 text-sm font-semibold text-blue-600 transition hover:bg-blue-50"
-          >
-            Enter without login
-          </button>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           {error && (
@@ -241,6 +231,23 @@ export default function Login() {
                   Forgot your password?
                 </Link>
               </span>
+            </p>
+          </div>
+
+          <div className="text-center border-t border-gray-200 pt-4">
+            <p className="text-xs text-gray-400 mb-2">Just browsing?</p>
+            <button
+              type="button"
+              onClick={() => {
+                enterWithoutLogin();
+                navigate('/dashboard');
+              }}
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:border-gray-400 hover:bg-gray-50 hover:text-gray-800"
+            >
+              Continue as guest
+            </button>
+            <p className="mt-2 text-xs text-gray-400">
+              Sample data only — log in to see your own save file data.
             </p>
           </div>
         </form>

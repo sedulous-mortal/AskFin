@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth, ResolvedItem, EdibleItem } from '../context/AuthContext';
+import { useSettings, SpoilerPreferences } from '../context/SettingsContext';
 
 // ── Simple donut (discovered vs total) ───────────────────────────────────────
 
@@ -154,8 +156,24 @@ function ItemGrid({ items }: { items: (ResolvedItem | EdibleItem)[] }) {
 
 type DrillView = 'chart' | 'discovered' | 'undiscovered';
 
+function SpoilerGate({ label }: { label: string }) {
+  return (
+    <div className="rounded-xl border border-amber-200 bg-amber-50 px-6 py-8 text-center">
+      <p className="text-sm font-medium text-amber-800">
+        {label} content is hidden by your spoiler settings.
+      </p>
+      <Link
+        to="/settings"
+        className="mt-2 inline-block text-sm text-amber-600 underline hover:text-amber-700"
+      >
+        Change spoiler settings
+      </Link>
+    </div>
+  );
+}
+
 function CategorySection({
-  title, icon, color, discovered, undiscovered, total,
+  title, icon, color, discovered, undiscovered, total, spoilerKey,
 }: {
   title: string;
   icon: string;
@@ -163,8 +181,11 @@ function CategorySection({
   discovered: ResolvedItem[];
   undiscovered: ResolvedItem[] | null;
   total: number | null;
+  spoilerKey?: keyof SpoilerPreferences;
 }) {
   const [view, setView] = useState<DrillView>('chart');
+  const { preferences } = useSettings();
+  const spoilerAllowed = spoilerKey ? preferences.spoilers[spoilerKey] : true;
 
   if (view !== 'chart') {
     const isUndiscoveredUnknown = view === 'undiscovered' && undiscovered === null;
@@ -180,12 +201,14 @@ function CategorySection({
           <h2 className="text-lg font-bold tracking-tight text-slate-800">
             <span aria-hidden className="mr-1">{icon}</span>
             {label}
-            {!isUndiscoveredUnknown && (
+            {!isUndiscoveredUnknown && spoilerAllowed && (
               <span className="ml-2 text-sm font-normal text-slate-400">({items.length})</span>
             )}
           </h2>
         </div>
-        {isUndiscoveredUnknown ? (
+        {view === 'undiscovered' && !spoilerAllowed ? (
+          <SpoilerGate label={`Undiscovered ${title}`} />
+        ) : isUndiscoveredUnknown ? (
           <p className="text-sm text-slate-500">
             We don't have the full list of {title.toLowerCase()} in the game yet, so we can't
             show which ones are undiscovered. Total count coming soon.
@@ -257,6 +280,8 @@ function EdiblesSection({
   total: number;
 }) {
   const [view, setView] = useState<EdibleDrillView>('chart');
+  const { preferences } = useSettings();
+  const spoilerAllowed = preferences.spoilers.show_undiscovered_items;
 
   const bySource = {
     forageable: discovered.filter(i => i.source === 'forageable'),
@@ -267,6 +292,7 @@ function EdiblesSection({
   if (view !== 'chart') {
     const items = view === 'undiscovered' ? undiscovered : bySource[view] ?? [];
     const label = EDIBLE_LABELS[view];
+    const isUndiscoveredView = view === 'undiscovered';
     return (
       <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center gap-3">
@@ -277,10 +303,16 @@ function EdiblesSection({
           <h2 className="text-lg font-bold tracking-tight text-slate-800">
             <span aria-hidden className="mr-1">🥬</span>
             {label} Edibles
-            <span className="ml-2 text-sm font-normal text-slate-400">({items.length})</span>
+            {(!isUndiscoveredView || spoilerAllowed) && (
+              <span className="ml-2 text-sm font-normal text-slate-400">({items.length})</span>
+            )}
           </h2>
         </div>
-        <ItemGrid items={items} />
+        {isUndiscoveredView && !spoilerAllowed ? (
+          <SpoilerGate label="Undiscovered Edibles" />
+        ) : (
+          <ItemGrid items={items} />
+        )}
       </section>
     );
   }
@@ -407,6 +439,7 @@ export default function Dashboard() {
               discovered={selectedCharacter.fish_discovered}
               undiscovered={selectedCharacter.fish_undiscovered ?? null}
               total={selectedCharacter.fish_total ?? null}
+              spoilerKey="show_undiscovered_fish"
             />
             <EdiblesSection
               discovered={selectedCharacter.edibles_discovered ?? []}
@@ -422,12 +455,14 @@ export default function Dashboard() {
               discovered={selectedCharacter.unlocked_cooking_recipes}
               undiscovered={null}
               total={null}
+              spoilerKey="show_undiscovered_cooking_recipes"
             />
             <CategorySection
               title="Crafting Recipes" icon="🔨" color="#b45309"
               discovered={selectedCharacter.unlocked_crafting_recipes}
               undiscovered={null}
               total={null}
+              spoilerKey="show_undiscovered_crafting_recipes"
             />
           </section>
         </>

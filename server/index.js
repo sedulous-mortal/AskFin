@@ -20,6 +20,8 @@ const require = createRequire(import.meta.url);
 const gameIdMaps = require('./helpers/game_id_maps.json');
 const ediblesRaw = require('./helpers/edibles_ids.json');
 const questsFile = require('./helpers/quests.json');
+const forageablesFile = require('./helpers/forageables_schedule.json');
+const forageablesList = forageablesFile.forageables || [];
 const questsList = questsFile.quests || [];
 const itemNames = gameIdMaps['InventoryItems_en'] || {};
 const plantNames = gameIdMaps['PlantDataTable_en'] || {};
@@ -81,6 +83,19 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
 });
 
 console.log('Supabase client initialized with URL:', supabaseUrl);
+
+const DEFAULT_PREFERENCES = {
+  timezone: 'America/New_York',
+  spoilers: {
+    show_undiscovered_fish: true,
+    show_undiscovered_cooking_recipes: true,
+    show_undiscovered_crafting_recipes: true,
+    show_undiscovered_items: true,
+    show_undiscovered_forageables: true,
+    show_undiscovered_quests: true,
+    show_undiscovered_critters: true,
+  },
+};
 
 // Simple in-memory email invite rate limiter (per-server instance)
 const EMAIL_RATE_LIMIT_MAX = parseInt(process.env.EMAIL_RATE_LIMIT_MAX || '2', 10); // max auth email queries
@@ -313,7 +328,7 @@ app.post('/api/signup', async (req, res) => {
 
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
-      .insert({ id: userId, username: username || null })
+      .insert({ id: userId, username: username || null, preferences: DEFAULT_PREFERENCES })
       .select()
       .single();
 
@@ -647,6 +662,46 @@ app.get('/api/quests', (req, res) => {
   res.json(questsList);
 });
 
+// Returns forageables available on a given in-game date, plus the next 3 upcoming.
+// Query params: season (0-3), day (1-28)
+app.get('/api/forageables', (req, res) => {
+  const season = parseInt(req.query.season, 10);
+  const day = parseInt(req.query.day, 10);
+
+  if (isNaN(season) || isNaN(day) || season < 0 || season > 3 || day < 1 || day > 28) {
+    return res.status(400).json({ error: 'season (0-3) and day (1-28) query params are required.' });
+  }
+
+  const TOTAL_DAYS = 112;
+  const currentAbs = season * 28 + (day - 1);
+
+  function toAbs(s, d) { return s * 28 + (d - 1); }
+
+  function isAvailable(f) {
+    const start = toAbs(f.start_season, f.start_day);
+    const end   = toAbs(f.end_season,   f.end_day);
+    if (end >= start) return currentAbs >= start && currentAbs <= end;
+    return currentAbs >= start || currentAbs <= end;
+  }
+
+  function daysUntilAvailable(f) {
+    const start = toAbs(f.start_season, f.start_day);
+    if (start === currentAbs) return 0;
+    if (start > currentAbs) return start - currentAbs;
+    return TOTAL_DAYS - currentAbs + start;
+  }
+
+  const available = forageablesList.filter(isAvailable);
+
+  const upcoming = forageablesList
+    .filter((f) => !isAvailable(f))
+    .map((f) => ({ ...f, days_until: daysUntilAvailable(f) }))
+    .sort((a, b) => a.days_until - b.days_until)
+    .slice(0, 3);
+
+  res.json({ available, upcoming });
+});
+
 // Parse a .grimshire save file and (optionally) upsert character data into Supabase.
 // Body: { fileData: string (base64), userId?: string }
 // Returns: { character: CharacterData, saved: boolean }
@@ -718,6 +773,9 @@ app.post('/api/save/parse', async (req, res) => {
         items_discovered: character.itemsDiscovered,
         unlocked_crafting_recipes: character.unlockedCraftingRecipes,
         unlocked_cooking_recipes: character.unlockedCookingRecipes,
+        quest_data: character.questData,
+        current_day: character.currentDateDay ?? null,
+        current_season: character.currentDateSeason ?? null,
       };
 
       let characterId;
@@ -781,9 +839,65 @@ app.get('/api/characters/:id', async (req, res) => {
       edibles_discovered: edibles.discovered,
       edibles_undiscovered: edibles.undiscovered,
       edibles_total: edibles.total,
+      quest_data: data.quest_data || [],
+      current_day: data.current_day ?? null,
+      current_season: data.current_season ?? null,
+      updated_at: data.updated_at ?? null,
     });
   } catch (err) {
     console.error('Failed to fetch character detail:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+app.get('/api/settings/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('preferences')
+      .eq('id', userId)
+      .maybeSingle();
+    if (error) throw error;
+    const prefs = { ...DEFAULT_PREFERENCES, ...(data?.preferences || {}) };
+    prefs.spoilers = { ...DEFAULT_PREFERENCES.spoilers, ...(prefs.spoilers || {}) };
+    res.json(prefs);
+  } catch (err) {
+    console.error('Failed to fetch settings:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+app.patch('/api/settings/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const updates = req.body;
+  if (!updates || typeof updates !== 'object') {
+    return res.status(400).json({ error: 'Request body must be a JSON object.' });
+  }
+  try {
+    const { data: existing, error: fetchErr } = await supabase
+      .from('profiles')
+      .select('preferences')
+      .eq('id', userId)
+      .maybeSingle();
+    if (fetchErr) throw fetchErr;
+
+    const current = { ...DEFAULT_PREFERENCES, ...(existing?.preferences || {}) };
+    current.spoilers = { ...DEFAULT_PREFERENCES.spoilers, ...(current.spoilers || {}) };
+
+    if (updates.timezone !== undefined) current.timezone = updates.timezone;
+    if (updates.spoilers && typeof updates.spoilers === 'object') {
+      current.spoilers = { ...current.spoilers, ...updates.spoilers };
+    }
+
+    const { error: updateErr } = await supabase
+      .from('profiles')
+      .update({ preferences: current })
+      .eq('id', userId);
+    if (updateErr) throw updateErr;
+    res.json(current);
+  } catch (err) {
+    console.error('Failed to update settings:', err);
     res.status(500).json({ error: 'Internal server error.' });
   }
 });

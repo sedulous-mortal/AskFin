@@ -1,0 +1,31 @@
+{
+  "note": "Season indices: 0=Spring, 1=Summer, 2=Fall, 3=Winter. Days 1-28. Availability data is best-guess based on real-world plant seasons — verify in-game.",
+  "forageables": [
+    { "id": 36,  "name": "Dandelions",        "image": "/edibles/Dandelion.png",        "start_season": 0, "start_day": 1,  "end_season": 1, "end_day": 14 },
+    { "id": 162, "name": "Cattail",            "image": "/edibles/Cattail.png",          "start_season": 1, "start_day": 1,  "end_season": 2, "end_day": 28 },
+    { "id": 165, "name": "Fiddlehead Fern",    "image": "/edibles/Fiddlehead_Fern.png",  "start_season": 0, "start_day": 1,  "end_season": 0, "end_day": 21 },
+    { "id": 166, "name": "Ramp",               "image": "/edibles/Ramp.png",             "start_season": 0, "start_day": 1,  "end_season": 0, "end_day": 14 },
+    { "id": 169, "name": "Morel",              "image": "/edibles/Morel.png",            "start_season": 0, "start_day": 7,  "end_season": 0, "end_day": 28 },
+    { "id": 244, "name": "Oyster Mushroom",    "image": "/edibles/Oyster_Mushroom.png",  "start_season": 2, "start_day": 1,  "end_season": 3, "end_day": 28 },
+    { "id": 304, "name": "Wintergreen Berry",  "image": null,                            "start_season": 3, "start_day": 1,  "end_season": 3, "end_day": 28 },
+    { "id": 309, "name": "Chamomile",          "image": "/edibles/Chamomile.png",        "start_season": 1, "start_day": 1,  "end_season": 1, "end_day": 28 },
+    { "id": 312, "name": "Chanterelle",        "image": "/edibles/Chanterelle.png",      "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 14 },
+    { "id": 314, "name": "Winter Mushroom",    "image": "/edibles/Winter_Mushroom.png",  "start_season": 3, "start_day": 1,  "end_season": 3, "end_day": 28 },
+    { "id": 316, "name": "Ginger",             "image": "/edibles/Ginger.png",           "start_season": 1, "start_day": 1,  "end_season": 2, "end_day": 28 },
+    { "id": 318, "name": "Chicory",            "image": "/edibles/Chicory.png",          "start_season": 2, "start_day": 1,  "end_season": 2, "end_day": 28 },
+    { "id": 328, "name": "Red Clover",         "image": "/edibles/Red_Clover.png",       "start_season": 0, "start_day": 14, "end_season": 1, "end_day": 28 },
+    { "id": 331, "name": "Yarrow",             "image": "/edibles/Yarrow.png",           "start_season": 1, "start_day": 1,  "end_season": 2, "end_day": 14 },
+    { "id": 335, "name": "Cranberry",          "image": "/edibles/Cranberry.png",        "start_season": 2, "start_day": 1,  "end_season": 2, "end_day": 28 },
+    { "id": 336, "name": "Pepperwort",         "image": "/edibles/Pepperwort_Flower.png","start_season": 1, "start_day": 1,  "end_season": 2, "end_day": 14 },
+    { "id": 338, "name": "Pepperwort Leaves",  "image": "/edibles/Pepperwort_Leaves.png","start_season": 1, "start_day": 1,  "end_season": 2, "end_day": 14 },
+    { "id": 340, "name": "Red Sorrel",         "image": "/edibles/Red_Sorrel.png",       "start_season": 0, "start_day": 14, "end_season": 1, "end_day": 28 },
+    { "id": 277, "name": "Pear",               "image": "/edibles/Pear.png",             "start_season": 2, "start_day": 1,  "end_season": 2, "end_day": 28 },
+    { "id": 278, "name": "Cherry",             "image": "/edibles/Cherry.png",           "start_season": 0, "start_day": 14, "end_season": 1, "end_day": 14 },
+    { "id": 283, "name": "Apple",              "image": "/edibles/Apple.png",            "start_season": 2, "start_day": 1,  "end_season": 2, "end_day": 28 },
+    { "id": 288, "name": "Plum",               "image": "/edibles/Plum.png",             "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 14 },
+    { "id": 301, "name": "Rosehip",            "image": "/edibles/Rosehips.png",         "start_season": 2, "start_day": 1,  "end_season": 3, "end_day": 14 },
+    { "id": 302, "name": "Raspberry",          "image": "/edibles/Raspberry.png",        "start_season": 1, "start_day": 1,  "end_season": 1, "end_day": 28 },
+    { "id": 303, "name": "Blackberry",         "image": "/edibles/Blackberry.png",       "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 14 },
+    { "id": 305, "name": "Elderberry",         "image": "/edibles/Elderberry.png",       "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 7  }
+  ]
+}

@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDate } from '../context/DateContext';
+import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
 const TOTAL_DAYS = 112;
@@ -94,9 +97,19 @@ function questTypeInfo(quest: Quest): TypeInfo {
 
 export default function Quests() {
   const { season, day } = useDate();
+  const { selectedCharacter } = useAuth();
+  const { preferences } = useSettings();
+  const showUpcomingQuests = preferences.spoilers.show_undiscovered_quests;
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const inProgressQuestIds = new Set(
+    (selectedCharacter?.quest_data ?? []).filter(q => q.status === 1).map(q => q.id)
+  );
+  const completedQuestIds = new Set(
+    (selectedCharacter?.quest_data ?? []).filter(q => q.status === 3).map(q => q.id)
+  );
 
   useEffect(() => {
     fetch('/api/quests')
@@ -112,13 +125,21 @@ export default function Quests() {
   const currentSeasonIdx = SEASON_IDX[season] ?? 0;
 
   const upcomingQuests = allQuests
-    .filter((q) => isQuestInWindow(q, currentSeasonIdx, day))
+    .filter((q) => isQuestInWindow(q, currentSeasonIdx, day) && !completedQuestIds.has(q.id))
     .sort((a, b) => {
+      // In-progress quests float to top
+      const aProgress = inProgressQuestIds.has(a.id) ? 0 : 1;
+      const bProgress = inProgressQuestIds.has(b.id) ? 0 : 1;
+      if (aProgress !== bProgress) return aProgress - bProgress;
       const dA = daysUntilActive(a, currentSeasonIdx, day);
       const dB = daysUntilActive(b, currentSeasonIdx, day);
       if (dA !== dB) return dA - dB;
       return (a.display_title || a.name).localeCompare(b.display_title || b.name);
     });
+
+  const completedQuests = allQuests
+    .filter((q) => completedQuestIds.has(q.id))
+    .sort((a, b) => (a.display_title || a.name).localeCompare(b.display_title || b.name));
 
   return (
     <div className="space-y-8">
@@ -137,6 +158,18 @@ export default function Quests() {
         <p className="text-slate-600">Loading quests...</p>
       ) : error ? (
         <p className="text-red-600">{error}</p>
+      ) : !showUpcomingQuests ? (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-6 py-8 text-center">
+          <p className="text-sm font-medium text-amber-800">
+            Upcoming quest details are hidden by your spoiler settings.
+          </p>
+          <Link
+            to="/settings"
+            className="mt-2 inline-block text-sm text-amber-600 underline hover:text-amber-700"
+          >
+            Change spoiler settings
+          </Link>
+        </div>
       ) : upcomingQuests.length === 0 ? (
         <p className="text-slate-600">No quests available in this 14-day window.</p>
       ) : (
@@ -160,9 +193,13 @@ export default function Quests() {
                       >
                         {label}
                       </span>
-                      {daysAway === 0 ? (
+                      {inProgressQuestIds.has(quest.id) ? (
                         <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
-                          Active now
+                          In progress
+                        </span>
+                      ) : daysAway === 0 ? (
+                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                          Available now
                         </span>
                       ) : (
                         <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
@@ -215,6 +252,37 @@ export default function Quests() {
             );
           })}
         </div>
+      )}
+      {completedQuests.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-xl font-semibold text-slate-800">
+            Completed Quests ({completedQuests.length})
+          </h2>
+          <div className="space-y-2">
+            {completedQuests.map((quest) => {
+              const { label, color } = questTypeInfo(quest);
+              const title = quest.display_title || quest.name;
+              return (
+                <div
+                  key={quest.id}
+                  className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm"
+                >
+                  <div className="p-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
+                        {label}
+                      </span>
+                      <span className="inline-flex items-center rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-500">
+                        Completed
+                      </span>
+                      <span className="text-sm font-medium text-slate-600">{title}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       )}
     </div>
   );
