@@ -32,14 +32,14 @@ export default function CharacterSelector() {
   }, []);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative min-w-[10rem]">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
       >
-        {selectedOption.character_name}
+        <span className="flex-1 text-center">{selectedOption.character_name}</span>
         <svg
-          className={`ml-1 h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -49,7 +49,7 @@ export default function CharacterSelector() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-1 min-w-full rounded-md border border-gray-200 bg-white shadow-lg">
+        <div className="absolute right-0 z-50 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
           {options.map((character) => (
             <div
               key={character.id}
@@ -57,10 +57,10 @@ export default function CharacterSelector() {
                 setSelectedCharacterId(character.id);
                 setOpen(false);
               }}
-              className={`flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 ${
+              className={`flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-slate-700 ${
                 character.id === selectedId
-                  ? 'bg-blue-50 font-medium text-blue-700'
-                  : 'text-gray-700'
+                  ? 'bg-blue-50 font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                  : 'text-gray-700 dark:text-slate-300'
               }`}
             >
               {/* Info icon with tooltip — only when a save_file_name exists */}
@@ -79,7 +79,7 @@ export default function CharacterSelector() {
                     />
                   </svg>
                   <div className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 group-hover:block">
-                    <div className="whitespace-nowrap rounded bg-slate-800 px-2 py-1.5 text-xs text-white">
+                    <div className="whitespace-nowrap rounded bg-slate-800 px-2 py-1.5 text-xs font-sans text-white">
                       <div className="font-mono">{character.save_file_name}</div>
                       {character.updated_at && (
                         <div className="mt-0.5 text-slate-400">

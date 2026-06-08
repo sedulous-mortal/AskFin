@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode, useCallback 
 import { useAuth } from './AuthContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const LS_DARK_KEY = 'askfin_dark_mode';
 
 export type SpoilerPreferences = {
   show_undiscovered_fish: boolean;
@@ -15,11 +16,13 @@ export type SpoilerPreferences = {
 
 export type UserPreferences = {
   timezone: string;
+  dark_mode: boolean;
   spoilers: SpoilerPreferences;
 };
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
   timezone: 'America/New_York',
+  dark_mode: false,
   spoilers: {
     show_undiscovered_fish: true,
     show_undiscovered_cooking_recipes: true,
@@ -35,6 +38,7 @@ type SettingsContextType = {
   preferences: UserPreferences;
   loading: boolean;
   updateTimezone: (tz: string) => Promise<void>;
+  updateDarkMode: (enabled: boolean) => Promise<void>;
   updateSpoiler: (key: keyof SpoilerPreferences, value: boolean) => Promise<void>;
 };
 
@@ -42,34 +46,48 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const { user, isGuestSession } = useAuth();
-  const [preferences, setPreferences] = useState<UserPreferences>(DEFAULT_PREFERENCES);
+
+  // Seed dark_mode from localStorage immediately so there's no flash on load.
+  const [preferences, setPreferences] = useState<UserPreferences>(() => ({
+    ...DEFAULT_PREFERENCES,
+    dark_mode: localStorage.getItem(LS_DARK_KEY) === 'true',
+  }));
   const [loading, setLoading] = useState(false);
+
+  // Apply / remove `dark` class on <html> and keep localStorage in sync.
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', preferences.dark_mode);
+    try { localStorage.setItem(LS_DARK_KEY, String(preferences.dark_mode)); } catch {}
+  }, [preferences.dark_mode]);
 
   useEffect(() => {
     if (!user || isGuestSession) {
-      setPreferences(DEFAULT_PREFERENCES);
+      setPreferences((prev) => ({ ...DEFAULT_PREFERENCES, dark_mode: prev.dark_mode }));
       return;
     }
     setLoading(true);
     fetch(`${API_BASE}/api/settings/${user.id}`)
       .then((r) => r.json())
       .then((data: UserPreferences) => {
-        setPreferences({
+        setPreferences((prev) => ({
           ...DEFAULT_PREFERENCES,
           ...data,
+          // Server may be returning stale data without dark_mode; localStorage is authoritative.
+          dark_mode: data.dark_mode ?? prev.dark_mode,
           spoilers: { ...DEFAULT_PREFERENCES.spoilers, ...(data.spoilers || {}) },
-        });
+        }));
       })
-      .catch(() => setPreferences(DEFAULT_PREFERENCES))
+      .catch(() => setPreferences((prev) => ({ ...DEFAULT_PREFERENCES, dark_mode: prev.dark_mode })))
       .finally(() => setLoading(false));
   }, [user?.id, isGuestSession]);
 
   const patch = useCallback(
-    async (updates: { timezone?: string; spoilers?: Partial<SpoilerPreferences> }) => {
-      // Optimistic update — apply immediately so the UI never snaps back
+    async (updates: { timezone?: string; dark_mode?: boolean; spoilers?: Partial<SpoilerPreferences> }) => {
+      // Optimistic update first so the UI never lags.
       setPreferences((prev) => ({
         ...prev,
         ...(updates.timezone !== undefined ? { timezone: updates.timezone } : {}),
+        ...(updates.dark_mode !== undefined ? { dark_mode: updates.dark_mode } : {}),
         spoilers: { ...prev.spoilers, ...(updates.spoilers || {}) },
       }));
 
@@ -85,17 +103,25 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         throw new Error(body?.error || `Settings save failed (${res.status})`);
       }
       const data: UserPreferences = await res.json();
-      setPreferences({
+      // Merge server response but never let it override dark_mode with a stale/missing
+      // value — localStorage is the authoritative source for that key.
+      setPreferences((prev) => ({
         ...DEFAULT_PREFERENCES,
         ...data,
+        dark_mode: data.dark_mode ?? prev.dark_mode,
         spoilers: { ...DEFAULT_PREFERENCES.spoilers, ...(data.spoilers || {}) },
-      });
+      }));
     },
     [user?.id, isGuestSession]
   );
 
   const updateTimezone = useCallback(
     (tz: string) => patch({ timezone: tz }),
+    [patch]
+  );
+
+  const updateDarkMode = useCallback(
+    (enabled: boolean) => patch({ dark_mode: enabled }),
     [patch]
   );
 
@@ -106,7 +132,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <SettingsContext.Provider value={{ preferences, loading, updateTimezone, updateSpoiler }}>
+    <SettingsContext.Provider value={{ preferences, loading, updateTimezone, updateDarkMode, updateSpoiler }}>
       {children}
     </SettingsContext.Provider>
   );

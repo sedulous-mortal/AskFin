@@ -86,6 +86,7 @@ console.log('Supabase client initialized with URL:', supabaseUrl);
 
 const DEFAULT_PREFERENCES = {
   timezone: 'America/New_York',
+  dark_mode: false,
   spoilers: {
     show_undiscovered_fish: true,
     show_undiscovered_cooking_recipes: true,
@@ -886,6 +887,7 @@ app.patch('/api/settings/:userId', async (req, res) => {
     current.spoilers = { ...DEFAULT_PREFERENCES.spoilers, ...(current.spoilers || {}) };
 
     if (updates.timezone !== undefined) current.timezone = updates.timezone;
+    if (updates.dark_mode !== undefined) current.dark_mode = updates.dark_mode;
     if (updates.spoilers && typeof updates.spoilers === 'object') {
       current.spoilers = { ...current.spoilers, ...updates.spoilers };
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
 import { useSettings } from '../context/SettingsContext';
-import { Link } from 'react-router-dom';
+import { SpoilerGate } from '../components/SpoilerGate';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
@@ -26,15 +26,15 @@ type ForageablesResponse = {
 
 function ForageableCard({ item }: { item: Forageable }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+    <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       {item.image ? (
         <img src={item.image} alt={item.name} className="h-10 w-10 rounded object-contain" />
       ) : (
-        <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-100 text-lg">🌿</div>
+        <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-100 text-lg dark:bg-slate-700">🌿</div>
       )}
       <div>
-        <p className="text-sm font-semibold text-slate-800">{item.name}</p>
-        <p className="text-xs text-slate-400">
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{item.name}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500">
           {SEASON_NAMES[item.start_season]} {item.start_day} – {SEASON_NAMES[item.end_season]} {item.end_day}
         </p>
       </div>
@@ -69,8 +69,8 @@ export default function Forageables() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900">Forageables</h1>
-        <p className="mt-2 text-lg text-slate-700">
+        <h1 className="font-sans text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Forageables</h1>
+        <p className="mt-2 text-lg text-slate-700 dark:text-slate-300">
           Items you can forage in the wild on{' '}
           <span className="font-semibold">{season} {day}</span>.
         </p>
@@ -81,21 +81,11 @@ export default function Forageables() {
       ) : error ? (
         <p className="text-red-600">{error}</p>
       ) : !showForageables ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-6 py-8 text-center">
-          <p className="text-sm font-medium text-amber-800">
-            Forageable details are hidden by your spoiler settings.
-          </p>
-          <Link
-            to="/settings"
-            className="mt-2 inline-block text-sm text-amber-600 underline hover:text-amber-700"
-          >
-            Change spoiler settings
-          </Link>
-        </div>
+        <SpoilerGate label="Forageable details" />
       ) : (
         <>
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-slate-800">
+            <h2 className="mb-3 text-xl font-semibold text-slate-800 dark:text-slate-200">
               Available now
               {data && (
                 <span className="ml-2 text-base font-normal text-slate-500">
@@ -121,16 +111,16 @@ export default function Forageables() {
                 {data.upcoming.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm"
+                    className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/60"
                   >
                     {item.image ? (
                       <img src={item.image} alt={item.name} className="h-10 w-10 rounded object-contain opacity-60" />
                     ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-200 text-lg opacity-60">🌿</div>
+                      <div className="flex h-10 w-10 items-center justify-center rounded bg-slate-200 text-lg opacity-60 dark:bg-slate-700">🌿</div>
                     )}
                     <div>
-                      <p className="text-sm font-semibold text-slate-700">{item.name}</p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{item.name}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500">
                         In {item.days_until} day{item.days_until !== 1 ? 's' : ''} —{' '}
                         {SEASON_NAMES[item.start_season]} {item.start_day}
                       </p>

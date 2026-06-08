@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { SpoilerGate } from '../components/SpoilerGate';
 import { useDate } from '../context/DateContext';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
@@ -144,8 +144,8 @@ export default function Quests() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900">Quests</h1>
-        <p className="mt-2 text-lg text-slate-700">
+        <h1 className="font-sans text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Quests</h1>
+        <p className="mt-2 text-lg text-slate-700 dark:text-slate-300">
           Quests available in the next 14 in-game days from{' '}
           <span className="font-semibold">
             {season} {day}
@@ -159,17 +159,7 @@ export default function Quests() {
       ) : error ? (
         <p className="text-red-600">{error}</p>
       ) : !showUpcomingQuests ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-6 py-8 text-center">
-          <p className="text-sm font-medium text-amber-800">
-            Upcoming quest details are hidden by your spoiler settings.
-          </p>
-          <Link
-            to="/settings"
-            className="mt-2 inline-block text-sm text-amber-600 underline hover:text-amber-700"
-          >
-            Change spoiler settings
-          </Link>
-        </div>
+        <SpoilerGate label="Upcoming quest details" />
       ) : upcomingQuests.length === 0 ? (
         <p className="text-slate-600">No quests available in this 14-day window.</p>
       ) : (
@@ -183,7 +173,7 @@ export default function Quests() {
             return (
               <div
                 key={quest.id}
-                className="overflow-hidden rounded-xl border border-slate-900/10 bg-white shadow-sm"
+                className="overflow-hidden rounded-xl border border-slate-900/10 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
               >
                 <div className="p-5">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -207,20 +197,20 @@ export default function Quests() {
                         </span>
                       )}
                     </div>
-                    <span className="text-xs text-slate-400">{availability}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">{availability}</span>
                   </div>
 
-                  <h2 className="mt-2 text-base font-semibold text-slate-900">{title}</h2>
+                  <h2 className="mt-2 text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
 
                   {quest.description && (
-                    <p className="mt-1 text-sm text-slate-600">{quest.description}</p>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{quest.description}</p>
                   )}
 
                   {quest.requirements && quest.requirements.length > 0 && (
                     <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                      <span className="font-medium uppercase tracking-wide text-slate-400">Requires</span>
+                      <span className="font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">Requires</span>
                       {quest.requirements.map((req, i) => (
-                        <span key={i} className="rounded bg-amber-50 px-2 py-0.5 text-amber-800">
+                        <span key={i} className="rounded bg-amber-50 px-2 py-0.5 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
                           {req.amount > 1 ? `${req.amount}× ` : ''}{req.name}
                         </span>
                       ))}
@@ -229,19 +219,19 @@ export default function Quests() {
 
                   {(quest.reward_money || quest.reward_relationship_points || quest.reward_items?.length) ? (
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                      <span className="font-medium uppercase tracking-wide text-slate-400">Rewards</span>
+                      <span className="font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">Rewards</span>
                       {quest.reward_money ? (
-                        <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600">
+                        <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                           {quest.reward_money.toLocaleString()} coins
                         </span>
                       ) : null}
                       {quest.reward_relationship_points ? (
-                        <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600">
+                        <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                           +{quest.reward_relationship_points} relationship
                         </span>
                       ) : null}
                       {quest.reward_items?.map((item, i) => (
-                        <span key={i} className="rounded bg-emerald-50 px-2 py-0.5 text-emerald-800">
+                        <span key={i} className="rounded bg-emerald-50 px-2 py-0.5 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
                           {item.amount > 1 ? `${item.amount}× ` : ''}{item.name}
                         </span>
                       ))}
@@ -255,7 +245,7 @@ export default function Quests() {
       )}
       {completedQuests.length > 0 && (
         <section>
-          <h2 className="mb-3 text-xl font-semibold text-slate-800">
+          <h2 className="mb-3 text-xl font-semibold text-slate-800 dark:text-slate-200">
             Completed Quests ({completedQuests.length})
           </h2>
           <div className="space-y-2">
@@ -265,17 +255,17 @@ export default function Quests() {
               return (
                 <div
                   key={quest.id}
-                  className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm"
+                  className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-800/60"
                 >
                   <div className="p-4">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
                         {label}
                       </span>
-                      <span className="inline-flex items-center rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-500">
+                      <span className="inline-flex items-center rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
                         Completed
                       </span>
-                      <span className="text-sm font-medium text-slate-600">{title}</span>
+                      <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{title}</span>
                     </div>
                   </div>
                 </div>

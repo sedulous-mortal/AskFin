@@ -46,7 +46,7 @@ export default function Critters() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900">Critters</h1>
+        <h1 className="font-sans text-4xl font-bold tracking-tight text-slate-900">Critters</h1>
         <p className="mt-2 text-lg text-slate-700">
           Field notes on the tameable creatures of Grimshire.
         </p>

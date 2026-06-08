@@ -85,7 +85,7 @@ export default function App() {
       <DateProvider>
         <AuthProvider>
           <SettingsProvider>
-          <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#b88968] to-white text-slate-900">
+          <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#b88968] to-white text-slate-900 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
             <Header />
             <main className="mx-auto w-full max-w-6xl flex-1 px-8 py-10">
               <Routes>

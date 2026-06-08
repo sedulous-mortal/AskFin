@@ -51,7 +51,7 @@ export default function LoadSaveFile() {
           type="button"
           onClick={handleClick}
           disabled={isLoading}
-          className="rounded-lg bg-[#5c9a30] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#6aae36] active:bg-[#4e8228] disabled:opacity-60 disabled:cursor-not-allowed"
+          className="rounded-lg bg-[#5c9a30] px-4 py-2 text-sm font-semibold font-sans text-white shadow-sm transition-colors hover:bg-[#6aae36] active:bg-[#4e8228] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Loading…' : 'Load Files'}
         </button>
@@ -71,7 +71,7 @@ export default function LoadSaveFile() {
             />
           </svg>
 
-          <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 hidden w-72 rounded-lg bg-slate-800 p-3 text-xs leading-relaxed text-slate-200 shadow-xl group-hover:block">
+          <div className="pointer-events-none absolute right-0 top-full z-50 mt-2 hidden w-72 rounded-lg bg-slate-800 p-3 text-xs font-sans leading-relaxed text-slate-200 shadow-xl group-hover:block">
             <p>
               Click <strong>Load Files</strong> to upload your <code className="rounded bg-slate-900 px-1 py-0.5 text-slate-300">.grimshire</code> save files and load your game data into AskFin.
             </p>
