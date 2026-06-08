@@ -43,7 +43,10 @@ const SPOILER_GROUPS: SpoilerGroup[] = [
   },
   {
     heading: 'Quests',
-    items: [{ key: 'show_undiscovered_quests', label: 'Show upcoming / undiscovered quests' }],
+    items: [
+      { key: 'show_undiscovered_villager_quests', label: 'Show upcoming / undiscovered villager quests' },
+      { key: 'show_undiscovered_community_quests', label: 'Show upcoming / undiscovered community quests & events' },
+    ],
   },
 ];
 

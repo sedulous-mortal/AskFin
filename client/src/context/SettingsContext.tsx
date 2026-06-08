@@ -10,7 +10,8 @@ export type SpoilerPreferences = {
   show_undiscovered_crafting_recipes: boolean;
   show_undiscovered_items: boolean;
   show_undiscovered_forageables: boolean;
-  show_undiscovered_quests: boolean;
+  show_undiscovered_villager_quests: boolean;
+  show_undiscovered_community_quests: boolean;
   show_undiscovered_critters: boolean;
 };
 
@@ -29,7 +30,8 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
     show_undiscovered_crafting_recipes: true,
     show_undiscovered_items: true,
     show_undiscovered_forageables: true,
-    show_undiscovered_quests: true,
+    show_undiscovered_villager_quests: true,
+    show_undiscovered_community_quests: true,
     show_undiscovered_critters: true,
   },
 };

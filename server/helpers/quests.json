@@ -50,7 +50,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 416,
@@ -75,7 +76,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Beatrix"
     },
     {
       "id": 417,
@@ -100,7 +102,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Gruff"
     },
     {
       "id": 418,
@@ -125,7 +128,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Wilfred"
     },
     {
       "id": 433,
@@ -150,7 +154,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Theo"
     },
     {
       "id": 439,
@@ -195,7 +200,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 440,
@@ -225,7 +231,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Rowan"
     },
     {
       "id": 517,
@@ -245,7 +252,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 518,
@@ -265,7 +273,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 582,
@@ -310,7 +319,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 583,
@@ -355,7 +365,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 584,
@@ -400,7 +411,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 585,
@@ -445,7 +457,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 586,
@@ -490,7 +503,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 587,
@@ -535,7 +549,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 615,
@@ -580,7 +595,8 @@
       "is_town_quest": true,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 863,
@@ -600,7 +616,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 864,
@@ -620,7 +637,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 865,
@@ -640,7 +658,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 866,
@@ -660,7 +679,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 1077,
@@ -690,7 +710,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Hazel"
     },
     {
       "id": 1081,
@@ -720,7 +741,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Rufus"
     },
     {
       "id": 1082,
@@ -750,7 +772,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Percy"
     },
     {
       "id": 1083,
@@ -780,7 +803,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Rowan"
     },
     {
       "id": 1084,
@@ -810,7 +834,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Lila"
     },
     {
       "id": 1085,
@@ -840,7 +865,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Logan"
     },
     {
       "id": 1086,
@@ -870,7 +896,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Kai"
     },
     {
       "id": 1087,
@@ -900,7 +927,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Edgar"
     },
     {
       "id": 1088,
@@ -930,7 +958,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Poppy"
     },
     {
       "id": 1089,
@@ -960,7 +989,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Tano"
     },
     {
       "id": 1090,
@@ -994,7 +1024,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 1091,
@@ -1024,7 +1055,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Beryl"
     },
     {
       "id": 1092,
@@ -1054,7 +1086,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Fin"
     },
     {
       "id": 1093,
@@ -1084,7 +1117,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Greta"
     },
     {
       "id": 1094,
@@ -1114,7 +1148,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Wallace"
     },
     {
       "id": 1095,
@@ -1144,7 +1179,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Wilfred"
     },
     {
       "id": 1096,
@@ -1174,7 +1210,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Jack"
     },
     {
       "id": 1097,
@@ -1204,7 +1241,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Willow"
     },
     {
       "id": 1098,
@@ -1234,7 +1272,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Oliver"
     },
     {
       "id": 1099,
@@ -1264,7 +1303,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Ericka"
     },
     {
       "id": 1100,
@@ -1294,7 +1334,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Beatrix"
     },
     {
       "id": 1101,
@@ -1324,7 +1365,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Theo"
     },
     {
       "id": 1102,
@@ -1354,7 +1396,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Rusty"
     },
     {
       "id": 1103,
@@ -1384,7 +1427,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Dudley"
     },
     {
       "id": 1104,
@@ -1414,7 +1458,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Gruff"
     },
     {
       "id": 1105,
@@ -1444,7 +1489,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Prudence"
     },
     {
       "id": 1106,
@@ -1474,7 +1520,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Rose"
     },
     {
       "id": 1116,
@@ -1494,7 +1541,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1117,
@@ -1514,7 +1562,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1118,
@@ -1534,7 +1583,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1119,
@@ -1554,7 +1604,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1120,
@@ -1574,7 +1625,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1121,
@@ -1594,7 +1646,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1122,
@@ -1614,7 +1667,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1123,
@@ -1634,7 +1688,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1124,
@@ -1654,7 +1709,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1125,
@@ -1674,7 +1730,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1126,
@@ -1694,7 +1751,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1127,
@@ -1714,7 +1772,8 @@
       "is_town_quest": false,
       "is_donation_quest": false,
       "is_rootcellar_quest": true,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": null
     },
     {
       "id": 1323,
@@ -1734,7 +1793,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     },
     {
       "id": 1331,
@@ -1754,7 +1814,8 @@
       "is_town_quest": false,
       "is_donation_quest": true,
       "is_rootcellar_quest": false,
-      "is_vip_quest": false
+      "is_vip_quest": false,
+      "quest_giver": "Adeline"
     }
   ]
 }

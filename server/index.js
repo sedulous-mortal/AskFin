@@ -777,6 +777,7 @@ app.post('/api/save/parse', async (req, res) => {
         quest_data: character.questData,
         current_day: character.currentDateDay ?? null,
         current_season: character.currentDateSeason ?? null,
+        current_year: character.currentDateYear ?? null,
       };
 
       let characterId;
@@ -843,6 +844,8 @@ app.get('/api/characters/:id', async (req, res) => {
       quest_data: data.quest_data || [],
       current_day: data.current_day ?? null,
       current_season: data.current_season ?? null,
+      current_year: data.current_year ?? null,
+      difficulty: data.difficulty ?? null,
       updated_at: data.updated_at ?? null,
     });
   } catch (err) {

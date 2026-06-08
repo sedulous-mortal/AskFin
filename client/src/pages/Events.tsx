@@ -77,8 +77,9 @@ const SYNOPSES: Record<number, string | null> = {
   615: null,  // Last Stand
 };
 
-function toAbsDay(season: number, day: number): number {
-  return season * 28 + (day - 1);
+// yearOffset is 0-based: Year 1 of gameplay = 0, Year 2 = 1, etc.
+function toAbsDay(yearOffset: number, season: number, day: number): number {
+  return yearOffset * TOTAL_DAYS + season * 28 + (day - 1);
 }
 
 function groupEvents(townQuests: Quest[]): EventGroup[] {
@@ -146,9 +147,11 @@ export default function Events() {
       ) : (
         <div className="space-y-6">
           {events.map((event, idx) => {
-            const absCurrent = toAbsDay(currentSeasonIdx, day);
-            const absStart = toAbsDay(event.startSeason, event.startDay);
-            const absEnd = toAbsDay(event.endSeason, event.endDay);
+            const currentYearOffset = Math.max(0, (selectedCharacter?.current_year ?? 1) - 1);
+            const absCurrent = toAbsDay(currentYearOffset, currentSeasonIdx, day);
+            const absStart = toAbsDay(0, event.startSeason, event.startDay);
+            const endYearOffset = event.endSeason < event.startSeason ? 1 : 0;
+            const absEnd = toAbsDay(endYearOffset, event.endSeason, event.endDay);
             const isPast = absCurrent > absEnd;
             const isAvailableNow = absCurrent >= absStart && absCurrent <= absEnd;
             const daysAway = isAvailableNow || isPast ? 0 : absStart - absCurrent;

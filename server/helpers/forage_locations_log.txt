@@ -1,0 +1,61 @@
+=== Step 1: Map CropData path_ids from resources.assets ===
+Loaded 27616 objects
+  path_id=25942 'Cattail_Data' -> item_id=162
+  path_id=25943 'Chamomile_Data' -> item_id=309
+  path_id=25944 'Chantarelle_Data' -> item_id=312
+  path_id=25945 'Chicory_Data' -> item_id=318
+  path_id=25947 'Cranberry_Data' -> item_id=335
+  path_id=25949 'Dandelion_data' -> item_id=36
+  path_id=25951 'Fiddlehead_data' -> item_id=165
+  path_id=25952 'Ginger_Data' -> item_id=316
+  path_id=25956 'Morel_Data' -> item_id=169
+  path_id=25959 'OysterMushroom_Data' -> item_id=244
+  path_id=25961 'Pepperwort_Data' -> item_id=336
+  path_id=25965 'Ramp_data' -> item_id=166
+  path_id=25966 'RedClover_Data' -> item_id=328
+  path_id=25967 'RedSorrel_Data' -> item_id=340
+  path_id=25972 'WinterShroom_Data' -> item_id=314
+  path_id=25973 'Yarrow_Data' -> item_id=331
+
+Mapped 16 CropData -> item_id entries
+Item IDs covered: [36, 162, 165, 166, 169, 244, 309, 312, 314, 316, 318, 328, 331, 335, 336, 340]
+
+=== Step 4: Scan level files for ForageableSpawnArea ===
+  level1: 1 FSA(s) scene=None
+    items found: []
+    unresolved crop PIDs: [25953]
+  level7: 4 FSA(s) scene='Forest'
+    items found: [36, 169, 314, 318]
+    unresolved crop PIDs: [25955, 25960, 25968, 25970]
+  level8: 5 FSA(s) scene='Marsh'
+    items found: [162, 165, 244, 312, 316, 328, 335, 336]
+  level25: 4 FSA(s) scene='Mountains'
+    items found: [166, 309, 331]
+    unresolved crop PIDs: [25936, 25950, 25954, 25964, 25971]
+  level30: 3 FSA(s) scene='Deep Woods'
+    items found: [165, 166, 312, 314, 340]
+    unresolved crop PIDs: [25954, 25964]
+
+=== Summary ===
+  36: ['Forest']
+  162: ['Marsh']
+  165: ['Deep Woods', 'Marsh']
+  166: ['Deep Woods', 'Mountains']
+  169: ['Forest']
+  244: ['Marsh']
+  309: ['Mountains']
+  312: ['Deep Woods', 'Marsh']
+  314: ['Deep Woods', 'Forest']
+  316: ['Marsh']
+  318: ['Forest']
+  328: ['Marsh']
+  331: ['Mountains']
+  335: ['Marsh']
+  336: ['Marsh']
+  340: ['Deep Woods']
+
+FSA-type forageables not found in any level: []
+Fruit/berry items (fixed objects, not FSA): [277, 278, 283, 288, 301, 302, 303, 304, 305]
+  -> These need manual location verification in-game
+
+Written to C:\Users\ansob\claude-tests\AskFin\server\helpers\forage_locations.json

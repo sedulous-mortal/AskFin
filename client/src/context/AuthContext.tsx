@@ -38,6 +38,8 @@ export type CharacterDetail = {
   quest_data: QuestStatus[];
   current_day: number | null;
   current_season: number | null;
+  current_year: number | null;
+  difficulty: number | null;
   updated_at: string | null;
 };
 
@@ -113,6 +115,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ],
     current_day: 14,
     current_season: 0,
+    current_year: 1,
+    difficulty: 1,
     updated_at: null,
   };
 

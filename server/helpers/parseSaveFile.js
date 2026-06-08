@@ -87,5 +87,6 @@ export function parseSaveFile(buffer) {
     questData: extractQuestData(text),
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),
+    currentDateYear: extractNestedNumber(text, "currentDate", "Year"),
   };
 }
