@@ -1,5 +1,5 @@
 {
-  "note": "Season indices: 0=Spring, 1=Summer, 2=Fall, 3=Winter. Days 1-28. Availability verified in-game. Locations extracted from Unity game files (ForageableSpawnArea scene data). Fruits/berries (Pear, Cherry, Apple, Plum, Rosehip, Raspberry, Blackberry, Elderberry, Wintergreen Berry) use fixed tree/bush objects — locations need in-game verification.",
+  "note": "Season indices: 0=Spring, 1=Summer, 2=Fall, 3=Winter. Days 1-28. Availability verified in-game. Locations extracted from Unity game files (ForageableSpawnArea scene data). Fruits/berries (Pear, Cherry, Apple, Plum, Rosehip, Raspberry, Blackberry, Elderberry) use fixed tree/bush objects — locations need in-game verification.",
   "forageables": [
     { "id": 36,  "name": "Dandelions",        "image": "/edibles/Dandelion.png",        "start_season": 0, "start_day": 1,  "end_season": 1, "end_day": 14, "locations": ["Forest"] },
     { "id": 162, "name": "Cattail",            "image": "/edibles/Cattail.png",          "start_season": 1, "start_day": 1,  "end_season": 2, "end_day": 28, "locations": ["Marsh"] },
@@ -14,8 +14,7 @@
     { "id": 301, "name": "Rosehip",            "image": "/edibles/Rosehips.png",         "start_season": 2, "start_day": 1,  "end_season": 3, "end_day": 14, "locations": [] },
     { "id": 302, "name": "Raspberry",          "image": "/edibles/Raspberry.png",        "start_season": 1, "start_day": 1,  "end_season": 1, "end_day": 28, "locations": [] },
     { "id": 303, "name": "Blackberry",         "image": "/edibles/Blackberry.png",       "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 14, "locations": [] },
-    { "id": 304, "name": "Wintergreen Berry",  "image": null,                            "start_season": 3, "start_day": 1,  "end_season": 3, "end_day": 28, "locations": [] },
-    { "id": 305, "name": "Elderberry",         "image": "/edibles/Elderberry.png",       "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 7,  "locations": [] },
+{ "id": 305, "name": "Elderberry",         "image": "/edibles/Elderberry.png",       "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 7,  "locations": [] },
     { "id": 309, "name": "Chamomile",          "image": "/edibles/Chamomile.png",        "start_season": 1, "start_day": 1,  "end_season": 1, "end_day": 28, "locations": ["Mountains"] },
     { "id": 312, "name": "Chanterelle",        "image": "/edibles/Chanterelle.png",      "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 14, "locations": ["Deep Woods", "Marsh"] },
     { "id": 314, "name": "Winter Mushroom",    "image": "/edibles/Winter_Mushroom.png",  "start_season": 3, "start_day": 1,  "end_season": 3, "end_day": 28, "locations": ["Deep Woods", "Forest"] },
