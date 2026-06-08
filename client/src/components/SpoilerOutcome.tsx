@@ -63,10 +63,10 @@ export function SpoilerOutcome({ questId, synopsis }: Props) {
       <button
         type="button"
         onClick={() => setModalOpen(true)}
-        className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400 dark:hover:border-red-500/50 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+        className="flex w-full flex-1 items-center justify-center gap-3 rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-slate-400 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-500 dark:hover:border-red-500/50 dark:hover:bg-red-900/20 dark:hover:text-red-400"
       >
-        <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border border-current" />
-        <span className="font-medium">SPOILER! Show outcome of this choice.</span>
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 border-current" />
+        <span className="text-sm font-semibold">SPOILER! Show outcome of this choice.</span>
       </button>
 
       {modalOpen && (

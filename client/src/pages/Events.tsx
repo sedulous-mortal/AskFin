@@ -22,6 +22,39 @@ type Quest = {
   is_town_quest: boolean;
 };
 
+function ItemIcon({ name, amount }: { name: string; amount: number }) {
+  const [imgError, setImgError] = useState(false);
+  const imgPath = `/edibles/${name.replace(/ /g, '_')}.png`;
+  const initials = name
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('');
+
+  return (
+    <div
+      className="relative h-16 w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
+      title={name}
+    >
+      {!imgError ? (
+        <img
+          src={imgPath}
+          alt={name}
+          className="h-full w-full object-contain p-1"
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <span className="flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight text-indigo-400 dark:text-indigo-500">
+          {initials}
+        </span>
+      )}
+      <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl bg-black/65 px-1.5 py-0.5 text-[14px] font-bold text-white">
+        {amount}
+      </span>
+    </div>
+  );
+}
+
 type EventGroup = {
   startSeason: number;
   startDay: number;
@@ -173,7 +206,7 @@ export default function Events() {
                     return (
                       <div
                         key={quest.id}
-                        className={`p-5 ${
+                        className={`flex gap-4 p-5 ${
                           isChosen
                             ? 'bg-emerald-50/50 dark:bg-emerald-900/10'
                             : optIdx > 0
@@ -181,50 +214,66 @@ export default function Events() {
                             : ''
                         }`}
                       >
-                        <div className="mb-1 flex flex-wrap items-center gap-2">
-                          {event.options.length > 1 && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                              Option {optIdx === 0 ? 'A' : 'B'}
-                            </span>
+                        {/* Left: text content */}
+                        <div className="flex min-w-0 flex-1 flex-col">
+                          <div className="mb-1 flex flex-wrap items-center gap-2">
+                            {event.options.length > 1 && (
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                Option {optIdx === 0 ? 'A' : 'B'}
+                              </span>
+                            )}
+                            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                              {title}
+                            </h3>
+                            {isChosen && (
+                              <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                                Chosen
+                              </span>
+                            )}
+                          </div>
+
+                          {quest.description && (
+                            <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
+                              {quest.description}
+                            </p>
                           )}
-                          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                            {title}
-                          </h3>
-                          {isChosen && (
-                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
-                              Chosen
-                            </span>
+
+                          {quest.requirements.length > 0 && (
+                            <div className="mb-3 flex flex-wrap items-center gap-1.5">
+                              {quest.requirements.map((req, i) => (
+                                <span
+                                  key={i}
+                                  className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+                                >
+                                  {req.amount > 1 ? `${req.amount}× ` : ''}
+                                  {req.name}
+                                </span>
+                              ))}
+                            </div>
                           )}
+
+                          <div className="flex flex-1">
+                            {synopsis ? (
+                              <SpoilerOutcome questId={quest.id} synopsis={synopsis} />
+                            ) : (
+                              <div className="flex-1 rounded-lg bg-slate-50 px-3 py-2 text-xs italic text-slate-400 dark:bg-slate-700/50 dark:text-slate-500">
+                                Outcome synopsis coming soon.
+                              </div>
+                            )}
+                          </div>
                         </div>
 
-                        {quest.description && (
-                          <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">
-                            {quest.description}
-                          </p>
-                        )}
-
+                        {/* Right: requirement icons */}
                         {quest.requirements.length > 0 && (
-                          <div className="mb-3 flex flex-wrap items-center gap-1.5">
-                            <span className="text-[10px] font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                          <div className="flex-none">
+                            <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                               Requires
-                            </span>
-                            {quest.requirements.map((req, i) => (
-                              <span
-                                key={i}
-                                className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                              >
-                                {req.amount > 1 ? `${req.amount}× ` : ''}
-                                {req.name}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-
-                        {synopsis ? (
-                          <SpoilerOutcome questId={quest.id} synopsis={synopsis} />
-                        ) : (
-                          <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs italic text-slate-400 dark:bg-slate-700/50 dark:text-slate-500">
-                            Outcome synopsis coming soon.
+                            </p>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              {quest.requirements.map((req, i) => (
+                                <ItemIcon key={i} name={req.name} amount={req.amount} />
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
