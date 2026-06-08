@@ -1,9 +1,6 @@
 <img src="client\public\askfinlogo1.png" alt="Placeholder for AskFin Logo" style="width: 320px">
 
 
-
-# AskFin
-
 Welcome to **AskFin** — your cozy companion app for exploring, organizing, and interacting with your Grimshire game world data.
 
 AskFin is designed to help players upload their save/game files, browse critters, forageables, world data, and eventually uncover deeper insights about their adventures. ✨
