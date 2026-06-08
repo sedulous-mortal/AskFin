@@ -105,6 +105,7 @@ AskFin/
 
 # ✅ Completed Features
 
+* Ability to see all forageables upcoming and existing available ones by name with date range of availability and image of what they look like harvested in-game on the Forageables tab
 * Ability to view the app without logging in, by hitting "enter as guest" to use the tools as a reference but not share unique character data from your gameplay
 * User profiles (hosted in SupaBase) with the ability to create a new profile (sign up)
 * Save-file parsing (this will be a heavy lift to fully complete, but a basic version of it is fully operational, and impacts what the Dashboard shows for each character you select from the dropdown -- the goal is to have it impact what you see on every tab)
