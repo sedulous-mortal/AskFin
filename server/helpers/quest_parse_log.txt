@@ -5,81 +5,81 @@ Collecting item path IDs referenced in quest dumps...
 Building item path-ID -> name map from resources.assets (raw bytes)...
   Indexing all objects (this may take a moment)...
   Indexed 27616 objects
-  path_id=25216: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25219: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25220: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25442: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25095: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25223: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25351: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25358: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25488: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25444: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25237: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25495: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25623: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25370: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25626: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25629: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25375: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25247: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25633: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25248: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25644: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25653: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25269: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25275: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25148: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25406: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25279: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25408: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25410: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25411: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25412: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25413: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25287: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25160: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25415: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25162: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25419: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25418: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25165: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25422: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25423: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25424: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25678: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25167: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25172: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25174: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25302: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25688: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25176: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25178: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25179: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25435: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25181: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25437: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25175: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25698: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25187: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25188: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25573: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25572: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25191: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25447: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25705: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25449: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25448: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25446: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25709: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25197: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25199: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25192: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25193: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25159: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25208: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  path_id=25212: read error - 'EndianBinaryReader_Streamable' object has no attribute 'byte_size'
-  Resolved 0 of 74 item path IDs
+  path_id=25216  asset='Yarrow'  game_id=333  -> 'Yarrow'
+  path_id=25219  asset='Milk'  game_id=7  -> 'Milk'
+  path_id=25220  asset='Offal'  game_id=959  -> 'Offal'
+  path_id=25442  asset='mat_Stone'  game_id=380  -> 'Stone'
+  path_id=25095  asset='BottledSurprise'  game_id=827  -> 'Bottled Surprise'
+  path_id=25223  asset='Apple_press'  game_id=775  -> 'Apple Juice'
+  path_id=25351  asset='Rosehips_press'  game_id=776  -> 'Rosehip Juice'
+  path_id=25358  asset='Strawberry_honey'  game_id=757  -> 'Honeyed Strawberries'
+  path_id=25488  asset='NuttyCheeseWedges'  game_id=930  -> 'Nutty Cheese Wedges'
+  path_id=25444  asset='PlantDebris'  game_id=657  -> 'Plant Debris'
+  path_id=25237  asset='Cantaloupe_press'  game_id=783  -> 'Cantaloupe Juice'
+  path_id=25495  asset='SpicedBerryPie'  game_id=924  -> 'Spiced Berry Pie'
+  path_id=25623  asset='FishChumRare'  game_id=1005  -> 'Fish Chum Rare'
+  path_id=25370  asset='ToughMeat_salted'  game_id=805  -> 'Salted Tough meat'
+  path_id=25626  asset='KibbleBreed'  game_id=1033  -> "Breeder's Kibble"
+  path_id=25629  asset='KibbleTier1'  game_id=158  -> 'Kibble Nibbles'
+  path_id=25375  asset='Wine'  game_id=1078  -> 'Fruit Wine'
+  path_id=25247  asset='Cheese'  game_id=799  -> 'Cheese'
+  path_id=25633  asset='Pipe'  game_id=347  -> 'Irrigation pipe'
+  path_id=25248  asset='Cheese_Smoke'  game_id=1080  -> 'Smoked Cheese'
+  path_id=25644  asset='CompostBin'  game_id=175  -> 'Compost Bin'
+  path_id=25653  asset='Saw'  game_id=676  -> 'Saw'
+  path_id=25269  asset='Elderberry_honey'  game_id=763  -> 'Honeyed Elderberries'
+  path_id=25275  asset='Fish_Large_smoked'  game_id=794  -> 'Large Smoked Fish'
+  path_id=25148  asset='Stick'  game_id=674  -> 'Stick'
+  path_id=25406  asset='Board'  game_id=658  -> 'Plank'
+  path_id=25279  asset='Fish_Small_smoked'  game_id=789  -> 'Small Smoked Fish'
+  path_id=25408  asset='Compost'  game_id=52  -> 'Compost'
+  path_id=25410  asset='Hide'  game_id=652  -> 'Hide'
+  path_id=25411  asset='Bar_Copper'  game_id=246  -> 'Copper Bar'
+  path_id=25412  asset='Bar_Gold'  game_id=247  -> 'Gold bar'
+  path_id=25413  asset='Bar_Iron'  game_id=248  -> 'Iron Bar'
+  path_id=25287  asset='GirtleShroom_Dried'  game_id=842  -> 'Dried Girtleshroom'
+  path_id=25160  asset='Whitefish'  game_id=205  -> 'Whitefish'
+  path_id=25415  asset='Bar_Nickel'  game_id=372  -> 'Nickel Bar'
+  path_id=25162  asset='Blood'  game_id=648  -> 'Blood'
+  path_id=25419  asset='Ore_Coal'  game_id=276  -> 'Coal'
+  path_id=25418  asset='Bar_Titanium'  game_id=375  -> 'Titanium Bar'
+  path_id=25165  asset='Egg'  game_id=3  -> 'Egg'
+  path_id=25422  asset='Ore_copper'  game_id=49  -> 'Copper Ore'
+  path_id=25423  asset='Ore_gold'  game_id=50  -> 'Gold Ore'
+  path_id=25424  asset='Ore_iron'  game_id=51  -> 'Iron Ore'
+  path_id=25678  asset='Apple Seeds'  game_id=284  -> 'Apple Seed'
+  path_id=25167  asset='Apple'  game_id=283  -> 'Apple'
+  path_id=25172  asset='Cabbage'  game_id=38  -> 'Cabbage'
+  path_id=25174  asset='Carrot'  game_id=34  -> 'Carrot'
+  path_id=25302  asset='Mapleseed_smoked'  game_id=718  -> 'Smoked Maple Seeds'
+  path_id=25688  asset='Chicory Seeds'  game_id=320  -> 'Chicory Seeds'
+  path_id=25176  asset='Chamomile'  game_id=310  -> 'Chamomile'
+  path_id=25178  asset='Cherry'  game_id=278  -> 'Cherry'
+  path_id=25179  asset='Chicory'  game_id=319  -> 'Chicory'
+  path_id=25435  asset='gem_sapphire'  game_id=402  -> 'Sapphire'
+  path_id=25181  asset='Cranberry'  game_id=335  -> 'Cranberry'
+  path_id=25437  asset='mat_Clay'  game_id=44  -> 'Clay'
+  path_id=25175  asset='Cattail'  game_id=163  -> 'Cattail'
+  path_id=25698  asset='Maple Seeds'  game_id=159  -> 'Maple Seed'
+  path_id=25187  asset='Ginger'  game_id=317  -> 'Ginger'
+  path_id=25188  asset='HawThorneBerry'  game_id=294  -> 'Hawthorn Berry'
+  path_id=25573  asset='Planter_SeasonalFlowers_C'  game_id=1041  -> 'Flower Planter C'
+  path_id=25572  asset='Planter_SeasonalFlowers_B'  game_id=1040  -> 'Flower Planter B'
+  path_id=25191  asset='Lavender'  game_id=234  -> 'Lavender'
+  path_id=25447  asset='WoodMedium'  game_id=39  -> 'Medium Wood'
+  path_id=25705  asset='Pepperwort Seeds'  game_id=337  -> 'Pepperwort Seeds'
+  path_id=25449  asset='Wool'  game_id=9  -> 'Alpheep Wool'
+  path_id=25448  asset='WoodSoft'  game_id=655  -> 'Soft Wood'
+  path_id=25446  asset='WoodHard'  game_id=656  -> 'Hard Wood'
+  path_id=25709  asset='Pumpkin Seeds'  game_id=78  -> 'Pumpkin Seeds'
+  path_id=25197  asset='Peanut'  game_id=40  -> 'Peanut'
+  path_id=25199  asset='Pepperwort_Flower'  game_id=339  -> 'Pepperwort Flower'
+  path_id=25192  asset='Mint'  game_id=180  -> 'Mint'
+  path_id=25193  asset='Morel'  game_id=169  -> 'Morel'
+  path_id=25159  asset='WelsCatfish'  game_id=196  -> 'Wels Catfish'
+  path_id=25208  asset='RedClover'  game_id=329  -> 'Red Clover'
+  path_id=25212  asset='Sunflower'  game_id=243  -> 'Sunflower'
+  Resolved 74 of 74 item path IDs
 
 Loading descriptions from localization bundle...
   Found 49 descriptions
@@ -141,75 +141,75 @@ Found 54 dump files in C:\Users\ansob\claude-tests\AskFin\quests
   Parsed quest 1097: Bounty Of Fall  (reqs=1, reward_items=1)
 
 Successfully parsed 54 quest objects
-  Quest 350 requirements: [{'name': 'Unknown item (path_id=25442)', 'amount': 300}, {'name': 'Unknown item (path_id=25444)', 'amount': 100}, {'name': 'Unknown item (path_id=25408)', 'amount': 50}, {'name': 'Unknown item (path_id=25148)', 'amount': 50}, {'name': 'Unknown item (path_id=25192)', 'amount': 20}, {'name': 'Unknown item (path_id=25199)', 'amount': 20}]
-  Quest 416 requirements: [{'name': 'Unknown item (path_id=25174)', 'amount': 5}]
-  Quest 417 requirements: [{'name': 'Unknown item (path_id=25422)', 'amount': 5}]
-  Quest 418 requirements: [{'name': 'Unknown item (path_id=25160)', 'amount': 1}]
-  Quest 433 reward items: [{'name': 'Unknown item (path_id=25488)', 'amount': 1}]
-  Quest 439 requirements: [{'name': 'Unknown item (path_id=25446)', 'amount': 150}, {'name': 'Unknown item (path_id=25447)', 'amount': 150}, {'name': 'Unknown item (path_id=25148)', 'amount': 75}, {'name': 'Unknown item (path_id=25442)', 'amount': 200}, {'name': 'Unknown item (path_id=25408)', 'amount': 100}, {'name': 'Unknown item (path_id=25193)', 'amount': 10}]
-  Quest 440 requirements: [{'name': 'Unknown item (path_id=25447)', 'amount': 20}]
-  Quest 440 reward items: [{'name': 'Unknown item (path_id=25653)', 'amount': 1}]
-  Quest 582 requirements: [{'name': 'Unknown item (path_id=25437)', 'amount': 200}, {'name': 'Unknown item (path_id=25406)', 'amount': 150}, {'name': 'Unknown item (path_id=25442)', 'amount': 100}, {'name': 'Unknown item (path_id=25629)', 'amount': 100}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25415)', 'amount': 20}]
-  Quest 583 requirements: [{'name': 'Unknown item (path_id=25437)', 'amount': 200}, {'name': 'Unknown item (path_id=25444)', 'amount': 200}, {'name': 'Unknown item (path_id=25446)', 'amount': 100}, {'name': 'Unknown item (path_id=25408)', 'amount': 100}, {'name': 'Unknown item (path_id=25208)', 'amount': 40}, {'name': 'Unknown item (path_id=25175)', 'amount': 20}]
-  Quest 584 requirements: [{'name': 'Unknown item (path_id=25448)', 'amount': 100}, {'name': 'Unknown item (path_id=25447)', 'amount': 100}, {'name': 'Unknown item (path_id=25413)', 'amount': 60}, {'name': 'Unknown item (path_id=25419)', 'amount': 50}, {'name': 'Unknown item (path_id=25176)', 'amount': 30}, {'name': 'Unknown item (path_id=25179)', 'amount': 30}]
-  Quest 585 requirements: [{'name': 'Unknown item (path_id=25446)', 'amount': 100}, {'name': 'Unknown item (path_id=25406)', 'amount': 60}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25415)', 'amount': 30}, {'name': 'Unknown item (path_id=25412)', 'amount': 10}, {'name': 'Unknown item (path_id=25220)', 'amount': 10}]
-  Quest 586 requirements: [{'name': 'Unknown item (path_id=25406)', 'amount': 100}, {'name': 'Unknown item (path_id=25415)', 'amount': 20}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25418)', 'amount': 10}, {'name': 'Unknown item (path_id=25162)', 'amount': 20}, {'name': 'Unknown item (path_id=25220)', 'amount': 10}]
-  Quest 587 requirements: [{'name': 'Unknown item (path_id=25406)', 'amount': 150}, {'name': 'Unknown item (path_id=25419)', 'amount': 100}, {'name': 'Unknown item (path_id=25413)', 'amount': 40}, {'name': 'Unknown item (path_id=25415)', 'amount': 30}, {'name': 'Unknown item (path_id=25418)', 'amount': 10}, {'name': 'Unknown item (path_id=25410)', 'amount': 20}]
-  Quest 615 requirements: [{'name': 'Unknown item (path_id=25406)', 'amount': 300}, {'name': 'Unknown item (path_id=25446)', 'amount': 200}, {'name': 'Unknown item (path_id=25442)', 'amount': 200}, {'name': 'Unknown item (path_id=25437)', 'amount': 200}, {'name': 'Unknown item (path_id=25413)', 'amount': 50}, {'name': 'Unknown item (path_id=25418)', 'amount': 40}]
-  Quest 1077 requirements: [{'name': 'Unknown item (path_id=25199)', 'amount': 5}]
-  Quest 1077 reward items: [{'name': 'Unknown item (path_id=25705)', 'amount': 10}]
-  Quest 1081 requirements: [{'name': 'Unknown item (path_id=25165)', 'amount': 1}]
-  Quest 1081 reward items: [{'name': 'Unknown item (path_id=25629)', 'amount': 20}]
-  Quest 1082 requirements: [{'name': 'Unknown item (path_id=25302)', 'amount': 8}]
-  Quest 1082 reward items: [{'name': 'Unknown item (path_id=25302)', 'amount': 2}]
-  Quest 1083 requirements: [{'name': 'Unknown item (path_id=25698)', 'amount': 30}]
-  Quest 1083 reward items: [{'name': 'Unknown item (path_id=25678)', 'amount': 5}]
-  Quest 1084 requirements: [{'name': 'Unknown item (path_id=25191)', 'amount': 5}]
-  Quest 1084 reward items: [{'name': 'Unknown item (path_id=25572)', 'amount': 3}]
-  Quest 1085 requirements: [{'name': 'Unknown item (path_id=25219)', 'amount': 3}]
-  Quest 1085 reward items: [{'name': 'Unknown item (path_id=25626)', 'amount': 20}]
-  Quest 1086 requirements: [{'name': 'Unknown item (path_id=25162)', 'amount': 1}]
-  Quest 1086 reward items: [{'name': 'Unknown item (path_id=25370)', 'amount': 5}]
-  Quest 1087 requirements: [{'name': 'Unknown item (path_id=25216)', 'amount': 5}]
-  Quest 1087 reward items: [{'name': 'Unknown item (path_id=25633)', 'amount': 5}]
-  Quest 1088 requirements: [{'name': 'Unknown item (path_id=25449)', 'amount': 3}]
-  Quest 1088 reward items: [{'name': 'Unknown item (path_id=25709)', 'amount': 5}]
-  Quest 1089 requirements: [{'name': 'Unknown item (path_id=25197)', 'amount': 5}]
-  Quest 1089 reward items: [{'name': 'Unknown item (path_id=25275)', 'amount': 5}]
-  Quest 1090 requirements: [{'name': 'Unknown item (path_id=25435)', 'amount': 1}, {'name': 'Unknown item (path_id=25212)', 'amount': 1}]
-  Quest 1090 reward items: [{'name': 'Unknown item (path_id=25412)', 'amount': 3}]
-  Quest 1091 requirements: [{'name': 'Unknown item (path_id=25179)', 'amount': 5}]
-  Quest 1091 reward items: [{'name': 'Unknown item (path_id=25573)', 'amount': 3}]
-  Quest 1092 requirements: [{'name': 'Unknown item (path_id=25688)', 'amount': 5}]
-  Quest 1092 reward items: [{'name': 'Unknown item (path_id=25095)', 'amount': 3}]
-  Quest 1093 requirements: [{'name': 'Unknown item (path_id=25187)', 'amount': 5}]
-  Quest 1093 reward items: [{'name': 'Unknown item (path_id=25237)', 'amount': 6}]
-  Quest 1094 requirements: [{'name': 'Unknown item (path_id=25167)', 'amount': 15}]
-  Quest 1094 reward items: [{'name': 'Unknown item (path_id=25223)', 'amount': 6}]
-  Quest 1095 requirements: [{'name': 'Unknown item (path_id=25159)', 'amount': 1}]
-  Quest 1095 reward items: [{'name': 'Unknown item (path_id=25623)', 'amount': 10}]
-  Quest 1096 requirements: [{'name': 'Unknown item (path_id=25279)', 'amount': 1}]
-  Quest 1096 reward items: [{'name': 'Unknown item (path_id=25423)', 'amount': 1}]
-  Quest 1097 requirements: [{'name': 'Unknown item (path_id=25351)', 'amount': 1}]
-  Quest 1097 reward items: [{'name': 'Unknown item (path_id=25358)', 'amount': 5}]
-  Quest 1098 requirements: [{'name': 'Unknown item (path_id=25176)', 'amount': 5}]
-  Quest 1098 reward items: [{'name': 'Unknown item (path_id=25269)', 'amount': 5}]
-  Quest 1099 requirements: [{'name': 'Unknown item (path_id=25375)', 'amount': 1}]
-  Quest 1099 reward items: [{'name': 'Unknown item (path_id=25413)', 'amount': 5}]
-  Quest 1100 requirements: [{'name': 'Unknown item (path_id=25188)', 'amount': 10}]
-  Quest 1100 reward items: [{'name': 'Unknown item (path_id=25375)', 'amount': 5}]
-  Quest 1101 requirements: [{'name': 'Unknown item (path_id=25181)', 'amount': 10}]
-  Quest 1101 reward items: [{'name': 'Unknown item (path_id=25248)', 'amount': 5}]
-  Quest 1102 requirements: [{'name': 'Unknown item (path_id=25247)', 'amount': 5}]
-  Quest 1102 reward items: [{'name': 'Unknown item (path_id=25412)', 'amount': 5}]
-  Quest 1103 requirements: [{'name': 'Unknown item (path_id=25188)', 'amount': 10}]
-  Quest 1103 reward items: [{'name': 'Unknown item (path_id=25287)', 'amount': 5}]
-  Quest 1104 requirements: [{'name': 'Unknown item (path_id=25424)', 'amount': 5}]
-  Quest 1104 reward items: [{'name': 'Unknown item (path_id=25411)', 'amount': 10}]
-  Quest 1105 requirements: [{'name': 'Unknown item (path_id=25178)', 'amount': 15}]
-  Quest 1105 reward items: [{'name': 'Unknown item (path_id=25495)', 'amount': 3}]
-  Quest 1106 requirements: [{'name': 'Unknown item (path_id=25172)', 'amount': 5}]
-  Quest 1106 reward items: [{'name': 'Unknown item (path_id=25644)', 'amount': 1}]
+  Quest 350 requirements: [{'name': 'Stone', 'amount': 300}, {'name': 'Plant Debris', 'amount': 100}, {'name': 'Compost', 'amount': 50}, {'name': 'Stick', 'amount': 50}, {'name': 'Mint', 'amount': 20}, {'name': 'Pepperwort Flower', 'amount': 20}]
+  Quest 416 requirements: [{'name': 'Carrot', 'amount': 5}]
+  Quest 417 requirements: [{'name': 'Copper Ore', 'amount': 5}]
+  Quest 418 requirements: [{'name': 'Whitefish', 'amount': 1}]
+  Quest 433 reward items: [{'name': 'Nutty Cheese Wedges', 'amount': 1}]
+  Quest 439 requirements: [{'name': 'Hard Wood', 'amount': 150}, {'name': 'Medium Wood', 'amount': 150}, {'name': 'Stick', 'amount': 75}, {'name': 'Stone', 'amount': 200}, {'name': 'Compost', 'amount': 100}, {'name': 'Morel', 'amount': 10}]
+  Quest 440 requirements: [{'name': 'Medium Wood', 'amount': 20}]
+  Quest 440 reward items: [{'name': 'Saw', 'amount': 1}]
+  Quest 582 requirements: [{'name': 'Clay', 'amount': 200}, {'name': 'Plank', 'amount': 150}, {'name': 'Stone', 'amount': 100}, {'name': 'Kibble Nibbles', 'amount': 100}, {'name': 'Iron Bar', 'amount': 40}, {'name': 'Nickel Bar', 'amount': 20}]
+  Quest 583 requirements: [{'name': 'Clay', 'amount': 200}, {'name': 'Plant Debris', 'amount': 200}, {'name': 'Hard Wood', 'amount': 100}, {'name': 'Compost', 'amount': 100}, {'name': 'Red Clover', 'amount': 40}, {'name': 'Cattail', 'amount': 20}]
+  Quest 584 requirements: [{'name': 'Soft Wood', 'amount': 100}, {'name': 'Medium Wood', 'amount': 100}, {'name': 'Iron Bar', 'amount': 60}, {'name': 'Coal', 'amount': 50}, {'name': 'Chamomile', 'amount': 30}, {'name': 'Chicory', 'amount': 30}]
+  Quest 585 requirements: [{'name': 'Hard Wood', 'amount': 100}, {'name': 'Plank', 'amount': 60}, {'name': 'Iron Bar', 'amount': 40}, {'name': 'Nickel Bar', 'amount': 30}, {'name': 'Gold bar', 'amount': 10}, {'name': 'Offal', 'amount': 10}]
+  Quest 586 requirements: [{'name': 'Plank', 'amount': 100}, {'name': 'Nickel Bar', 'amount': 20}, {'name': 'Iron Bar', 'amount': 40}, {'name': 'Titanium Bar', 'amount': 10}, {'name': 'Blood', 'amount': 20}, {'name': 'Offal', 'amount': 10}]
+  Quest 587 requirements: [{'name': 'Plank', 'amount': 150}, {'name': 'Coal', 'amount': 100}, {'name': 'Iron Bar', 'amount': 40}, {'name': 'Nickel Bar', 'amount': 30}, {'name': 'Titanium Bar', 'amount': 10}, {'name': 'Hide', 'amount': 20}]
+  Quest 615 requirements: [{'name': 'Plank', 'amount': 300}, {'name': 'Hard Wood', 'amount': 200}, {'name': 'Stone', 'amount': 200}, {'name': 'Clay', 'amount': 200}, {'name': 'Iron Bar', 'amount': 50}, {'name': 'Titanium Bar', 'amount': 40}]
+  Quest 1077 requirements: [{'name': 'Pepperwort Flower', 'amount': 5}]
+  Quest 1077 reward items: [{'name': 'Pepperwort Seeds', 'amount': 10}]
+  Quest 1081 requirements: [{'name': 'Egg', 'amount': 1}]
+  Quest 1081 reward items: [{'name': 'Kibble Nibbles', 'amount': 20}]
+  Quest 1082 requirements: [{'name': 'Smoked Maple Seeds', 'amount': 8}]
+  Quest 1082 reward items: [{'name': 'Smoked Maple Seeds', 'amount': 2}]
+  Quest 1083 requirements: [{'name': 'Maple Seed', 'amount': 30}]
+  Quest 1083 reward items: [{'name': 'Apple Seed', 'amount': 5}]
+  Quest 1084 requirements: [{'name': 'Lavender', 'amount': 5}]
+  Quest 1084 reward items: [{'name': 'Flower Planter B', 'amount': 3}]
+  Quest 1085 requirements: [{'name': 'Milk', 'amount': 3}]
+  Quest 1085 reward items: [{'name': "Breeder's Kibble", 'amount': 20}]
+  Quest 1086 requirements: [{'name': 'Blood', 'amount': 1}]
+  Quest 1086 reward items: [{'name': 'Salted Tough meat', 'amount': 5}]
+  Quest 1087 requirements: [{'name': 'Yarrow', 'amount': 5}]
+  Quest 1087 reward items: [{'name': 'Irrigation pipe', 'amount': 5}]
+  Quest 1088 requirements: [{'name': 'Alpheep Wool', 'amount': 3}]
+  Quest 1088 reward items: [{'name': 'Pumpkin Seeds', 'amount': 5}]
+  Quest 1089 requirements: [{'name': 'Peanut', 'amount': 5}]
+  Quest 1089 reward items: [{'name': 'Large Smoked Fish', 'amount': 5}]
+  Quest 1090 requirements: [{'name': 'Sapphire', 'amount': 1}, {'name': 'Sunflower', 'amount': 1}]
+  Quest 1090 reward items: [{'name': 'Gold bar', 'amount': 3}]
+  Quest 1091 requirements: [{'name': 'Chicory', 'amount': 5}]
+  Quest 1091 reward items: [{'name': 'Flower Planter C', 'amount': 3}]
+  Quest 1092 requirements: [{'name': 'Chicory Seeds', 'amount': 5}]
+  Quest 1092 reward items: [{'name': 'Bottled Surprise', 'amount': 3}]
+  Quest 1093 requirements: [{'name': 'Ginger', 'amount': 5}]
+  Quest 1093 reward items: [{'name': 'Cantaloupe Juice', 'amount': 6}]
+  Quest 1094 requirements: [{'name': 'Apple', 'amount': 15}]
+  Quest 1094 reward items: [{'name': 'Apple Juice', 'amount': 6}]
+  Quest 1095 requirements: [{'name': 'Wels Catfish', 'amount': 1}]
+  Quest 1095 reward items: [{'name': 'Fish Chum Rare', 'amount': 10}]
+  Quest 1096 requirements: [{'name': 'Small Smoked Fish', 'amount': 1}]
+  Quest 1096 reward items: [{'name': 'Gold Ore', 'amount': 1}]
+  Quest 1097 requirements: [{'name': 'Rosehip Juice', 'amount': 1}]
+  Quest 1097 reward items: [{'name': 'Honeyed Strawberries', 'amount': 5}]
+  Quest 1098 requirements: [{'name': 'Chamomile', 'amount': 5}]
+  Quest 1098 reward items: [{'name': 'Honeyed Elderberries', 'amount': 5}]
+  Quest 1099 requirements: [{'name': 'Fruit Wine', 'amount': 1}]
+  Quest 1099 reward items: [{'name': 'Iron Bar', 'amount': 5}]
+  Quest 1100 requirements: [{'name': 'Hawthorn Berry', 'amount': 10}]
+  Quest 1100 reward items: [{'name': 'Fruit Wine', 'amount': 5}]
+  Quest 1101 requirements: [{'name': 'Cranberry', 'amount': 10}]
+  Quest 1101 reward items: [{'name': 'Smoked Cheese', 'amount': 5}]
+  Quest 1102 requirements: [{'name': 'Cheese', 'amount': 5}]
+  Quest 1102 reward items: [{'name': 'Gold bar', 'amount': 5}]
+  Quest 1103 requirements: [{'name': 'Hawthorn Berry', 'amount': 10}]
+  Quest 1103 reward items: [{'name': 'Dried Girtleshroom', 'amount': 5}]
+  Quest 1104 requirements: [{'name': 'Iron Ore', 'amount': 5}]
+  Quest 1104 reward items: [{'name': 'Copper Bar', 'amount': 10}]
+  Quest 1105 requirements: [{'name': 'Cherry', 'amount': 15}]
+  Quest 1105 reward items: [{'name': 'Spiced Berry Pie', 'amount': 3}]
+  Quest 1106 requirements: [{'name': 'Cabbage', 'amount': 5}]
+  Quest 1106 reward items: [{'name': 'Compost Bin', 'amount': 1}]
 
 Written to C:\Users\ansob\claude-tests\AskFin\server\helpers\quests.json
   Total:                61

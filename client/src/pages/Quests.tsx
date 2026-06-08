@@ -232,7 +232,7 @@ export default function Quests() {
                       ) : null}
                       {quest.reward_items?.map((item, i) => (
                         <span key={i} className="rounded bg-emerald-50 px-2 py-0.5 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
-                          {item.amount > 1 ? `${item.amount}× ` : ''}{item.name}
+                          {item.amount > 1 ? `${item.amount}× ${item.name}` : `${item.name} ( 1 )`}
                         </span>
                       ))}
                     </div>

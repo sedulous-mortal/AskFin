@@ -28,24 +28,36 @@ export default function Header() {
   // We render a hidden "ghost" nav (position:absolute, off-screen) that always has all
   // nav items at their natural width. A ResizeObserver on the center column tells us
   // whether there's room for the real nav. No fixed breakpoint needed.
+  const showAuthenticatedNav = !loading && Boolean(user);
+
   const centerRef = useRef<HTMLDivElement>(null);
   const ghostNavRef = useRef<HTMLDivElement>(null);
   const [useHamburger, setUseHamburger] = useState(false);
 
   useEffect(() => {
-    const center = centerRef.current;
-    const ghost = ghostNavRef.current;
-    if (!center || !ghost) return;
+    if (!showAuthenticatedNav) return;
 
     const check = () => {
+      const center = centerRef.current;
+      const ghost = ghostNavRef.current;
+      if (!center || !ghost) return;
       setUseHamburger(ghost.scrollWidth > center.clientWidth);
     };
 
-    const observer = new ResizeObserver(check);
-    observer.observe(center);
+    const ro = new ResizeObserver(check);
+    if (centerRef.current) ro.observe(centerRef.current);
+    window.addEventListener('resize', check);
     check();
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', check);
+    };
+  }, [showAuthenticatedNav]);
+
+  // Close the dropdown whenever we switch back to full-nav mode.
+  useEffect(() => {
+    if (!useHamburger) setMenuOpen(false);
+  }, [useHamburger]);
 
   // Sync date picker to character's in-game date on character change.
   useEffect(() => {
@@ -61,7 +73,6 @@ export default function Header() {
     }
   }, [selectedCharacter?.id]);
 
-  const showAuthenticatedNav = !loading && Boolean(user);
   const quote = useMemo(
     () => finQuotes[Math.floor(Math.random() * finQuotes.length)],
     [],
@@ -94,14 +105,14 @@ export default function Header() {
           style={{ top: -9999, left: 0, visibility: 'hidden' }}
         >
           {navItems.map((item) => (
-            <span key={item.to} className="rounded-lg px-5 py-3 text-base whitespace-nowrap">
+            <span key={item.to} className="rounded-lg px-3 py-3 text-base whitespace-nowrap">
               {item.label}
             </span>
           ))}
         </div>
       )}
 
-      <div className="mx-auto flex w-full max-w-screen-xl items-stretch gap-6 px-6 py-4">
+      <div className="mx-auto flex w-full max-w-screen-2xl items-stretch gap-6 px-6 py-4">
 
         {/* Logo */}
         <NavLink
@@ -125,7 +136,7 @@ export default function Header() {
                       key={item.to}
                       to={item.to}
                       className={({ isActive }) =>
-                        `rounded-lg px-5 py-3 text-base transition-colors ${
+                        `rounded-lg px-3 py-3 text-base transition-colors ${
                           isActive
                             ? 'bg-slate-900 text-white shadow-sm'
                             : 'text-slate-200 hover:bg-slate-600 hover:text-white'

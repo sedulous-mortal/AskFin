@@ -98,11 +98,8 @@ try:
             continue
         try:
             r = obj.reader
-            try:
-                r.Position = 0
-            except Exception:
-                pass
-            raw = bytes(r.read_bytes(r.byte_size))
+            r.Position = obj.byte_start
+            raw = bytes(r.read_bytes(obj.byte_size))
             if len(raw) < 32:
                 continue
             nlen = struct.unpack_from("<I", raw, 28)[0]
