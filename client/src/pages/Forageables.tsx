@@ -105,7 +105,7 @@ export default function Forageables() {
           <span className="font-semibold">{season} {day}</span>.
         </p>
         <div className="mt-3 inline-block rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-700/50 dark:bg-amber-900/20">
-          <p className="text-base font-medium text-slate-800 dark:text-slate-200">
+          <p className="text-base font-medium text-slate-700 dark:text-slate-200">
             Farmable edibles will appear with a{' '}
             <span className="mx-1 inline-flex items-center rounded bg-yellow-600 px-2 py-1 text-sm font-medium text-slate-100 not-italic dark:bg-amber-900/30 dark:text-amber-400">Farm</span>
             {' '}tag here only if you have planted them on your farm.

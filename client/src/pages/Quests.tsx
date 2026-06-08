@@ -215,7 +215,7 @@ function RootCellarInfo({ difficulty, currentSeasonIdx }: { difficulty: number |
   const diffName = difficulty !== null ? (DIFFICULTY_NAMES[difficulty] ?? null) : null;
 
   return (
-    <div className="mb-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-900/20 dark:text-emerald-300">
+    <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-base text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-200">
       <p className="mb-1 font-semibold">Defender's Ration</p>
       <p>Collected every Sunday from Spring 8 onward. Requires herbivore and carnivore food in equal parts — one type can cover the other's deficit if needed.</p>
       {days !== null && diffName !== null ? (
@@ -224,7 +224,7 @@ function RootCellarInfo({ difficulty, currentSeasonIdx }: { difficulty: number |
           <span className="font-bold">{days} days</span> of food per weekly delivery.
         </p>
       ) : (
-        <p className="mt-1.5 italic text-emerald-600 dark:text-emerald-500">
+        <p className="mt-1.5 italic text-slate-500 dark:text-slate-400">
           Load a save file to see your difficulty-specific requirement.
         </p>
       )}
