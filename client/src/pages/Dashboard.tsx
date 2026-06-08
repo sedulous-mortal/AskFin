@@ -344,11 +344,12 @@ function EdiblesSection({
 
 // ── Stat card ─────────────────────────────────────────────────────────────────
 
-function StatCard({ label, value, accent }: { label: string; value: number; accent: string }) {
+function StatCard({ label, count, total, accent }: { label: string; count: number; total: number; accent: string }) {
+  const pct = total > 0 ? Math.min(100, Math.ceil((count / total) * 100)) : 0;
   return (
     <div className="rounded-2xl border border-emerald-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="text-sm font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
-      <div className={`mt-2 text-4xl font-bold tabular-nums ${accent}`}>{value}</div>
+      <div className={`mt-2 text-4xl font-bold tabular-nums ${accent}`}>{pct}%</div>
     </div>
   );
 }
@@ -411,10 +412,10 @@ export default function Dashboard() {
       ) : (
         <>
           <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <StatCard label="Fish discovered"   value={selectedCharacter.fish_discovered.length}              accent="text-sky-700" />
-            <StatCard label="Edibles found"     value={selectedCharacter.edibles_discovered.length}           accent="text-emerald-700" />
-            <StatCard label="Crafting recipes"  value={selectedCharacter.unlocked_crafting_recipes.length}    accent="text-amber-700" />
-            <StatCard label="Cooking recipes"   value={selectedCharacter.unlocked_cooking_recipes.length}     accent="text-rose-700" />
+            <StatCard label="Fish discovered"  count={selectedCharacter.fish_discovered.length}              total={selectedCharacter.fish_total ?? 75}         accent="text-sky-700" />
+            <StatCard label="Edibles found"    count={selectedCharacter.edibles_discovered.length}           total={selectedCharacter.edibles_total || 47}       accent="text-emerald-700" />
+            <StatCard label="Crafting recipes" count={selectedCharacter.unlocked_crafting_recipes.length}    total={100}                                         accent="text-amber-700" />
+            <StatCard label="Cooking recipes"  count={selectedCharacter.unlocked_cooking_recipes.length}     total={100}                                         accent="text-rose-700" />
           </section>
 
           {/* Row 1: Fish | Edibles */}

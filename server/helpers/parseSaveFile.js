@@ -85,6 +85,7 @@ export function parseSaveFile(buffer) {
     unlockedCraftingRecipes: extractArray(text, "unlockedCraftingRecipes"),
     unlockedCookingRecipes: extractArray(text, "unlockedCookingRecipes"),
     questData: extractQuestData(text),
+    donatedMuseumItemsCount: extractArray(text, "donatedMuseumItemsList").length,
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),
     currentDateYear: extractNestedNumber(text, "currentDate", "Year"),

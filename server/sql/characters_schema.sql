@@ -36,7 +36,8 @@ alter table public.characters
   add column if not exists quest_data                 jsonb       default '[]'::jsonb,
   add column if not exists current_day                integer,
   add column if not exists current_season             integer,
-  add column if not exists current_year               integer;
+  add column if not exists current_year               integer,
+  add column if not exists donated_specimen_count     integer     default 0;
 
 -- Unique save file per user (nulls excluded so rows without a name don't conflict).
 create unique index if not exists characters_user_save_file_unique

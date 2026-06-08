@@ -36,6 +36,7 @@ export type CharacterDetail = {
   edibles_undiscovered: EdibleItem[];
   edibles_total: number;
   quest_data: QuestStatus[];
+  donated_specimen_count: number;
   current_day: number | null;
   current_season: number | null;
   current_year: number | null;
@@ -113,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { id: 350, status: 3 },
       { id: 351, status: 1 },
     ],
+    donated_specimen_count: 0,
     current_day: 14,
     current_season: 0,
     current_year: 1,

@@ -99,6 +99,17 @@ function donationSortKey(quest: Quest): number {
   return m ? parseInt(m[1], 10) : 0;
 }
 
+function donationThreshold(quest: Quest): number | null {
+  const n = donationSortKey(quest);
+  return n > 0 ? n : null;
+}
+
+function isDonationQuestComplete(quest: Quest, donatedCount: number, completedIds: Set<number>): boolean {
+  const threshold = donationThreshold(quest);
+  if (threshold !== null) return donatedCount >= threshold;
+  return completedIds.has(quest.id);
+}
+
 type TypeInfo = { label: string; color: string };
 
 function questTypeInfo(quest: Quest): TypeInfo {
@@ -165,32 +176,42 @@ function QuestCard({
           </div>
         )}
 
-        {(quest.reward_money || quest.reward_relationship_points || quest.reward_items?.length) ? (
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">Rewards</span>
-            {quest.reward_money ? (
-              <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                {quest.reward_money.toLocaleString()} coins
-              </span>
-            ) : null}
-            {quest.reward_relationship_points ? (
-              quest.quest_giver ? (
+        {(() => {
+          const isThresholdDonation = Boolean(quest.is_donation_quest && donationThreshold(quest) !== null);
+          const hasRewards = quest.reward_money || quest.reward_relationship_points || quest.reward_items?.length || isThresholdDonation;
+          if (!hasRewards) return null;
+          return (
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+              <span className="font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">Rewards</span>
+              {isThresholdDonation && (
                 <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                  +{quest.reward_relationship_points} relationship with {quest.quest_giver}
+                  +20 relationship with Adeline
                 </span>
-              ) : (
-                <span className="rounded bg-amber-50 px-2 py-0.5 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                  +{quest.reward_relationship_points} relationship — must be confirmed with Acute Owl Studio who this gain is with
+              )}
+              {quest.reward_money ? (
+                <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                  {quest.reward_money.toLocaleString()} coins
                 </span>
-              )
-            ) : null}
-            {quest.reward_items?.map((item, i) => (
-              <span key={i} className="rounded bg-emerald-50 px-2 py-0.5 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
-                {item.amount > 1 ? `${item.amount}× ${item.name}` : `${item.name} (1)`}
-              </span>
-            ))}
-          </div>
-        ) : null}
+              ) : null}
+              {!isThresholdDonation && quest.reward_relationship_points ? (
+                quest.quest_giver ? (
+                  <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                    +{quest.reward_relationship_points} relationship with {quest.quest_giver}
+                  </span>
+                ) : (
+                  <span className="rounded bg-amber-50 px-2 py-0.5 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                    +{quest.reward_relationship_points} relationship — must be confirmed with Acute Owl Studio who this gain is with
+                  </span>
+                )
+              ) : null}
+              {quest.reward_items?.map((item, i) => (
+                <span key={i} className="rounded bg-emerald-50 px-2 py-0.5 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                  {item.amount > 1 ? `${item.amount}× ${item.name}` : `${item.name} (1)`}
+                </span>
+              ))}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
@@ -277,6 +298,66 @@ function QuestColumn({
   );
 }
 
+function CompletedQuestCard({ quest, rootCellarStatus }: { quest: Quest; rootCellarStatus?: number }) {
+  const { label, color } = questTypeInfo(quest);
+  const title = quest.display_title || quest.name;
+  const failed = rootCellarStatus === 2;
+  return (
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-800/60">
+      <div className="p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
+            {label}
+          </span>
+          {failed ? (
+            <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-300">
+              Failed
+            </span>
+          ) : (
+            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+              Completed
+            </span>
+          )}
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{title}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CompletedQuestColumn({
+  title,
+  quests,
+  emptyText,
+  rootCellarHistoryMap,
+}: {
+  title: string;
+  quests: Quest[];
+  emptyText: string;
+  rootCellarHistoryMap?: Map<number, number>;
+}) {
+  return (
+    <section>
+      <h3 className="mb-3 text-lg font-semibold text-slate-800 dark:text-slate-200">{title}</h3>
+      {quests.length === 0 ? (
+        <p className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-5 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
+          {emptyText}
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {quests.map((quest) => (
+            <CompletedQuestCard
+              key={quest.id}
+              quest={quest}
+              rootCellarStatus={rootCellarHistoryMap?.get(quest.id)}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function Quests() {
   const { season, day } = useDate();
   const { selectedCharacter } = useAuth();
@@ -295,6 +376,12 @@ export default function Quests() {
   const completedQuestIds = new Set(
     (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 3).map((q) => q.id),
   );
+  // Tracks root cellar quest outcomes including failures (status 2) for history display
+  const rootCellarHistoryMap = new Map<number, number>(
+    (selectedCharacter?.quest_data ?? [])
+      .filter((q) => q.status === 2 || q.status === 3)
+      .map((q) => [q.id, q.status]),
+  );
 
   useEffect(() => {
     fetch('/api/quests')
@@ -311,9 +398,22 @@ export default function Quests() {
   const currentYearOffset = Math.max(0, (selectedCharacter?.current_year ?? 1) - 1);
   const currentAbs = toAbsDay(currentYearOffset, currentSeasonIdx, day);
 
-  const upcoming = allQuests.filter(
-    (q) => isQuestInWindow(q, currentAbs) && !completedQuestIds.has(q.id),
-  );
+  const donatedSpecimenCount = selectedCharacter?.donated_specimen_count ?? 0;
+
+  const upcoming = allQuests.filter((q) => {
+    if (!isQuestInWindow(q, currentAbs)) return false;
+    if (q.is_rootcellar_quest) return true; // always show for planning
+    if (q.is_donation_quest) {
+      if (q.id === 1331) return false; // "Research" hidden — its reward shown on each tier card instead
+      const threshold = donationThreshold(q);
+      if (threshold !== null) return donatedSpecimenCount < threshold;
+      // Non-threshold donation quests (no number in name): only show if actively in progress.
+      // Status 0 (never activated) should not appear as "Available now".
+      if (!selectedCharacter) return true;
+      return inProgressQuestIds.has(q.id);
+    }
+    return !completedQuestIds.has(q.id);
+  });
 
   function sortUpcoming(quests: Quest[]) {
     return [...quests].sort((a, b) => {
@@ -342,9 +442,27 @@ export default function Quests() {
 
   const townQuests = sortUpcoming(upcoming.filter((q) => q.is_town_quest));
 
-  const completedQuests = allQuests
-    .filter((q) => completedQuestIds.has(q.id))
+  const completedDonationQuests = allQuests
+    .filter((q) => q.is_donation_quest && q.id !== 1331 && isDonationQuestComplete(q, donatedSpecimenCount, completedQuestIds))
+    .sort((a, b) => donationSortKey(a) - donationSortKey(b));
+
+  const completedSideQuests = allQuests
+    .filter((q) => !q.is_rootcellar_quest && !q.is_donation_quest && !q.is_town_quest && completedQuestIds.has(q.id))
     .sort((a, b) => (a.display_title || a.name).localeCompare(b.display_title || b.name));
+
+  const completedTownQuests = allQuests
+    .filter((q) => q.is_town_quest && completedQuestIds.has(q.id))
+    .sort((a, b) => (a.display_title || a.name).localeCompare(b.display_title || b.name));
+
+  const completedRootCellarQuests = allQuests
+    .filter((q) => q.is_rootcellar_quest && rootCellarHistoryMap.has(q.id))
+    .sort((a, b) => donationSortKey(a) - donationSortKey(b));
+
+  const totalCompleted =
+    completedDonationQuests.length +
+    completedSideQuests.length +
+    completedTownQuests.length +
+    completedRootCellarQuests.length;
 
   return (
     <div className="space-y-8">
@@ -443,36 +561,43 @@ export default function Quests() {
           </div>
 
           {/* Completed Quests — always visible regardless of spoiler settings */}
-          {completedQuests.length > 0 && (
-            <section>
-              <h2 className="mb-3 text-xl font-semibold text-slate-800 dark:text-slate-200">
-                Completed Quests ({completedQuests.length})
+          {totalCompleted > 0 && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                Completed Quests ({totalCompleted})
               </h2>
-              <div className="space-y-2">
-                {completedQuests.map((quest) => {
-                  const { label, color } = questTypeInfo(quest);
-                  const title = quest.display_title || quest.name;
-                  return (
-                    <div
-                      key={quest.id}
-                      className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-800/60"
-                    >
-                      <div className="p-4">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
-                            {label}
-                          </span>
-                          <span className="inline-flex items-center rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
-                            Completed
-                          </span>
-                          <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{title}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+
+              {/* Root Cellar history — full width, mirrors the full-width upcoming section */}
+              {completedRootCellarQuests.length > 0 && (
+                <CompletedQuestColumn
+                  title="Root Cellar History"
+                  quests={completedRootCellarQuests}
+                  rootCellarHistoryMap={rootCellarHistoryMap}
+                  emptyText=""
+                />
+              )}
+
+              {/* Donation + Side Quests (+ optional Town Quests) — mirrors top grid */}
+              <div className={`grid grid-cols-1 gap-6 ${showTownQuests ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
+                <CompletedQuestColumn
+                  title="Donation"
+                  quests={completedDonationQuests}
+                  emptyText="No donation quests completed."
+                />
+                <CompletedQuestColumn
+                  title="Side Quests"
+                  quests={completedSideQuests}
+                  emptyText="No side quests completed."
+                />
+                {showTownQuests && (
+                  <CompletedQuestColumn
+                    title="Town Quests"
+                    quests={completedTownQuests}
+                    emptyText="No town quests completed."
+                  />
+                )}
               </div>
-            </section>
+            </div>
           )}
         </>
       )}

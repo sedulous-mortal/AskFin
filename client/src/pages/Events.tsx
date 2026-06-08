@@ -23,25 +23,22 @@ type Quest = {
 };
 
 function ItemIcon({ name, amount }: { name: string; amount: number }) {
-  const [imgError, setImgError] = useState(false);
-  const imgPath = `/edibles/${name.replace(/ /g, '_')}.png`;
-  const initials = name
-    .split(' ')
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('');
+  const safeName = name.replace(/ /g, '_');
+  const paths = [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const [pathIdx, setPathIdx] = useState(0);
+  const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
 
   return (
     <div
       className="relative h-16 w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
       title={name}
     >
-      {!imgError ? (
+      {pathIdx < paths.length ? (
         <img
-          src={imgPath}
+          src={paths[pathIdx]}
           alt={name}
           className="h-full w-full object-contain p-1"
-          onError={() => setImgError(true)}
+          onError={() => setPathIdx((i) => i + 1)}
         />
       ) : (
         <span className="flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight text-indigo-400 dark:text-indigo-500">
@@ -205,13 +202,22 @@ export default function Events() {
                     const title = quest.display_title || quest.name;
                     const synopsis = SYNOPSES[quest.id];
                     const isChosen = completedQuestIds.has(quest.id);
+                    // Round the corners that sit at the card's outer edge so the border
+                    // curves naturally instead of being clipped by the parent overflow-hidden.
+                    // Single option: whole bottom edge. Two-col desktop: outer bottom corner only.
+                    const chosenCorners =
+                      event.options.length === 1
+                        ? 'rounded-b-xl'
+                        : optIdx === 0
+                        ? 'sm:rounded-bl-xl'
+                        : 'rounded-b-xl sm:rounded-bl-none';
 
                     return (
                       <div
                         key={quest.id}
                         className={`flex gap-4 p-5 ${
                           isChosen
-                            ? 'bg-emerald-50/50 dark:bg-emerald-900/10'
+                            ? `border-2 border-green-800/55 dark:border-green-500/40 ${chosenCorners}`
                             : optIdx > 0
                             ? 'border-t border-slate-100 sm:border-t-0 dark:border-slate-700'
                             : ''

@@ -47,9 +47,11 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 All of the below are items for us to test later on 
 
+0. **Find real quest IDs for 45- and 60-specimen Research milestones** — Quests "Donate 45 Specimens" (Iron Water Pump) and "Donate 60 Specimens" (Kiln) are stored with placeholder IDs -3 and -4 in `server/helpers/quests.json`. Run the raw-scan binary approach used for DonationQuest1–6 — scan `resources.assets` for "Donate 45"/"Donate 60" text or check the ResearchQuestMaster (quest 1331) segment list for their IDs.
+
 1. **Locations on Forageables** - in the Forageables tab, I love the format we have for available now and coming up next, and the cards look great - could we add just a brief key on the right side of each Forageable card that specifies where it can be found? E.g. "Marsh, Forest" or "Mountains". I think some can be found in multiple areas of the map and some can only be found in one, so we need to have room to render up to five areas but we will often only be rendering on or two of them I expect.
 
-2. **Optimize layout for Quests page to have maximum utility at a glance** -Note: order donation quets by the number of specimens required (see titles in format "Donate 30 Species", we can parse that string to create our own sorting order if there isn't an easier way, but we will likely need to convert that substring of "30" to an int to actually sort by it across that subset of quests).
+2. **Optimize layout for Quests page to have maximum utility at a glance** -Note: order donation quests by the number of specimens required (see titles in format "Donate 30 Species", we can parse that string to create our own sorting order if there isn't an easier way, but we will likely need to convert that substring of "30" to an int to actually sort by it across that subset of quests).
 
 3. **Fix spoiler settings application to Quests page** - If a user has set their spoiler gate toggle to FALSE for quests, we still want them to be able to see stats about their previously completed quests in this section, even if their spoiler protection is set to "on" for upcoming/undiscovered quests on this character. we will need to separate the existing toggle into two separate toggles in the user settings - right now we have upcoming/undiscovered quests, but we need one for upcoming/undiscovered Villager quests, and one for upcoming/undiscovered Community quests/events.
 
