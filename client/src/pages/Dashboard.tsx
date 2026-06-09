@@ -194,7 +194,7 @@ function ItemGrid({ items }: { items: (ResolvedItem | EdibleItem)[] }) {
 
 function CookingPanIcon() {
   return (
-    <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <svg width="64" height="64" viewBox="0 12 100 100" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="cookYolk" cx="38%" cy="30%" r="70%">
           <stop offset="0%"   stopColor="#fef08a" />
@@ -520,7 +520,7 @@ function CraftingRecipeSection({
 
   return (
     <section className="relative rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex items-center">
-      <span aria-hidden className="absolute top-4 right-5 text-5xl select-none pointer-events-none">🔨</span>
+      <span aria-hidden className="absolute top-5 right-5 text-5xl select-none pointer-events-none">🔨</span>
       <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
         <input type="checkbox" checked={groupByType} onChange={e => setGroupByType(e.target.checked)} className="sr-only" />
         <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${groupByType ? 'bg-amber-700' : 'bg-slate-300 dark:bg-slate-600'}`}>
@@ -707,7 +707,7 @@ function FishSection({
 
   return (
     <section className="relative rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex items-center">
-      <span aria-hidden className="absolute top-4 right-5 text-5xl select-none pointer-events-none">🐟</span>
+      <span aria-hidden className="absolute top-4 right-5 text-[2.5rem] select-none pointer-events-none">🐟</span>
       <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
         <input type="checkbox" checked={splitByArea} onChange={e => setSplitByArea(e.target.checked)} className="sr-only" />
         <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${splitByArea ? 'bg-sky-400' : 'bg-slate-300 dark:bg-slate-600'}`}>
@@ -890,7 +890,7 @@ function EdiblesSection({
 
   return (
     <section className="relative rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex items-center">
-      <span aria-hidden className="absolute top-4 right-5 text-5xl select-none pointer-events-none">🥬</span>
+      <span aria-hidden className="absolute top-5 right-5 text-[2.25rem] select-none pointer-events-none">🥬</span>
       <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
         <input type="checkbox" checked={splitByType} onChange={e => setSplitByType(e.target.checked)} className="sr-only" />
         <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${splitByType ? '' : 'bg-slate-300 dark:bg-slate-600'}`} style={splitByType ? { backgroundColor: EDIBLE_COLORS.forageable } : undefined}>
@@ -1037,11 +1037,11 @@ export default function Dashboard() {
           <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard label="Fish discovered"  count={selectedCharacter.fish_discovered.length}              total={selectedCharacter.fish_total ?? 75}         accent="var(--fish-accent)" />
             <StatCard label="Edibles found"    count={selectedCharacter.edibles_discovered.length}           total={selectedCharacter.edibles_total || 47}       accent="var(--edibles-accent)" />
-            <StatCard label="Crafting recipes" count={selectedCharacter.unlocked_crafting_recipes.length}    total={171}                                         accent="var(--crafting-color)" />
             <StatCard label="Cooking recipes"  count={selectedCharacter.unlocked_cooking_recipes.length}     total={selectedCharacter.unlocked_cooking_recipes.length + selectedCharacter.unlocked_cooking_recipes_undiscovered.length}  accent="#be185d" />
+            <StatCard label="Crafting recipes" count={selectedCharacter.unlocked_crafting_recipes.length}    total={171}                                         accent="var(--crafting-color)" />
           </section>
 
-          {/* Row 1: Fish | Edibles */}
+          {/* Left col: raw materials (Fish, Edibles) | Right col: recipes (Cooking, Crafting) */}
           <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <FishSection
               discovered={selectedCharacter.fish_discovered}
@@ -1049,19 +1049,15 @@ export default function Dashboard() {
               total={selectedCharacter.fish_total ?? null}
               spoilerKey="show_undiscovered_fish"
             />
-            <EdiblesSection
-              discovered={selectedCharacter.edibles_discovered ?? []}
-              undiscovered={selectedCharacter.edibles_undiscovered ?? []}
-              total={selectedCharacter.edibles_total ?? 0}
-            />
-          </section>
-
-          {/* Row 2: Cooking Recipes | Crafting Recipes */}
-          <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <CookingRecipeSection
               discovered={selectedCharacter.unlocked_cooking_recipes}
               undiscovered={selectedCharacter.unlocked_cooking_recipes_undiscovered}
               spoilerKey="show_undiscovered_cooking_recipes"
+            />
+            <EdiblesSection
+              discovered={selectedCharacter.edibles_discovered ?? []}
+              undiscovered={selectedCharacter.edibles_undiscovered ?? []}
+              total={selectedCharacter.edibles_total ?? 0}
             />
             <CraftingRecipeSection
               discovered={selectedCharacter.unlocked_crafting_recipes}
