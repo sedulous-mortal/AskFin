@@ -119,7 +119,7 @@ export default function Header() {
           to={user ? '/dashboard' : '/'}
           className="flex flex-none items-center"
         >
-          <img src="/askfinlogo1.png" alt="AskFin" className="h-28 w-auto object-contain" />
+          <img src="/lighter-eyes-askfin.png" alt="AskFin" className="h-[124px] w-auto object-contain" />
         </NavLink>
 
         {/* Center: quote + real nav or hamburger button */}

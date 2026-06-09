@@ -322,9 +322,24 @@ function CookingRecipeSection({
       </label>
       <div className="grid grid-cols-3 items-center gap-6 w-full mt-5">
         <div className="flex items-center justify-center">
-          <DonutChart discovered={discovered.length} total={total} color={color}
-            onDiscoveredClick={() => setView('discovered')}
-            onUndiscoveredClick={() => setView('undiscovered')} />
+          {groupByDiet ? (
+            <MultiDonutChart
+              segments={DIET_ORDER
+                .map(diet => ({
+                  label: DIET_LABEL[diet],
+                  count: discovered.filter(i => i.diet === diet).length,
+                  color: DIET_COLORS[diet],
+                  onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView(diet); },
+                }))
+                .filter(seg => seg.count > 0)}
+              total={total}
+              onUndiscoveredClick={() => setView('undiscovered')}
+            />
+          ) : (
+            <DonutChart discovered={discovered.length} total={total} color={color}
+              onDiscoveredClick={() => setView('discovered')}
+              onUndiscoveredClick={() => setView('undiscovered')} />
+          )}
         </div>
         <div className="col-span-2 flex flex-col gap-3">
           <h2 className="text-2xl font-normal tracking-tight text-slate-800 dark:text-slate-200">Cooking Recipes</h2>
@@ -480,9 +495,24 @@ function CraftingRecipeSection({
       </label>
       <div className="grid grid-cols-3 items-center gap-6 w-full mt-5">
         <div className="flex items-center justify-center">
-          <DonutChart discovered={discovered.length} total={total} color={color}
-            onDiscoveredClick={() => setView('discovered')}
-            onUndiscoveredClick={() => setView('undiscovered')} />
+          {groupByType ? (
+            <MultiDonutChart
+              segments={CRAFTING_CATEGORY_ORDER
+                .map(cat => ({
+                  label: cat,
+                  count: discovered.filter(i => i.category === cat).length,
+                  color: CRAFTING_CATEGORY_COLORS[cat],
+                  onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView(cat); },
+                }))
+                .filter(seg => seg.count > 0)}
+              total={total}
+              onUndiscoveredClick={() => setView('undiscovered')}
+            />
+          ) : (
+            <DonutChart discovered={discovered.length} total={total} color={color}
+              onDiscoveredClick={() => setView('discovered')}
+              onUndiscoveredClick={() => setView('undiscovered')} />
+          )}
         </div>
         <div className="col-span-2 flex flex-col gap-3">
           <h2 className="text-2xl font-normal tracking-tight text-slate-800 dark:text-slate-200">Crafting Recipes</h2>

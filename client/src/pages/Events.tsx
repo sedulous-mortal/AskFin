@@ -219,7 +219,7 @@ export default function Events() {
                         key={quest.id}
                         className={`flex gap-4 p-5 ${
                           isChosen
-                            ? `border-2 border-green-800/55 dark:border-green-500/40 ${chosenCorners}`
+                            ? `border-[3px] border-green-800/55 dark:border-green-500/40 ${chosenCorners}`
                             : optIdx === 0 && event.options.length > 1
                             ? 'sm:border-r border-slate-100 dark:border-slate-700'
                             : optIdx > 0
