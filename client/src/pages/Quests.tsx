@@ -303,24 +303,25 @@ function CompletedQuestCard({ quest, rootCellarStatus }: { quest: Quest; rootCel
   const title = quest.display_title || quest.name;
   const failed = rootCellarStatus === 2;
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-800/60">
-      <div className="p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
-            {label}
-          </span>
-          {failed ? (
-            <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-300">
-              Failed
-            </span>
-          ) : (
-            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
-              Completed
-            </span>
-          )}
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{title}</span>
+    <div className="inline-flex max-w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800/60">
+      <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
+        {label}
+      </span>
+      {failed ? (
+        <span className="inline-flex shrink-0 items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-300">
+          Failed
+        </span>
+      ) : (
+        <span className="inline-flex shrink-0 items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+          Completed
+        </span>
+      )}
+      <span className="group relative min-w-0">
+        <span className="block truncate text-sm font-medium text-slate-600 dark:text-slate-300">{title}</span>
+        <div className="pointer-events-none absolute bottom-full left-0 z-50 mb-1 hidden w-max max-w-64 whitespace-normal rounded-lg bg-slate-800 px-3 py-2 text-xs text-slate-200 shadow-xl group-hover:block">
+          {title}
         </div>
-      </div>
+      </span>
     </div>
   );
 }
@@ -337,14 +338,14 @@ function CompletedQuestColumn({
   rootCellarHistoryMap?: Map<number, number>;
 }) {
   return (
-    <section>
+    <section className="pl-2">
       <h3 className="mb-3 text-lg font-semibold text-slate-800 dark:text-slate-200">{title}</h3>
       {quests.length === 0 ? (
         <p className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-5 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
           {emptyText}
         </p>
       ) : (
-        <div className="space-y-2">
+        <div className="flex flex-col items-start gap-1.5">
           {quests.map((quest) => (
             <CompletedQuestCard
               key={quest.id}
@@ -561,44 +562,45 @@ export default function Quests() {
           </div>
 
           {/* Completed Quests — always visible regardless of spoiler settings */}
-          {totalCompleted > 0 && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-                Completed Quests ({totalCompleted})
-              </h2>
-
-              {/* Root Cellar history — full width, mirrors the full-width upcoming section */}
-              {completedRootCellarQuests.length > 0 && (
-                <CompletedQuestColumn
-                  title="Root Cellar History"
-                  quests={completedRootCellarQuests}
-                  rootCellarHistoryMap={rootCellarHistoryMap}
-                  emptyText=""
-                />
-              )}
-
-              {/* Donation + Side Quests (+ optional Town Quests) — mirrors top grid */}
-              <div className={`grid grid-cols-1 gap-6 ${showTownQuests ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
-                <CompletedQuestColumn
-                  title="Donation"
-                  quests={completedDonationQuests}
-                  emptyText="No donation quests completed."
-                />
-                <CompletedQuestColumn
-                  title="Side Quests"
-                  quests={completedSideQuests}
-                  emptyText="No side quests completed."
-                />
-                {showTownQuests && (
+          {totalCompleted > 0 && (() => {
+            const hasRootCellar = completedRootCellarQuests.length > 0;
+            const colCount = 2 + (hasRootCellar ? 1 : 0) + (showTownQuests ? 1 : 0);
+            const gridClass = colCount === 4 ? 'md:grid-cols-4' : colCount === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2';
+            return (
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                  Completed Quests ({totalCompleted})
+                </h2>
+                <div className={`grid grid-cols-1 gap-6 ${gridClass}`}>
                   <CompletedQuestColumn
-                    title="Town Quests"
-                    quests={completedTownQuests}
-                    emptyText="No town quests completed."
+                    title="Donation"
+                    quests={completedDonationQuests}
+                    emptyText="No donation quests completed."
                   />
-                )}
+                  <CompletedQuestColumn
+                    title="Side Quests"
+                    quests={completedSideQuests}
+                    emptyText="No side quests completed."
+                  />
+                  {hasRootCellar && (
+                    <CompletedQuestColumn
+                      title="Root Cellar History"
+                      quests={completedRootCellarQuests}
+                      rootCellarHistoryMap={rootCellarHistoryMap}
+                      emptyText=""
+                    />
+                  )}
+                  {showTownQuests && (
+                    <CompletedQuestColumn
+                      title="Town Quests"
+                      quests={completedTownQuests}
+                      emptyText="No town quests completed."
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </>
       )}
     </div>

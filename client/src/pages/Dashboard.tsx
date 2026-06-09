@@ -1,7 +1,39 @@
 import { useState } from 'react';
-import { useAuth, ResolvedItem, EdibleItem } from '../context/AuthContext';
+import { useAuth, ResolvedItem, EdibleItem, CraftingRecipeItem, CookingRecipeItem } from '../context/AuthContext';
 import { useSettings, SpoilerPreferences } from '../context/SettingsContext';
 import { SpoilerGate } from '../components/SpoilerGate';
+
+// ── Fish habitat static data ──────────────────────────────────────────────────
+
+const FISH_HABITAT: Record<number, string> = {
+  28: 'River', 29: 'River', 30: 'Mere',
+  182: 'River', 183: 'Lake', 184: 'River', 185: 'Lake', 186: 'Lake',
+  187: 'Lake', 188: 'River', 189: 'Mere', 190: 'Marsh', 191: 'River',
+  192: 'River', 193: 'Mere', 194: 'Lake', 195: 'Lake', 196: 'Lake',
+  197: 'Marsh', 198: 'River', 199: 'Mere', 200: 'Coastal', 201: 'Marsh',
+  202: 'River', 203: 'Coastal', 204: 'Coastal', 205: 'Lake', 206: 'River',
+  207: 'River', 208: 'River', 209: 'River', 210: 'River', 211: 'Lake',
+  212: 'Lake', 213: 'Mere', 214: 'Marsh', 215: 'Lake', 216: 'Lake',
+  217: 'Lake', 218: 'River', 219: 'River', 220: 'Lake', 221: 'River',
+  222: 'Lake', 223: 'River', 224: 'River', 225: 'Lake', 226: 'Lake',
+  227: 'Coastal', 228: 'Coastal', 386: 'Lake', 387: 'Mere', 388: 'Coastal',
+  389: 'Coastal', 390: 'Mere', 391: 'River', 392: 'River', 393: 'Coastal',
+  394: 'Lake', 395: 'Mere', 480: 'Marsh', 481: 'Coastal', 482: 'Coastal',
+  483: 'Any', 581: 'Any', 666: 'Marsh', 667: 'Marsh', 668: 'Coastal',
+  669: 'Coastal', 670: 'Coastal', 671: 'Coastal', 672: 'Coastal',
+  673: 'Marsh', 674: 'Any', 827: 'Any',
+};
+
+const HABITAT_ORDER = ['River', 'Lake', 'Coastal', 'Marsh', 'Mere', 'Any'] as const;
+
+const HABITAT_COLORS: Record<string, string> = {
+  River:   '#38bdf8', // sky-400 — existing fish accent
+  Lake:    '#1d4ed8', // blue-700 — deep blue
+  Coastal: '#0ea5e9', // sky-500 — medium sky
+  Marsh:   '#0369a1', // sky-700 — dark blue
+  Mere:    '#60a5fa', // blue-400 — lighter blue
+  Any:     '#3b82f6', // blue-500 — standard blue
+};
 
 // ── Simple donut (discovered vs total) ───────────────────────────────────────
 
@@ -35,10 +67,11 @@ function DonutChart({
         className={onUndiscoveredClick ? 'cursor-pointer' : ''}
         onClick={onUndiscoveredClick} />
       {discovered > 0 && (
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth="11"
+        <circle cx={cx} cy={cy} r={r} fill="none" strokeWidth="11"
           strokeDasharray={`${discoveredArc} ${circ}`}
           strokeDashoffset={startOffset}
           strokeLinecap="round"
+          style={{ stroke: color }}
           className="cursor-pointer transition-opacity hover:opacity-80"
           onClick={onDiscoveredClick} />
       )}
@@ -46,7 +79,7 @@ function DonutChart({
         {discovered}
       </text>
       {total != null && (
-        <text x={cx} y={cy + 16} textAnchor="middle" fontSize="8" fill="currentColor" className="text-slate-500 dark:text-slate-400">
+        <text x={cx} y={cy + 19} textAnchor="middle" fontSize="11" fill="currentColor" className="text-slate-500 dark:text-slate-400">
           of {total}
         </text>
       )}
@@ -152,30 +185,81 @@ function ItemGrid({ items }: { items: (ResolvedItem | EdibleItem)[] }) {
   );
 }
 
-// ── Standard category section (fish, cooking, crafting) ───────────────────────
+// ── Cooking pan SVG icon ──────────────────────────────────────────────────────
 
-type DrillView = 'chart' | 'discovered' | 'undiscovered';
+function CookingPanIcon() {
+  return (
+    <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="cookYolk" cx="38%" cy="30%" r="70%">
+          <stop offset="0%"   stopColor="#fef08a" />
+          <stop offset="45%"  stopColor="#fbbf24" />
+          <stop offset="100%" stopColor="#d97706" />
+        </radialGradient>
+        <mask id="handleHole">
+          <rect x="78" y="43" width="30" height="18" rx="9" fill="white" />
+          <circle cx="101" cy="52" r="3.6" fill="black" />
+        </mask>
+      </defs>
+      {/* Handle — rotated lower-right (behind pan rim), transparent hanging hole at tip */}
+      <g transform="translate(46,52) rotate(45) translate(-46,-52)">
+        <rect x="78" y="43" width="30" height="18" rx="9" fill="#be185d" mask="url(#handleHole)" />
+      </g>
+      {/* Pan rim */}
+      <circle cx="46" cy="52" r="36" fill="#be185d" />
+      {/* Pan interior */}
+      <circle cx="46" cy="52" r="28" fill="#1e293b" />
+      {/* Egg white — organic blob */}
+      <path
+        d="M 46 34 C 56 31,65 38,65 49 C 65 59,60 68,50 70 C 41 72,29 66,27 56 C 25 46,30 34,40 32 C 42 31,44 32,46 34 Z"
+        fill="#f1f5f9"
+      />
+      {/* Yolk */}
+      <circle cx="46" cy="51" r="10" fill="url(#cookYolk)" />
+      {/* Yolk shine — main */}
+      <ellipse cx="41" cy="45.5" rx="3.5" ry="2.3" fill="rgba(255,255,255,0.72)" transform="rotate(-20 41 45.5)" />
+      {/* Yolk shine — small */}
+      <circle cx="48" cy="44" r="1.4" fill="rgba(255,255,255,0.42)" />
+    </svg>
+  );
+}
 
+// ── Cooking recipe section (grouped by diet) ─────────────────────────────────
 
-function CategorySection({
-  title, icon, color, discovered, undiscovered, total, spoilerKey,
+const DIET_ORDER = ['carnivore', 'herbivore', 'omnivore'] as const;
+const DIET_LABEL: Record<string, string> = { carnivore: 'Carnivore', herbivore: 'Herbivore', omnivore: 'Omnivore' };
+const DIET_COLORS: Record<string, string> = { carnivore: '#dc2626', herbivore: '#16a34a', omnivore: '#9333ea' };
+
+type CookingView = 'chart' | 'discovered' | 'undiscovered' | typeof DIET_ORDER[number];
+
+function CookingRecipeSection({
+  discovered, undiscovered, spoilerKey,
 }: {
-  title: string;
-  icon: string;
-  color: string;
-  discovered: ResolvedItem[];
-  undiscovered: ResolvedItem[] | null;
-  total: number | null;
+  discovered: CookingRecipeItem[];
+  undiscovered: CookingRecipeItem[];
   spoilerKey?: keyof SpoilerPreferences;
 }) {
-  const [view, setView] = useState<DrillView>('chart');
+  const [view, setView] = useState<CookingView>('chart');
+  const [groupByDiet, setGroupByDiet] = useState(false);
   const { preferences } = useSettings();
   const spoilerAllowed = spoilerKey ? preferences.spoilers[spoilerKey] : true;
+  const total = 45;
+  const color = '#be185d';
 
   if (view !== 'chart') {
-    const isUndiscoveredUnknown = view === 'undiscovered' && undiscovered === null;
-    const items = view === 'discovered' ? discovered : (undiscovered ?? []);
-    const label = view === 'discovered' ? `Discovered ${title}` : `Undiscovered ${title}`;
+    const isDietView = (DIET_ORDER as readonly string[]).includes(view);
+    let items: CookingRecipeItem[];
+    let label: string;
+    if (isDietView) {
+      items = discovered.filter(i => i.diet === view);
+      label = `${DIET_LABEL[view]} Recipes`;
+    } else if (view === 'discovered') {
+      items = discovered;
+      label = 'Unlocked Cooking Recipes';
+    } else {
+      items = undiscovered;
+      label = 'Not Yet Unlocked';
+    }
     return (
       <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div className="mb-4 flex items-center gap-3">
@@ -184,19 +268,343 @@ function CategorySection({
             <span aria-hidden>←</span> Back
           </button>
           <h2 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">
-            <span aria-hidden className="mr-1">{icon}</span>
             {label}
-            {!isUndiscoveredUnknown && spoilerAllowed && (
+            {(view !== 'undiscovered' || spoilerAllowed) && (
               <span className="ml-2 text-sm font-normal text-slate-400 dark:text-slate-500">({items.length})</span>
             )}
           </h2>
         </div>
         {view === 'undiscovered' && !spoilerAllowed ? (
-          <SpoilerGate label={`Undiscovered ${title}`} />
+          <SpoilerGate label="Undiscovered Cooking Recipes" />
+        ) : isDietView ? (
+          <ul className="columns-2 gap-x-6 sm:columns-3">
+            {items.map(item => (
+              <li key={item.id} className="mb-1.5 break-inside-avoid text-sm text-slate-700 dark:text-slate-300">
+                {item.name ?? `ID ${item.id}`}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="space-y-4">
+            {DIET_ORDER.map(diet => {
+              const group = items.filter(i => i.diet === diet);
+              if (!group.length) return null;
+              return (
+                <div key={diet}>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{DIET_LABEL[diet]}</p>
+                  <ul className="columns-2 gap-x-6 sm:columns-3">
+                    {group.map(item => (
+                      <li key={item.id} className="mb-1.5 break-inside-avoid text-sm text-slate-700 dark:text-slate-300">
+                        {item.name ?? `ID ${item.id}`}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  return (
+    <section className="relative rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex items-center">
+      <span aria-hidden className="absolute top-4 right-5 select-none pointer-events-none"><CookingPanIcon /></span>
+      <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
+        <input type="checkbox" checked={groupByDiet} onChange={e => setGroupByDiet(e.target.checked)} className="sr-only" />
+        <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${groupByDiet ? 'bg-pink-700' : 'bg-slate-300 dark:bg-slate-600'}`}>
+          <span className={`h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${groupByDiet ? 'translate-x-4' : 'translate-x-0.5'}`} />
+        </span>
+        <span className="text-sm font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-100 transition-colors">
+          Group by Diet
+        </span>
+      </label>
+      <div className="grid grid-cols-3 items-center gap-6 w-full mt-5">
+        <div className="flex items-center justify-center">
+          <DonutChart discovered={discovered.length} total={total} color={color}
+            onDiscoveredClick={() => setView('discovered')}
+            onUndiscoveredClick={() => setView('undiscovered')} />
+        </div>
+        <div className="col-span-2 flex flex-col gap-3">
+          <h2 className="text-2xl font-normal tracking-tight text-slate-800 dark:text-slate-200">Cooking Recipes</h2>
+          {groupByDiet ? (
+            <>
+              {DIET_ORDER.map(diet => {
+                const count = discovered.filter(i => i.diet === diet).length;
+                if (!count) return null;
+                return (
+                  <button key={diet} onClick={() => setView(diet)} className="flex items-center gap-2 text-left group">
+                    <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: DIET_COLORS[diet] }} />
+                    <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                      <span className="font-semibold">{count}</span> {DIET_LABEL[diet].toLowerCase()}
+                    </span>
+                    <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+                  </button>
+                );
+              })}
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  <span className="font-semibold">{undiscovered.length}</span> not yet unlocked
+                </span>
+                <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setView('discovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                  <span className="font-semibold">{discovered.length}</span> unlocked
+                </span>
+                <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+              </button>
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  <span className="font-semibold">{undiscovered.length}</span> not yet unlocked
+                </span>
+                <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Crafting recipe section (grouped by category) ─────────────────────────────
+
+const CRAFTING_CATEGORY_ORDER = ['Stations', 'Farming Items', 'Pathways', 'Fences & Gates', 'Flooring', 'Wallpapers', 'Furniture'] as const;
+const CRAFTING_CATEGORY_COLORS: Record<string, string> = {
+  'Stations':       '#be185d',
+  'Farming Items':  '#16a34a',
+  'Pathways':       '#ca8a04',
+  'Fences & Gates': '#92400e',
+  'Flooring':       '#0284c7',
+  'Wallpapers':     '#7c3aed',
+  'Furniture':      '#ea580c',
+};
+
+type CraftingView = 'chart' | 'discovered' | 'undiscovered' | typeof CRAFTING_CATEGORY_ORDER[number];
+
+function CraftingRecipeSection({
+  discovered, undiscovered, spoilerKey,
+}: {
+  discovered: CraftingRecipeItem[];
+  undiscovered: CraftingRecipeItem[];
+  spoilerKey?: keyof SpoilerPreferences;
+}) {
+  const [view, setView] = useState<CraftingView>('chart');
+  const [groupByType, setGroupByType] = useState(false);
+  const { preferences } = useSettings();
+  const spoilerAllowed = spoilerKey ? preferences.spoilers[spoilerKey] : true;
+  const total = 171;
+  const color = 'var(--crafting-color)';
+
+  if (view !== 'chart') {
+    const isCategoryView = (CRAFTING_CATEGORY_ORDER as readonly string[]).includes(view);
+    let items: CraftingRecipeItem[];
+    let label: string;
+    if (isCategoryView) {
+      items = discovered.filter(i => i.category === view);
+      label = view;
+    } else if (view === 'discovered') {
+      items = discovered;
+      label = 'Unlocked Crafting Blueprints';
+    } else {
+      items = undiscovered;
+      label = 'Locked Crafting Blueprints';
+    }
+    return (
+      <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div className="mb-4 flex items-center gap-3">
+          <button onClick={() => setView('chart')}
+            className="flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors dark:text-slate-400 dark:hover:text-slate-200">
+            <span aria-hidden>←</span> Back
+          </button>
+          <h2 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">
+            {label}
+            {(view !== 'undiscovered' || spoilerAllowed) && (
+              <span className="ml-2 text-sm font-normal text-slate-400 dark:text-slate-500">({items.length})</span>
+            )}
+          </h2>
+        </div>
+        {view === 'undiscovered' && !spoilerAllowed ? (
+          <SpoilerGate label="Locked Crafting Blueprints" />
+        ) : isCategoryView ? (
+          <ul className="columns-2 gap-x-6 sm:columns-3">
+            {items.map(item => (
+              <li key={item.id} className="mb-1.5 break-inside-avoid text-sm text-slate-700 dark:text-slate-300">
+                {item.name ?? `ID ${item.id}`}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="space-y-4">
+            {CRAFTING_CATEGORY_ORDER.map(cat => {
+              const group = items.filter(i => i.category === cat);
+              if (!group.length) return null;
+              return (
+                <div key={cat}>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{cat}</p>
+                  <ul className="columns-2 gap-x-6 sm:columns-3">
+                    {group.map(item => (
+                      <li key={item.id} className="mb-1.5 break-inside-avoid text-sm text-slate-700 dark:text-slate-300">
+                        {item.name ?? `ID ${item.id}`}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  return (
+    <section className="relative rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex items-center">
+      <span aria-hidden className="absolute top-4 right-5 text-5xl select-none pointer-events-none">🔨</span>
+      <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
+        <input type="checkbox" checked={groupByType} onChange={e => setGroupByType(e.target.checked)} className="sr-only" />
+        <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${groupByType ? 'bg-amber-700' : 'bg-slate-300 dark:bg-slate-600'}`}>
+          <span className={`h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${groupByType ? 'translate-x-4' : 'translate-x-0.5'}`} />
+        </span>
+        <span className="text-sm font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-100 transition-colors">
+          Group by Type
+        </span>
+      </label>
+      <div className="grid grid-cols-3 items-center gap-6 w-full mt-5">
+        <div className="flex items-center justify-center">
+          <DonutChart discovered={discovered.length} total={total} color={color}
+            onDiscoveredClick={() => setView('discovered')}
+            onUndiscoveredClick={() => setView('undiscovered')} />
+        </div>
+        <div className="col-span-2 flex flex-col gap-3">
+          <h2 className="text-2xl font-normal tracking-tight text-slate-800 dark:text-slate-200">Crafting Recipes</h2>
+          {groupByType ? (
+            <>
+              {CRAFTING_CATEGORY_ORDER.map(cat => {
+                const count = discovered.filter(i => i.category === cat).length;
+                if (!count) return null;
+                return (
+                  <button key={cat} onClick={() => setView(cat)} className="flex items-center gap-2 text-left group">
+                    <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: CRAFTING_CATEGORY_COLORS[cat] }} />
+                    <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                      <span className="font-semibold">{count}</span> {cat.toLowerCase()}
+                    </span>
+                    <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+                  </button>
+                );
+              })}
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  <span className="font-semibold">{undiscovered.length}</span> not yet unlocked
+                </span>
+                <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setView('discovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                  <span className="font-semibold">{discovered.length}</span> unlocked
+                </span>
+                <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+              </button>
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  <span className="font-semibold">{undiscovered.length}</span> not yet unlocked
+                </span>
+                <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Fish section (with Split by Area) ────────────────────────────────────────
+
+type FishDrillView = 'chart' | 'discovered' | 'undiscovered' | typeof HABITAT_ORDER[number];
+
+function FishSection({
+  discovered, undiscovered, total, spoilerKey,
+}: {
+  discovered: ResolvedItem[];
+  undiscovered: ResolvedItem[] | null;
+  total: number | null;
+  spoilerKey?: keyof SpoilerPreferences;
+}) {
+  const [view, setView] = useState<FishDrillView>('chart');
+  const [splitByArea, setSplitByArea] = useState(false);
+  const { preferences } = useSettings();
+  const spoilerAllowed = spoilerKey ? preferences.spoilers[spoilerKey] : true;
+  const color = 'var(--fish-accent)';
+
+  const habitatOf = (id: number) => FISH_HABITAT[id] ?? 'Any';
+  const byHabitat = Object.fromEntries(
+    HABITAT_ORDER.map(h => [h, discovered.filter(f => habitatOf(f.id) === h)])
+  ) as Record<string, ResolvedItem[]>;
+
+  const habitatSegments = HABITAT_ORDER
+    .filter(h => byHabitat[h].length > 0)
+    .map(h => ({
+      label: h,
+      count: byHabitat[h].length,
+      color: HABITAT_COLORS[h],
+      onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView(h); },
+    }));
+
+  const habitatSegmentsByCount = [...habitatSegments].sort((a, b) => b.count - a.count);
+
+  // Drilldown view
+  if (view !== 'chart') {
+    const isHabitatView = (HABITAT_ORDER as readonly string[]).includes(view);
+    const isUndiscoveredUnknown = view === 'undiscovered' && undiscovered === null;
+
+    let items: ResolvedItem[];
+    let label: string;
+    if (isHabitatView) {
+      items = byHabitat[view] ?? [];
+      label = `${view} Fish`;
+    } else if (view === 'discovered') {
+      items = discovered;
+      label = 'Discovered Fish';
+    } else {
+      items = undiscovered ?? [];
+      label = 'Undiscovered Fish';
+    }
+
+    return (
+      <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div className="mb-4 flex items-center gap-3">
+          <button onClick={() => setView('chart')}
+            className="flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors dark:text-slate-400 dark:hover:text-slate-200">
+            <span aria-hidden>←</span> Back
+          </button>
+          <h2 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">
+            <span aria-hidden className="mr-1">🐟</span>
+            {label}
+            {!isUndiscoveredUnknown && (spoilerAllowed || view !== 'undiscovered') && (
+              <span className="ml-2 text-sm font-normal text-slate-400 dark:text-slate-500">({items.length})</span>
+            )}
+          </h2>
+        </div>
+        {view === 'undiscovered' && !spoilerAllowed ? (
+          <SpoilerGate label="Undiscovered Fish" />
         ) : isUndiscoveredUnknown ? (
           <p className="text-sm text-slate-500">
-            We don't have the full list of {title.toLowerCase()} in the game yet, so we can't
-            show which ones are undiscovered. Total count coming soon.
+            We don't have the full list of fish in the game yet, so we can't show which ones are undiscovered.
           </p>
         ) : (
           <ItemGrid items={items} />
@@ -206,32 +614,81 @@ function CategorySection({
   }
 
   const undiscoveredCount = undiscovered !== null ? undiscovered.length : null;
+
   return (
-    <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <header className="mb-5 flex items-center gap-2">
-        <span aria-hidden className="text-2xl">{icon}</span>
-        <h2 className="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-200">{title}</h2>
-      </header>
-      <div className="flex items-center gap-8">
-        <DonutChart discovered={discovered.length} total={total} color={color}
-          onDiscoveredClick={() => setView('discovered')}
-          onUndiscoveredClick={() => setView('undiscovered')} />
-        <div className="flex flex-col gap-3">
-          <button onClick={() => setView('discovered')} className="flex items-center gap-2 text-left group">
-            <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
-            <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
-              <span className="font-semibold">{discovered.length}</span> discovered
-            </span>
-          </button>
-          <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
-            <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
-            <span className="text-sm text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
-              {undiscovered !== null
-                ? <><span className="font-semibold">{undiscoveredCount}</span> undiscovered</>
-                : <span className="italic">undiscovered (total unknown)</span>
-              }
-            </span>
-          </button>
+    <section className="relative rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex items-center">
+      <span aria-hidden className="absolute top-4 right-5 text-5xl select-none pointer-events-none">🐟</span>
+      <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
+        <input type="checkbox" checked={splitByArea} onChange={e => setSplitByArea(e.target.checked)} className="sr-only" />
+        <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${splitByArea ? 'bg-sky-400' : 'bg-slate-300 dark:bg-slate-600'}`}>
+          <span className={`h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${splitByArea ? 'translate-x-4' : 'translate-x-0.5'}`} />
+        </span>
+        <span className="text-sm font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-100 transition-colors">
+          Split by Area
+        </span>
+      </label>
+      <div className="grid grid-cols-3 items-center gap-6 w-full mt-5">
+        <div className="flex items-center justify-center">
+          {splitByArea ? (
+            <MultiDonutChart
+              segments={habitatSegments}
+              total={total ?? discovered.length}
+              onUndiscoveredClick={() => setView('undiscovered')}
+            />
+          ) : (
+            <DonutChart
+              discovered={discovered.length}
+              total={total}
+              color={color}
+              onDiscoveredClick={() => setView('discovered')}
+              onUndiscoveredClick={() => setView('undiscovered')}
+            />
+          )}
+        </div>
+        <div className="col-span-2 flex flex-col gap-3">
+          <h2 className="text-2xl font-normal tracking-tight text-slate-800 dark:text-slate-200">
+            Fish
+          </h2>
+          {splitByArea ? (
+            <>
+              {habitatSegmentsByCount.map(seg => (
+                <button key={seg.label} onClick={() => setView(seg.label as FishDrillView)}
+                  className="flex items-center gap-2 text-left group">
+                  <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: seg.color }} />
+                  <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                    <span className="font-semibold">{seg.count}</span> {seg.label.toLowerCase()}
+                  </span>
+                </button>
+              ))}
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  {undiscovered !== null
+                    ? <><span className="font-semibold">{undiscoveredCount}</span> undiscovered</>
+                    : <span className="italic">undiscovered (total unknown)</span>
+                  }
+                </span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setView('discovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                  <span className="font-semibold">{discovered.length}</span> discovered
+                </span>
+              </button>
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  {undiscovered !== null
+                    ? <><span className="font-semibold">{undiscoveredCount}</span> undiscovered</>
+                    : <span className="italic">undiscovered (total unknown)</span>
+                  }
+                </span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </section>
@@ -240,12 +697,12 @@ function CategorySection({
 
 // ── Edibles section ───────────────────────────────────────────────────────────
 
-type EdibleDrillView = 'chart' | 'forageable' | 'farmable' | 'both' | 'undiscovered';
+type EdibleDrillView = 'chart' | 'discovered' | 'forageable' | 'farmable' | 'both' | 'undiscovered';
 
 const EDIBLE_COLORS = {
   forageable: '#16a34a',
   farmable:   '#d97706',
-  both:       '#0891b2',
+  both:       '#a78bfa',
 } as const;
 
 const EDIBLE_LABELS = {
@@ -265,6 +722,7 @@ function EdiblesSection({
   total: number;
 }) {
   const [view, setView] = useState<EdibleDrillView>('chart');
+  const [splitByType, setSplitByType] = useState(false);
   const { preferences } = useSettings();
   const spoilerAllowed = preferences.spoilers.show_undiscovered_items;
 
@@ -274,10 +732,16 @@ function EdiblesSection({
     both:       discovered.filter(i => i.source === 'both'),
   };
 
+  // Drilldown view
   if (view !== 'chart') {
-    const items = view === 'undiscovered' ? undiscovered : bySource[view] ?? [];
-    const label = EDIBLE_LABELS[view];
     const isUndiscoveredView = view === 'undiscovered';
+    const isDiscoveredView = view === 'discovered';
+    const items = isUndiscoveredView ? undiscovered
+      : isDiscoveredView ? discovered
+      : bySource[view as keyof typeof bySource] ?? [];
+    const label = isDiscoveredView ? 'Discovered'
+      : isUndiscoveredView ? 'Undiscovered'
+      : EDIBLE_LABELS[view as keyof typeof EDIBLE_LABELS];
     return (
       <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div className="mb-4 flex items-center gap-3">
@@ -312,30 +776,70 @@ function EdiblesSection({
   ];
 
   return (
-    <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <header className="mb-5 flex items-center gap-2">
-        <span aria-hidden className="text-2xl">🥬</span>
-        <h2 className="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-200">Edibles</h2>
-      </header>
-      <div className="flex items-center gap-8">
-        <MultiDonutChart segments={segments} total={total}
-          onUndiscoveredClick={() => setView('undiscovered')} />
-        <div className="flex flex-col gap-3">
-          {segments.map((seg) => (
-            <button key={seg.label} onClick={() => setView(seg.label === 'Forageable' ? 'forageable' : seg.label === 'Farmable' ? 'farmable' : 'both')}
-              className="flex items-center gap-2 text-left group">
-              <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: seg.color }} />
-              <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
-                <span className="font-semibold">{seg.count}</span> {seg.label.toLowerCase()}
-              </span>
-            </button>
-          ))}
-          <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
-            <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
-            <span className="text-sm text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
-              <span className="font-semibold">{undiscovered.length}</span> undiscovered
-            </span>
-          </button>
+    <section className="relative rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex items-center">
+      <span aria-hidden className="absolute top-4 right-5 text-5xl select-none pointer-events-none">🥬</span>
+      <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
+        <input type="checkbox" checked={splitByType} onChange={e => setSplitByType(e.target.checked)} className="sr-only" />
+        <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${splitByType ? '' : 'bg-slate-300 dark:bg-slate-600'}`} style={splitByType ? { backgroundColor: EDIBLE_COLORS.forageable } : undefined}>
+          <span className={`h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${splitByType ? 'translate-x-4' : 'translate-x-0.5'}`} />
+        </span>
+        <span className="text-sm font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-100 transition-colors">
+          Split by Type
+        </span>
+      </label>
+      <div className="grid grid-cols-3 items-center gap-6 w-full mt-5">
+        <div className="flex items-center justify-center">
+          {splitByType ? (
+            <MultiDonutChart segments={segments} total={total}
+              onUndiscoveredClick={() => setView('undiscovered')} />
+          ) : (
+            <DonutChart
+              discovered={discovered.length}
+              total={total}
+              color={EDIBLE_COLORS.forageable}
+              onDiscoveredClick={() => setView('discovered')}
+              onUndiscoveredClick={() => setView('undiscovered')}
+            />
+          )}
+        </div>
+        <div className="col-span-2 flex flex-col gap-3">
+          <h2 className="text-2xl font-normal tracking-tight text-slate-800 dark:text-slate-200">
+            Edibles
+          </h2>
+          {splitByType ? (
+            <>
+              {segments.map((seg) => (
+                <button key={seg.label} onClick={() => setView(seg.label === 'Forageable' ? 'forageable' : seg.label === 'Farmable' ? 'farmable' : 'both')}
+                  className="flex items-center gap-2 text-left group">
+                  <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: seg.color }} />
+                  <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                    <span className="font-semibold">{seg.count}</span> {seg.label.toLowerCase()}
+                  </span>
+                </button>
+              ))}
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  <span className="font-semibold">{undiscovered.length}</span> undiscovered
+                </span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setView('discovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: EDIBLE_COLORS.forageable }} />
+                <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                  <span className="font-semibold">{discovered.length}</span> discovered
+                </span>
+              </button>
+              <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
+                <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
+                <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
+                  <span className="font-semibold">{undiscovered.length}</span> undiscovered
+                </span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </section>
@@ -346,10 +850,14 @@ function EdiblesSection({
 
 function StatCard({ label, count, total, accent }: { label: string; count: number; total: number; accent: string }) {
   const pct = total > 0 ? Math.min(100, Math.ceil((count / total) * 100)) : 0;
+  const isInline = accent.startsWith('#') || accent.startsWith('var(');
   return (
-    <div className="rounded-2xl border border-emerald-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+    <div className="rounded-2xl border border-emerald-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 text-center">
       <div className="text-sm font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
-      <div className={`mt-2 text-4xl font-bold tabular-nums ${accent}`}>{pct}%</div>
+      <div
+        className={`mt-2 text-4xl font-bold tabular-nums ${isInline ? '' : accent}`}
+        style={isInline ? { color: accent } : undefined}
+      >{pct}%</div>
     </div>
   );
 }
@@ -412,16 +920,15 @@ export default function Dashboard() {
       ) : (
         <>
           <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <StatCard label="Fish discovered"  count={selectedCharacter.fish_discovered.length}              total={selectedCharacter.fish_total ?? 75}         accent="text-sky-700" />
-            <StatCard label="Edibles found"    count={selectedCharacter.edibles_discovered.length}           total={selectedCharacter.edibles_total || 47}       accent="text-emerald-700" />
-            <StatCard label="Crafting recipes" count={selectedCharacter.unlocked_crafting_recipes.length}    total={100}                                         accent="text-amber-700" />
-            <StatCard label="Cooking recipes"  count={selectedCharacter.unlocked_cooking_recipes.length}     total={100}                                         accent="text-rose-700" />
+            <StatCard label="Fish discovered"  count={selectedCharacter.fish_discovered.length}              total={selectedCharacter.fish_total ?? 75}         accent="var(--fish-accent)" />
+            <StatCard label="Edibles found"    count={selectedCharacter.edibles_discovered.length}           total={selectedCharacter.edibles_total || 47}       accent="var(--edibles-accent)" />
+            <StatCard label="Crafting recipes" count={selectedCharacter.unlocked_crafting_recipes.length}    total={171}                                         accent="var(--crafting-color)" />
+            <StatCard label="Cooking recipes"  count={selectedCharacter.unlocked_cooking_recipes.length}     total={45}                                          accent="#be185d" />
           </section>
 
           {/* Row 1: Fish | Edibles */}
           <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <CategorySection
-              title="Fish" icon="🐟" color="#0369a1"
+            <FishSection
               discovered={selectedCharacter.fish_discovered}
               undiscovered={selectedCharacter.fish_undiscovered ?? null}
               total={selectedCharacter.fish_total ?? null}
@@ -436,18 +943,14 @@ export default function Dashboard() {
 
           {/* Row 2: Cooking Recipes | Crafting Recipes */}
           <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <CategorySection
-              title="Cooking Recipes" icon="🍳" color="#be185d"
+            <CookingRecipeSection
               discovered={selectedCharacter.unlocked_cooking_recipes}
-              undiscovered={null}
-              total={null}
+              undiscovered={selectedCharacter.unlocked_cooking_recipes_undiscovered}
               spoilerKey="show_undiscovered_cooking_recipes"
             />
-            <CategorySection
-              title="Crafting Recipes" icon="🔨" color="#b45309"
+            <CraftingRecipeSection
               discovered={selectedCharacter.unlocked_crafting_recipes}
-              undiscovered={null}
-              total={null}
+              undiscovered={selectedCharacter.unlocked_crafting_recipes_undiscovered}
               spoilerKey="show_undiscovered_crafting_recipes"
             />
           </section>

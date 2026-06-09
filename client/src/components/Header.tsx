@@ -105,7 +105,7 @@ export default function Header() {
           style={{ top: -9999, left: 0, visibility: 'hidden' }}
         >
           {navItems.map((item) => (
-            <span key={item.to} className="rounded-lg px-3 py-3 text-base whitespace-nowrap">
+            <span key={item.to} className="rounded-lg px-3 py-3 text-lg whitespace-nowrap">
               {item.label}
             </span>
           ))}
@@ -136,7 +136,7 @@ export default function Header() {
                       key={item.to}
                       to={item.to}
                       className={({ isActive }) =>
-                        `rounded-lg px-3 py-3 text-base transition-colors ${
+                        `rounded-lg px-3 py-3 text-lg transition-colors ${
                           isActive
                             ? 'bg-slate-900 text-white shadow-sm'
                             : 'text-slate-200 hover:bg-slate-600 hover:text-white'

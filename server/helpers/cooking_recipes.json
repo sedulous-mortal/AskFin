@@ -1,0 +1,227 @@
+[
+  {
+    "id": 948,
+    "name": "Black Pudding",
+    "diet": "carnivore"
+  },
+  {
+    "id": 956,
+    "name": "Blood Soup",
+    "diet": "carnivore"
+  },
+  {
+    "id": 943,
+    "name": "Egg Custard",
+    "diet": "carnivore"
+  },
+  {
+    "id": 951,
+    "name": "Fish Root Chowder",
+    "diet": "carnivore"
+  },
+  {
+    "id": 944,
+    "name": "Fried Egg",
+    "diet": "carnivore"
+  },
+  {
+    "id": 946,
+    "name": "Fried Fish",
+    "diet": "carnivore"
+  },
+  {
+    "id": 949,
+    "name": "Girtle Ribs",
+    "diet": "carnivore"
+  },
+  {
+    "id": 947,
+    "name": "Sausage",
+    "diet": "carnivore"
+  },
+  {
+    "id": 945,
+    "name": "Glazed Meat Skewers",
+    "diet": "carnivore"
+  },
+  {
+    "id": 911,
+    "name": "Grilled Meat",
+    "diet": "carnivore"
+  },
+  {
+    "id": 950,
+    "name": "Mushroom Frittata",
+    "diet": "carnivore"
+  },
+  {
+    "id": 942,
+    "name": "Mushroom Scramble",
+    "diet": "carnivore"
+  },
+  {
+    "id": 954,
+    "name": "Roast Bluggy",
+    "diet": "carnivore"
+  },
+  {
+    "id": 955,
+    "name": "Shepherd's Stew",
+    "diet": "carnivore"
+  },
+  {
+    "id": 914,
+    "name": "Fried Mushrooms",
+    "diet": "herbivore"
+  },
+  {
+    "id": 921,
+    "name": "Fried Vegetables",
+    "diet": "herbivore"
+  },
+  {
+    "id": 916,
+    "name": "Fruit Salad",
+    "diet": "herbivore"
+  },
+  {
+    "id": 915,
+    "name": "Grilled Vegetables",
+    "diet": "herbivore"
+  },
+  {
+    "id": 923,
+    "name": "Mushroom Loaf",
+    "diet": "herbivore"
+  },
+  {
+    "id": 925,
+    "name": "Mushroom Stew",
+    "diet": "herbivore"
+  },
+  {
+    "id": 920,
+    "name": "Nutty Fruit Bar",
+    "diet": "herbivore"
+  },
+  {
+    "id": 913,
+    "name": "Roasted Roots",
+    "diet": "herbivore"
+  },
+  {
+    "id": 918,
+    "name": "Seasoned Root Mash",
+    "diet": "herbivore"
+  },
+  {
+    "id": 924,
+    "name": "Spiced Berry Pie",
+    "diet": "herbivore"
+  },
+  {
+    "id": 919,
+    "name": "Spiced Nuts",
+    "diet": "herbivore"
+  },
+  {
+    "id": 922,
+    "name": "Vegetable Fritter",
+    "diet": "herbivore"
+  },
+  {
+    "id": 958,
+    "name": "Vegetable Salad",
+    "diet": "herbivore"
+  },
+  {
+    "id": 917,
+    "name": "Vegetable Stir Fry",
+    "diet": "herbivore"
+  },
+  {
+    "id": 957,
+    "name": "Cake",
+    "diet": "omnivore"
+  },
+  {
+    "id": 934,
+    "name": "Cheese Loaf",
+    "diet": "omnivore"
+  },
+  {
+    "id": 941,
+    "name": "Cheesy Flatbread",
+    "diet": "omnivore"
+  },
+  {
+    "id": 952,
+    "name": "Cheesy Pasta",
+    "diet": "omnivore"
+  },
+  {
+    "id": 927,
+    "name": "Cheesy Roasted Vegetables",
+    "diet": "omnivore"
+  },
+  {
+    "id": 933,
+    "name": "Creamy Fruit Pudding",
+    "diet": "omnivore"
+  },
+  {
+    "id": 932,
+    "name": "Creamy Mushroom Soup",
+    "diet": "omnivore"
+  },
+  {
+    "id": 936,
+    "name": "Creamy Root Stew",
+    "diet": "omnivore"
+  },
+  {
+    "id": 935,
+    "name": "Fruit Porridge",
+    "diet": "omnivore"
+  },
+  {
+    "id": 931,
+    "name": "Honeyed Fruit Skewers",
+    "diet": "omnivore"
+  },
+  {
+    "id": 939,
+    "name": "Honey Glazed Root Gratin",
+    "diet": "omnivore"
+  },
+  {
+    "id": 938,
+    "name": "Honey Nut Tart",
+    "diet": "omnivore"
+  },
+  {
+    "id": 930,
+    "name": "Nutty Cheese Wedges",
+    "diet": "omnivore"
+  },
+  {
+    "id": 937,
+    "name": "Spiced Fruit Stew",
+    "diet": "omnivore"
+  },
+  {
+    "id": 940,
+    "name": "Stuffed Mushrooms",
+    "diet": "omnivore"
+  },
+  {
+    "id": 928,
+    "name": "Sweet Herb Tea",
+    "diet": "omnivore"
+  },
+  {
+    "id": 929,
+    "name": "Sweet Milk Pudding",
+    "diet": "omnivore"
+  }
+]

@@ -20,5 +20,5 @@
 }
 
 /* CSS variables used by SVG chart elements that can't use Tailwind dark: */
-:root { --chart-track: #e2e8f0; }
-.dark { --chart-track: #334155; }
+:root { --chart-track: #e2e8f0; --crafting-color: #7B4A28; --fish-accent: #0369a1; --edibles-accent: #047857; }
+.dark { --chart-track: #334155; --crafting-color: #C09870; --fish-accent: #38bdf8; --edibles-accent: #5c9a30; }

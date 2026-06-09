@@ -20,12 +20,20 @@ const require = createRequire(import.meta.url);
 const gameIdMaps = require('./helpers/game_id_maps.json');
 const ediblesRaw = require('./helpers/edibles_ids.json');
 const questsFile = require('./helpers/quests.json');
+const craftingItemsFile = require('./helpers/crafting_items.json');
+const cookingRecipesFile = require('./helpers/cooking_recipes.json');
 const forageablesFile = require('./helpers/forageables_schedule.json');
 const forageablesList = forageablesFile.forageables || [];
 const questsList = questsFile.quests || [];
 const itemNames = gameIdMaps['InventoryItems_en'] || {};
 const plantNames = gameIdMaps['PlantDataTable_en'] || {};
 const allFishIds = new Set(gameIdMaps['fish_ids'] || []);
+
+// Build ID → category/diet maps for recipes
+const craftingCategoryById = {};
+for (const item of craftingItemsFile) craftingCategoryById[item.id] = item.category;
+const cookingDietById = {};
+for (const item of cookingRecipesFile) cookingDietById[item.id] = item.diet;
 
 // Build a Map of edible item id → source category
 const allEdibles = new Map();
@@ -35,6 +43,32 @@ for (const id of (ediblesRaw.both || [])) allEdibles.set(id, 'both');
 
 function resolveIds(ids) {
   return (ids || []).map(id => ({ id, name: itemNames[id] ?? null }));
+}
+
+function resolveCraftingRecipes(discoveredIds) {
+  const discoveredSet = new Set(discoveredIds || []);
+  const discovered = (discoveredIds || []).map(id => ({
+    id,
+    name: itemNames[id] ?? null,
+    category: craftingCategoryById[id] ?? null,
+  }));
+  const undiscovered = craftingItemsFile
+    .filter(item => !discoveredSet.has(item.id))
+    .map(item => ({ id: item.id, name: item.name, category: item.category }));
+  return { discovered, undiscovered };
+}
+
+function resolveCookingRecipes(discoveredIds) {
+  const discoveredSet = new Set(discoveredIds || []);
+  const discovered = (discoveredIds || []).map(id => ({
+    id,
+    name: itemNames[id] ?? null,
+    diet: cookingDietById[id] ?? null,
+  }));
+  const undiscovered = cookingRecipesFile
+    .filter(item => !discoveredSet.has(item.id))
+    .map(item => ({ id: item.id, name: item.name, diet: item.diet }));
+  return { discovered, undiscovered };
 }
 
 function resolveFishUndiscovered(discoveredIds) {
@@ -825,6 +859,8 @@ app.get('/api/characters/:id', async (req, res) => {
 
     const fishDiscovered = resolveIds(data.fish_discovered);
     const edibles = resolveEdibles(data.items_discovered);
+    const craftingRecipes = resolveCraftingRecipes(data.unlocked_crafting_recipes);
+    const cookingRecipes = resolveCookingRecipes(data.unlocked_cooking_recipes);
     return res.json({
       id: data.id,
       character_name: data.character_name,
@@ -837,8 +873,10 @@ app.get('/api/characters/:id', async (req, res) => {
       fish_total: allFishIds.size,
       critters_discovered: data.critters_discovered || [],
       items_discovered: resolveIds(data.items_discovered),
-      unlocked_crafting_recipes: resolveIds(data.unlocked_crafting_recipes),
-      unlocked_cooking_recipes: resolveIds(data.unlocked_cooking_recipes),
+      unlocked_crafting_recipes: craftingRecipes.discovered,
+      unlocked_crafting_recipes_undiscovered: craftingRecipes.undiscovered,
+      unlocked_cooking_recipes: cookingRecipes.discovered,
+      unlocked_cooking_recipes_undiscovered: cookingRecipes.undiscovered,
       edibles_discovered: edibles.discovered,
       edibles_undiscovered: edibles.undiscovered,
       edibles_total: edibles.total,

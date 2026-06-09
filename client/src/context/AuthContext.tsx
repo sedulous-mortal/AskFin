@@ -15,6 +15,8 @@ type Character = {
 export type ResolvedItem = { id: number; name: string | null };
 export type EdibleSource = 'forageable' | 'farmable' | 'both';
 export type EdibleItem = { id: number; name: string | null; source: EdibleSource };
+export type CraftingRecipeItem = { id: number; name: string | null; category: string | null };
+export type CookingRecipeItem = { id: number; name: string | null; diet: string | null };
 
 export type QuestStatus = { id: number; status: number };
 
@@ -30,8 +32,10 @@ export type CharacterDetail = {
   fish_total: number;
   critters_discovered: number[];
   items_discovered: ResolvedItem[];
-  unlocked_crafting_recipes: ResolvedItem[];
-  unlocked_cooking_recipes: ResolvedItem[];
+  unlocked_crafting_recipes: CraftingRecipeItem[];
+  unlocked_crafting_recipes_undiscovered: CraftingRecipeItem[];
+  unlocked_cooking_recipes: CookingRecipeItem[];
+  unlocked_cooking_recipes_undiscovered: CookingRecipeItem[];
   edibles_discovered: EdibleItem[];
   edibles_undiscovered: EdibleItem[];
   edibles_total: number;
@@ -95,11 +99,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { id: 169, name: 'Morel' }, { id: 278, name: 'Cherry' }, { id: 302, name: 'Raspberry' },
     ],
     unlocked_crafting_recipes: [
-      { id: 1453, name: 'Wooden Fence' }, { id: 1454, name: 'Stone Path' }, { id: 427, name: 'Scarecrow' },
+      { id: 1453, name: 'Mounted Display', category: 'Furniture' },
+      { id: 1454, name: 'Shelf Display', category: 'Furniture' },
+      { id: 427, name: 'Bed of Straw', category: 'Furniture' },
+      { id: 58, name: 'Crafting Table', category: 'Stations' },
     ],
+    unlocked_crafting_recipes_undiscovered: [],
     unlocked_cooking_recipes: [
-      { id: 201, name: 'Salad' }, { id: 202, name: 'Soup' }, { id: 203, name: 'Pie' },
+      { id: 914, name: 'Fried Mushrooms', diet: 'herbivore' },
+      { id: 944, name: 'Fried Egg', diet: 'carnivore' },
+      { id: 957, name: 'Cake', diet: 'omnivore' },
     ],
+    unlocked_cooking_recipes_undiscovered: [],
     edibles_discovered: [
       { id: 34, name: 'Carrot', source: 'farmable' },
       { id: 36, name: 'Dandelions', source: 'forageable' },
