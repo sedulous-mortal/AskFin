@@ -10,11 +10,13 @@ import finQuotes from '../data/finQuotes.json';
 const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard' },
+  { to: '/dashboard', label: 'Stats' },
+  { to: '/dashboard-overview', label: 'Dashboard' },
   { to: '/events', label: 'Events' },
   { to: '/forageables', label: 'Forageables' },
   { to: '/critters', label: 'Critters' },
   { to: '/quests', label: 'Quests' },
+  { to: '/tips', label: 'Tips' },
   { to: '/settings', label: 'Settings' },
 ];
 

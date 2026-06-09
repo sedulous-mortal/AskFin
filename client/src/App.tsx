@@ -10,6 +10,7 @@ import Events from './pages/Events';
 import Forageables from './pages/Forageables';
 import Critters from './pages/Critters';
 import Quests from './pages/Quests';
+import Tips from './pages/Tips';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -79,6 +80,20 @@ function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function DashboardOverview() {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-6">Dashboard</h1>
+      <div className="max-w-md rounded-xl border border-amber-200 bg-amber-50 px-6 py-4 text-base text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-200">
+        <i>Coming soon</i> 
+        
+        <p>Dashboard will host comparison data across all the
+        loaded character files for a given user of the AskFin app.</p>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -117,6 +132,14 @@ export default function App() {
                   }
                 />
                 <Route
+                  path="/dashboard-overview"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardOverview />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/events"
                   element={
                     <ProtectedRoute>
@@ -145,6 +168,14 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <Quests />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/tips"
+                  element={
+                    <ProtectedRoute>
+                      <Tips />
                     </ProtectedRoute>
                   }
                 />
