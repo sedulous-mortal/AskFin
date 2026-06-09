@@ -207,7 +207,7 @@ export default function Header() {
                 to={item.to}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `rounded-lg px-5 py-3 text-base transition-colors ${
+                  `rounded-lg px-5 py-3 text-lg transition-colors ${
                     isActive
                       ? 'bg-slate-900 text-white shadow-sm'
                       : 'text-slate-200 hover:bg-slate-600 hover:text-white'

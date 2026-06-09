@@ -36,38 +36,38 @@ export default function DatePicker() {
   };
 
   return (
-    <div className="flex shrink-0 items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2">
+    <div className="flex shrink-0 items-center gap-2.5 rounded-md border border-gray-300 bg-white px-4 py-2.5">
       {/* Custom season dropdown with PNG icons */}
       <div className="relative" ref={dropdownRef}>
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-1.5 text-sm font-medium text-gray-700"
+          className="flex items-center gap-2 text-base font-medium text-gray-700"
         >
           <img
             src={`/seasons/${season.toLowerCase()}.png`}
             alt={season}
-            className="h-4 w-4 object-contain"
+            className="h-5 w-5 object-contain"
           />
           <span>{season}</span>
-          <svg className="h-3 w-3 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
           </svg>
         </button>
 
         {open && (
-          <div className="absolute left-0 top-full z-50 mt-1 w-32 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+          <div className="absolute left-0 top-full z-50 mt-1 w-36 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
             {SEASONS.map((s) => (
               <button
                 key={s}
                 type="button"
                 onClick={() => { setSeason(s); setOpen(false); }}
-                className={`flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 ${s === season ? 'bg-gray-100 font-semibold' : ''}`}
+                className={`flex w-full items-center gap-2 px-3 py-2 text-base text-gray-700 hover:bg-gray-50 ${s === season ? 'bg-gray-100 font-semibold' : ''}`}
               >
                 <img
                   src={`/seasons/${s.toLowerCase()}.png`}
                   alt={s}
-                  className="h-4 w-4 object-contain"
+                  className="h-5 w-5 object-contain"
                 />
                 {s}
               </button>
@@ -83,10 +83,10 @@ export default function DatePicker() {
         value={day}
         onChange={handleDayChange}
         onBlur={handleBlur}
-        className="w-10 rounded border border-gray-300 px-1 py-1 text-center text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-12 rounded border border-gray-300 px-1 py-1 text-center text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Day"
       />
-      <span className="whitespace-nowrap text-sm text-gray-600">/28</span>
+      <span className="whitespace-nowrap text-base text-gray-600">/28</span>
     </div>
   );
 }

@@ -157,7 +157,11 @@ export default function Events() {
             return (
               <div
                 key={idx}
-                className="overflow-hidden rounded-xl border border-slate-900/10 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
+                className={`overflow-hidden rounded-xl bg-white shadow-sm dark:bg-slate-800 ${
+                    completedOption
+                      ? 'border-0'
+                      : 'border border-slate-900/10 dark:border-slate-700'
+                  }`}
               >
                 {/* Event header row */}
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-3 dark:border-slate-700">
@@ -227,11 +231,11 @@ export default function Events() {
                         <div className="flex min-w-0 flex-1 flex-col">
                           <div className="mb-1 flex flex-wrap items-center gap-2">
                             {event.options.length > 1 && (
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                                 Option {optIdx === 0 ? 'A' : 'B'}
                               </span>
                             )}
-                            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                               {title}
                             </h3>
                             {isChosen && (
@@ -242,7 +246,7 @@ export default function Events() {
                           </div>
 
                           {quest.description && (
-                            <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
+                            <p className="mb-2 text-base text-slate-500 dark:text-slate-400">
                               {quest.description}
                             </p>
                           )}
@@ -252,7 +256,7 @@ export default function Events() {
                               {quest.requirements.map((req, i) => (
                                 <span
                                   key={i}
-                                  className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+                                  className="rounded bg-amber-50 px-2 py-0.5 text-sm text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
                                 >
                                   {req.amount > 1 ? `${req.amount}× ` : ''}
                                   {req.name}
@@ -265,7 +269,7 @@ export default function Events() {
                             {synopsis ? (
                               <SpoilerOutcome questId={quest.id} synopsis={synopsis} />
                             ) : (
-                              <div className="flex-1 rounded-lg bg-slate-50 px-3 py-2 text-xs italic text-slate-400 dark:bg-slate-700/50 dark:text-slate-500">
+                              <div className="flex-1 rounded-lg bg-slate-50 px-3 py-2 text-sm italic text-slate-400 dark:bg-slate-700/50 dark:text-slate-500">
                                 Outcome synopsis coming soon.
                               </div>
                             )}
@@ -275,7 +279,7 @@ export default function Events() {
                         {/* Right: requirement icons */}
                         {quest.requirements.length > 0 && (
                           <div className="flex-none">
-                            <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                            <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                               Requires
                             </p>
                             <div className="grid grid-cols-2 gap-1.5">

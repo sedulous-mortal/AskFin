@@ -152,7 +152,7 @@ function MultiDonutChart({
       <text x={cx} y={cy + 4} textAnchor="middle" fontSize="16" fontWeight="bold" fill="currentColor" className="text-slate-900 dark:text-slate-100">
         {totalDiscovered}
       </text>
-      <text x={cx} y={cy + 16} textAnchor="middle" fontSize="8" fill="currentColor" className="text-slate-500 dark:text-slate-400">
+      <text x={cx} y={cy + 19} textAnchor="middle" fontSize="11" fill="currentColor" className="text-slate-500 dark:text-slate-400">
         of {total}
       </text>
     </svg>
