@@ -82,7 +82,7 @@ export default function Critters() {
                 On lg+ each article spans all 6 rows and uses subgrid so every section
                 aligns horizontally across all columns regardless of name wrap.
               */}
-              <div className="grid grid-cols-1 divide-y divide-slate-900/10 px-4 pt-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0">
+              <div className="grid grid-cols-1 divide-y divide-slate-900/10 pt-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0">
                 {variants.map((variant) => {
                   const isActive = daysRemainingInRange(variant.activeAt, getCurrentDateString()) > 0;
                   const bg = `transition-colors duration-200${isActive ? ' bg-yellow-50' : ''}`;
