@@ -140,6 +140,11 @@
     "diet": "herbivore"
   },
   {
+    "id": 926,
+    "name": "Vegetable Tart",
+    "diet": "herbivore"
+  },
+  {
     "id": 957,
     "name": "Cake",
     "diet": "omnivore"

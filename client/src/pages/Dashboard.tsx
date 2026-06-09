@@ -54,11 +54,12 @@ function DonutChart({
   const cx = 50;
   const cy = 50;
   const circ = 2 * Math.PI * r;
-  const discoveredArc =
-    total !== null ? (Math.min(discovered / total, 1)) * circ
+  const rawArc = total !== null ? Math.min(discovered / total, 1) * circ
     : discovered > 0 ? circ * 0.45
     : 0;
-  const startOffset = circ * 0.25;
+  // Keep at least 3% gap so the undiscovered track is always visible
+  const isPartial = total !== null && discovered > 0 && discovered < total;
+  const discoveredArc = isPartial ? Math.min(rawArc, circ * 0.97) : rawArc;
 
   return (
     <svg viewBox="0 0 100 100" className="w-36 h-36 shrink-0"
@@ -69,8 +70,9 @@ function DonutChart({
       {discovered > 0 && (
         <circle cx={cx} cy={cy} r={r} fill="none" strokeWidth="11"
           strokeDasharray={`${discoveredArc} ${circ}`}
-          strokeDashoffset={startOffset}
-          strokeLinecap="round"
+          strokeDashoffset={0}
+          strokeLinecap="butt"
+          transform="rotate(-90 50 50)"
           style={{ stroke: color }}
           className="cursor-pointer transition-opacity hover:opacity-80"
           onClick={onDiscoveredClick} />
@@ -95,10 +97,12 @@ function MultiDonutChart({
   segments,
   total,
   onUndiscoveredClick,
+  centerCount,
 }: {
   segments: EdibleSegment[];
   total: number;
   onUndiscoveredClick: () => void;
+  centerCount?: number;
 }) {
   const r = 38;
   const cx = 50;
@@ -106,6 +110,7 @@ function MultiDonutChart({
   const strokeW = 11;
 
   const totalDiscovered = segments.reduce((s, seg) => s + seg.count, 0);
+  const displayCount = centerCount ?? totalDiscovered;
 
   function polarToXY(deg: number) {
     const rad = ((deg - 90) * Math.PI) / 180;
@@ -150,7 +155,7 @@ function MultiDonutChart({
         />
       ))}
       <text x={cx} y={cy + 4} textAnchor="middle" fontSize="16" fontWeight="bold" fill="currentColor" className="text-slate-900 dark:text-slate-100">
-        {totalDiscovered}
+        {displayCount}
       </text>
       <text x={cx} y={cy + 19} textAnchor="middle" fontSize="11" fill="currentColor" className="text-slate-500 dark:text-slate-400">
         of {total}
@@ -224,13 +229,16 @@ function CookingPanIcon() {
   );
 }
 
+// ── Shared unknown-category color ─────────────────────────────────────────────
+const UNKNOWN_COLOR = '#94a3b8'; // slate-400
+
 // ── Cooking recipe section (grouped by diet) ─────────────────────────────────
 
 const DIET_ORDER = ['carnivore', 'herbivore', 'omnivore'] as const;
 const DIET_LABEL: Record<string, string> = { carnivore: 'Carnivore', herbivore: 'Herbivore', omnivore: 'Omnivore' };
 const DIET_COLORS: Record<string, string> = { carnivore: '#dc2626', herbivore: '#16a34a', omnivore: '#9333ea' };
 
-type CookingView = 'chart' | 'discovered' | 'undiscovered' | typeof DIET_ORDER[number];
+type CookingView = 'chart' | 'discovered' | 'undiscovered' | 'unknown_diet' | typeof DIET_ORDER[number];
 
 function CookingRecipeSection({
   discovered, undiscovered, spoilerKey,
@@ -243,8 +251,11 @@ function CookingRecipeSection({
   const [groupByDiet, setGroupByDiet] = useState(false);
   const { preferences } = useSettings();
   const spoilerAllowed = spoilerKey ? preferences.spoilers[spoilerKey] : true;
-  const total = 45;
+  // Dynamic total: discovered + what's in our JSON but not yet found (catches recipes outside our JSON too)
+  const total = discovered.length + undiscovered.length;
   const color = '#be185d';
+
+  const unknownDiet = discovered.filter(i => !(DIET_ORDER as readonly (string | null)[]).includes(i.diet));
 
   if (view !== 'chart') {
     const isDietView = (DIET_ORDER as readonly string[]).includes(view);
@@ -253,6 +264,9 @@ function CookingRecipeSection({
     if (isDietView) {
       items = discovered.filter(i => i.diet === view);
       label = `${DIET_LABEL[view]} Recipes`;
+    } else if (view === 'unknown_diet') {
+      items = unknownDiet;
+      label = 'Unknown Diet Recipes';
     } else if (view === 'discovered') {
       items = discovered;
       label = 'Unlocked Cooking Recipes';
@@ -276,7 +290,7 @@ function CookingRecipeSection({
         </div>
         {view === 'undiscovered' && !spoilerAllowed ? (
           <SpoilerGate label="Undiscovered Cooking Recipes" />
-        ) : isDietView ? (
+        ) : isDietView || view === 'unknown_diet' ? (
           <ul className="columns-2 gap-x-6 sm:columns-3">
             {items.map(item => (
               <li key={item.id} className="mb-1.5 break-inside-avoid text-sm text-slate-700 dark:text-slate-300">
@@ -324,16 +338,25 @@ function CookingRecipeSection({
         <div className="flex items-center justify-center">
           {groupByDiet ? (
             <MultiDonutChart
-              segments={DIET_ORDER
-                .map(diet => ({
-                  label: DIET_LABEL[diet],
-                  count: discovered.filter(i => i.diet === diet).length,
-                  color: DIET_COLORS[diet],
-                  onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView(diet); },
-                }))
-                .filter(seg => seg.count > 0)}
+              segments={[
+                ...DIET_ORDER
+                  .map(diet => ({
+                    label: DIET_LABEL[diet],
+                    count: discovered.filter(i => i.diet === diet).length,
+                    color: DIET_COLORS[diet],
+                    onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView(diet); },
+                  }))
+                  .filter(seg => seg.count > 0),
+                ...(unknownDiet.length > 0 ? [{
+                  label: 'Unknown diet',
+                  count: unknownDiet.length,
+                  color: UNKNOWN_COLOR,
+                  onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView('unknown_diet'); },
+                }] : []),
+              ]}
               total={total}
               onUndiscoveredClick={() => setView('undiscovered')}
+              centerCount={discovered.length}
             />
           ) : (
             <DonutChart discovered={discovered.length} total={total} color={color}
@@ -358,6 +381,15 @@ function CookingRecipeSection({
                   </button>
                 );
               })}
+              {unknownDiet.length > 0 && (
+                <button onClick={() => setView('unknown_diet')} className="flex items-center gap-2 text-left group">
+                  <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: UNKNOWN_COLOR }} />
+                  <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                    <span className="font-semibold">{unknownDiet.length}</span> unknown diet
+                  </span>
+                  <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+                </button>
+              )}
               <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
                 <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
                 <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
@@ -403,7 +435,7 @@ const CRAFTING_CATEGORY_COLORS: Record<string, string> = {
   'Furniture':      '#ea580c',
 };
 
-type CraftingView = 'chart' | 'discovered' | 'undiscovered' | typeof CRAFTING_CATEGORY_ORDER[number];
+type CraftingView = 'chart' | 'discovered' | 'undiscovered' | 'unknown_type' | typeof CRAFTING_CATEGORY_ORDER[number];
 
 function CraftingRecipeSection({
   discovered, undiscovered, spoilerKey,
@@ -419,6 +451,8 @@ function CraftingRecipeSection({
   const total = 171;
   const color = 'var(--crafting-color)';
 
+  const unknownCategory = discovered.filter(i => !(CRAFTING_CATEGORY_ORDER as readonly (string | null)[]).includes(i.category));
+
   if (view !== 'chart') {
     const isCategoryView = (CRAFTING_CATEGORY_ORDER as readonly string[]).includes(view);
     let items: CraftingRecipeItem[];
@@ -426,6 +460,9 @@ function CraftingRecipeSection({
     if (isCategoryView) {
       items = discovered.filter(i => i.category === view);
       label = view;
+    } else if (view === 'unknown_type') {
+      items = unknownCategory;
+      label = 'Unknown Type Blueprints';
     } else if (view === 'discovered') {
       items = discovered;
       label = 'Unlocked Crafting Blueprints';
@@ -449,7 +486,7 @@ function CraftingRecipeSection({
         </div>
         {view === 'undiscovered' && !spoilerAllowed ? (
           <SpoilerGate label="Locked Crafting Blueprints" />
-        ) : isCategoryView ? (
+        ) : isCategoryView || view === 'unknown_type' ? (
           <ul className="columns-2 gap-x-6 sm:columns-3">
             {items.map(item => (
               <li key={item.id} className="mb-1.5 break-inside-avoid text-sm text-slate-700 dark:text-slate-300">
@@ -497,16 +534,25 @@ function CraftingRecipeSection({
         <div className="flex items-center justify-center">
           {groupByType ? (
             <MultiDonutChart
-              segments={CRAFTING_CATEGORY_ORDER
-                .map(cat => ({
-                  label: cat,
-                  count: discovered.filter(i => i.category === cat).length,
-                  color: CRAFTING_CATEGORY_COLORS[cat],
-                  onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView(cat); },
-                }))
-                .filter(seg => seg.count > 0)}
+              segments={[
+                ...CRAFTING_CATEGORY_ORDER
+                  .map(cat => ({
+                    label: cat,
+                    count: discovered.filter(i => i.category === cat).length,
+                    color: CRAFTING_CATEGORY_COLORS[cat],
+                    onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView(cat); },
+                  }))
+                  .filter(seg => seg.count > 0),
+                ...(unknownCategory.length > 0 ? [{
+                  label: 'Unknown type',
+                  count: unknownCategory.length,
+                  color: UNKNOWN_COLOR,
+                  onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView('unknown_type'); },
+                }] : []),
+              ]}
               total={total}
               onUndiscoveredClick={() => setView('undiscovered')}
+              centerCount={discovered.length}
             />
           ) : (
             <DonutChart discovered={discovered.length} total={total} color={color}
@@ -531,6 +577,15 @@ function CraftingRecipeSection({
                   </button>
                 );
               })}
+              {unknownCategory.length > 0 && (
+                <button onClick={() => setView('unknown_type')} className="flex items-center gap-2 text-left group">
+                  <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: UNKNOWN_COLOR }} />
+                  <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                    <span className="font-semibold">{unknownCategory.length}</span> unknown type
+                  </span>
+                  <span className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity dark:text-slate-500">›</span>
+                </button>
+              )}
               <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
                 <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
                 <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
@@ -565,7 +620,7 @@ function CraftingRecipeSection({
 
 // ── Fish section (with Split by Area) ────────────────────────────────────────
 
-type FishDrillView = 'chart' | 'discovered' | 'undiscovered' | typeof HABITAT_ORDER[number];
+type FishDrillView = 'chart' | 'discovered' | 'undiscovered' | 'unknown_area' | typeof HABITAT_ORDER[number];
 
 function FishSection({
   discovered, undiscovered, total, spoilerKey,
@@ -581,10 +636,12 @@ function FishSection({
   const spoilerAllowed = spoilerKey ? preferences.spoilers[spoilerKey] : true;
   const color = 'var(--fish-accent)';
 
-  const habitatOf = (id: number) => FISH_HABITAT[id] ?? 'Any';
+  // null = ID not in our habitat map (unknown area); explicit 'Any' = catchable anywhere
+  const habitatOf = (id: number): string | null => FISH_HABITAT[id] ?? null;
   const byHabitat = Object.fromEntries(
     HABITAT_ORDER.map(h => [h, discovered.filter(f => habitatOf(f.id) === h)])
   ) as Record<string, ResolvedItem[]>;
+  const unknownArea = discovered.filter(f => habitatOf(f.id) === null);
 
   const habitatSegments = HABITAT_ORDER
     .filter(h => byHabitat[h].length > 0)
@@ -607,6 +664,9 @@ function FishSection({
     if (isHabitatView) {
       items = byHabitat[view] ?? [];
       label = `${view} Fish`;
+    } else if (view === 'unknown_area') {
+      items = unknownArea;
+      label = 'Unknown Area Fish';
     } else if (view === 'discovered') {
       items = discovered;
       label = 'Discovered Fish';
@@ -661,9 +721,18 @@ function FishSection({
         <div className="flex items-center justify-center">
           {splitByArea ? (
             <MultiDonutChart
-              segments={habitatSegments}
+              segments={[
+                ...habitatSegments,
+                ...(unknownArea.length > 0 ? [{
+                  label: 'Unknown area',
+                  count: unknownArea.length,
+                  color: UNKNOWN_COLOR,
+                  onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView('unknown_area'); },
+                }] : []),
+              ]}
               total={total ?? discovered.length}
               onUndiscoveredClick={() => setView('undiscovered')}
+              centerCount={discovered.length}
             />
           ) : (
             <DonutChart
@@ -690,6 +759,14 @@ function FishSection({
                   </span>
                 </button>
               ))}
+              {unknownArea.length > 0 && (
+                <button onClick={() => setView('unknown_area')} className="flex items-center gap-2 text-left group">
+                  <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: UNKNOWN_COLOR }} />
+                  <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
+                    <span className="font-semibold">{unknownArea.length}</span> unknown area
+                  </span>
+                </button>
+              )}
               <button onClick={() => setView('undiscovered')} className="flex items-center gap-2 text-left group">
                 <span className="inline-block w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600" />
                 <span className="text-base text-slate-500 group-hover:text-slate-700 transition-colors dark:text-slate-400 dark:group-hover:text-slate-200">
@@ -727,7 +804,7 @@ function FishSection({
 
 // ── Edibles section ───────────────────────────────────────────────────────────
 
-type EdibleDrillView = 'chart' | 'discovered' | 'forageable' | 'farmable' | 'both' | 'undiscovered';
+type EdibleDrillView = 'chart' | 'discovered' | 'forageable' | 'farmable' | 'both' | 'undiscovered' | 'unknown_source';
 
 const EDIBLE_COLORS = {
   forageable: '#16a34a',
@@ -761,16 +838,20 @@ function EdiblesSection({
     farmable:   discovered.filter(i => i.source === 'farmable'),
     both:       discovered.filter(i => i.source === 'both'),
   };
+  const unknownSource = discovered.filter(i => !(['forageable', 'farmable', 'both'] as string[]).includes(i.source));
 
   // Drilldown view
   if (view !== 'chart') {
     const isUndiscoveredView = view === 'undiscovered';
     const isDiscoveredView = view === 'discovered';
+    const isUnknownView = view === 'unknown_source';
     const items = isUndiscoveredView ? undiscovered
       : isDiscoveredView ? discovered
+      : isUnknownView ? unknownSource
       : bySource[view as keyof typeof bySource] ?? [];
     const label = isDiscoveredView ? 'Discovered'
       : isUndiscoveredView ? 'Undiscovered'
+      : isUnknownView ? 'Unknown Type'
       : EDIBLE_LABELS[view as keyof typeof EDIBLE_LABELS];
     return (
       <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
@@ -803,6 +884,8 @@ function EdiblesSection({
       onClick: (e) => { e.stopPropagation(); setView('farmable'); } },
     { label: 'Forageable & Farmable', count: bySource.both.length, color: EDIBLE_COLORS.both,
       onClick: (e) => { e.stopPropagation(); setView('both'); } },
+    ...(unknownSource.length > 0 ? [{ label: 'Unknown type', count: unknownSource.length, color: UNKNOWN_COLOR,
+      onClick: (e: React.MouseEvent) => { e.stopPropagation(); setView('unknown_source'); } }] : []),
   ];
 
   return (
@@ -821,7 +904,8 @@ function EdiblesSection({
         <div className="flex items-center justify-center">
           {splitByType ? (
             <MultiDonutChart segments={segments} total={total}
-              onUndiscoveredClick={() => setView('undiscovered')} />
+              onUndiscoveredClick={() => setView('undiscovered')}
+              centerCount={discovered.length} />
           ) : (
             <DonutChart
               discovered={discovered.length}
@@ -838,8 +922,9 @@ function EdiblesSection({
           </h2>
           {splitByType ? (
             <>
-              {segments.map((seg) => (
-                <button key={seg.label} onClick={() => setView(seg.label === 'Forageable' ? 'forageable' : seg.label === 'Farmable' ? 'farmable' : 'both')}
+              {segments.filter(seg => seg.count > 0).map((seg) => (
+                <button key={seg.label}
+                  onClick={(e) => seg.onClick(e)}
                   className="flex items-center gap-2 text-left group">
                   <span className="inline-block w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: seg.color }} />
                   <span className="text-base text-slate-700 group-hover:text-slate-900 transition-colors dark:text-slate-300 dark:group-hover:text-slate-100">
@@ -953,7 +1038,7 @@ export default function Dashboard() {
             <StatCard label="Fish discovered"  count={selectedCharacter.fish_discovered.length}              total={selectedCharacter.fish_total ?? 75}         accent="var(--fish-accent)" />
             <StatCard label="Edibles found"    count={selectedCharacter.edibles_discovered.length}           total={selectedCharacter.edibles_total || 47}       accent="var(--edibles-accent)" />
             <StatCard label="Crafting recipes" count={selectedCharacter.unlocked_crafting_recipes.length}    total={171}                                         accent="var(--crafting-color)" />
-            <StatCard label="Cooking recipes"  count={selectedCharacter.unlocked_cooking_recipes.length}     total={45}                                          accent="#be185d" />
+            <StatCard label="Cooking recipes"  count={selectedCharacter.unlocked_cooking_recipes.length}     total={selectedCharacter.unlocked_cooking_recipes.length + selectedCharacter.unlocked_cooking_recipes_undiscovered.length}  accent="#be185d" />
           </section>
 
           {/* Row 1: Fish | Edibles */}
