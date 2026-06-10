@@ -8,10 +8,13 @@ type UploadStatus =
   | { type: 'success' }
   | { type: 'error'; message: string };
 
+const SAVES_PATH = 'C:\\Users\\<YourUsername>\\AppData\\LocalLow\\AcuteOwlStudio\\GrimshireSaves';
+
 export default function LoadSaveFile() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { user, refreshCharacters, refreshSelectedCharacter } = useAuth();
   const [status, setStatus] = useState<UploadStatus>({ type: 'idle' });
+  const [copied, setCopied] = useState(false);
 
   const handleClick = () => {
     inputRef.current?.click();
@@ -32,6 +35,16 @@ export default function LoadSaveFile() {
       setStatus({ type: 'success' });
     } catch (err) {
       setStatus({ type: 'error', message: err instanceof Error ? err.message : 'Upload failed.' });
+    }
+  };
+
+  const handleCopyPath = async () => {
+    try {
+      await navigator.clipboard.writeText(SAVES_PATH);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard API unavailable
     }
   };
 
@@ -57,10 +70,10 @@ export default function LoadSaveFile() {
         </button>
 
         {/* Info icon with tooltip */}
-        <div className="group relative">
+        <div className="group relative" onClick={handleCopyPath}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 cursor-help text-slate-400 hover:text-slate-200 transition-colors"
+            className={`h-4 w-4 cursor-pointer transition-colors ${copied ? 'text-green-400' : 'text-slate-400 hover:text-slate-200'}`}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -77,8 +90,9 @@ export default function LoadSaveFile() {
             </p>
             <p className="mt-2 text-slate-400">Your save files are typically located at:</p>
             <code className="mt-1 block break-all rounded bg-slate-900 px-2 py-1.5 text-slate-300">
-              C:\Program Files (x86)\Steam\steamapps\common\Grimshire\Grimshire_Data\
+              C:\Users\&lt;YourUsername&gt;\AppData\LocalLow\AcuteOwlStudio\GrimshireSaves
             </code>
+            <p className="mt-2 text-slate-500 italic">Click this icon to copy the path to your clipboard.</p>
           </div>
         </div>
       </div>

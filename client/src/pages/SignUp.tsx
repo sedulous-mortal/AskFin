@@ -42,22 +42,22 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-8 space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-2 text-center text-3xl font-extrabold text-slate-900 dark:text-slate-100">
             Create your account
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
+        <form className="space-y-6" onSubmit={handleSignUp}>
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-800">{error}</p>
+            <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
+              <p className="text-sm font-medium text-red-800 dark:text-red-300">{error}</p>
             </div>
           )}
           {success && (
-            <div className="rounded-md bg-green-50 p-4">
-              <p className="text-sm font-medium text-green-800">{success}</p>
+            <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-4">
+              <p className="text-sm font-medium text-green-800 dark:text-green-300">{success}</p>
             </div>
           )}
 
@@ -71,7 +71,7 @@ export default function SignUp() {
                 name="username"
                 type="text"
                 autoComplete="username"
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Username (optional)"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -87,7 +87,7 @@ export default function SignUp() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -103,7 +103,7 @@ export default function SignUp() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -122,9 +122,9 @@ export default function SignUp() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Already have an account?{' '}
-              <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link to="/login" className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
                 Sign in
               </Link>
             </p>

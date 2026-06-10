@@ -239,7 +239,7 @@ function RootCellarInfo({ difficulty, currentSeasonIdx }: { difficulty: number |
     <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-base text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-200">
       <p className="mb-1 font-semibold">Defender's Ration</p>
       <p>Collected every Sunday from Spring 8 onward. Requires herbivore and carnivore food in equal parts — one type can cover the other's deficit if needed.</p>
-      <p className="mt-1.5 text-base text-slate-500 dark:text-slate-400">One day's worth of food is calculated as 150 stamina for herbivore and carnivore each, so 300 stamina total. Omnivore total value is always what's displayed in the brackets, and what the root cellar uses to determine contribution value.</p>
+      <p className="mt-1.5 text-base text-slate-500 dark:text-slate-400">One day's worth of food is calculated as 150 stamina for herbivore and carnivore each, so 300 stamina total. Omnivore total value is always what's shown in the parentheses in-game when you click on an edible in inventory, and what the root cellar uses to determine contribution value.</p>
       {days !== null && diffName !== null ? (
         <p className="mt-1.5">
           This season on <span className="font-semibold">{diffName}</span> difficulty:{' '}

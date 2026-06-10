@@ -473,7 +473,7 @@ function QuestCard({
       {/* Full-width note for root cellar cards */}
       {quest.is_rootcellar_quest && (
         <p className="mt-3 border-t border-slate-100 pt-3 text-base text-sky-700 dark:border-slate-700 dark:text-sky-400">
-          One day's worth of food is 150 stamina for herbivore and carnivore each (300 total). Omnivore total value is always what's shown in the brackets, and what the root cellar uses to determine contribution value.
+          One day's worth of food is 150 stamina for herbivore and carnivore each (300 total). Omnivore total value is always what's shown in the parentheses in-game when you click on an edible in inventory, and what the root cellar uses to determine contribution value.
         </p>
       )}
       </div>

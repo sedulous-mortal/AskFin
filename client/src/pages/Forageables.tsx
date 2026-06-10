@@ -84,7 +84,7 @@ function ForageableCard({ item }: { item: Forageable }) {
   );
 }
 
-function TypeTreemap({ items, selectedView, onSelect }: {
+function TypeFilterPills({ items, selectedView, onSelect }: {
   items: Forageable[];
   selectedView: string | null;
   onSelect: (view: string | null) => void;
@@ -95,28 +95,52 @@ function TypeTreemap({ items, selectedView, onSelect }: {
   }, {});
 
   const types = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
-  const anyTypeSelected = selectedView !== null && selectedView !== 'all';
+  const somethingSelected = selectedView !== null;
+  const allSelected = selectedView === 'all';
 
   return (
-    <div className="flex h-20 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-      {types.map(([type, count]) => {
-        const isSelected = selectedView === type;
-        const isDimmed = anyTypeSelected && !isSelected;
-        return (
-          <button
-            key={type}
-            type="button"
-            style={{ flex: count }}
-            onClick={() => onSelect(isSelected ? null : type)}
-            className={`flex flex-col items-center justify-center gap-0.5 text-white transition-all ${
-              TYPE_BG[type] ?? 'bg-slate-500'
-            } ${isDimmed ? 'opacity-40' : ''} ${isSelected ? 'ring-2 ring-inset ring-white' : 'hover:brightness-110'}`}
-          >
-            <span className="text-xs font-bold uppercase leading-tight tracking-wide">{type}</span>
-            <span className="text-xs opacity-80">{count}</span>
-          </button>
-        );
-      })}
+    <div className="space-y-2">
+      <p className="text-sm text-slate-500 dark:text-slate-400">Filter by type</p>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => onSelect(allSelected ? null : 'all')}
+          style={{ background: 'linear-gradient(to right, #f43f5e, #a855f7, #3b82f6, #10b981, #f97316, #f59e0b)', textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}
+          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-all ${
+            somethingSelected && !allSelected ? 'opacity-35' : 'opacity-100'
+          } ${allSelected ? 'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 ring-white shadow-md' : 'hover:brightness-110'}`}
+        >
+          All
+          <span className="rounded-full bg-white/25 px-1.5 py-0.5 text-xs leading-none tabular-nums">
+            {items.length}
+          </span>
+        </button>
+
+        {types.map(([type, count]) => {
+          const isSelected = selectedView === type;
+          const isDimmed = somethingSelected && !isSelected;
+          return (
+            <button
+              key={type}
+              type="button"
+              onClick={() => onSelect(isSelected ? null : type)}
+              style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-all ${
+                TYPE_BG[type] ?? 'bg-slate-500'
+              } ${isDimmed ? 'opacity-35' : 'opacity-100'} ${
+                isSelected
+                  ? 'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 ring-current shadow-md'
+                  : 'hover:brightness-110'
+              }`}
+            >
+              {type}
+              <span className="rounded-full bg-white/25 px-1.5 py-0.5 text-xs leading-none tabular-nums">
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -214,7 +238,7 @@ export default function Forageables() {
       {/* ── ONLY IN SEASON mode ─────────────────────────────────────────────── */}
       {!showAll && (
         loading ? (
-          <p className="text-slate-600">Loading forageables...</p>
+          <p className="text-slate-600 dark:text-slate-400">Loading forageables...</p>
         ) : error ? (
           <p className="text-red-600">{error}</p>
         ) : !showForageables ? (
@@ -243,7 +267,7 @@ export default function Forageables() {
 
             {data && data.upcoming.length > 0 && (
               <section>
-                <h2 className="mb-3 text-xl font-semibold text-slate-800">Coming up next</h2>
+                <h2 className="mb-3 text-xl font-semibold text-slate-800 dark:text-slate-200">Coming up next</h2>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                   {data.upcoming.map((item) => (
                     <div
@@ -282,24 +306,7 @@ export default function Forageables() {
           </div>
         ) : allForageables ? (
           <div className="space-y-4">
-            {/* ALL FORAGEABLES clickable box */}
-            <button
-              type="button"
-              onClick={() => setSelectedView(selectedView === 'all' ? null : 'all')}
-              className={`w-full rounded-xl border px-5 py-3 text-left font-bold uppercase tracking-wider transition-colors ${
-                selectedView === 'all'
-                  ? 'border-amber-400 bg-amber-100 text-amber-900 dark:border-amber-500 dark:bg-amber-900/40 dark:text-amber-100'
-                  : 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/30'
-              }`}
-            >
-              All Forageables
-              <span className="ml-2 text-sm font-normal normal-case tracking-normal opacity-70">
-                ({allForageables.length} items)
-              </span>
-            </button>
-
-            {/* Proportional type treemap */}
-            <TypeTreemap
+            <TypeFilterPills
               items={allForageables}
               selectedView={selectedView}
               onSelect={setSelectedView}
