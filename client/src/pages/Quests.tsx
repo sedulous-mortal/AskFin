@@ -115,7 +115,7 @@ type TypeInfo = { label: string; color: string };
 function questTypeInfo(quest: Quest): TypeInfo {
   if (quest.is_vip_quest) return { label: 'VIP Quest', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' };
   if (quest.is_donation_quest) return { label: 'Donation', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' };
-  if (quest.is_rootcellar_quest) return { label: 'Root Cellar', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' };
+  if (quest.is_rootcellar_quest) return { label: 'Root Cellar', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' };
   if (quest.is_town_quest) return { label: 'Town Quest', color: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300' };
   return { label: 'Side Quest', color: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' };
 }
@@ -139,24 +139,24 @@ function QuestCard({
       <div className="p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
+            <span className={`inline-flex items-center rounded-full px-3 py-0.5 text-sm font-medium ${color}`}>
               {label}
             </span>
             {inProgressQuestIds.has(quest.id) ? (
-              <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+              <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-0.5 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                 In progress
               </span>
             ) : daysAway === 0 ? (
-              <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-600">
+              <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-0.5 text-sm font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-600">
                 Available now
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+              <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-0.5 text-sm font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
                 Starts in {daysAway} day{daysAway !== 1 ? 's' : ''}
               </span>
             )}
           </div>
-          <span className="text-xs text-slate-400 dark:text-slate-500">{availability}</span>
+          <span className="text-sm text-slate-400 dark:text-slate-500">{availability}</span>
         </div>
 
         <h2 className="mt-2 text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
@@ -166,10 +166,10 @@ function QuestCard({
         )}
 
         {quest.requirements && quest.requirements.length > 0 && (
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
             <span className="font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">Requires</span>
             {quest.requirements.map((req, i) => (
-              <span key={i} className="rounded bg-amber-50 px-2 py-0.5 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+              <span key={i} className="rounded bg-amber-50 px-2.5 py-0.5 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
                 {req.amount > 1 ? `${req.amount}× ` : ''}{req.name}
               </span>
             ))}
@@ -181,31 +181,31 @@ function QuestCard({
           const hasRewards = quest.reward_money || quest.reward_relationship_points || quest.reward_items?.length || isThresholdDonation;
           if (!hasRewards) return null;
           return (
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
               <span className="font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">Rewards</span>
               {isThresholdDonation && (
-                <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                <span className="rounded bg-slate-50 px-2.5 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                   +20 relationship with Adeline
                 </span>
               )}
               {quest.reward_money ? (
-                <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                <span className="rounded bg-slate-50 px-2.5 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                   {quest.reward_money.toLocaleString()} coins
                 </span>
               ) : null}
               {!isThresholdDonation && quest.reward_relationship_points ? (
                 quest.quest_giver ? (
-                  <span className="rounded bg-slate-50 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                  <span className="rounded bg-slate-50 px-2.5 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                     +{quest.reward_relationship_points} relationship with {quest.quest_giver}
                   </span>
                 ) : (
-                  <span className="rounded bg-amber-50 px-2 py-0.5 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                  <span className="rounded bg-amber-50 px-2.5 py-0.5 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                     +{quest.reward_relationship_points} relationship — must be confirmed with Acute Owl Studio who this gain is with
                   </span>
                 )
               ) : null}
               {quest.reward_items?.map((item, i) => (
-                <span key={i} className="rounded bg-emerald-50 px-2 py-0.5 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                <span key={i} className="rounded bg-emerald-50 px-2.5 py-0.5 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
                   {item.amount > 1 ? `${item.amount}× ${item.name}` : `${item.name} (1)`}
                 </span>
               ))}
@@ -239,6 +239,7 @@ function RootCellarInfo({ difficulty, currentSeasonIdx }: { difficulty: number |
     <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-base text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-200">
       <p className="mb-1 font-semibold">Defender's Ration</p>
       <p>Collected every Sunday from Spring 8 onward. Requires herbivore and carnivore food in equal parts — one type can cover the other's deficit if needed.</p>
+      <p className="mt-1.5 text-base text-slate-500 dark:text-slate-400">One day's worth of food is calculated as 150 stamina for herbivore and carnivore each, so 300 stamina total. Omnivore total value is always what's displayed in the brackets, and what the root cellar uses to determine contribution value.</p>
       {days !== null && diffName !== null ? (
         <p className="mt-1.5">
           This season on <span className="font-semibold">{diffName}</span> difficulty:{' '}
@@ -304,15 +305,15 @@ function CompletedQuestCard({ quest, rootCellarStatus }: { quest: Quest; rootCel
   const failed = rootCellarStatus === 2;
   return (
     <div className="inline-flex max-w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800/60">
-      <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
+      <span className={`inline-flex shrink-0 items-center rounded-full px-3 py-0.5 text-sm font-medium ${color}`}>
         {label}
       </span>
       {failed ? (
-        <span className="inline-flex shrink-0 items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-300">
+        <span className="inline-flex shrink-0 items-center rounded-full bg-red-100 px-3 py-0.5 text-sm font-medium text-red-700 dark:bg-red-900/30 dark:text-red-300">
           Failed
         </span>
       ) : (
-        <span className="inline-flex shrink-0 items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+        <span className="inline-flex shrink-0 items-center rounded-full bg-emerald-100 px-3 py-0.5 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
           Completed
         </span>
       )}

@@ -104,7 +104,7 @@ type TypeInfo = { label: string; color: string };
 function questTypeInfo(quest: Quest): TypeInfo {
   if (quest.is_vip_quest) return { label: 'VIP Quest', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' };
   if (quest.is_donation_quest) return { label: 'Donation', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' };
-  if (quest.is_rootcellar_quest) return { label: 'Root Cellar', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' };
+  if (quest.is_rootcellar_quest) return { label: 'Root Cellar', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' };
   if (quest.is_town_quest) return { label: 'Town Quest', color: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300' };
   return { label: 'Side Quest', color: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' };
 }
@@ -117,14 +117,14 @@ function ItemIcon({ name, amount }: { name: string; amount: number }) {
 
   return (
     <div
-      className="relative h-16 w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
+      className="relative h-[84px] w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
       title={name}
     >
       {pathIdx < paths.length ? (
         <img
           src={paths[pathIdx]}
           alt={name}
-          className="h-full w-full object-contain p-1"
+          className="h-full w-full object-contain px-1 pt-1 pb-[20px]"
           onError={() => setPathIdx((i) => i + 1)}
         />
       ) : (
@@ -154,7 +154,7 @@ function RewardIcon({ name, amount, type }: {
 
   return (
     <div
-      className={`relative h-16 w-16 overflow-hidden rounded-lg border ${
+      className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${
         isRel
           ? 'border-blue-300 bg-blue-50 dark:border-blue-500/40 dark:bg-blue-900/20'
           : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
@@ -165,7 +165,7 @@ function RewardIcon({ name, amount, type }: {
         <img
           src={paths[pathIdx]}
           alt={name}
-          className="h-full w-full object-contain p-1"
+          className={`h-full w-full object-contain ${isRel ? 'object-bottom px-1 pt-1' : 'px-1 pt-1 pb-[20px]'}`}
           onError={() => setPathIdx((i) => i + 1)}
         />
       ) : (
@@ -175,8 +175,8 @@ function RewardIcon({ name, amount, type }: {
           {initials}
         </span>
       )}
-      <span className={`absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl px-1.5 py-0.5 text-[13px] font-bold text-white ${
-        isRel ? 'bg-blue-500/85' : 'bg-black/65'
+      <span className={`absolute right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[13px] font-bold text-white ${
+        isRel ? 'top-0 rounded-bl bg-violet-400/90' : 'bottom-0 rounded-tl bg-black/65'
       }`}>
         {isRel ? `+${amount}` : amount}
       </span>
@@ -288,7 +288,7 @@ function QuestCard({
   if (isThresholdDonation) {
     rewardRows.push({
       text: '+20 relationship with Adeline',
-      chip: <span className="rounded bg-slate-50 px-2 py-0.5 text-sm text-slate-600 dark:bg-slate-700 dark:text-slate-300">+20 relationship with Adeline</span>,
+      chip: <span className="rounded bg-violet-100 px-2 py-0.5 text-sm text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">+20 relationship with Adeline</span>,
       icon: { name: 'Adeline', amount: 20, type: 'relationship' },
     });
   }
@@ -304,7 +304,7 @@ function QuestCard({
       const t = `+${quest.reward_relationship_points} relationship with ${quest.quest_giver}`;
       rewardRows.push({
         text: t,
-        chip: <span className="rounded bg-slate-50 px-2 py-0.5 text-sm text-slate-600 dark:bg-slate-700 dark:text-slate-300">{t}</span>,
+        chip: <span className="rounded bg-violet-100 px-2 py-0.5 text-sm text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">{t}</span>,
         icon: { name: quest.quest_giver, amount: quest.reward_relationship_points, type: 'relationship' },
       });
     } else {
@@ -356,6 +356,12 @@ function QuestCard({
     if (diff < bestDiff) { bestDiff = diff; bestCols = c; bestMaxW = effectiveMaxW; }
   }
 
+  // Prefer an even 3-column grid over a 4+remainder layout when items divide cleanly into rows of 3.
+  if (bestCols === 4 && reqs.length % 3 === 0) {
+    bestCols = 3;
+    bestMaxW = Math.max(COL_CONFIGS[3].baseMaxWPx, minRightW);
+  }
+
   const { gridClass } = COL_CONFIGS[bestCols] ?? COL_CONFIGS[2];
 
   return (
@@ -363,19 +369,19 @@ function QuestCard({
       {/* Header strip */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-3 dark:border-slate-700">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
+          <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${color}`}>
             {label}
           </span>
           {inProgressQuestIds.has(quest.id) ? (
-            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+            <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
               In progress
             </span>
           ) : daysAway === 0 ? (
-            <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-600">
+            <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-600">
               Available now
             </span>
           ) : (
-            <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+            <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
               Starts in {daysAway} day{daysAway !== 1 ? 's' : ''}
             </span>
           )}
@@ -384,7 +390,8 @@ function QuestCard({
       </div>
 
       {/* Body: left fills remaining space, right column sizes to estimated-optimal width */}
-      <div className="flex min-h-0 p-5">
+      <div className="flex min-h-0 flex-col p-5">
+      <div className="flex min-h-0">
 
         {/* Left: title, description, reward chips + icons */}
         <div className="flex min-w-0 flex-1 flex-col pr-4">
@@ -443,10 +450,7 @@ function QuestCard({
 
         {/* Right: requires chips + icon grid at estimated-optimal column count */}
         {reqs.length > 0 && (
-          <div
-            className={`flex-none border-l border-slate-100 pl-4 dark:border-slate-700${reqs.length === 1 ? ' w-1/3' : ''}`}
-            style={reqs.length === 1 ? undefined : { maxWidth: bestMaxW }}
-          >
+          <div className={`flex-none border-l border-slate-100 pl-4 dark:border-slate-700 ${reqs.length === 1 ? 'w-1/3' : 'w-1/2'}`}>
             <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Requires
             </p>
@@ -464,6 +468,14 @@ function QuestCard({
             </div>
           </div>
         )}
+      </div>
+
+      {/* Full-width note for root cellar cards */}
+      {quest.is_rootcellar_quest && (
+        <p className="mt-3 border-t border-slate-100 pt-3 text-base text-sky-700 dark:border-slate-700 dark:text-sky-400">
+          One day's worth of food is 150 stamina for herbivore and carnivore each (300 total). Omnivore total value is always what's shown in the brackets, and what the root cellar uses to determine contribution value.
+        </p>
+      )}
       </div>
     </div>
   );
@@ -612,7 +624,7 @@ export default function Tips() {
     (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 1).map((q) => q.id),
   );
 
-  const activeQuests = allQuests.filter((q) => inProgressQuestIds.has(q.id));
+  const activeQuests = allQuests.filter((q) => inProgressQuestIds.has(q.id) && q.id !== 1331);
 
   const donatedCount = selectedCharacter?.donated_specimen_count ?? 0;
 

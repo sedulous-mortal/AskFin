@@ -30,14 +30,14 @@ function ItemIcon({ name, amount }: { name: string; amount: number }) {
 
   return (
     <div
-      className="relative h-16 w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
+      className="relative h-[84px] w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
       title={name}
     >
       {pathIdx < paths.length ? (
         <img
           src={paths[pathIdx]}
           alt={name}
-          className="h-full w-full object-contain p-1"
+          className="h-full w-full object-contain px-1 pt-1 pb-[20px]"
           onError={() => setPathIdx((i) => i + 1)}
         />
       ) : (
