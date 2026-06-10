@@ -45,7 +45,7 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 **Next Steps:**
 
-0. **Find real quest IDs for 45- and 60-specimen Research milestones** — Quests "Donate 45 Specimens" (Iron Water Pump) and "Donate 60 Specimens" (Kiln) are stored with placeholder IDs -3 and -4 in `server/helpers/quests.json`. Run the raw-scan binary approach used for DonationQuest1–6 — scan `resources.assets` for "Donate 45"/"Donate 60" text or check the ResearchQuestMaster (quest 1331) segment list for their IDs.
+0. ** Can't meaningfully use the Tips section ** - Right now we are misisng data for upgrade action options with Wilfred or Gruff because we don't know what the status is - have we started or completed some upgrades? Where does that live in our save file? If we can find that out, what is the requirement for next upgrade, and can we render that to a card under the appropriate section on tips page?
 
 1. **Issues with dark mode other than critters page** - when dark mode is set to on, many areas are hard to read or look weird. we need to clarify a to-do list here of which pages need fixing, and then we need to tackle it in a standardized way so we don't run into this issue again for dark mode users. skip critters page, it is documented later in this claude.md file.
 

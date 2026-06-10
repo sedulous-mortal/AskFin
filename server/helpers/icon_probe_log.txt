@@ -1,0 +1,41 @@
+resources.assets: 18260 sprites, 233 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+sharedassets0.assets: 6 sprites, 6 textures
+  Sprite sample: ['', '', '', '', '', '']
+sharedassets1.assets: 673 sprites, 91 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+sharedassets2.assets: 1 sprites, 1 textures
+  Sprite sample: ['']
+sharedassets3.assets: 8 sprites, 2 textures
+  Sprite sample: ['', '', '', '', '', '', '', '']
+sharedassets4.assets: 1 sprites, 0 textures
+  Sprite sample: ['']
+sharedassets5.assets: 1 sprites, 0 textures
+  Sprite sample: ['']
+sharedassets6.assets: 1 sprites, 0 textures
+  Sprite sample: ['']
+sharedassets7.assets: 96 sprites, 1 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+sharedassets8.assets: 47 sprites, 1 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+sharedassets9.assets: 115 sprites, 2 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+sharedassets10.assets: 1 sprites, 0 textures
+  Sprite sample: ['']
+sharedassets12.assets: 31 sprites, 1 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+sharedassets16.assets: 1 sprites, 0 textures
+  Sprite sample: ['']
+sharedassets21.assets: 9 sprites, 3 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '']
+sharedassets22.assets: 1 sprites, 0 textures
+  Sprite sample: ['']
+sharedassets25.assets: 30 sprites, 5 textures
+  Sprite sample: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+sharedassets26.assets: 6 sprites, 5 textures
+  Sprite sample: ['', '', '', '', '', '']
+sharedassets30.assets: 4 sprites, 0 textures
+  Sprite sample: ['', '', '', '']
+
+Found targets:
+{}

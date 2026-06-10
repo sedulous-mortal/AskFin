@@ -386,7 +386,7 @@ function QuestCard({
             </span>
           )}
         </div>
-        <span className="text-xs text-slate-400 dark:text-slate-500">{availability}</span>
+        <span className="text-sm text-slate-400 dark:text-slate-500">{availability}</span>
       </div>
 
       {/* Body: left fills remaining space, right column sizes to estimated-optimal width */}
