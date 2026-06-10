@@ -20,6 +20,16 @@ export type CookingRecipeItem = { id: number; name: string | null; diet: string 
 
 export type QuestStatus = { id: number; status: number };
 
+export type ToolData = {
+  toolName: string;
+  tier: number;
+  isUnlocked: boolean;
+  upgrading: boolean;
+  upgradeDaysRemaining: number;
+  slotNum: number;
+  maxTier: number;
+};
+
 export type CharacterDetail = {
   id: string;
   character_name: string;
@@ -46,6 +56,7 @@ export type CharacterDetail = {
   current_year: number | null;
   difficulty: number | null;
   updated_at: string | null;
+  tool_data: ToolData[];
 };
 
 type AuthContextType = {
@@ -131,6 +142,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     current_year: 1,
     difficulty: 1,
     updated_at: null,
+    tool_data: [
+      { toolName: 'watercan', tier: 1, isUnlocked: true, upgrading: false, upgradeDaysRemaining: 0, slotNum: 0, maxTier: 4 },
+      { toolName: 'rod',      tier: 2, isUnlocked: true, upgrading: false, upgradeDaysRemaining: 0, slotNum: 1, maxTier: 4 },
+      { toolName: 'hoe',      tier: 1, isUnlocked: true, upgrading: false, upgradeDaysRemaining: 0, slotNum: 2, maxTier: 4 },
+      { toolName: 'pick',     tier: 2, isUnlocked: true, upgrading: true,  upgradeDaysRemaining: 1, slotNum: 4, maxTier: 4 },
+      { toolName: 'axe',      tier: 1, isUnlocked: true, upgrading: false, upgradeDaysRemaining: 0, slotNum: 6, maxTier: 4 },
+      { toolName: 'scythe',   tier: 0, isUnlocked: true, upgrading: false, upgradeDaysRemaining: 0, slotNum: 7, maxTier: 4 },
+    ],
   };
 
   const guestUser = {

@@ -60,6 +60,36 @@ function extractQuestData(text) {
   return result;
 }
 
+function extractToolData(text) {
+  const pattern = new RegExp(`"listOfToolData"\\s*[=:;,]\\s*\\[([^\\]]*)\\]`, "s");
+  const match = text.match(pattern);
+  if (!match) return [];
+  const result = [];
+  const objPattern = /\{([^}]*)\}/g;
+  let objMatch;
+  while ((objMatch = objPattern.exec(match[1])) !== null) {
+    const s = objMatch[1];
+    const toolNameMatch = s.match(/"toolName"\s*[=:;,]\s*"([^"]*)"/);
+    if (!toolNameMatch) continue;
+    const tierMatch = s.match(/"tier"\s*[=:;,]\s*([>0-9]+)/);
+    const isUnlockedMatch = s.match(/"isUnlocked"\s*[=:;,]\s*(true|false)/);
+    const upgradingMatch = s.match(/"upgrading"\s*[=:;,]\s*(true|false)/);
+    const upgradeDaysMatch = s.match(/"upgradeDaysRemaining"\s*[=:;,]\s*([>0-9]+)/);
+    const slotNumMatch = s.match(/"slotNum"\s*[=:;,]\s*([>0-9]+)/);
+    const maxTierMatch = s.match(/"maxTier"\s*[=:;,]\s*([>0-9]+)/);
+    result.push({
+      toolName: toolNameMatch[1],
+      tier: tierMatch ? parseInt(tierMatch[1].replace(/>/g, ''), 10) : 0,
+      isUnlocked: isUnlockedMatch ? isUnlockedMatch[1] === 'true' : true,
+      upgrading: upgradingMatch ? upgradingMatch[1] === 'true' : false,
+      upgradeDaysRemaining: upgradeDaysMatch ? parseInt(upgradeDaysMatch[1].replace(/>/g, ''), 10) : 0,
+      slotNum: slotNumMatch ? parseInt(slotNumMatch[1].replace(/>/g, ''), 10) : -1,
+      maxTier: maxTierMatch ? parseInt(maxTierMatch[1].replace(/>/g, ''), 10) : 4,
+    });
+  }
+  return result;
+}
+
 function extractNestedNumber(text, parentField, childField) {
   const blockPattern = new RegExp(`"${parentField}"\\s*[=:;,]\\s*\\{([^}]*)\\}`, "s");
   const blockMatch = text.match(blockPattern);
@@ -85,6 +115,7 @@ export function parseSaveFile(buffer) {
     unlockedCraftingRecipes: extractArray(text, "unlockedCraftingRecipes"),
     unlockedCookingRecipes: extractArray(text, "unlockedCookingRecipes"),
     questData: extractQuestData(text),
+    toolData: extractToolData(text),
     donatedMuseumItemsCount: extractArray(text, "donatedMuseumItemsList").length,
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),

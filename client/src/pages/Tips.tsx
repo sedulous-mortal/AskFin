@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, ToolData } from '../context/AuthContext';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
 const TOTAL_DAYS = 112;
@@ -481,117 +481,169 @@ function QuestCard({
   );
 }
 
-// Upgrade tier data. Requirements are sampled from known quest data (Dig Deep, Iron Ore For Gruff,
-// Fisher-Bun, Wels Catfish challenge). Exact coin costs and unlock conditions need verification
-// from game files before this section goes live.
-type UpgradeTier = {
-  tier: number;
-  label: string;
-  requirements: { name: string; amount: number }[];
-  note?: string;
+const TOOL_DISPLAY_NAMES: Record<string, string> = {
+  watercan: 'Watering Can',
+  hoe: 'Hoe',
+  pick: 'Pickaxe',
+  axe: 'Axe',
+  scythe: 'Scythe',
+  rod: 'Fishing Rod',
 };
 
-const GRUFF_UPGRADE_TIERS: UpgradeTier[] = [
-  {
-    tier: 1,
-    label: 'Copper Tools',
-    requirements: [
-      { name: 'Copper Ore', amount: 5 },
-      { name: 'Coins', amount: 500 },
-    ],
-    note: 'Requires 1 day. Upgrades Watering Can, Hoe, and Pickaxe.',
-  },
-  {
-    tier: 2,
-    label: 'Iron Tools',
-    requirements: [
-      { name: 'Iron Ore', amount: 5 },
-      { name: 'Coins', amount: 1500 },
-    ],
-    note: 'Requires 1 day. Iron Ore found in the Marsh mine shaft.',
-  },
-  {
-    tier: 3,
-    label: 'Gold Tools',
-    requirements: [
-      { name: 'Gold Ore', amount: 5 },
-      { name: 'Coins', amount: 3000 },
-    ],
-    note: 'Requires 2 days. Deep mine access required.',
-  },
-];
+// Ore amounts per tier are from in-game observation (not decompiled code).
+// Coin cost of 500 is confirmed from GetToolUpgradeTierCost() in ToolWheel.cs.
+const TOOL_UPGRADE_REQ: Record<number, { ore: string; oreAmount: number; coins: number }> = {
+  0: { ore: 'Copper Ore', oreAmount: 5, coins: 500 },
+  1: { ore: 'Iron Ore',   oreAmount: 5, coins: 500 },
+  2: { ore: 'Gold Ore',   oreAmount: 5, coins: 500 },
+  3: { ore: 'Mithril Ore', oreAmount: 5, coins: 500 },
+};
 
-const WILFRED_UPGRADE_TIERS: UpgradeTier[] = [
-  {
-    tier: 1,
-    label: 'Copper Rod',
-    requirements: [
-      { name: 'Copper Ore', amount: 3 },
-      { name: 'Coins', amount: 300 },
-    ],
-    note: 'Prerequisite: catch a Whitefish (Fisher-Bun quest). Unlocks medium lake spots.',
-  },
-  {
-    tier: 2,
-    label: 'Iron Rod',
-    requirements: [
-      { name: 'Iron Ore', amount: 3 },
-      { name: 'Coins', amount: 1000 },
-    ],
-    note: 'Prerequisite: catch a Wels Catfish. Unlocks river and marsh fishing spots.',
-  },
-  {
-    tier: 3,
-    label: 'Gold Rod',
-    requirements: [
-      { name: 'Gold Ore', amount: 3 },
-      { name: 'Coins', amount: 2500 },
-    ],
-    note: 'Unlocks deep forest and ocean fishing spots.',
-  },
-];
+const ROD_UPGRADE_REQ: Record<number, { ore: string; oreAmount: number; coins: number }> = {
+  0: { ore: 'Copper Ore', oreAmount: 3, coins: 500 },
+  1: { ore: 'Iron Ore',   oreAmount: 3, coins: 500 },
+  2: { ore: 'Gold Ore',   oreAmount: 3, coins: 500 },
+  3: { ore: 'Mithril Ore', oreAmount: 3, coins: 500 },
+};
 
-function UpgradeCard({ name, role, tiers, chipColor }: {
+function TierDots({ current, max }: { current: number; max: number }) {
+  return (
+    <span className="flex items-center gap-0.5">
+      {Array.from({ length: max }, (_, i) => (
+        <span
+          key={i}
+          className={`inline-block h-2 w-2 rounded-full ${
+            i < current
+              ? 'bg-amber-500 dark:bg-amber-400'
+              : 'bg-slate-200 dark:bg-slate-600'
+          }`}
+        />
+      ))}
+    </span>
+  );
+}
+
+function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
   name: string;
   role: string;
-  tiers: UpgradeTier[];
+  toolNames: string[];
   chipColor: string;
+  toolData: ToolData[] | null;
 }) {
+  const isRod = toolNames.length === 1 && toolNames[0] === 'rod';
+  const reqLookup = isRod ? ROD_UPGRADE_REQ : TOOL_UPGRADE_REQ;
+
+  const getToolEntry = (toolName: string) =>
+    toolData?.find((t) => t.toolName === toolName);
+
+  // Group tools that are ready to upgrade, by current tier (to batch same-requirement tools together).
+  const upgradeGroups = new Map<number, string[]>();
+  const upgradingTools: { toolName: string; daysRemaining: number }[] = [];
+  const maxedTools: string[] = [];
+
+  if (toolData && toolData.length > 0) {
+    for (const toolName of toolNames) {
+      const entry = getToolEntry(toolName);
+      const tier = entry?.tier ?? 0;
+      const maxTier = entry?.maxTier ?? 4;
+      if (entry?.upgrading) {
+        upgradingTools.push({ toolName, daysRemaining: entry.upgradeDaysRemaining });
+      } else if (tier >= maxTier) {
+        maxedTools.push(toolName);
+      } else {
+        if (!upgradeGroups.has(tier)) upgradeGroups.set(tier, []);
+        upgradeGroups.get(tier)!.push(toolName);
+      }
+    }
+  }
+
   return (
     <div className="rounded-xl border border-slate-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-      <div className="mb-3 flex items-center gap-2">
+      <div className="mb-4 flex items-center gap-2">
         <span className={`inline-flex items-center rounded-full px-3 py-0.5 text-sm font-semibold ${chipColor}`}>
           {name}
         </span>
         <span className="text-sm text-slate-500 dark:text-slate-400">{role}</span>
       </div>
-      <div className="space-y-3">
-        {tiers.map((tier) => (
-          <div
-            key={tier.tier}
-            className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50"
-          >
-            <p className="mb-1.5 text-sm font-semibold text-slate-800 dark:text-slate-200">
-              Tier {tier.tier}: {tier.label}
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {tier.requirements.map((req, i) => (
-                <span
-                  key={i}
-                  className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                >
-                  {req.amount}× {req.name}
-                </span>
-              ))}
-            </div>
-            {tier.note && (
-              <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{tier.note}</p>
-            )}
+
+      {/* Per-tool tier rows */}
+      {toolData && toolData.length > 0 ? (
+        <div className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-100 dark:divide-slate-700 dark:border-slate-700">
+          {toolNames.map((toolName) => {
+            const entry = getToolEntry(toolName);
+            const tier = entry?.tier ?? 0;
+            const maxTier = entry?.maxTier ?? 4;
+            const upgrading = entry?.upgrading ?? false;
+            const days = entry?.upgradeDaysRemaining ?? 0;
+            return (
+              <div key={toolName} className="flex items-center justify-between px-3 py-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-24 text-sm text-slate-700 dark:text-slate-300">
+                    {TOOL_DISPLAY_NAMES[toolName] ?? toolName}
+                  </span>
+                  <TierDots current={tier} max={maxTier} />
+                  <span className="text-xs text-slate-400 dark:text-slate-500">
+                    {tier}/{maxTier}
+                  </span>
+                </div>
+                {upgrading && (
+                  <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">
+                    upgrading · {days} day{days !== 1 ? 's' : ''}
+                  </span>
+                )}
+                {tier >= maxTier && !upgrading && (
+                  <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                    maxed
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="mb-3 rounded-lg border border-slate-100 bg-slate-50 px-3 py-3 text-sm italic text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
+          Load a save file to see your current upgrade status.
+        </p>
+      )}
+
+      {/* Next upgrade suggestions */}
+      {upgradeGroups.size > 0 && (
+        <div>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+            Next Upgrade{upgradeGroups.size > 1 ? 's' : ''}
+          </p>
+          <div className="space-y-2">
+            {Array.from(upgradeGroups.entries()).map(([currentTier, tools]) => {
+              const req = reqLookup[currentTier];
+              if (!req) return null;
+              const toolLabels = tools.map((t) => TOOL_DISPLAY_NAMES[t] ?? t).join(', ');
+              return (
+                <div key={currentTier} className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
+                  <p className="mb-1.5 text-xs text-slate-500 dark:text-slate-400">
+                    {toolLabels} → Tier {currentTier + 1}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                      {req.oreAmount}× {req.ore}
+                    </span>
+                    <span className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                      {req.coins} coins
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {maxedTools.length === toolNames.length && toolData && toolData.length > 0 && (
+        <p className="mt-1 text-sm text-emerald-600 dark:text-emerald-400">All tools fully upgraded!</p>
+      )}
+
       <p className="mt-3 text-xs italic text-slate-400 dark:text-slate-500">
-        Sample tier data — exact requirements to be verified from game files.
+        Ore amounts are from in-game observation. Coin cost (500) confirmed from game code.
+        {isRod ? ' Rod prerequisites not shown here — see Wilfred in-game for unlock conditions.' : ''}
       </p>
     </div>
   );
@@ -756,21 +808,22 @@ export default function Tips() {
       <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Upgrade Progression</h2>
         <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-          Tool and fishing rod upgrade tiers for Gruff and Wilfred. Upgrade queue detection
-          (items you've already dropped off) is coming in a future update.
+          Current tool tiers and what to bring for your next upgrade.
         </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <UpgradeCard
+          <UpgradeStatusCard
             name="Gruff"
             role="Blacksmith · Tool Upgrades"
-            tiers={GRUFF_UPGRADE_TIERS}
+            toolNames={['watercan', 'hoe', 'pick', 'axe', 'scythe']}
             chipColor="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+            toolData={selectedCharacter?.tool_data ?? null}
           />
-          <UpgradeCard
+          <UpgradeStatusCard
             name="Wilfred"
             role="Fisherman · Rod Upgrades"
-            tiers={WILFRED_UPGRADE_TIERS}
+            toolNames={['rod']}
             chipColor="bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+            toolData={selectedCharacter?.tool_data ?? null}
           />
         </div>
       </section>

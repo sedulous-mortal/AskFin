@@ -818,6 +818,7 @@ app.post('/api/save/parse', async (req, res) => {
         current_day: character.currentDateDay ?? null,
         current_season: character.currentDateSeason ?? null,
         current_year: character.currentDateYear ?? null,
+        tool_data: character.toolData ?? [],
       };
 
       let characterId;
@@ -892,6 +893,7 @@ app.get('/api/characters/:id', async (req, res) => {
       current_year: data.current_year ?? null,
       difficulty: data.difficulty ?? null,
       updated_at: data.updated_at ?? null,
+      tool_data: data.tool_data || [],
     });
   } catch (err) {
     console.error('Failed to fetch character detail:', err);
