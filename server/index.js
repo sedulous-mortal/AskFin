@@ -697,6 +697,11 @@ app.get('/api/quests', (req, res) => {
   res.json(questsList);
 });
 
+// Returns every forageable item (all seasons) with type field.
+app.get('/api/forageables/all', (req, res) => {
+  res.json(forageablesList);
+});
+
 // Returns forageables available on a given in-game date, plus the next 3 upcoming.
 // Query params: season (0-3), day (1-28)
 app.get('/api/forageables', (req, res) => {

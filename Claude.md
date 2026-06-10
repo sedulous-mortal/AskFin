@@ -57,5 +57,13 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 5. **Ensure settings make it to DB** -  can you confirm that dark mode is actually saving as a setting in the supabase db when we hit save on the toggle? same question for all the other toggles, are those user settings being saved to the db? we should shift that from being at the character level (unique to the character selected in the header dropdown) to instead being tied to the user who is logged in at this time. that data should be stored against the userid somewhere in supabase.
 
-6. **Darkmode ineffective on Critters Page** - we need to fix up the critters page to adequately render the data for visibility while removing all the white background. see image below. ![alt text](image-1.png) - note that the title Critters and desription "Field notes..." are almost illegible in how dark they are on a dark background, and then there's a ton of white backgrounds (and pale yellow highlight backgrounds further down the page actually not in the image) but we wnat the highlight function to still work but be maybe a dark teal on top of a background that would be by default dark blue-grey, like the rest of the background on the image page.
+6. **Missing item icons** — The following items exist in game data but have no icon file in `client/public/items/`. Source from in-game screenshots or the Unity asset extractor and name the files exactly as listed:
+   - `Coal.png` (distinct from `Charcoal.png`)
+   - `Fur.png` (ID 651 — distinct from Hide)
+   - `Lean_Meat.png` (ID 643)
+   - `Rich_Meat.png` (ID 644)
+   - `Mithril_Bar.png` (ID 371 — ore already exists, bar does not)
+   - `Fossil.png` (ID 235)
+
+7. **Darkmode ineffective on Critters Page** - we need to fix up the critters page to adequately render the data for visibility while removing all the white background. see image below. ![alt text](image-1.png) - note that the title Critters and desription "Field notes..." are almost illegible in how dark they are on a dark background, and then there's a ton of white backgrounds (and pale yellow highlight backgrounds further down the page actually not in the image) but we wnat the highlight function to still work but be maybe a dark teal on top of a background that would be by default dark blue-grey, like the rest of the background on the image page.
 

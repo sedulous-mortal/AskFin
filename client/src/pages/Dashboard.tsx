@@ -523,7 +523,7 @@ function CraftingRecipeSection({
       <span aria-hidden className="absolute top-5 right-5 text-5xl select-none pointer-events-none">🔨</span>
       <label className="absolute top-3 left-4 flex items-center gap-2.5 cursor-pointer z-10 select-none group">
         <input type="checkbox" checked={groupByType} onChange={e => setGroupByType(e.target.checked)} className="sr-only" />
-        <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${groupByType ? 'bg-amber-700' : 'bg-slate-300 dark:bg-slate-600'}`}>
+        <span className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${groupByType ? 'bg-slate-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
           <span className={`h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${groupByType ? 'translate-x-4' : 'translate-x-0.5'}`} />
         </span>
         <span className="text-sm font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-100 transition-colors">

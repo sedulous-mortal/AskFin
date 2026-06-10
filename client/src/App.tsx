@@ -60,7 +60,7 @@ function HomeRedirect() {
     return <Spinner />;
   }
 
-  return user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
+  return user ? <Navigate to="/tips" replace /> : <Navigate to="/login" replace />;
 }
 
 // Redirects already-authenticated users away from auth-only pages (login/signup)

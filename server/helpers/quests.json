@@ -501,7 +501,7 @@
           "amount": 30
         },
         {
-          "name": "Gold bar",
+          "name": "Gold Bar",
           "amount": 10
         },
         {
@@ -1109,7 +1109,7 @@
       ],
       "reward_items": [
         {
-          "name": "Gold bar",
+          "name": "Gold Bar",
           "amount": 3
         }
       ],
@@ -1481,7 +1481,7 @@
       ],
       "reward_items": [
         {
-          "name": "Gold bar",
+          "name": "Gold Bar",
           "amount": 5
         }
       ],
