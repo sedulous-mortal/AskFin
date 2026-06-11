@@ -77,6 +77,37 @@ function extractBalancedArray(text, fieldName) {
   return text.slice(m.index + m[0].length, i - 1);
 }
 
+function extractInventory(text) {
+  const startPattern = /"playerInventory"\s*[=:;,]\s*\{/;
+  const m = startPattern.exec(text);
+  if (!m) return [];
+  let i = m.index + m[0].length;
+  let depth = 1;
+  while (i < text.length && depth > 0) {
+    if (text[i] === '{') depth++;
+    else if (text[i] === '}') depth--;
+    i++;
+  }
+  if (depth !== 0) return [];
+  const block = text.slice(m.index + m[0].length, i - 1);
+  const slotsContent = extractBalancedArray(block, 'itemSlots');
+  if (!slotsContent) return [];
+  const result = [];
+  const objPattern = /\{([^}]*)\}/g;
+  let objMatch;
+  while ((objMatch = objPattern.exec(slotsContent)) !== null) {
+    const s = objMatch[1];
+    const idMatch = s.match(/"itemID"\s*[=:;,]\s*([>0-9]+)/);
+    const amountMatch = s.match(/"stackAmount"\s*[=:;,]\s*([>0-9]+)/);
+    if (idMatch) {
+      const id = parseInt(idMatch[1].replace(/>/g, ''), 10);
+      const amount = amountMatch ? parseInt(amountMatch[1].replace(/>/g, ''), 10) : 1;
+      if (!isNaN(id) && id > 0 && amount > 0) result.push({ id, amount });
+    }
+  }
+  return result;
+}
+
 function extractBarnData(text) {
   const content = extractBalancedArray(text, 'barnData');
   if (!content) return [];
@@ -155,7 +186,8 @@ export function parseSaveFile(buffer) {
     unlockedCookingRecipes: extractArray(text, "unlockedCookingRecipes"),
     questData: extractQuestData(text),
     toolData: extractToolData(text),
-    donatedMuseumItemsCount: extractArray(text, "donatedMuseumItemsList").length,
+    donatedMuseumItemsList: extractArray(text, "donatedMuseumItemsList"),
+    playerInventory: extractInventory(text),
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),
     currentDateYear: extractNestedNumber(text, "currentDate", "Year"),

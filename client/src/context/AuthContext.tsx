@@ -19,6 +19,8 @@ export type CraftingRecipeItem = { id: number; name: string | null; category: st
 export type CookingRecipeItem = { id: number; name: string | null; diet: string | null };
 
 export type QuestStatus = { id: number; status: number };
+export type InventorySlot = { id: number; amount: number };
+export type MuseumItem = { id: number; name: string | null; category: 'fish' | 'mineral' | 'plant' };
 
 export type ToolData = {
   toolName: string;
@@ -57,6 +59,8 @@ export type CharacterDetail = {
   edibles_total: number;
   quest_data: QuestStatus[];
   donated_specimen_count: number;
+  donated_museum_items: number[];
+  player_inventory: InventorySlot[];
   current_day: number | null;
   current_season: number | null;
   current_year: number | null;
@@ -146,6 +150,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { id: 351, status: 1 },
     ],
     donated_specimen_count: 0,
+    donated_museum_items: [],
+    player_inventory: [],
     current_day: 14,
     current_season: 0,
     current_year: 1,

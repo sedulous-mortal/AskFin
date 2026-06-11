@@ -103,7 +103,7 @@ export default function App() {
           <SettingsProvider>
           <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#b88968] to-white text-slate-900 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
             <Header />
-            <main className="mx-auto w-full max-w-6xl flex-1 px-8 py-10">
+            <main className="mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-[1400px] 3xl:max-w-[1800px] 4xl:max-w-[2300px] flex-1 px-8 py-10">
               <Routes>
                 <Route
                   path="/login"

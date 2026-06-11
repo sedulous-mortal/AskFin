@@ -115,7 +115,7 @@ export default function Header() {
         </div>
       )}
 
-      <div className="mx-auto flex w-full max-w-screen-2xl items-stretch gap-6 px-6 py-4">
+      <div className="mx-auto flex w-full max-w-5xl xl:max-w-6xl 2xl:max-w-[1400px] 3xl:max-w-[1800px] 4xl:max-w-[2300px] items-stretch gap-6 px-8 py-4">
 
         {/* Logo */}
         <NavLink
@@ -133,13 +133,13 @@ export default function Header() {
             <>
               {/* Full nav — shown when all items fit */}
               {!useHamburger && (
-                <nav className="flex items-center gap-1 pt-1">
+                <nav className="flex items-center gap-1 xl:gap-2 pt-1">
                   {navItems.map((item) => (
                     <NavLink
                       key={item.to}
                       to={item.to}
                       className={({ isActive }) =>
-                        `rounded-lg px-3 py-3 text-lg transition-colors ${
+                        `rounded-lg px-3 xl:px-4 py-3 text-lg transition-colors ${
                           isActive
                             ? 'bg-slate-900 text-white shadow-sm'
                             : 'text-slate-200 hover:bg-slate-600 hover:text-white'
@@ -203,7 +203,7 @@ export default function Header() {
       {/* Hamburger dropdown — normal flow, sticky with the header */}
       {menuOpen && useHamburger && showAuthenticatedNav && (
         <div className="border-t border-slate-900/40 dark:border-slate-800">
-          <nav className="mx-auto flex max-w-screen-xl flex-col gap-1 px-6 py-3">
+          <nav className="mx-auto flex w-full max-w-5xl xl:max-w-6xl 2xl:max-w-[1400px] 3xl:max-w-[1800px] 4xl:max-w-[2300px] flex-col gap-1 px-8 py-3">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}

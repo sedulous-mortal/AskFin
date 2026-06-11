@@ -23,11 +23,19 @@ const questsFile = require('./helpers/quests.json');
 const craftingItemsFile = require('./helpers/crafting_items.json');
 const cookingRecipesFile = require('./helpers/cooking_recipes.json');
 const forageablesFile = require('./helpers/forageables_schedule.json');
+const museumItemsFile = require('./helpers/museum_items.json');
 const forageablesList = forageablesFile.forageables || [];
 const questsList = questsFile.quests || [];
 const itemNames = gameIdMaps['InventoryItems_en'] || {};
 const plantNames = gameIdMaps['PlantDataTable_en'] || {};
 const allFishIds = new Set(gameIdMaps['fish_ids'] || []);
+
+// Build the full list of donatable museum items with names and categories.
+const museumItems = [
+  ...(museumItemsFile.donateFish    || []).map(id => ({ id, name: itemNames[id] ?? null, category: 'fish' })),
+  ...(museumItemsFile.donateMineral || []).map(id => ({ id, name: itemNames[id] ?? null, category: 'mineral' })),
+  ...(museumItemsFile.donatePlant   || []).map(id => ({ id, name: itemNames[id] ?? null, category: 'plant' })),
+];
 
 // Build ID → category/diet maps for recipes
 const craftingCategoryById = {};
@@ -814,7 +822,9 @@ app.post('/api/save/parse', async (req, res) => {
         unlocked_crafting_recipes: character.unlockedCraftingRecipes,
         unlocked_cooking_recipes: character.unlockedCookingRecipes,
         quest_data: character.questData,
-        donated_specimen_count: character.donatedMuseumItemsCount ?? 0,
+        donated_specimen_count: character.donatedMuseumItemsList?.length ?? 0,
+        donated_museum_items: character.donatedMuseumItemsList ?? [],
+        player_inventory: character.playerInventory ?? [],
         current_day: character.currentDateDay ?? null,
         current_season: character.currentDateSeason ?? null,
         current_year: character.currentDateYear ?? null,
@@ -891,6 +901,8 @@ app.get('/api/characters/:id', async (req, res) => {
       edibles_total: edibles.total,
       quest_data: data.quest_data || [],
       donated_specimen_count: data.donated_specimen_count ?? 0,
+      donated_museum_items: data.donated_museum_items || [],
+      player_inventory: data.player_inventory || [],
       current_day: data.current_day ?? null,
       current_season: data.current_season ?? null,
       current_year: data.current_year ?? null,
@@ -905,6 +917,10 @@ app.get('/api/characters/:id', async (req, res) => {
     console.error('Failed to fetch character detail:', err);
     res.status(500).json({ error: 'Internal server error.' });
   }
+});
+
+app.get('/api/museum-items', (_req, res) => {
+  res.json(museumItems);
 });
 
 app.get('/api/settings/:userId', async (req, res) => {
