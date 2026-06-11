@@ -30,6 +30,12 @@ export type ToolData = {
   maxTier: number;
 };
 
+export type BarnData = {
+  prefabId: number;  // 0=Barn, 1=Coop, 2=Pen, 3=Hutch
+  level: number;     // 0=base (4 animals), 1=upgraded (8 animals)
+  name: string | null;
+};
+
 export type CharacterDetail = {
   id: string;
   character_name: string;
@@ -57,6 +63,9 @@ export type CharacterDetail = {
   difficulty: number | null;
   updated_at: string | null;
   tool_data: ToolData[];
+  home_level: number | null;
+  home_construction_days: number;
+  barn_data: BarnData[];
 };
 
 type AuthContextType = {
@@ -149,6 +158,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { toolName: 'pick',     tier: 2, isUnlocked: true, upgrading: true,  upgradeDaysRemaining: 1, slotNum: 4, maxTier: 4 },
       { toolName: 'axe',      tier: 1, isUnlocked: true, upgrading: false, upgradeDaysRemaining: 0, slotNum: 6, maxTier: 4 },
       { toolName: 'scythe',   tier: 0, isUnlocked: true, upgrading: false, upgradeDaysRemaining: 0, slotNum: 7, maxTier: 4 },
+    ],
+    home_level: 1,
+    home_construction_days: 0,
+    barn_data: [
+      { prefabId: 0, level: 0, name: 'Barn' },
+      { prefabId: 1, level: 1, name: 'Coop' },
     ],
   };
 

@@ -819,6 +819,9 @@ app.post('/api/save/parse', async (req, res) => {
         current_season: character.currentDateSeason ?? null,
         current_year: character.currentDateYear ?? null,
         tool_data: character.toolData ?? [],
+        home_level: character.homeLevel ?? null,
+        home_construction_days: character.daysOfHomeConstruction ?? 0,
+        barn_data: character.barnData ?? [],
       };
 
       let characterId;
@@ -894,6 +897,9 @@ app.get('/api/characters/:id', async (req, res) => {
       difficulty: data.difficulty ?? null,
       updated_at: data.updated_at ?? null,
       tool_data: data.tool_data || [],
+      home_level: data.home_level ?? null,
+      home_construction_days: data.home_construction_days ?? 0,
+      barn_data: data.barn_data || [],
     });
   } catch (err) {
     console.error('Failed to fetch character detail:', err);

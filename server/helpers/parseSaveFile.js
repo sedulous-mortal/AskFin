@@ -60,6 +60,45 @@ function extractQuestData(text) {
   return result;
 }
 
+// Finds the content of "fieldName": [ ... ] with balanced bracket matching,
+// needed for arrays whose elements themselves contain nested arrays (e.g. barnData).
+function extractBalancedArray(text, fieldName) {
+  const startPattern = new RegExp(`"${fieldName}"\\s*[=:;,]\\s*\\[`);
+  const m = startPattern.exec(text);
+  if (!m) return null;
+  let i = m.index + m[0].length;
+  let depth = 1;
+  while (i < text.length && depth > 0) {
+    if (text[i] === '[') depth++;
+    else if (text[i] === ']') depth--;
+    i++;
+  }
+  if (depth !== 0) return null;
+  return text.slice(m.index + m[0].length, i - 1);
+}
+
+function extractBarnData(text) {
+  const content = extractBalancedArray(text, 'barnData');
+  if (!content) return [];
+  const result = [];
+  const objPattern = /\{([^}]*)\}/g;
+  let objMatch;
+  while ((objMatch = objPattern.exec(content)) !== null) {
+    const s = objMatch[1];
+    const prefabIdMatch = s.match(/"prefabID"\s*[=:;,]\s*([>0-9]+)/);
+    const levelMatch = s.match(/"level"\s*[=:;,]\s*([>0-9]+)/);
+    const nameMatch = s.match(/"name"\s*[=:;,]\s*"([^"]*)"/);
+    if (prefabIdMatch) {
+      result.push({
+        prefabId: parseInt(prefabIdMatch[1].replace(/>/g, ''), 10),
+        level: levelMatch ? parseInt(levelMatch[1].replace(/>/g, ''), 10) : 0,
+        name: nameMatch ? nameMatch[1] : null,
+      });
+    }
+  }
+  return result;
+}
+
 function extractToolData(text) {
   const pattern = new RegExp(`"listOfToolData"\\s*[=:;,]\\s*\\[([^\\]]*)\\]`, "s");
   const match = text.match(pattern);
@@ -120,5 +159,8 @@ export function parseSaveFile(buffer) {
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),
     currentDateYear: extractNestedNumber(text, "currentDate", "Year"),
+    homeLevel: extractNumber(text, "homeLevel"),
+    daysOfHomeConstruction: extractNumber(text, "daysOfHomeConstruction"),
+    barnData: extractBarnData(text),
   };
 }

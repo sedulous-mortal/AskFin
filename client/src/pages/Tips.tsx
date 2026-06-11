@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
-import { useAuth, ToolData } from '../context/AuthContext';
+import { useAuth, ToolData, BarnData } from '../context/AuthContext';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
 const TOTAL_DAYS = 112;
@@ -649,6 +649,132 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
   );
 }
 
+const BARN_NAMES: Record<number, string> = {
+  0: 'Barn',
+  1: 'Coop',
+  2: 'Pen',
+  3: 'Hutch',
+};
+const ALL_BARN_TYPES = [0, 1, 2, 3];
+
+const HOME_LEVEL_LABELS: Record<number, string> = {
+  0: 'Starter home',
+  1: 'First expansion',
+  2: 'Second expansion (max)',
+};
+
+function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
+  homeLevel: number | null;
+  homeConstructionDays: number;
+  barnData: BarnData[];
+}) {
+  const barnByType = new Map(barnData.map((b) => [b.prefabId, b]));
+
+  return (
+    <div className="rounded-xl border border-slate-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="inline-flex items-center rounded-full bg-teal-100 px-3 py-0.5 text-sm font-semibold text-teal-800 dark:bg-teal-900/30 dark:text-teal-300">
+          Carpenter
+        </span>
+        <span className="text-sm text-slate-500 dark:text-slate-400">Building Upgrades</span>
+      </div>
+
+      {homeLevel === null ? (
+        <p className="mb-3 rounded-lg border border-slate-100 bg-slate-50 px-3 py-3 text-sm italic text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
+          Load a save file to see your current building status.
+        </p>
+      ) : (
+        <div className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-100 dark:divide-slate-700 dark:border-slate-700">
+          {/* Home row */}
+          <div className="flex items-center justify-between px-3 py-2">
+            <div className="flex items-center gap-2.5">
+              <span className="w-24 text-sm text-slate-700 dark:text-slate-300">Home</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                {HOME_LEVEL_LABELS[homeLevel] ?? `Level ${homeLevel}`}
+              </span>
+            </div>
+            {homeConstructionDays > 0 ? (
+              <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">
+                under construction · {homeConstructionDays} day{homeConstructionDays !== 1 ? 's' : ''}
+              </span>
+            ) : homeLevel >= 2 ? (
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                maxed
+              </span>
+            ) : null}
+          </div>
+
+          {/* Barn types */}
+          {ALL_BARN_TYPES.map((typeId) => {
+            const barn = barnByType.get(typeId);
+            const label = BARN_NAMES[typeId];
+            return (
+              <div key={typeId} className="flex items-center justify-between px-3 py-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-24 text-sm text-slate-700 dark:text-slate-300">{label}</span>
+                  {barn ? (
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {barn.level >= 1 ? 'Expanded (8 animals)' : 'Standard (4 animals)'}
+                    </span>
+                  ) : (
+                    <span className="text-xs italic text-slate-400 dark:text-slate-500">not built</span>
+                  )}
+                </div>
+                {barn && barn.level >= 1 && (
+                  <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                    maxed
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Next upgrade callout — only show when there's something left to build and not currently under construction */}
+      {homeLevel !== null && homeConstructionDays === 0 && (homeLevel < 2 || ALL_BARN_TYPES.some((t) => !barnByType.has(t) || (barnByType.get(t)?.level ?? 0) < 1)) && (
+        <div>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+            Available upgrades
+          </p>
+          <div className="space-y-1.5">
+            {homeLevel < 2 && homeConstructionDays === 0 && (
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Home → {HOME_LEVEL_LABELS[(homeLevel + 1) as keyof typeof HOME_LEVEL_LABELS] ?? `Level ${homeLevel + 1}`}
+                </p>
+                <p className="mt-1 text-xs italic text-slate-400 dark:text-slate-500">
+                  Check with the Carpenter in-game for materials and cost.
+                </p>
+              </div>
+            )}
+            {ALL_BARN_TYPES.filter((t) => {
+              const b = barnByType.get(t);
+              return !b || b.level < 1;
+            }).map((typeId) => {
+              const barn = barnByType.get(typeId);
+              return (
+                <div key={typeId} className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {barn ? `${BARN_NAMES[typeId]} → Expanded` : `${BARN_NAMES[typeId]} → Build`}
+                  </p>
+                  <p className="mt-1 text-xs italic text-slate-400 dark:text-slate-500">
+                    Check with the Carpenter in-game for materials and cost.
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <p className="mt-3 text-xs italic text-slate-400 dark:text-slate-500">
+        Home and building upgrade costs are stored in Unity assets and not yet extracted — verify requirements in-game.
+      </p>
+    </div>
+  );
+}
+
 export default function Tips() {
   const { season, day } = useDate();
   const { selectedCharacter } = useAuth();
@@ -808,7 +934,7 @@ export default function Tips() {
       <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Upgrade Progression</h2>
         <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-          Current tool tiers and what to bring for your next upgrade.
+          Current tool tiers, building levels, and what to work on next.
         </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <UpgradeStatusCard
@@ -824,6 +950,11 @@ export default function Tips() {
             toolNames={['rod']}
             chipColor="bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
             toolData={selectedCharacter?.tool_data ?? null}
+          />
+          <BuildingStatusCard
+            homeLevel={selectedCharacter?.home_level ?? null}
+            homeConstructionDays={selectedCharacter?.home_construction_days ?? 0}
+            barnData={selectedCharacter?.barn_data ?? []}
           />
         </div>
       </section>

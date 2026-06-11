@@ -223,7 +223,7 @@ export default function FAQ() {
         )}
       </div>
 
-      <p className="text-sm text-slate-400 dark:text-slate-500">
+      <p className="text-sm text-center text-slate-800 dark:text-slate-100">
         Have a correction or want to suggest a FAQ entry? Drop a note in the Discord.
       </p>
     </div>

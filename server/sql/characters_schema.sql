@@ -38,7 +38,10 @@ alter table public.characters
   add column if not exists current_season             integer,
   add column if not exists current_year               integer,
   add column if not exists donated_specimen_count     integer     default 0,
-  add column if not exists tool_data                  jsonb       default '[]'::jsonb;
+  add column if not exists tool_data                  jsonb       default '[]'::jsonb,
+  add column if not exists home_level                 integer,
+  add column if not exists home_construction_days     integer     default 0,
+  add column if not exists barn_data                  jsonb       default '[]'::jsonb;
 
 -- Unique save file per user (nulls excluded so rows without a name don't conflict).
 create unique index if not exists characters_user_save_file_unique
