@@ -11,6 +11,7 @@ import Forageables from './pages/Forageables';
 import Critters from './pages/Critters';
 import Quests from './pages/Quests';
 import Tips from './pages/Tips';
+import FAQ from './pages/FAQ';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -176,6 +177,14 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <Tips />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/faq"
+                  element={
+                    <ProtectedRoute>
+                      <FAQ />
                     </ProtectedRoute>
                   }
                 />

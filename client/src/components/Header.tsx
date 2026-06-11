@@ -16,6 +16,7 @@ const navItems = [
   { to: '/forageables', label: 'Forageables' },
   { to: '/quests', label: 'Quests' },
   { to: '/events', label: 'Events' },
+  { to: '/faq', label: 'FAQ' },
   { to: '/dashboard-overview', label: 'Dashboard' },
   { to: '/settings', label: 'Settings' },
 ];
