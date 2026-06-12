@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth, ResolvedItem, EdibleItem, CraftingRecipeItem, CookingRecipeItem } from '../context/AuthContext';
 import { useSettings, SpoilerPreferences } from '../context/SettingsContext';
 import { SpoilerGate } from '../components/SpoilerGate';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 // ── Fish habitat static data ──────────────────────────────────────────────────
 
@@ -231,6 +233,13 @@ function CookingPanIcon() {
 
 // ── Shared unknown-category color ─────────────────────────────────────────────
 const UNKNOWN_COLOR = '#94a3b8'; // slate-400
+
+// ── Research Center constants ─────────────────────────────────────────────────
+const SPECIMEN_CATEGORIES = ['fish', 'mineral', 'plant'] as const;
+type SpecimenCategory = typeof SPECIMEN_CATEGORIES[number];
+const SPECIMEN_LABELS: Record<SpecimenCategory, string> = { fish: 'Fish', mineral: 'Minerals', plant: 'Plants' };
+const SPECIMEN_COLORS: Record<SpecimenCategory, string> = { fish: '#38bdf8', mineral: '#d97706', plant: '#16a34a' };
+const SPECIMEN_ICONS: Record<SpecimenCategory, string> = { fish: '🐟', mineral: '💎', plant: '🌿' };
 
 // ── Cooking recipe section (grouped by diet) ─────────────────────────────────
 
@@ -961,6 +970,227 @@ function EdiblesSection({
   );
 }
 
+// ── Research Center Crosscut ──────────────────────────────────────────────────
+
+type MuseumItemLocal = { id: number; name: string | null; category: SpecimenCategory };
+type CrosscutEntry = { donated: number[]; count: number; farm_name: string | null };
+type CrosscutDrill =
+  | { level: 'list' }
+  | { level: 'character'; charId: string }
+  | { level: 'category'; charId: string; category: SpecimenCategory };
+
+function ResearchCenterCrosscut({
+  characters,
+  prefetchedDetail,
+}: {
+  characters: Array<{ id: string; character_name: string }>;
+  prefetchedDetail?: { id: string; donated_museum_items: number[]; donated_specimen_count: number; farm_name: string | null } | null;
+}) {
+  const [museumItems, setMuseumItems] = useState<MuseumItemLocal[]>([]);
+  const [charDataMap, setCharDataMap] = useState<Record<string, CrosscutEntry | 'loading' | 'error'>>({});
+  const [globalLoading, setGlobalLoading] = useState(true);
+  const [drill, setDrill] = useState<CrosscutDrill>({ level: 'list' });
+
+  const charIdsKey = characters.map(c => c.id).join(',');
+
+  useEffect(() => {
+    if (!characters.length) { setGlobalLoading(false); return; }
+    let cancelled = false;
+    setGlobalLoading(true);
+    setDrill({ level: 'list' });
+    const initial: Record<string, 'loading'> = {};
+    for (const c of characters) initial[c.id] = 'loading';
+    setCharDataMap(initial);
+
+    const charFetches: Promise<CrosscutEntry | { error: true; id: string }>[] = characters.map(c => {
+      if (prefetchedDetail?.id === c.id) {
+        return Promise.resolve<CrosscutEntry>({
+          donated: prefetchedDetail.donated_museum_items,
+          count: prefetchedDetail.donated_specimen_count,
+          farm_name: prefetchedDetail.farm_name,
+        });
+      }
+      return fetch(`${API_BASE}/api/characters/${c.id}`)
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(d => ({ donated: (d.donated_museum_items || []) as number[], count: (d.donated_specimen_count || 0) as number, farm_name: (d.farm_name || null) as string | null }))
+        .catch(() => ({ error: true as const, id: c.id }));
+    });
+
+    Promise.all([
+      fetch(`${API_BASE}/api/museum-items`).then(r => r.json() as Promise<MuseumItemLocal[]>).catch(() => [] as MuseumItemLocal[]),
+      ...charFetches,
+    ]).then(([items, ...results]) => {
+      if (cancelled) return;
+      setMuseumItems(items as MuseumItemLocal[]);
+      const newMap: Record<string, CrosscutEntry | 'error'> = {};
+      characters.forEach((c, i) => {
+        const r = results[i] as CrosscutEntry | { error: true; id: string };
+        newMap[c.id] = 'error' in r ? 'error' : r;
+      });
+      setCharDataMap(newMap);
+      setGlobalLoading(false);
+    });
+
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [charIdsKey]);
+
+  const itemById = new Map<number, MuseumItemLocal>();
+  for (const item of museumItems) itemById.set(item.id, item);
+
+  const getDonatedByCategory = (charId: string): Record<SpecimenCategory, MuseumItemLocal[]> => {
+    const result: Record<SpecimenCategory, MuseumItemLocal[]> = { fish: [], mineral: [], plant: [] };
+    const data = charDataMap[charId];
+    if (!data || data === 'loading' || data === 'error') return result;
+    for (const id of data.donated) {
+      const item = itemById.get(id);
+      if (item) result[item.category].push(item);
+    }
+    return result;
+  };
+
+  const sortedChars = [...characters].sort((a, b) => {
+    const aData = charDataMap[a.id];
+    const bData = charDataMap[b.id];
+    return (typeof bData === 'object' ? bData.count : 0) - (typeof aData === 'object' ? aData.count : 0);
+  });
+
+  const maxCount = sortedChars.reduce((m, c) => {
+    const d = charDataMap[c.id];
+    return Math.max(m, typeof d === 'object' ? d.count : 0);
+  }, 0);
+
+  // ── Category item list ──
+  if (drill.level === 'category') {
+    const { charId, category } = drill;
+    const char = characters.find(c => c.id === charId);
+    const items = getDonatedByCategory(charId)[category];
+    return (
+      <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div className="mb-5 flex items-center gap-3">
+          <button onClick={() => setDrill({ level: 'character', charId })}
+            className="flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors dark:text-slate-400 dark:hover:text-slate-200">
+            <span aria-hidden>←</span> Back
+          </button>
+          <h2 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">
+            <span aria-hidden className="mr-1" style={category === 'mineral' ? { filter: 'hue-rotate(155deg) saturate(3) brightness(1.15) contrast(1.6)' } : undefined}>{SPECIMEN_ICONS[category]}</span>
+            {char?.character_name} — {SPECIMEN_LABELS[category]}
+            <span className="ml-2 text-sm font-normal text-slate-400 dark:text-slate-500">({items.length})</span>
+          </h2>
+        </div>
+        {items.length === 0 ? (
+          <p className="text-sm text-slate-400 dark:text-slate-500">
+            No {SPECIMEN_LABELS[category].toLowerCase()} donated yet.
+          </p>
+        ) : (
+          <ul className="columns-2 gap-x-6 sm:columns-3">
+            {items.map(item => (
+              <li key={item.id} className="mb-1.5 break-inside-avoid text-sm text-slate-700 dark:text-slate-300">
+                {item.name ?? `ID ${item.id}`}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  }
+
+  // ── Character category summary ──
+  if (drill.level === 'character') {
+    const { charId } = drill;
+    const char = characters.find(c => c.id === charId);
+    const data = charDataMap[charId];
+    const farmName = typeof data === 'object' ? data.farm_name : null;
+    const totalCount = typeof data === 'object' ? data.count : 0;
+    const byCategory = getDonatedByCategory(charId);
+    return (
+      <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div className="mb-5 flex items-start gap-3">
+          <button onClick={() => setDrill({ level: 'list' })}
+            className="flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors dark:text-slate-400 dark:hover:text-slate-200 mt-0.5">
+            <span aria-hidden>←</span> Back
+          </button>
+          <div className="flex-1">
+            <h2 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">{char?.character_name}</h2>
+            {farmName && <p className="text-xs text-slate-400 dark:text-slate-500">{farmName}</p>}
+          </div>
+          <span className="mt-0.5 text-sm font-semibold tabular-nums text-slate-500 dark:text-slate-400">
+            {totalCount} total
+          </span>
+        </div>
+        <div className="space-y-1">
+          {SPECIMEN_CATEGORIES.map(cat => {
+            const items = byCategory[cat];
+            return (
+              <button key={cat} onClick={() => setDrill({ level: 'category', charId, category: cat })}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                <span className="text-xl select-none" aria-hidden style={cat === 'mineral' ? { filter: 'hue-rotate(155deg) saturate(3) brightness(1.15) contrast(1.6)' } : undefined}>{SPECIMEN_ICONS[cat]}</span>
+                <span className="flex-1 text-base font-medium text-slate-700 dark:text-slate-300">{SPECIMEN_LABELS[cat]}</span>
+                <span className="rounded-full px-2.5 py-0.5 text-sm font-semibold text-white"
+                  style={{ backgroundColor: items.length > 0 ? SPECIMEN_COLORS[cat] : '#94a3b8' }}>
+                  {items.length}
+                </span>
+                <span className="text-slate-300 dark:text-slate-500" aria-hidden>›</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Top-level character list ──
+  return (
+    <section className="rounded-2xl border border-emerald-900/10 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="mb-5">
+        <h2 className="text-2xl font-normal tracking-tight text-slate-800 dark:text-slate-200">Research Center</h2>
+        <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+          Specimen donations across all your characters
+        </p>
+      </div>
+      {globalLoading ? (
+        <p className="py-4 text-sm text-slate-400 dark:text-slate-500">Loading…</p>
+      ) : (
+        <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
+          {sortedChars.map(char => {
+            const data = charDataMap[char.id];
+            const isError = data === 'error';
+            const isReady = typeof data === 'object';
+            const count = isReady ? data.count : 0;
+            const farmName = isReady ? data.farm_name : null;
+            const barPct = maxCount > 0 ? Math.round((count / maxCount) * 100) : 0;
+            return (
+              <button key={char.id}
+                onClick={() => isReady && setDrill({ level: 'character', charId: char.id })}
+                disabled={!isReady}
+                className="flex w-full items-center gap-4 rounded-lg px-2 py-3.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50 disabled:pointer-events-none disabled:opacity-40">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-slate-800 dark:text-slate-200">{char.character_name}</p>
+                  {farmName && <p className="truncate text-xs text-slate-400 dark:text-slate-500">{farmName}</p>}
+                </div>
+                {isError ? (
+                  <span className="text-xs italic text-slate-400 dark:text-slate-500">Failed to load</span>
+                ) : (
+                  <div className="flex shrink-0 items-center gap-3">
+                    <div className="h-1.5 w-24 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
+                      <div className="h-full rounded-full bg-sky-400 dark:bg-sky-500 transition-all" style={{ width: `${barPct}%` }} />
+                    </div>
+                    <span className="w-28 text-right text-sm tabular-nums text-slate-700 dark:text-slate-300">
+                      <span className="font-semibold">{count}</span>
+                      <span className="text-slate-400 dark:text-slate-500"> specimens</span>
+                    </span>
+                    <span className="text-slate-300 dark:text-slate-500" aria-hidden>›</span>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
 // ── Stat card ─────────────────────────────────────────────────────────────────
 
 function StatCard({ label, count, total, accent }: { label: string; count: number; total: number; accent: string }) {
@@ -980,7 +1210,7 @@ function StatCard({ label, count, total, accent }: { label: string; count: numbe
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
-  const { selectedCharacter, characterDetailLoading, selectedCharacterId } = useAuth();
+  const { selectedCharacter, characterDetailLoading, selectedCharacterId, characters } = useAuth();
 
   if (!selectedCharacterId) {
     return (
@@ -1065,6 +1295,11 @@ export default function Dashboard() {
               spoilerKey="show_undiscovered_crafting_recipes"
             />
           </section>
+
+          <ResearchCenterCrosscut
+            characters={characters}
+            prefetchedDetail={selectedCharacter}
+          />
         </>
       )}
     </div>

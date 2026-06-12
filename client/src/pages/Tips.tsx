@@ -548,20 +548,20 @@ const TOOL_DISPLAY_NAMES: Record<string, string> = {
   rod: 'Fishing Rod',
 };
 
-// Ore amounts per tier are from in-game observation (not decompiled code).
+// Material amounts extracted from EquippableTool ScriptableObject assets (resources.assets).
 // Coin cost of 500 is confirmed from GetToolUpgradeTierCost() in ToolWheel.cs.
-const TOOL_UPGRADE_REQ: Record<number, { ore: string; oreAmount: number; coins: number }> = {
-  0: { ore: 'Copper Ore', oreAmount: 5, coins: 500 },
-  1: { ore: 'Iron Ore',   oreAmount: 5, coins: 500 },
-  2: { ore: 'Gold Ore',   oreAmount: 5, coins: 500 },
-  3: { ore: 'Mithril Ore', oreAmount: 5, coins: 500 },
+const TOOL_UPGRADE_REQ: Record<number, { material: string; amount: number; coins: number }> = {
+  0: { material: 'Copper Bar',   amount: 20, coins: 500 },
+  1: { material: 'Iron Bar',     amount: 20, coins: 500 },
+  2: { material: 'Titanium Bar', amount: 20, coins: 500 },
+  3: { material: 'Mithril Bar',  amount: 20, coins: 500 },
 };
 
-const ROD_UPGRADE_REQ: Record<number, { ore: string; oreAmount: number; coins: number }> = {
-  0: { ore: 'Copper Ore', oreAmount: 3, coins: 500 },
-  1: { ore: 'Iron Ore',   oreAmount: 3, coins: 500 },
-  2: { ore: 'Gold Ore',   oreAmount: 3, coins: 500 },
-  3: { ore: 'Mithril Ore', oreAmount: 3, coins: 500 },
+const ROD_UPGRADE_REQ: Record<number, { material: string; amount: number; coins: number }> = {
+  0: { material: 'Copper Bar',   amount: 10, coins: 500 },
+  1: { material: 'Iron Bar',     amount: 10, coins: 500 },
+  2: { material: 'Titanium Bar', amount: 10, coins: 500 },
+  3: { material: 'Mithril Bar',  amount: 10, coins: 500 },
 };
 
 function TierDots({ current, max }: { current: number; max: number }) {
@@ -594,8 +594,8 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
   const getToolEntry = (toolName: string) =>
     toolData?.find((t) => t.toolName === toolName);
 
-  // Group tools that are ready to upgrade, by current tier (to batch same-requirement tools together).
-  const upgradeGroups = new Map<number, string[]>();
+  // Each tool gets its own upgrade entry so they're always shown separately.
+  const upgradeEntries: { toolName: string; currentTier: number }[] = [];
   const upgradingTools: { toolName: string; daysRemaining: number }[] = [];
   const maxedTools: string[] = [];
 
@@ -609,8 +609,7 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
       } else if (tier >= maxTier) {
         maxedTools.push(toolName);
       } else {
-        if (!upgradeGroups.has(tier)) upgradeGroups.set(tier, []);
-        upgradeGroups.get(tier)!.push(toolName);
+        upgradeEntries.push({ toolName, currentTier: tier });
       }
     }
   }
@@ -665,26 +664,27 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
       )}
 
       {/* Next upgrade suggestions */}
-      {upgradeGroups.size > 0 && (
+      {upgradeEntries.length > 0 && (
         <div>
           <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
-            Next Upgrade{upgradeGroups.size > 1 ? 's' : ''}
+            Next Upgrade{upgradeEntries.length > 1 ? 's' : ''}
           </p>
-          <div className="space-y-2">
-            {Array.from(upgradeGroups.entries()).map(([currentTier, tools]) => {
+          <div className="space-y-4">
+            {upgradeEntries.map(({ toolName, currentTier }) => {
               const req = reqLookup[currentTier];
               if (!req) return null;
-              const toolLabels = tools.map((t) => TOOL_DISPLAY_NAMES[t] ?? t).join(', ');
               return (
-                <div key={currentTier} className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
-                  <p className="mb-1.5 text-xs text-slate-500 dark:text-slate-400">
-                    {toolLabels} → Tier {currentTier + 1}
+                <div key={toolName} className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
+                  <p className="mb-2 text-lg font-semibold text-slate-600 dark:text-slate-300">
+                    {TOOL_DISPLAY_NAMES[toolName] ?? toolName} → Tier {currentTier + 1}
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                      {req.oreAmount}× {req.ore}
+                  <div className="flex flex-wrap gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                      <img src={`/items/${req.material.replace(/ /g, '_')}.png`} alt="" className="h-9 w-9 object-contain" />
+                      {req.amount}× {req.material}
                     </span>
-                    <span className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                    <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                      <img src="/items/Bottled_Coins.png" alt="" className="h-9 w-9 object-contain" />
                       {req.coins} coins
                     </span>
                   </div>
@@ -699,10 +699,6 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
         <p className="mt-1 text-sm text-emerald-600 dark:text-emerald-400">All tools fully upgraded!</p>
       )}
 
-      <p className="mt-3 text-xs italic text-slate-400 dark:text-slate-500">
-        Ore amounts are from in-game observation. Coin cost (500) confirmed from game code.
-        {isRod ? ' Rod prerequisites not shown here — see Wilfred in-game for unlock conditions.' : ''}
-      </p>
     </div>
   );
 }
@@ -1077,18 +1073,20 @@ export default function Tips() {
             chipColor="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
             toolData={selectedCharacter?.tool_data ?? null}
           />
-          <UpgradeStatusCard
-            name="Wilfred"
-            role="Fisherman · Rod Upgrades"
-            toolNames={['rod']}
-            chipColor="bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
-            toolData={selectedCharacter?.tool_data ?? null}
-          />
-          <BuildingStatusCard
-            homeLevel={selectedCharacter?.home_level ?? null}
-            homeConstructionDays={selectedCharacter?.home_construction_days ?? 0}
-            barnData={selectedCharacter?.barn_data ?? []}
-          />
+          <div className="flex flex-col gap-6">
+            <UpgradeStatusCard
+              name="Wilfred"
+              role="Fisherman · Rod Upgrades"
+              toolNames={['rod']}
+              chipColor="bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+              toolData={selectedCharacter?.tool_data ?? null}
+            />
+            <BuildingStatusCard
+              homeLevel={selectedCharacter?.home_level ?? null}
+              homeConstructionDays={selectedCharacter?.home_construction_days ?? 0}
+              barnData={selectedCharacter?.barn_data ?? []}
+            />
+          </div>
         </div>
       </section>
     </div>
