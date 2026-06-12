@@ -10,7 +10,7 @@ const SPECIMEN_COLORS: Record<SpecimenCategory, string> = { fish: '#38bdf8', min
 const SPECIMEN_ICONS: Record<SpecimenCategory, string> = { fish: '🐟', mineral: '💎', plant: '🌿' };
 
 type MuseumItemLocal = { id: number; name: string | null; category: SpecimenCategory };
-type CrosscutEntry = { donated: number[]; count: number; farm_name: string | null };
+type CrosscutEntry = { donated: number[]; count: number };
 type CrosscutDrill =
   | { level: 'list' }
   | { level: 'character'; charId: string }
@@ -258,7 +258,6 @@ function ResearchCenterList({ characters, charDataMap, itemById, globalLoading }
     const { charId } = drill;
     const char = characters.find(c => c.id === charId);
     const data = charDataMap[charId];
-    const farmName = typeof data === 'object' ? data.farm_name : null;
     const totalCount = typeof data === 'object' ? data.count : 0;
     const byCategory = getDonatedByCategory(charId, charDataMap, itemById);
     return (
@@ -270,7 +269,6 @@ function ResearchCenterList({ characters, charDataMap, itemById, globalLoading }
           </button>
           <div className="flex-1">
             <h2 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">{char?.character_name}</h2>
-            {farmName && <p className="text-xs text-slate-400 dark:text-slate-500">{farmName}</p>}
           </div>
           <span className="mt-0.5 text-sm font-semibold tabular-nums text-slate-500 dark:text-slate-400">{totalCount} total</span>
         </div>
@@ -312,7 +310,6 @@ function ResearchCenterList({ characters, charDataMap, itemById, globalLoading }
             const isError = data === 'error';
             const isReady = typeof data === 'object';
             const count = isReady ? data.count : 0;
-            const farmName = isReady ? data.farm_name : null;
             const barPct = maxCount > 0 ? Math.round((count / maxCount) * 100) : 0;
             return (
               <button key={char.id}
@@ -321,7 +318,6 @@ function ResearchCenterList({ characters, charDataMap, itemById, globalLoading }
                 className="flex w-full items-center gap-4 rounded-lg px-2 py-3.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50 disabled:pointer-events-none disabled:opacity-40">
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-slate-800 dark:text-slate-200">{char.character_name}</p>
-                  {farmName && <p className="truncate text-xs text-slate-400 dark:text-slate-500">{farmName}</p>}
                 </div>
                 {isError ? (
                   <span className="text-xs italic text-slate-400 dark:text-slate-500">Failed to load</span>
@@ -369,7 +365,6 @@ export default function DashboardOverview() {
         return Promise.resolve<CrosscutEntry>({
           donated: selectedCharacter.donated_museum_items ?? [],
           count: selectedCharacter.donated_specimen_count ?? 0,
-          farm_name: selectedCharacter.farm_name ?? null,
         });
       }
       return fetch(`${API_BASE}/api/characters/${c.id}`)
@@ -377,7 +372,6 @@ export default function DashboardOverview() {
         .then(d => ({
           donated: (d.donated_museum_items || []) as number[],
           count: (d.donated_specimen_count || 0) as number,
-          farm_name: (d.farm_name || null) as string | null,
         }))
         .catch(() => ({ error: true as const, id: c.id }));
     });

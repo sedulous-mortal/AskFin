@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, type MatPileEntry } from '../context/AuthContext';
 import { SpoilerOutcome } from '../components/SpoilerOutcome';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
@@ -22,31 +22,51 @@ type Quest = {
   is_town_quest: boolean;
 };
 
-function ItemIcon({ name, amount }: { name: string; amount: number }) {
+function ItemIcon({ name, amount, donated = 0 }: { name: string; amount: number; donated?: number }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
+  const isDone = donated >= amount;
+  const remaining = Math.max(0, amount - donated);
 
   return (
     <div
-      className="relative h-[84px] w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
-      title={name}
+      className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${
+        isDone
+          ? 'border-slate-200 bg-slate-100 dark:border-slate-600 dark:bg-slate-700/40'
+          : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
+      }`}
+      title={isDone ? `${name} — complete` : donated > 0 ? `${name} (${donated}/${amount} donated, ${remaining} remaining)` : name}
     >
       {pathIdx < paths.length ? (
         <img
           src={paths[pathIdx]}
           alt={name}
-          className="h-full w-full object-contain px-1 pt-1 pb-[20px]"
+          className={`h-full w-full object-contain px-1 pt-1 pb-[20px] ${isDone ? 'opacity-30' : ''}`}
           onError={() => setPathIdx((i) => i + 1)}
         />
       ) : (
-        <span className="flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight text-indigo-400 dark:text-indigo-500">
+        <span className={`flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight ${isDone ? 'text-slate-300 dark:text-slate-600' : 'text-indigo-400 dark:text-indigo-500'}`}>
           {initials}
         </span>
       )}
-      <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl bg-black/65 px-1.5 py-0.5 text-[14px] font-bold text-white">
-        {amount}
+      {/* Diagonal strikethrough overlay for completed items */}
+      {isDone && (
+        <svg
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 64 84"
+          preserveAspectRatio="none"
+        >
+          <line x1="0" y1="0" x2="64" y2="84" stroke="white" strokeWidth="2.5" strokeOpacity="0.8" />
+        </svg>
+      )}
+      <span className={`absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl px-1.5 py-0.5 text-[14px] font-bold ${
+        isDone
+          ? 'bg-slate-400/80 text-white dark:bg-slate-500/80'
+          : 'bg-black/65 text-white'
+      }`}>
+        {isDone ? '✓' : remaining}
       </span>
     </div>
   );
@@ -111,6 +131,14 @@ export default function Events() {
   const completedQuestIds = new Set(
     (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 3).map((q) => q.id),
   );
+
+  // Build lookup: questID → item name → donated amount
+  const matPileByQuest = new Map<number, Map<string, number>>();
+  for (const pile of (selectedCharacter?.project_mat_pile_data ?? []) as MatPileEntry[]) {
+    const itemMap = new Map<string, number>();
+    for (const item of pile.donatedItems) itemMap.set(item.name, item.amount);
+    matPileByQuest.set(pile.questID, itemMap);
+  }
 
   useEffect(() => {
     fetch('/api/quests')
@@ -204,6 +232,7 @@ export default function Events() {
                     const title = quest.display_title || quest.name;
                     const synopsis = SYNOPSES[quest.id];
                     const isChosen = completedQuestIds.has(quest.id);
+                    const donationMap = matPileByQuest.get(quest.id) ?? new Map<string, number>();
                     // Round the corners that sit at the card's outer edge so the border
                     // curves naturally instead of being clipped by the parent overflow-hidden.
                     // Single option: whole bottom edge. Two-col desktop: outer bottom corner only.
@@ -253,15 +282,42 @@ export default function Events() {
 
                           {quest.requirements.length > 0 && (
                             <div className="mb-3 flex flex-wrap items-center gap-1.5">
-                              {quest.requirements.map((req, i) => (
-                                <span
-                                  key={i}
-                                  className="rounded bg-amber-50 px-2 py-0.5 text-sm text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                                >
-                                  {req.amount > 1 ? `${req.amount}× ` : ''}
-                                  {req.name}
-                                </span>
-                              ))}
+                              {quest.requirements.map((req, i) => {
+                                const donated = donationMap.get(req.name) ?? 0;
+                                const isDone = donated >= req.amount;
+                                const remaining = Math.max(0, req.amount - donated);
+                                return (
+                                  <span
+                                    key={i}
+                                    className={`rounded px-2 py-0.5 text-sm ${
+                                      isDone
+                                        ? 'bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-500'
+                                        : 'bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
+                                    }`}
+                                  >
+                                    {isDone ? (
+                                      <span className="relative inline-block">
+                                        <span className="opacity-60">
+                                          {req.amount > 1 ? `${req.amount}× ` : ''}{req.name}
+                                        </span>
+                                        <span
+                                          className="pointer-events-none absolute inset-0 flex items-center"
+                                          aria-hidden
+                                        >
+                                          <span className="block h-px w-full bg-current opacity-70" style={{ transform: 'rotate(-8deg)' }} />
+                                        </span>
+                                      </span>
+                                    ) : (
+                                      <>
+                                        {remaining > 1 ? `${remaining}× ` : ''}{req.name}
+                                        {donated > 0 && (
+                                          <span className="ml-1 opacity-60 text-xs">({donated}/{req.amount})</span>
+                                        )}
+                                      </>
+                                    )}
+                                  </span>
+                                );
+                              })}
                             </div>
                           )}
 
@@ -284,7 +340,12 @@ export default function Events() {
                             </p>
                             <div className="grid grid-cols-2 gap-1.5">
                               {quest.requirements.map((req, i) => (
-                                <ItemIcon key={i} name={req.name} amount={req.amount} />
+                                <ItemIcon
+                                  key={i}
+                                  name={req.name}
+                                  amount={req.amount}
+                                  donated={donationMap.get(req.name) ?? 0}
+                                />
                               ))}
                             </div>
                           </div>

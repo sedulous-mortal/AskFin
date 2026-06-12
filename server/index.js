@@ -832,6 +832,13 @@ app.post('/api/save/parse', async (req, res) => {
         home_level: character.homeLevel ?? null,
         home_construction_days: character.daysOfHomeConstruction ?? 0,
         barn_data: character.barnData ?? [],
+        project_mat_pile_data: (character.projectMatPileData ?? []).map(pile => ({
+          questID: pile.questID,
+          donatedItems: pile.donatedItems.map(({ id, amount }) => ({
+            name: itemNames[id] ?? null,
+            amount,
+          })).filter(item => item.name !== null),
+        })),
       };
 
       let characterId;
@@ -912,6 +919,7 @@ app.get('/api/characters/:id', async (req, res) => {
       home_level: data.home_level ?? null,
       home_construction_days: data.home_construction_days ?? 0,
       barn_data: data.barn_data || [],
+      project_mat_pile_data: data.project_mat_pile_data || [],
     });
   } catch (err) {
     console.error('Failed to fetch character detail:', err);

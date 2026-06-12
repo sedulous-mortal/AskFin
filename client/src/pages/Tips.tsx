@@ -882,10 +882,14 @@ export default function Tips() {
   const toDonateSections = (['fish', 'mineral', 'plant'] as const).map((cat) => {
     const label = cat === 'fish' ? 'Fish' : cat === 'mineral' ? 'Minerals' : 'Plants';
     const catItems = museumItems.filter((item) => item.category === cat && !donatedSet.has(item.id));
+    const discoveredInCat = catItems.filter((item) => discoveredItemIds.has(item.id));
+    const undiscoveredInCat = catItems.filter((item) => !discoveredItemIds.has(item.id));
     const visibleItems = selectedCharacter
-      ? catItems.filter((item) => revealUndiscovered || discoveredItemIds.has(item.id))
+      ? revealUndiscovered
+        ? [...discoveredInCat, ...undiscoveredInCat]
+        : discoveredInCat
       : [];
-    const hiddenCount = catItems.length - visibleItems.length;
+    const hiddenCount = undiscoveredInCat.length;
     return { label, catItems, visibleItems, hiddenCount };
   }).filter((s) => s.catItems.length > 0);
 

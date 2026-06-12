@@ -2,7 +2,6 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 export type CharacterData = {
   playerName: string | null;
-  farmName: string | null;
   saveFileVersion: number | null;
   exp: number | null;
   playerSpeciesId: number | null;

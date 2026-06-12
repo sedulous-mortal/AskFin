@@ -973,7 +973,7 @@ function EdiblesSection({
 // ── Research Center Crosscut ──────────────────────────────────────────────────
 
 type MuseumItemLocal = { id: number; name: string | null; category: SpecimenCategory };
-type CrosscutEntry = { donated: number[]; count: number; farm_name: string | null };
+type CrosscutEntry = { donated: number[]; count: number };
 type CrosscutDrill =
   | { level: 'list' }
   | { level: 'character'; charId: string }
@@ -984,7 +984,7 @@ function ResearchCenterCrosscut({
   prefetchedDetail,
 }: {
   characters: Array<{ id: string; character_name: string }>;
-  prefetchedDetail?: { id: string; donated_museum_items: number[]; donated_specimen_count: number; farm_name: string | null } | null;
+  prefetchedDetail?: { id: string; donated_museum_items: number[]; donated_specimen_count: number } | null;
 }) {
   const [museumItems, setMuseumItems] = useState<MuseumItemLocal[]>([]);
   const [charDataMap, setCharDataMap] = useState<Record<string, CrosscutEntry | 'loading' | 'error'>>({});
@@ -1007,12 +1007,11 @@ function ResearchCenterCrosscut({
         return Promise.resolve<CrosscutEntry>({
           donated: prefetchedDetail.donated_museum_items,
           count: prefetchedDetail.donated_specimen_count,
-          farm_name: prefetchedDetail.farm_name,
         });
       }
       return fetch(`${API_BASE}/api/characters/${c.id}`)
         .then(r => r.ok ? r.json() : Promise.reject())
-        .then(d => ({ donated: (d.donated_museum_items || []) as number[], count: (d.donated_specimen_count || 0) as number, farm_name: (d.farm_name || null) as string | null }))
+        .then(d => ({ donated: (d.donated_museum_items || []) as number[], count: (d.donated_specimen_count || 0) as number }))
         .catch(() => ({ error: true as const, id: c.id }));
     });
 
@@ -1100,7 +1099,6 @@ function ResearchCenterCrosscut({
     const { charId } = drill;
     const char = characters.find(c => c.id === charId);
     const data = charDataMap[charId];
-    const farmName = typeof data === 'object' ? data.farm_name : null;
     const totalCount = typeof data === 'object' ? data.count : 0;
     const byCategory = getDonatedByCategory(charId);
     return (
@@ -1112,7 +1110,6 @@ function ResearchCenterCrosscut({
           </button>
           <div className="flex-1">
             <h2 className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-200">{char?.character_name}</h2>
-            {farmName && <p className="text-xs text-slate-400 dark:text-slate-500">{farmName}</p>}
           </div>
           <span className="mt-0.5 text-sm font-semibold tabular-nums text-slate-500 dark:text-slate-400">
             {totalCount} total
@@ -1157,7 +1154,6 @@ function ResearchCenterCrosscut({
             const isError = data === 'error';
             const isReady = typeof data === 'object';
             const count = isReady ? data.count : 0;
-            const farmName = isReady ? data.farm_name : null;
             const barPct = maxCount > 0 ? Math.round((count / maxCount) * 100) : 0;
             return (
               <button key={char.id}
@@ -1166,7 +1162,6 @@ function ResearchCenterCrosscut({
                 className="flex w-full items-center gap-4 rounded-lg px-2 py-3.5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50 disabled:pointer-events-none disabled:opacity-40">
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-slate-800 dark:text-slate-200">{char.character_name}</p>
-                  {farmName && <p className="truncate text-xs text-slate-400 dark:text-slate-500">{farmName}</p>}
                 </div>
                 {isError ? (
                   <span className="text-xs italic text-slate-400 dark:text-slate-500">Failed to load</span>

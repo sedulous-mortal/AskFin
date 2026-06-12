@@ -19,6 +19,7 @@ export type CraftingRecipeItem = { id: number; name: string | null; category: st
 export type CookingRecipeItem = { id: number; name: string | null; diet: string | null };
 
 export type QuestStatus = { id: number; status: number };
+export type MatPileEntry = { questID: number; donatedItems: { name: string; amount: number }[] };
 export type InventorySlot = { id: number; amount: number };
 export type MuseumItem = { id: number; name: string | null; category: 'fish' | 'mineral' | 'plant' };
 
@@ -41,7 +42,6 @@ export type BarnData = {
 export type CharacterDetail = {
   id: string;
   character_name: string;
-  farm_name: string | null;
   exp: number | null;
   player_pronouns: number | null;
   total_play_time_seconds: number | null;
@@ -70,6 +70,7 @@ export type CharacterDetail = {
   home_level: number | null;
   home_construction_days: number;
   barn_data: BarnData[];
+  project_mat_pile_data: MatPileEntry[];
 };
 
 type AuthContextType = {
@@ -105,7 +106,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const guestCharacterDetail: CharacterDetail = {
     id: 'guest-character',
     character_name: 'Guest Adventurer',
-    farm_name: 'Sample Farm',
     exp: 12500,
     player_pronouns: 1,
     total_play_time_seconds: 36000,
@@ -171,6 +171,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { prefabId: 0, level: 0, name: 'Barn' },
       { prefabId: 1, level: 1, name: 'Coop' },
     ],
+    project_mat_pile_data: [],
   };
 
   const guestUser = {

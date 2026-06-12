@@ -167,6 +167,59 @@ function extractNestedNumber(text, parentField, childField) {
   return extractNumber(blockMatch[1], childField);
 }
 
+function extractProjectMatPileData(text) {
+  const content = extractBalancedArray(text, 'projectMatPileData');
+  if (!content) return [];
+  const result = [];
+  let i = 0;
+  while (i < content.length) {
+    while (i < content.length && content[i] !== '{') i++;
+    if (i >= content.length) break;
+    const start = i;
+    let depth = 0;
+    while (i < content.length) {
+      if (content[i] === '{') depth++;
+      else if (content[i] === '}') { depth--; if (depth === 0) { i++; break; } }
+      i++;
+    }
+    const objStr = content.slice(start, i);
+    const questIdMatch = objStr.match(/"questID"\s*[=:;,]\s*([>0-9]+)/);
+    if (!questIdMatch) continue;
+    const questID = parseInt(questIdMatch[1].replace(/>/g, ''), 10);
+    if (isNaN(questID)) continue;
+    const donatedItems = [];
+    const invPattern = /"inv"\s*[=:;,]\s*\{/;
+    const invMatch = invPattern.exec(objStr);
+    if (invMatch) {
+      let j = invMatch.index + invMatch[0].length;
+      let invDepth = 1;
+      while (j < objStr.length && invDepth > 0) {
+        if (objStr[j] === '{') invDepth++;
+        else if (objStr[j] === '}') invDepth--;
+        j++;
+      }
+      const invBlock = objStr.slice(invMatch.index + invMatch[0].length, j - 1);
+      const slotsContent = extractBalancedArray(invBlock, 'itemSlots');
+      if (slotsContent) {
+        const slotPattern = /\{([^}]*)\}/g;
+        let slotMatch;
+        while ((slotMatch = slotPattern.exec(slotsContent)) !== null) {
+          const s = slotMatch[1];
+          const idMatch = s.match(/"itemID"\s*[=:;,]\s*([>0-9]+)/);
+          const amountMatch = s.match(/"stackAmount"\s*[=:;,]\s*([>0-9]+)/);
+          if (idMatch) {
+            const id = parseInt(idMatch[1].replace(/>/g, ''), 10);
+            const amount = amountMatch ? parseInt(amountMatch[1].replace(/>/g, ''), 10) : 1;
+            if (!isNaN(id) && id > 0 && amount > 0) donatedItems.push({ id, amount });
+          }
+        }
+      }
+    }
+    result.push({ questID, donatedItems });
+  }
+  return result;
+}
+
 export function parseSaveFile(buffer) {
   const text = xorDecrypt(buffer);
   return {
@@ -194,5 +247,6 @@ export function parseSaveFile(buffer) {
     homeLevel: extractNumber(text, "homeLevel"),
     daysOfHomeConstruction: extractNumber(text, "daysOfHomeConstruction"),
     barnData: extractBarnData(text),
+    projectMatPileData: extractProjectMatPileData(text),
   };
 }
