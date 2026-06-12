@@ -25,8 +25,10 @@ const cookingRecipesFile = require('./helpers/cooking_recipes.json');
 const forageablesFile = require('./helpers/forageables_schedule.json');
 const fishScheduleFile = require('./helpers/fish_schedule.json');
 const museumItemsFile = require('./helpers/museum_items.json');
+const mineralDataFile = require('./helpers/mineral_data.json');
 const forageablesList = forageablesFile.forageables || [];
 const fishScheduleList = fishScheduleFile.fish || [];
+const mineralDataList = mineralDataFile.minerals || [];
 const questsList = questsFile.quests || [];
 const itemNames = gameIdMaps['InventoryItems_en'] || {};
 const plantNames = gameIdMaps['PlantDataTable_en'] || {};
@@ -712,9 +714,14 @@ app.get('/api/forageables/all', (req, res) => {
   res.json(forageablesList);
 });
 
-// Returns all fish with rarity, habitat, locations, and season data.
+// Returns all fish with rarity, size, habitat, locations, and season data.
 app.get('/api/fish/all', (req, res) => {
   res.json(fishScheduleList);
+});
+
+// Returns all donatable minerals with mine, floor range, and source type.
+app.get('/api/minerals/all', (req, res) => {
+  res.json(mineralDataList);
 });
 
 // Returns forageables available on a given in-game date, plus the next 3 upcoming.

@@ -1,0 +1,28 @@
+{
+  "note": "source: wall=drops from mining any wall tile, vein=embedded ore vein in walls (pickaxe), gem=gem vein in walls (pickaxe), floor=spawns loose on mine floor. Mine data from grimshire.wiki.gg/wiki/Mine. Three mines: Forest (open from start), Marsh (requires Copper Pickaxe), Mountain (requires Titanium Pickaxe). Each mine has 20 floors with two biome zones: floors 1-9 and 10-20.",
+  "minerals": [
+    { "id": 44,  "source": "wall", "entries": [{ "mine": "Marsh",    "floors": "1–9"   }] },
+    { "id": 49,  "source": "vein", "entries": [{ "mine": "Forest",   "floors": "1–20"  }, { "mine": "Mountain", "floors": "10–20" }] },
+    { "id": 50,  "source": "vein", "entries": [{ "mine": "Mountain", "floors": "1–20"  }] },
+    { "id": 51,  "source": "vein", "entries": [{ "mine": "Marsh",    "floors": "1–20"  }, { "mine": "Mountain", "floors": "10–20" }] },
+    { "id": 276, "source": "vein", "entries": [{ "mine": "Forest",   "floors": "1–20"  }, { "mine": "Marsh",    "floors": "1–20"  }, { "mine": "Mountain", "floors": "1–20"  }] },
+    { "id": 377, "source": "wall", "entries": [{ "mine": "Mountain", "floors": "1–9"   }] },
+    { "id": 378, "source": "wall", "entries": [{ "mine": "Forest",   "floors": "10–20" }] },
+    { "id": 379, "source": "wall", "entries": [{ "mine": "Marsh",    "floors": "10–20" }] },
+    { "id": 380, "source": "wall", "entries": [{ "mine": "Forest",   "floors": "1–9"   }] },
+    { "id": 381, "source": "vein", "entries": [{ "mine": "Mountain", "floors": "1–20"  }] },
+    { "id": 382, "source": "vein", "entries": [{ "mine": "Marsh",    "floors": "1–20"  }, { "mine": "Mountain", "floors": "10–20" }] },
+    { "id": 383, "source": "vein", "entries": [{ "mine": "Marsh",    "floors": "10–20" }, { "mine": "Mountain", "floors": "10–20" }] },
+    { "id": 384, "source": "vein", "entries": [{ "mine": "Forest",   "floors": "1–20"  }, { "mine": "Mountain", "floors": "10–20" }] },
+    { "id": 385, "source": "vein", "entries": [{ "mine": "Marsh",    "floors": "10–20" }, { "mine": "Mountain", "floors": "10–20" }] },
+    { "id": 396, "source": "gem",  "entries": [{ "mine": "Mountain", "floors": "1–20"  }] },
+    { "id": 397, "source": "gem",  "entries": [{ "mine": "Mountain", "floors": "1–20"  }] },
+    { "id": 398, "source": "gem",  "entries": [{ "mine": "Marsh",    "floors": "10–20" }] },
+    { "id": 399, "source": "gem",  "entries": [{ "mine": "Mountain", "floors": "1–20"  }] },
+    { "id": 400, "source": "gem",  "entries": [{ "mine": "Forest",   "floors": "1–20"  }] },
+    { "id": 402, "source": "gem",  "entries": [{ "mine": "Marsh",    "floors": "1–20"  }] },
+    { "id": 403, "source": "floor","entries": [{ "mine": "Forest",   "floors": "1–20"  }, { "mine": "Marsh",    "floors": "1–20"  }, { "mine": "Mountain", "floors": "1–20"  }] },
+    { "id": 860, "source": "wall", "entries": [{ "mine": "Mountain", "floors": "10–20" }] },
+    { "id": 861, "source": "gem",  "entries": [{ "mine": "Mountain", "floors": "10–20" }] }
+  ]
+}
