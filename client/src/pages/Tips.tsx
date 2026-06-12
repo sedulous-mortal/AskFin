@@ -63,6 +63,17 @@ type MineralInfo = {
   entries: MineralEntry[];
 };
 
+type ForageableEntry = {
+  id: number;
+  item_id?: number;
+  type: string;
+  start_season: number;
+  start_day: number;
+  end_season: number;
+  end_day: number;
+  locations: string[];
+};
+
 function toAbsDay(yearOffset: number, season: number, day: number): number {
   return yearOffset * TOTAL_DAYS + season * 28 + (day - 1);
 }
@@ -84,6 +95,29 @@ function isFishAvailable(fish: FishScheduleEntry | undefined, seasonIdx: number,
   const currentAbs = seasonIdx * 28 + (day - 1);
   if (endAbs >= startAbs) return currentAbs >= startAbs && currentAbs <= endAbs;
   return currentAbs >= startAbs || currentAbs <= endAbs;
+}
+
+function isForageableAvailable(f: ForageableEntry | undefined, seasonIdx: number, day: number): boolean {
+  if (!f) return false;
+  const startAbs = f.start_season * 28 + (f.start_day - 1);
+  const endAbs = f.end_season * 28 + (f.end_day - 1);
+  const currentAbs = seasonIdx * 28 + (day - 1);
+  if (endAbs >= startAbs) return currentAbs >= startAbs && currentAbs <= endAbs;
+  return currentAbs >= startAbs || currentAbs <= endAbs;
+}
+
+function isDisappearingSoon(
+  endSeason: number | null,
+  endDay: number | null,
+  currentSeasonIdx: number,
+  currentDay: number,
+  inSeason: boolean,
+): boolean {
+  if (!inSeason || endSeason === null || endDay === null) return false;
+  const currentAbs = currentSeasonIdx * 28 + (currentDay - 1);
+  const endAbs = endSeason * 28 + (endDay - 1);
+  const remaining = endAbs - currentAbs;
+  return remaining >= 0 && remaining <= 4;
 }
 
 function questAbsDays(quest: Quest): [number, number] {
@@ -179,18 +213,18 @@ function ItemIcon({ name, amount }: { name: string; amount: number }) {
 }
 
 const RARITY_COLOR: Record<string, string> = {
-  Abundant:      'text-green-400',
-  Common:        'text-sky-400',
-  Uncommon:      'text-violet-400',
-  Rare:          'text-orange-400',
-  Extraordinary: 'text-yellow-300',
-  Junk:          'text-slate-400',
+  Abundant:      'text-white',
+  Common:        'text-[#1eff00]',
+  Uncommon:      'text-[#4fc3f7]',
+  Rare:          'text-[#a335ee]',
+  Extraordinary: 'text-[#ff8000]',
+  Junk:          'text-[#9d9d9d]',
 };
 
 const MINE_COLOR: Record<string, string> = {
   Forest:   'text-emerald-400',
-  Marsh:    'text-cyan-400',
-  Mountain: 'text-slate-300',
+  Marsh:    'text-teal-300',
+  Mountain: 'text-cyan-400',
 };
 
 const SOURCE_LABEL: Record<string, string> = {
@@ -210,25 +244,25 @@ function FishTooltipContent({ fish }: { fish: FishScheduleEntry }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5">
-        <span className="text-slate-400 text-[11px]">Size</span>
-        <span className="font-medium text-white text-xs">{fish.size ?? '—'}</span>
+        <span className="text-slate-400 text-sm">Size</span>
+        <span className="font-medium text-white text-sm">{fish.size ?? '—'}</span>
       </div>
       <div className="flex items-center gap-1.5">
-        <span className="text-slate-400 text-[11px]">Rarity</span>
-        <span className={`font-semibold text-xs ${RARITY_COLOR[fish.rarity ?? ''] ?? 'text-slate-300'}`}>
+        <span className="text-slate-400 text-sm">Rarity</span>
+        <span className={`font-semibold text-sm ${RARITY_COLOR[fish.rarity ?? ''] ?? 'text-slate-300'}`}>
           {fish.rarity ?? '—'}
         </span>
       </div>
       {disappearsOn && (
         <div>
-          <div className="text-slate-400 text-[11px] mb-0.5">Disappears on</div>
-          <div className="text-white text-xs">{disappearsOn}</div>
+          <div className="text-slate-400 text-sm mb-0.5">Disappears on</div>
+          <div className="text-white text-sm">{disappearsOn}</div>
         </div>
       )}
       <div className="pt-0.5">
-        <div className="text-slate-400 text-[11px] mb-1">Locations</div>
+        <div className="text-slate-400 text-sm mb-1">Locations</div>
         {fish.locations.map((loc) => (
-          <div key={loc} className="text-white text-xs leading-snug">• {loc}</div>
+          <div key={loc} className="text-white text-sm leading-snug">• {loc}</div>
         ))}
       </div>
     </div>
@@ -238,15 +272,49 @@ function FishTooltipContent({ fish }: { fish: FishScheduleEntry }) {
 function MineralTooltipContent({ mineral }: { mineral: MineralInfo }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-slate-400 text-[11px]">{SOURCE_LABEL[mineral.source] ?? mineral.source}</div>
+      <div className="text-slate-400 text-sm">{SOURCE_LABEL[mineral.source] ?? mineral.source}</div>
       <div className="space-y-1">
         {mineral.entries.map((e, i) => (
           <div key={i} className="flex items-center gap-1.5">
-            <span className={`font-semibold text-xs ${MINE_COLOR[e.mine] ?? 'text-slate-300'}`}>
+            <span className={`font-semibold text-sm ${MINE_COLOR[e.mine] ?? 'text-slate-300'}`}>
               {e.mine} Mine
             </span>
-            <span className="text-slate-400 text-[11px]">floors {e.floors}</span>
+            <span className="text-slate-400 text-sm">floors {e.floors}</span>
           </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
+  if (!plant) {
+    return (
+      <div className="text-slate-400 text-xs italic">
+        Season data not yet mapped for this item.
+      </div>
+    );
+  }
+  const availableFrom = `${TOOLTIP_SEASON_NAMES[plant.start_season]} ${plant.start_day}`;
+  const disappearsOn = `${TOOLTIP_SEASON_NAMES[plant.end_season]} ${plant.end_day}`;
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-1.5">
+        <span className="text-slate-400 text-xs">Type</span>
+        <span className="font-medium text-white text-sm">{plant.type}</span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <span className="text-slate-400 text-xs">Available</span>
+        <span className="text-white text-sm">{availableFrom}</span>
+      </div>
+      <div>
+        <div className="text-slate-400 text-xs mb-0.5">Disappears on</div>
+        <div className="text-white text-sm">{disappearsOn}</div>
+      </div>
+      <div className="pt-0.5">
+        <div className="text-slate-400 text-xs mb-1">Locations</div>
+        {plant.locations.map((loc) => (
+          <div key={loc} className="text-white text-sm leading-snug">• {loc}</div>
         ))}
       </div>
     </div>
@@ -261,6 +329,8 @@ function DonationItemIcon({
   inSeason,
   fishInfo,
   mineralInfo,
+  plantInfo,
+  disappearsSoon,
 }: {
   item: MuseumItem;
   inInventory: boolean;
@@ -269,6 +339,8 @@ function DonationItemIcon({
   inSeason?: boolean;
   fishInfo?: FishScheduleEntry;
   mineralInfo?: MineralInfo;
+  plantInfo?: ForageableEntry;
+  disappearsSoon?: boolean;
 }) {
   const safeName = (item.name ?? '').replace(/ /g, '_');
   const paths = item.category === 'fish'
@@ -287,7 +359,8 @@ function DonationItemIcon({
   const opacity = highlighted || discovered ? '' : 'opacity-40';
 
   const hasTooltip = (item.category === 'fish' && fishInfo && fishInfo.locations)
-    || (item.category === 'mineral' && mineralInfo);
+    || (item.category === 'mineral' && mineralInfo)
+    || item.category === 'plant';
 
   return (
     <div
@@ -296,7 +369,7 @@ function DonationItemIcon({
       onMouseLeave={() => setHovered(false)}
     >
       <div
-        className={`h-[84px] w-16 overflow-hidden rounded-lg bg-slate-50 dark:bg-slate-800/50 ${borderColor} ${opacity}`}
+        className={`h-[84px] w-16 overflow-hidden rounded-lg ${disappearsSoon ? 'bg-orange-100 dark:bg-orange-950/40' : 'bg-slate-50 dark:bg-slate-800/50'} ${borderColor} ${opacity}`}
       >
         {safeName && pathIdx < paths.length ? (
           <img
@@ -313,12 +386,13 @@ function DonationItemIcon({
       </div>
 
       {hovered && hasTooltip && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
-          <div className="text-slate-200 text-xs font-semibold mb-1.5 leading-tight">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-52 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
+          <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">
             {item.name ?? `Item #${item.id}`}
           </div>
           {item.category === 'fish' && fishInfo && <FishTooltipContent fish={fishInfo} />}
           {item.category === 'mineral' && mineralInfo && <MineralTooltipContent mineral={mineralInfo} />}
+          {item.category === 'plant' && <PlantTooltipContent plant={plantInfo} />}
           <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
         </div>
       )}
@@ -1047,6 +1121,7 @@ export default function Tips() {
   const [revealUndiscovered, setRevealUndiscovered] = useState(false);
   const [fishScheduleMap, setFishScheduleMap] = useState<Record<number, FishScheduleEntry>>({});
   const [mineralDataMap, setMineralDataMap] = useState<Record<number, MineralInfo>>({});
+  const [forageableScheduleMap, setForageableScheduleMap] = useState<Record<number, ForageableEntry>>({});
 
   useEffect(() => {
     fetch('/api/quests')
@@ -1084,6 +1159,17 @@ export default function Tips() {
         const map: Record<number, MineralInfo> = {};
         for (const m of data) map[m.id] = m;
         setMineralDataMap(map);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/forageables/all')
+      .then((r) => r.ok ? r.json() : [])
+      .then((data: ForageableEntry[]) => {
+        const map: Record<number, ForageableEntry> = {};
+        for (const f of data) map[f.item_id ?? f.id] = f;
+        setForageableScheduleMap(map);
       })
       .catch(() => {});
   }, []);
@@ -1283,24 +1369,35 @@ export default function Tips() {
                   ) : (
                     <>
                       <div className="flex flex-wrap gap-2">
-                        {visibleItems.map((item) => (
-                          <DonationItemIcon
-                            key={item.id}
-                            item={item}
-                            inInventory={inventoryMap.has(item.id)}
-                            inventoryAmount={inventoryMap.get(item.id) ?? 0}
-                            discovered={discoveredItemIds.has(item.id)}
-                            inSeason={
-                              item.category === 'fish'
-                                ? isFishAvailable(fishScheduleMap[item.id], currentSeasonIdx, day)
-                                : item.category === 'mineral'
-                                  ? isMineAccessible(mineralDataMap[item.id], pickaxeTier)
-                                  : false
-                            }
-                            fishInfo={item.category === 'fish' ? fishScheduleMap[item.id] : undefined}
-                            mineralInfo={item.category === 'mineral' ? mineralDataMap[item.id] : undefined}
-                          />
-                        ))}
+                        {visibleItems.map((item) => {
+                          const itemInSeason =
+                            item.category === 'fish'
+                              ? isFishAvailable(fishScheduleMap[item.id], currentSeasonIdx, day)
+                              : item.category === 'mineral'
+                                ? isMineAccessible(mineralDataMap[item.id], pickaxeTier)
+                                : isForageableAvailable(forageableScheduleMap[item.id], currentSeasonIdx, day);
+                          const fishEnd = item.category === 'fish' ? fishScheduleMap[item.id] : null;
+                          const forageEnd = item.category === 'plant' ? forageableScheduleMap[item.id] : null;
+                          const itemDisappearsSoon = isDisappearingSoon(
+                            fishEnd?.end_season ?? forageEnd?.end_season ?? null,
+                            fishEnd?.end_day ?? forageEnd?.end_day ?? null,
+                            currentSeasonIdx, day, itemInSeason,
+                          );
+                          return (
+                            <DonationItemIcon
+                              key={item.id}
+                              item={item}
+                              inInventory={inventoryMap.has(item.id)}
+                              inventoryAmount={inventoryMap.get(item.id) ?? 0}
+                              discovered={discoveredItemIds.has(item.id)}
+                              inSeason={itemInSeason}
+                              fishInfo={item.category === 'fish' ? fishScheduleMap[item.id] : undefined}
+                              mineralInfo={item.category === 'mineral' ? mineralDataMap[item.id] : undefined}
+                              plantInfo={item.category === 'plant' ? forageableScheduleMap[item.id] : undefined}
+                              disappearsSoon={itemDisappearsSoon}
+                            />
+                          );
+                        })}
                       </div>
                       {hiddenCount > 0 && !revealUndiscovered && (
                         <p className="mt-1.5 text-base italic text-slate-400 dark:text-slate-500">
