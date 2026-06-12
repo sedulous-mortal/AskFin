@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
-import { useAuth, ToolData, BarnData, MuseumItem } from '../context/AuthContext';
+import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry } from '../context/AuthContext';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
 const TOTAL_DAYS = 112;
@@ -120,6 +120,10 @@ function isDisappearingSoon(
   return remaining >= 0 && remaining <= 4;
 }
 
+function isExclusivelyDeepWoods(locations: string[] | null | undefined): boolean {
+  return !!locations && locations.length > 0 && locations.every((l) => l === 'Deep Woods');
+}
+
 function questAbsDays(quest: Quest): [number, number] {
   const startAbs = toAbsDay(0, quest.available_start_season!, quest.available_first_day!);
   const endYearOffset = quest.available_end_season! < quest.available_start_season! ? 1 : 0;
@@ -182,31 +186,48 @@ function questTypeInfo(quest: Quest): TypeInfo {
   return { label: 'Side Quest', color: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' };
 }
 
-function ItemIcon({ name, amount }: { name: string; amount: number }) {
+function ItemIcon({ name, amount, donated = 0 }: { name: string; amount: number; donated?: number }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
+  const isDone = donated >= amount;
+  const remaining = Math.max(0, amount - donated);
 
   return (
     <div
-      className="relative h-[84px] w-16 overflow-hidden rounded-lg border border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20"
-      title={name}
+      className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${
+        isDone
+          ? 'border-slate-200 bg-slate-100 dark:border-slate-600 dark:bg-slate-700/40'
+          : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
+      }`}
+      title={isDone ? `${name} — complete` : donated > 0 ? `${name} (${donated}/${amount} donated, ${remaining} remaining)` : name}
     >
       {pathIdx < paths.length ? (
         <img
           src={paths[pathIdx]}
           alt={name}
-          className="h-full w-full object-contain px-1 pt-1 pb-[20px]"
+          className={`h-full w-full object-contain px-1 pt-1 pb-[20px] ${isDone ? 'opacity-30' : ''}`}
           onError={() => setPathIdx((i) => i + 1)}
         />
       ) : (
-        <span className="flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight text-indigo-400 dark:text-indigo-500">
+        <span className={`flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight ${isDone ? 'text-slate-300 dark:text-slate-600' : 'text-indigo-400 dark:text-indigo-500'}`}>
           {initials}
         </span>
       )}
-      <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl bg-black/65 px-1.5 py-0.5 text-[14px] font-bold text-white">
-        {amount}
+      {isDone && (
+        <svg
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 64 84"
+          preserveAspectRatio="none"
+        >
+          <line x1="0" y1="0" x2="64" y2="84" stroke="white" strokeWidth="2.5" strokeOpacity="0.8" />
+        </svg>
+      )}
+      <span className={`absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl px-1.5 py-0.5 text-[14px] font-bold ${
+        isDone ? 'bg-slate-400/80 text-white dark:bg-slate-500/80' : 'bg-black/65 text-white'
+      }`}>
+        {isDone ? '✓' : remaining}
       </span>
     </div>
   );
@@ -221,11 +242,19 @@ const RARITY_COLOR: Record<string, string> = {
   Junk:          'text-[#9d9d9d]',
 };
 
-const MINE_COLOR: Record<string, string> = {
-  Forest:   'text-emerald-400',
-  Marsh:    'text-teal-300',
-  Mountain: 'text-cyan-400',
+// Single source of truth for location name colours — update here to change everywhere
+const LOCATION_COLOR: Record<string, string> = {
+  'Deep Woods': 'text-green-400',
+  Farm:         'text-amber-400',
+  Forest:       'text-emerald-400',
+  Marsh:        'text-teal-300',
+  Mountain:     'text-cyan-400',
+  Mountains:    'text-cyan-400',
 };
+
+function LocationText({ loc }: { loc: string }) {
+  return <span className={LOCATION_COLOR[loc] ?? 'text-white'}>{loc}</span>;
+}
 
 const SOURCE_LABEL: Record<string, string> = {
   wall:  'Mine wall drop',
@@ -262,7 +291,7 @@ function FishTooltipContent({ fish }: { fish: FishScheduleEntry }) {
       <div className="pt-0.5">
         <div className="text-slate-400 text-sm mb-1">Locations</div>
         {fish.locations.map((loc) => (
-          <div key={loc} className="text-white text-sm leading-snug">• {loc}</div>
+          <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
         ))}
       </div>
     </div>
@@ -276,7 +305,7 @@ function MineralTooltipContent({ mineral }: { mineral: MineralInfo }) {
       <div className="space-y-1">
         {mineral.entries.map((e, i) => (
           <div key={i} className="flex items-center gap-1.5">
-            <span className={`font-semibold text-sm ${MINE_COLOR[e.mine] ?? 'text-slate-300'}`}>
+            <span className={`font-semibold text-sm ${LOCATION_COLOR[e.mine] ?? 'text-slate-300'}`}>
               {e.mine} Mine
             </span>
             <span className="text-slate-400 text-sm">floors {e.floors}</span>
@@ -314,7 +343,7 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
       <div className="pt-0.5">
         <div className="text-slate-400 text-xs mb-1">Locations</div>
         {plant.locations.map((loc) => (
-          <div key={loc} className="text-white text-sm leading-snug">• {loc}</div>
+          <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
         ))}
       </div>
     </div>
@@ -522,12 +551,14 @@ function QuestCard({
   currentAbs,
   difficulty,
   currentSeasonIdx,
+  donationMap,
 }: {
   quest: Quest;
   inProgressQuestIds: Set<number>;
   currentAbs: number;
   difficulty?: number | null;
   currentSeasonIdx?: number;
+  donationMap?: Map<string, number>;
 }) {
   const { label, color } = questTypeInfo(quest);
   const daysAway = daysUntilActive(quest, currentAbs);
@@ -712,7 +743,7 @@ function QuestCard({
         {/* Right: requires chips + icon grid at estimated-optimal column count */}
         {reqs.length > 0 && (
           <div className={`flex-none border-l border-slate-100 pl-4 dark:border-slate-700 ${reqs.length === 1 ? 'w-1/3' : 'w-1/2'}`}>
-            <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+            <p className={`mb-1.5 text-xs font-medium uppercase tracking-wide ${quest.is_town_quest && donationMap ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}`}>
               Requires
             </p>
             <div className="mb-3 flex flex-wrap gap-1">
@@ -722,12 +753,22 @@ function QuestCard({
                 </span>
               ))}
             </div>
+            {quest.is_town_quest && donationMap && (
+              <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300">
+                Remaining
+              </p>
+            )}
             <div
               className="grid gap-1.5"
               style={{ gridTemplateColumns: `repeat(${bestCols}, 4rem)` }}
             >
               {reqs.map((req, i) => (
-                <ItemIcon key={i} name={req.name} amount={req.amount} />
+                <ItemIcon
+                  key={i}
+                  name={req.name}
+                  amount={req.amount}
+                  donated={donationMap?.get(req.name) ?? 0}
+                />
               ))}
             </div>
           </div>
@@ -1055,7 +1096,7 @@ function DonatedSpecimensCard({
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
       >
-        <span className="font-medium text-slate-700 dark:text-slate-300">Items already donated</span>
+        <span className="text-base font-medium text-slate-700 dark:text-slate-300">Items Already Donated</span>
         <svg
           className={`h-5 w-5 flex-none text-slate-400 transition-transform duration-200 dark:text-slate-500 ${open ? 'rotate-180' : ''}`}
           viewBox="0 0 20 20"
@@ -1119,6 +1160,7 @@ export default function Tips() {
   const [error, setError] = useState<string | null>(null);
   const [museumItems, setMuseumItems] = useState<MuseumItem[]>([]);
   const [revealUndiscovered, setRevealUndiscovered] = useState(false);
+  const [useCharacterDate, setUseCharacterDate] = useState(false);
   const [fishScheduleMap, setFishScheduleMap] = useState<Record<number, FishScheduleEntry>>({});
   const [mineralDataMap, setMineralDataMap] = useState<Record<number, MineralInfo>>({});
   const [forageableScheduleMap, setForageableScheduleMap] = useState<Record<number, ForageableEntry>>({});
@@ -1179,9 +1221,30 @@ export default function Tips() {
   const currentAbs = toAbsDay(currentYearOffset, currentSeasonIdx, day);
   const pickaxeTier = selectedCharacter?.tool_data?.find((t) => t.toolName === 'pick')?.tier ?? 0;
 
+  // When "use character date" is checked, ignore the header date picker for donation availability
+  const effectiveSeasonIdx = (useCharacterDate && selectedCharacter?.current_season != null)
+    ? selectedCharacter.current_season
+    : currentSeasonIdx;
+  const effectiveDay = (useCharacterDate && selectedCharacter?.current_day != null)
+    ? selectedCharacter.current_day
+    : day;
+
+  // Deep Woods cannot unlock before Summer 16, Y1 (predator event first becomes playable that morning)
+  const deepWoodsUnlocked =
+    currentYearOffset > 0 ||
+    effectiveSeasonIdx > 1 ||
+    (effectiveSeasonIdx === 1 && effectiveDay >= 16);
+
   const inProgressQuestIds = new Set(
     (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 1).map((q) => q.id),
   );
+
+  const matPileByQuest = new Map<number, Map<string, number>>();
+  for (const pile of (selectedCharacter?.project_mat_pile_data ?? []) as MatPileEntry[]) {
+    const itemMap = new Map<string, number>();
+    for (const item of pile.donatedItems) itemMap.set(item.name, item.amount);
+    matPileByQuest.set(pile.questID, itemMap);
+  }
 
   const activeQuests = allQuests.filter((q) => inProgressQuestIds.has(q.id) && q.id !== 1331);
 
@@ -1267,6 +1330,7 @@ export default function Tips() {
                 currentAbs={currentAbs}
                 difficulty={selectedCharacter?.difficulty ?? null}
                 currentSeasonIdx={currentSeasonIdx}
+                donationMap={quest.is_town_quest ? (matPileByQuest.get(quest.id) ?? new Map()) : undefined}
               />
             ))}
           </div>
@@ -1319,28 +1383,41 @@ export default function Tips() {
 
         {/* Items available to donate */}
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-5 dark:border-slate-700 dark:bg-slate-800/40">
-          <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="font-medium text-slate-700 dark:text-slate-300">Items available to donate</p>
-            {selectedCharacter && toDonateSections.length > 0 && (
-              <button
-                onClick={() => setRevealUndiscovered((v) => !v)}
-                className="shrink-0 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-base font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
-              >
-                {revealUndiscovered ? 'Hide undiscovered' : 'Reveal undiscovered'}
-              </button>
-            )}
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-base font-medium text-slate-700 dark:text-slate-300">Items Available to Donate</p>
+            <div className="flex flex-wrap items-center gap-2">
+              {selectedCharacter && (
+                <label className="flex cursor-pointer select-none items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-base font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={useCharacterDate}
+                    onChange={(e) => setUseCharacterDate(e.target.checked)}
+                    className="h-3.5 w-3.5 accent-amber-500"
+                  />
+                  Use Character's In-Game Date (ignore Date Picker in Header)
+                </label>
+              )}
+              {selectedCharacter && toDonateSections.length > 0 && (
+                <button
+                  onClick={() => setRevealUndiscovered((v) => !v)}
+                  className="shrink-0 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-base font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                >
+                  {revealUndiscovered ? 'Hide undiscovered' : 'Reveal undiscovered'}
+                </button>
+              )}
+            </div>
           </div>
           <div className="mb-3 flex flex-row flex-wrap items-center gap-x-4 gap-y-1">
-            <p className="flex items-center gap-1.5 text-base text-slate-400 dark:text-slate-500">
+            <p className="flex items-center gap-1.5 text-base text-slate-600 dark:text-slate-300">
               <span className="inline-block h-3 w-3 shrink-0 rounded border-2 border-amber-300 dark:border-amber-500" />
               Yellow = in your inventory but not yet donated.
             </p>
-            <p className="flex items-center gap-1.5 text-base text-slate-400 dark:text-slate-500">
+            <p className="flex items-center gap-1.5 text-base text-slate-600 dark:text-slate-300">
               <span className="inline-block h-3 w-3 shrink-0 rounded border-2 border-amber-700 dark:border-amber-400" />
               Orange = available now to find, in season.
             </p>
             {!revealUndiscovered && (
-              <p className="text-base text-slate-400 dark:text-slate-500">Dimmed = undiscovered.</p>
+              <p className="text-base text-slate-600 dark:text-slate-300">Dimmed = undiscovered.</p>
             )}
           </div>
 
@@ -1370,18 +1447,24 @@ export default function Tips() {
                     <>
                       <div className="flex flex-wrap gap-2">
                         {visibleItems.map((item) => {
-                          const itemInSeason =
-                            item.category === 'fish'
-                              ? isFishAvailable(fishScheduleMap[item.id], currentSeasonIdx, day)
-                              : item.category === 'mineral'
-                                ? isMineAccessible(mineralDataMap[item.id], pickaxeTier)
-                                : isForageableAvailable(forageableScheduleMap[item.id], currentSeasonIdx, day);
+                          const itemInSeason = (() => {
+                            if (item.category === 'mineral') {
+                              return isMineAccessible(mineralDataMap[item.id], pickaxeTier);
+                            }
+                            const locations = item.category === 'fish'
+                              ? fishScheduleMap[item.id]?.locations
+                              : forageableScheduleMap[item.id]?.locations;
+                            if (!deepWoodsUnlocked && isExclusivelyDeepWoods(locations)) return false;
+                            return item.category === 'fish'
+                              ? isFishAvailable(fishScheduleMap[item.id], effectiveSeasonIdx, effectiveDay)
+                              : isForageableAvailable(forageableScheduleMap[item.id], effectiveSeasonIdx, effectiveDay);
+                          })();
                           const fishEnd = item.category === 'fish' ? fishScheduleMap[item.id] : null;
                           const forageEnd = item.category === 'plant' ? forageableScheduleMap[item.id] : null;
                           const itemDisappearsSoon = isDisappearingSoon(
                             fishEnd?.end_season ?? forageEnd?.end_season ?? null,
                             fishEnd?.end_day ?? forageEnd?.end_day ?? null,
-                            currentSeasonIdx, day, itemInSeason,
+                            effectiveSeasonIdx, effectiveDay, itemInSeason,
                           );
                           return (
                             <DonationItemIcon
