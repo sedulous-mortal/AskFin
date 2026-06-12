@@ -23,8 +23,10 @@ const questsFile = require('./helpers/quests.json');
 const craftingItemsFile = require('./helpers/crafting_items.json');
 const cookingRecipesFile = require('./helpers/cooking_recipes.json');
 const forageablesFile = require('./helpers/forageables_schedule.json');
+const fishScheduleFile = require('./helpers/fish_schedule.json');
 const museumItemsFile = require('./helpers/museum_items.json');
 const forageablesList = forageablesFile.forageables || [];
+const fishScheduleList = fishScheduleFile.fish || [];
 const questsList = questsFile.quests || [];
 const itemNames = gameIdMaps['InventoryItems_en'] || {};
 const plantNames = gameIdMaps['PlantDataTable_en'] || {};
@@ -708,6 +710,11 @@ app.get('/api/quests', (req, res) => {
 // Returns every forageable item (all seasons) with type field.
 app.get('/api/forageables/all', (req, res) => {
   res.json(forageablesList);
+});
+
+// Returns all fish with rarity, habitat, locations, and season data.
+app.get('/api/fish/all', (req, res) => {
+  res.json(fishScheduleList);
 });
 
 // Returns forageables available on a given in-game date, plus the next 3 upcoming.

@@ -5,25 +5,16 @@ import { SpoilerGate } from '../components/SpoilerGate';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-// ── Fish habitat static data ──────────────────────────────────────────────────
-
-const FISH_HABITAT: Record<number, string> = {
-  28: 'River', 29: 'River', 30: 'Mere',
-  182: 'River', 183: 'Lake', 184: 'River', 185: 'Lake', 186: 'Lake',
-  187: 'Lake', 188: 'River', 189: 'Mere', 190: 'Marsh', 191: 'River',
-  192: 'River', 193: 'Mere', 194: 'Lake', 195: 'Lake', 196: 'Lake',
-  197: 'Marsh', 198: 'River', 199: 'Mere', 200: 'Coastal', 201: 'Marsh',
-  202: 'River', 203: 'Coastal', 204: 'Coastal', 205: 'Lake', 206: 'River',
-  207: 'River', 208: 'River', 209: 'River', 210: 'River', 211: 'Lake',
-  212: 'Lake', 213: 'Mere', 214: 'Marsh', 215: 'Lake', 216: 'Lake',
-  217: 'Lake', 218: 'River', 219: 'River', 220: 'Lake', 221: 'River',
-  222: 'Lake', 223: 'River', 224: 'River', 225: 'Lake', 226: 'Lake',
-  227: 'Coastal', 228: 'Coastal', 386: 'Lake', 387: 'Mere', 388: 'Coastal',
-  389: 'Coastal', 390: 'Mere', 391: 'River', 392: 'River', 393: 'Coastal',
-  394: 'Lake', 395: 'Mere', 480: 'Marsh', 481: 'Coastal', 482: 'Coastal',
-  483: 'Any', 581: 'Any', 666: 'Marsh', 667: 'Marsh', 668: 'Coastal',
-  669: 'Coastal', 670: 'Coastal', 671: 'Coastal', 672: 'Coastal',
-  673: 'Marsh', 674: 'Any', 827: 'Any',
+type FishScheduleEntry = {
+  id: number;
+  name: string;
+  rarity: string;
+  habitat: string;
+  locations: string[] | null;
+  start_season: number | null;
+  start_day: number | null;
+  end_season: number | null;
+  end_day: number | null;
 };
 
 const HABITAT_ORDER = ['River', 'Lake', 'Coastal', 'Marsh', 'Mere', 'Any'] as const;
@@ -641,12 +632,24 @@ function FishSection({
 }) {
   const [view, setView] = useState<FishDrillView>('chart');
   const [splitByArea, setSplitByArea] = useState(false);
+  const [fishSchedule, setFishSchedule] = useState<Record<number, string>>({});
   const { preferences } = useSettings();
   const spoilerAllowed = spoilerKey ? preferences.spoilers[spoilerKey] : true;
   const color = 'var(--fish-accent)';
 
+  useEffect(() => {
+    fetch(`${API_BASE}/api/fish/all`)
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then((data: FishScheduleEntry[]) => {
+        const map: Record<number, string> = {};
+        for (const f of data) map[f.id] = f.habitat;
+        setFishSchedule(map);
+      })
+      .catch(() => {});
+  }, []);
+
   // null = ID not in our habitat map (unknown area); explicit 'Any' = catchable anywhere
-  const habitatOf = (id: number): string | null => FISH_HABITAT[id] ?? null;
+  const habitatOf = (id: number): string | null => fishSchedule[id] ?? null;
   const byHabitat = Object.fromEntries(
     HABITAT_ORDER.map(h => [h, discovered.filter(f => habitatOf(f.id) === h)])
   ) as Record<string, ResolvedItem[]>;

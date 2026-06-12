@@ -43,8 +43,25 @@ type Quest = {
   is_vip_quest: boolean | null;
 };
 
+type FishScheduleEntry = {
+  id: number;
+  start_season: number | null;
+  start_day: number | null;
+  end_season: number | null;
+  end_day: number | null;
+};
+
 function toAbsDay(yearOffset: number, season: number, day: number): number {
   return yearOffset * TOTAL_DAYS + season * 28 + (day - 1);
+}
+
+function isFishAvailable(fish: FishScheduleEntry | undefined, seasonIdx: number, day: number): boolean {
+  if (!fish || fish.start_season === null || fish.start_day === null || fish.end_season === null || fish.end_day === null) return false;
+  const startAbs = fish.start_season * 28 + (fish.start_day - 1);
+  const endAbs = fish.end_season * 28 + (fish.end_day - 1);
+  const currentAbs = seasonIdx * 28 + (day - 1);
+  if (endAbs >= startAbs) return currentAbs >= startAbs && currentAbs <= endAbs;
+  return currentAbs >= startAbs || currentAbs <= endAbs;
 }
 
 function questAbsDays(quest: Quest): [number, number] {
@@ -144,50 +161,44 @@ function DonationItemIcon({
   inInventory,
   inventoryAmount,
   discovered,
+  inSeason,
 }: {
   item: MuseumItem;
   inInventory: boolean;
   inventoryAmount: number;
   discovered: boolean;
+  inSeason?: boolean;
 }) {
   const safeName = (item.name ?? '').replace(/ /g, '_');
-  const paths = [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const paths = item.category === 'fish'
+    ? [`/fish/${safeName}.png`, `/items/${safeName}.png`]
+    : [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = (item.name ?? '??').split(' ').slice(0, 2).map((w) => w[0]).join('');
 
+  const highlighted = inInventory || inSeason;
   const borderColor = inInventory
-    ? 'border-amber-300 dark:border-amber-500'
-    : 'border-slate-200 dark:border-slate-600';
-  const bgColor = inInventory
-    ? 'bg-amber-50 dark:bg-amber-900/25'
-    : 'bg-slate-50 dark:bg-slate-800/50';
-  const opacity = discovered ? '' : 'opacity-40';
+    ? 'border-2 border-amber-300 dark:border-amber-500'
+    : inSeason
+      ? 'border-2 border-amber-700 dark:border-amber-400'
+      : 'border border-slate-400 dark:border-slate-500';
+  const opacity = highlighted || discovered ? '' : 'opacity-40';
 
   return (
     <div
-      className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${borderColor} ${bgColor} ${opacity}`}
+      className={`relative h-[84px] w-16 overflow-hidden rounded-lg bg-slate-50 dark:bg-slate-800/50 ${borderColor} ${opacity}`}
       title={item.name ?? `Item #${item.id}`}
     >
       {safeName && pathIdx < paths.length ? (
         <img
           src={paths[pathIdx]}
           alt={item.name ?? ''}
-          className="h-full w-full object-contain px-1 pt-1 pb-[20px]"
+          className="h-full w-full object-contain px-1 py-1"
           onError={() => setPathIdx((i) => i + 1)}
         />
       ) : (
         <span className="flex h-full w-full items-center justify-center pb-4 text-center text-xs font-semibold leading-tight text-slate-400 dark:text-slate-500">
           {initials || '?'}
-        </span>
-      )}
-      {inInventory && (
-        <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl bg-amber-500/80 px-1.5 py-0.5 text-[13px] font-bold text-white">
-          {inventoryAmount}
-        </span>
-      )}
-      {!discovered && (
-        <span className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-slate-900/60 py-0.5 text-[10px] text-slate-300">
-          ?
         </span>
       )}
     </div>
@@ -727,10 +738,10 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
   return (
     <div className="rounded-xl border border-slate-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="mb-4 flex items-center gap-2">
-        <span className="inline-flex items-center rounded-full bg-teal-100 px-3 py-0.5 text-sm font-semibold text-teal-800 dark:bg-teal-900/30 dark:text-teal-300">
-          Carpenter
+        <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-0.5 text-sm font-semibold text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+          Rowan
         </span>
-        <span className="text-sm text-slate-500 dark:text-slate-400">Building Upgrades</span>
+        <span className="text-sm text-slate-500 dark:text-slate-400">Carpenter · Building Upgrades</span>
       </div>
 
       {homeLevel === null ? (
@@ -743,7 +754,7 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
           <div className="flex items-center justify-between px-3 py-2">
             <div className="flex items-center gap-2.5">
               <span className="w-24 text-sm text-slate-700 dark:text-slate-300">Home</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
                 {HOME_LEVEL_LABELS[homeLevel] ?? `Level ${homeLevel}`}
               </span>
             </div>
@@ -767,7 +778,7 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
                 <div className="flex items-center gap-2.5">
                   <span className="w-24 text-sm text-slate-700 dark:text-slate-300">{label}</span>
                   {barn ? (
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
                       {barn.level >= 1 ? 'Expanded (8 animals)' : 'Standard (4 animals)'}
                     </span>
                   ) : (
@@ -829,6 +840,75 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
   );
 }
 
+function DonatedSpecimensCard({
+  selectedCharacter,
+  donatedSections,
+}: {
+  selectedCharacter: ReturnType<typeof useAuth>['selectedCharacter'];
+  donatedSections: { label: string; items: MuseumItem[] }[];
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/40">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+      >
+        <span className="font-medium text-slate-700 dark:text-slate-300">Items already donated</span>
+        <svg
+          className={`h-5 w-5 flex-none text-slate-400 transition-transform duration-200 dark:text-slate-500 ${open ? 'rotate-180' : ''}`}
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d="M5 7.5l5 5 5-5" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="border-t border-slate-200 px-5 py-5 dark:border-slate-700">
+          {!selectedCharacter ? (
+            <p className="text-sm italic text-slate-400 dark:text-slate-500">
+              Load a save file to see your donated specimens.
+            </p>
+          ) : donatedSections.length === 0 ? (
+            <p className="text-sm italic text-slate-400 dark:text-slate-500">
+              No specimens donated yet.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {donatedSections.map(({ label, items }) => (
+                <div key={label}>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    {label}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {items.map((item) => (
+                      <DonationItemIcon
+                        key={item.id}
+                        item={item}
+                        inInventory={false}
+                        inventoryAmount={0}
+                        discovered={true}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Tips() {
   const { season, day } = useDate();
   const { selectedCharacter } = useAuth();
@@ -838,6 +918,7 @@ export default function Tips() {
   const [error, setError] = useState<string | null>(null);
   const [museumItems, setMuseumItems] = useState<MuseumItem[]>([]);
   const [revealUndiscovered, setRevealUndiscovered] = useState(false);
+  const [fishScheduleMap, setFishScheduleMap] = useState<Record<number, FishScheduleEntry>>({});
 
   useEffect(() => {
     fetch('/api/quests')
@@ -854,6 +935,17 @@ export default function Tips() {
     fetch('/api/museum-items')
       .then((r) => r.ok ? r.json() : [])
       .then((data: MuseumItem[]) => setMuseumItems(data))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/fish/all')
+      .then((r) => r.ok ? r.json() : [])
+      .then((data: FishScheduleEntry[]) => {
+        const map: Record<number, FishScheduleEntry> = {};
+        for (const f of data) map[f.id] = f;
+        setFishScheduleMap(map);
+      })
       .catch(() => {});
   }, []);
 
@@ -893,6 +985,12 @@ export default function Tips() {
     return { label, catItems, visibleItems, hiddenCount };
   }).filter((s) => s.catItems.length > 0);
 
+  const donatedSections = (['fish', 'mineral', 'plant'] as const).map((cat) => {
+    const label = cat === 'fish' ? 'Fish' : cat === 'mineral' ? 'Minerals' : 'Plants';
+    const items = museumItems.filter((item) => item.category === cat && donatedSet.has(item.id));
+    return { label, items };
+  }).filter((s) => s.items.length > 0);
+
   const donationMilestones = allQuests
     .filter((q) => q.is_donation_quest && q.id !== 1331 && donationThreshold(q) !== null)
     .sort((a, b) => donationSortKey(a) - donationSortKey(b));
@@ -918,7 +1016,7 @@ export default function Tips() {
       {/* Active Quests */}
       <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Active Quests</h2>
-        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+        <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
           Quests you've accepted and are currently working on.
         </p>
         {loading ? (
@@ -952,7 +1050,7 @@ export default function Tips() {
       {/* Museum Donations */}
       <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Museum Donations</h2>
-        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+        <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
           Track your specimen milestones and see what you could donate next.
         </p>
 
@@ -995,24 +1093,37 @@ export default function Tips() {
 
         {/* Items available to donate */}
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-5 dark:border-slate-700 dark:bg-slate-800/40">
-          <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="mb-2 flex items-center justify-between gap-3">
             <p className="font-medium text-slate-700 dark:text-slate-300">Items available to donate</p>
             {selectedCharacter && toDonateSections.length > 0 && (
               <button
                 onClick={() => setRevealUndiscovered((v) => !v)}
-                className="shrink-0 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                className="shrink-0 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-base font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
               >
                 {revealUndiscovered ? 'Hide undiscovered' : 'Reveal undiscovered'}
               </button>
             )}
           </div>
+          <div className="mb-3 flex flex-row flex-wrap items-center gap-x-4 gap-y-1">
+            <p className="flex items-center gap-1.5 text-base text-slate-400 dark:text-slate-500">
+              <span className="inline-block h-3 w-3 shrink-0 rounded border-2 border-amber-300 dark:border-amber-500" />
+              Yellow = in your inventory but not yet donated.
+            </p>
+            <p className="flex items-center gap-1.5 text-base text-slate-400 dark:text-slate-500">
+              <span className="inline-block h-3 w-3 shrink-0 rounded border-2 border-amber-700 dark:border-amber-400" />
+              Orange = available now to find, in season.
+            </p>
+            {!revealUndiscovered && (
+              <p className="text-base text-slate-400 dark:text-slate-500">Dimmed = undiscovered.</p>
+            )}
+          </div>
 
           {!selectedCharacter ? (
-            <p className="text-sm italic text-slate-400 dark:text-slate-500">
+            <p className="text-base italic text-slate-400 dark:text-slate-500">
               Load a save file to see items available to donate.
             </p>
           ) : toDonateSections.length === 0 ? (
-            <p className="text-sm italic text-slate-400 dark:text-slate-500">
+            <p className="text-base italic text-slate-400 dark:text-slate-500">
               All known specimens have been donated — great work!
             </p>
           ) : (
@@ -1023,7 +1134,7 @@ export default function Tips() {
                     {label}
                   </p>
                   {visibleItems.length === 0 ? (
-                    <p className="text-xs italic text-slate-400 dark:text-slate-500">
+                    <p className="text-base italic text-slate-400 dark:text-slate-500">
                       All discovered {label.toLowerCase()} specimens donated.
                       {hiddenCount > 0 && !revealUndiscovered && (
                         <> ({hiddenCount} undiscovered — toggle to reveal)</>
@@ -1039,11 +1150,12 @@ export default function Tips() {
                             inInventory={inventoryMap.has(item.id)}
                             inventoryAmount={inventoryMap.get(item.id) ?? 0}
                             discovered={discoveredItemIds.has(item.id)}
+                            inSeason={item.category === 'fish' && isFishAvailable(fishScheduleMap[item.id], currentSeasonIdx, day)}
                           />
                         ))}
                       </div>
                       {hiddenCount > 0 && !revealUndiscovered && (
-                        <p className="mt-1.5 text-xs italic text-slate-400 dark:text-slate-500">
+                        <p className="mt-1.5 text-base italic text-slate-400 dark:text-slate-500">
                           +{hiddenCount} undiscovered {label.toLowerCase()} specimen{hiddenCount !== 1 ? 's' : ''} hidden — toggle to reveal.
                         </p>
                       )}
@@ -1051,22 +1163,21 @@ export default function Tips() {
                   )}
                 </div>
               ))}
-              <p className="text-xs text-slate-400 dark:text-slate-500">
-                <span className="mr-1 inline-block h-3 w-3 rounded border border-amber-300 bg-amber-100 dark:border-amber-500 dark:bg-amber-900/40" />
-                Yellow = in your inventory but not yet donated.
-                {!revealUndiscovered && (
-                  <> Dimmed items are undiscovered.</>
-                )}
-              </p>
             </div>
           )}
         </div>
+
+        {/* Items already donated */}
+        <DonatedSpecimensCard
+          selectedCharacter={selectedCharacter}
+          donatedSections={donatedSections}
+        />
       </section>
 
       {/* Upgrade Progression */}
       <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Upgrade Progression</h2>
-        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+        <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
           Current tool tiers, building levels, and what to work on next.
         </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -1074,7 +1185,7 @@ export default function Tips() {
             name="Gruff"
             role="Blacksmith · Tool Upgrades"
             toolNames={['watercan', 'hoe', 'pick', 'axe', 'scythe']}
-            chipColor="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+            chipColor="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400"
             toolData={selectedCharacter?.tool_data ?? null}
           />
           <div className="flex flex-col gap-6">
