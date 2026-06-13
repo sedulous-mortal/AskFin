@@ -1,6 +1,9 @@
 import { useRef, useState, ChangeEvent } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useDate } from '../context/DateContext';
 import { uploadSaveFile } from '../api/characters';
+
+const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
 
 type UploadStatus =
   | { type: 'idle' }
@@ -13,6 +16,7 @@ const SAVES_PATH = 'C:\\Users\\<YourUsername>\\AppData\\LocalLow\\AcuteOwlStudio
 export default function LoadSaveFile() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { user, refreshCharacters, refreshSelectedCharacter } = useAuth();
+  const { setSeason, setDay } = useDate();
   const [status, setStatus] = useState<UploadStatus>({ type: 'idle' });
   const [copied, setCopied] = useState(false);
 
@@ -31,7 +35,13 @@ export default function LoadSaveFile() {
     try {
       await uploadSaveFile(file, user?.id ?? null);
       await refreshCharacters();
-      await refreshSelectedCharacter();
+      const character = await refreshSelectedCharacter();
+      if (character) {
+        const seasonIndex = character.current_season ?? 0;
+        const seasonName = SEASON_NAMES[seasonIndex] ?? 'Spring';
+        setSeason(seasonName);
+        setDay(character.current_day ?? 1);
+      }
       setStatus({ type: 'success' });
     } catch (err) {
       setStatus({ type: 'error', message: err instanceof Error ? err.message : 'Upload failed.' });

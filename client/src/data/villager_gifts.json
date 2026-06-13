@@ -1,0 +1,314 @@
+{
+  "Adeline": {
+    "favorites": [
+      "Sweet Herb Tea",
+      "Medium Smoked Fish",
+      "Roast Bluggy"
+    ],
+    "dislikes": [
+      "Compost",
+      "Vinegar",
+      "Mead"
+    ]
+  },
+  "Beatrix": {
+    "favorites": [
+      "Hawthorn Juice",
+      "Honeyed Hawthorns",
+      "Alpheep Wool"
+    ],
+    "dislikes": [
+      "Tough Meat",
+      "Cheese",
+      "Fiddlehead Fern"
+    ]
+  },
+  "Beryl": {
+    "favorites": [
+      "Honeyed Fruit Skewers",
+      "Sweet Herb Tea",
+      "Fruit Salad"
+    ],
+    "dislikes": [
+      "Chub",
+      "Egg",
+      "Bellpepper"
+    ]
+  },
+  "Edgar": {
+    "favorites": [
+      "Daylily Flower",
+      "Vegetable Tart",
+      "Fruit Salad"
+    ],
+    "dislikes": [
+      "Gold Bar",
+      "Hide",
+      "Mint"
+    ]
+  },
+  "Ericka": {
+    "favorites": [
+      "Seasoned Root Mash",
+      "Cheesy Roasted Vegetables",
+      "Pepperwort Flower"
+    ],
+    "dislikes": [
+      "Rhubarb",
+      "Tough Meat",
+      "Carrot"
+    ]
+  },
+  "Greta": {
+    "favorites": [
+      "Fish Root Chowder",
+      "Large Smoked Fish",
+      "Mead"
+    ],
+    "dislikes": [
+      "Egg",
+      "Mint",
+      "Asparagus"
+    ]
+  },
+  "Gruff": {
+    "favorites": [
+      "Mead",
+      "Mushroom Loaf",
+      "Emerald"
+    ],
+    "dislikes": [
+      "Cherry",
+      "Rhubarb",
+      "Raspberry"
+    ]
+  },
+  "Hazel": {
+    "favorites": [
+      "Sweet Herb Tea",
+      "Worm",
+      "Chamomile"
+    ],
+    "dislikes": [
+      "Lean Meat",
+      "Tough Meat",
+      "Tender Meat"
+    ]
+  },
+  "Jack": {
+    "favorites": [
+      "Sapphire",
+      "Quartz",
+      "Ruby"
+    ],
+    "dislikes": [
+      "Tender Meat",
+      "Lean Meat",
+      "Tough Meat"
+    ]
+  },
+  "Kai": {
+    "favorites": [
+      "Smoked Tender Meat",
+      "Girtle Ribs",
+      "Pickled Eggs"
+    ],
+    "dislikes": [
+      "Lavender",
+      "Cucumber",
+      "Milk"
+    ]
+  },
+  "Lila": {
+    "favorites": [
+      "Fruit Wine",
+      "Vegetable Tart",
+      "Daylily Flower"
+    ],
+    "dislikes": [
+      "Blood",
+      "Tough Meat",
+      "Hide"
+    ]
+  },
+  "Logan": {
+    "favorites": [
+      "Sausage",
+      "Peanut Butter",
+      "Mint"
+    ],
+    "dislikes": [
+      "Onion",
+      "Vinegar",
+      "Rich Meat"
+    ]
+  },
+  "Oliver": {
+    "favorites": [
+      "Fish Root Chowder",
+      "Obsidian",
+      "Fruit Wine"
+    ],
+    "dislikes": [
+      "Blackberry",
+      "Elderberry",
+      "Plum"
+    ]
+  },
+  "Percy": {
+    "favorites": [
+      "Smoked Maple Seeds",
+      "Sweet Herb Tea",
+      "Sunflower Seeds"
+    ],
+    "dislikes": [
+      "Egg",
+      "Lean Meat",
+      "Morel"
+    ]
+  },
+  "Poppy": {
+    "favorites": [
+      "Sunflower",
+      "Lavender",
+      "Creamy Root Stew"
+    ],
+    "dislikes": [
+      "Stone",
+      "Coal",
+      "Asparagus"
+    ]
+  },
+  "Prudence": {
+    "favorites": [
+      "Vegetable Fritter",
+      "Sunflower",
+      "Red Clover"
+    ],
+    "dislikes": [
+      "Coal",
+      "Tender Meat",
+      "Rosehip"
+    ]
+  },
+  "Rose": {
+    "favorites": [
+      "Lavender",
+      "Stuffed Mushrooms",
+      "Creamy Mushroom Soup"
+    ],
+    "dislikes": [
+      "Stone",
+      "Tender Meat",
+      "Mead"
+    ]
+  },
+  "Rowan": {
+    "favorites": [
+      "Salted Eggs",
+      "Fruit Wine",
+      "Rosehip Juice"
+    ],
+    "dislikes": [
+      "Rich Meat",
+      "Onion",
+      "Pumpkin"
+    ]
+  },
+  "Rufus": {
+    "favorites": [
+      "Fried Egg",
+      "Salted Eggs",
+      "Smoked Rich Meat"
+    ],
+    "dislikes": [
+      "Chanterelle",
+      "Onion",
+      "Beans"
+    ]
+  },
+  "Rusty": {
+    "favorites": [
+      "Mead",
+      "Sweet Herb Tea",
+      "Chicory"
+    ],
+    "dislikes": [
+      "Ginger",
+      "Tender Meat",
+      "Tough Meat"
+    ]
+  },
+  "Tano": {
+    "favorites": [
+      "Glazed Meat Skewers",
+      "Cake",
+      "Milk"
+    ],
+    "dislikes": [
+      "Cantaloupe",
+      "Cucumber",
+      "Plum"
+    ]
+  },
+  "Theo": {
+    "favorites": [
+      "Smoked Cheese",
+      "Pickled Peppers",
+      "Cheese"
+    ],
+    "dislikes": [
+      "Vegetable Salad",
+      "Stone",
+      "Cabbage"
+    ]
+  },
+  "Wallace": {
+    "favorites": [
+      "Grilled Vegetables",
+      "Cabbage",
+      "Mead"
+    ],
+    "dislikes": [
+      "Rhubarb",
+      "Tender Meat",
+      "Ginger"
+    ]
+  },
+  "Wilfred": {
+    "favorites": [
+      "Large Smoked Fish",
+      "Mead",
+      "Fiddlehead Fern"
+    ],
+    "dislikes": [
+      "Corn",
+      "Lavender",
+      "Mint"
+    ]
+  },
+  "Willow": {
+    "favorites": [
+      "Creamy Fruit Pudding",
+      "Red Clover",
+      "Fruit Porridge"
+    ],
+    "dislikes": [
+      "Morel",
+      "Tough Meat",
+      "Chanterelle"
+    ]
+  },
+  "Dudley": {
+    "favorites": [
+      "Pickled Carrots",
+      "Honeyed Hawthorns",
+      "Cake"
+    ],
+    "dislikes": [
+      "Cheese",
+      "Tender Meat",
+      "Fruit Wine"
+    ]
+  }
+}

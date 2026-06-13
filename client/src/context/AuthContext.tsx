@@ -82,7 +82,7 @@ type AuthContextType = {
   characterDetailLoading: boolean;
   setSelectedCharacterId: (id: string) => void;
   refreshCharacters: () => Promise<void>;
-  refreshSelectedCharacter: () => Promise<void>;
+  refreshSelectedCharacter: () => Promise<CharacterDetail | null>;
   logout: () => Promise<void>;
   enterWithoutLogin: () => void;
   isGuestSession: boolean;
@@ -345,17 +345,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const refreshSelectedCharacter = async () => {
+  const refreshSelectedCharacter = async (): Promise<CharacterDetail | null> => {
     const id = selectedCharacterId;
-    if (!id || id === 'guest-character') return;
+    if (!id || id === 'guest-character') return null;
     setCharacterDetailLoading(true);
     try {
       const res = await fetch(`${API_BASE}/api/characters/${id}`);
       if (!res.ok) throw new Error('Failed');
       const data: CharacterDetail = await res.json();
       setSelectedCharacter(data);
+      return data;
     } catch {
       // leave existing data in place on error
+      return null;
     } finally {
       setCharacterDetailLoading(false);
     }

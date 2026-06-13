@@ -1,0 +1,170 @@
+{
+  "Flower Festival": {
+    "shop_type_id": 12,
+    "credit_budget": {
+      "basic": 100,
+      "good": 0,
+      "rare": 0
+    },
+    "items": [
+      {
+        "id": null,
+        "name": "Painting_CherryFlowers",
+        "asset_name": "Painting_CherryFlowers",
+        "tier": "Basic",
+        "min_amount": 6,
+        "max_amount": 6
+      },
+      {
+        "id": null,
+        "name": "Pot_springFest_bonsai",
+        "asset_name": "Pot_springFest_bonsai",
+        "tier": "Basic",
+        "min_amount": 6,
+        "max_amount": 6
+      },
+      {
+        "id": null,
+        "name": "Pot_springFest_flowerPot",
+        "asset_name": "Pot_springFest_flowerPot",
+        "tier": "Basic",
+        "min_amount": 6,
+        "max_amount": 6
+      },
+      {
+        "id": null,
+        "name": "Wallpaper_CherryTree",
+        "asset_name": "Wallpaper_CherryTree",
+        "tier": "Basic",
+        "min_amount": 6,
+        "max_amount": 6
+      }
+    ]
+  },
+  "Shedding Festival": {
+    "shop_type_id": 13,
+    "credit_budget": {
+      "basic": 0,
+      "good": 0,
+      "rare": 0
+    },
+    "items": [
+      {
+        "id": 1216,
+        "name": "Pinwheel",
+        "asset_name": "Pinwheel",
+        "tier": "Basic",
+        "min_amount": 20,
+        "max_amount": 20
+      },
+      {
+        "id": null,
+        "name": "Walldecor_Wreath",
+        "asset_name": "Walldecor_Wreath",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      },
+      {
+        "id": null,
+        "name": "Walldecor_fireflyLights",
+        "asset_name": "Walldecor_fireflyLights",
+        "tier": "Basic",
+        "min_amount": 20,
+        "max_amount": 20
+      },
+      {
+        "id": null,
+        "name": "Wallpaper_lilypads",
+        "asset_name": "Wallpaper_lilypads",
+        "tier": "Basic",
+        "min_amount": 4,
+        "max_amount": 4
+      }
+    ]
+  },
+  "Harvest Festival": {
+    "shop_type_id": 14,
+    "credit_budget": {
+      "basic": 0,
+      "good": 0,
+      "rare": 0
+    },
+    "items": [
+      {
+        "id": null,
+        "name": "Haybale",
+        "asset_name": "Haybale",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      },
+      {
+        "id": null,
+        "name": "Walldecor_HarvestSunflower",
+        "asset_name": "Walldecor_HarvestSunflower",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      },
+      {
+        "id": null,
+        "name": "Wicker_alpheep",
+        "asset_name": "Wicker_alpheep",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      },
+      {
+        "id": null,
+        "name": "Wicker_bluggy",
+        "asset_name": "Wicker_bluggy",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      }
+    ]
+  },
+  "New Years Festival": {
+    "shop_type_id": 15,
+    "credit_budget": {
+      "basic": 0,
+      "good": 0,
+      "rare": 0
+    },
+    "items": [
+      {
+        "id": 1218,
+        "name": "Bonfire",
+        "asset_name": "Bonfire",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      },
+      {
+        "id": null,
+        "name": "Painting_MountainSunrise",
+        "asset_name": "Painting_MountainSunrise",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      },
+      {
+        "id": null,
+        "name": "Wallpaper_LogCabin",
+        "asset_name": "Wallpaper_LogCabin",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      },
+      {
+        "id": null,
+        "name": "Wallpaper_StarrySky",
+        "asset_name": "Wallpaper_StarrySky",
+        "tier": "Basic",
+        "min_amount": 10,
+        "max_amount": 10
+      }
+    ]
+  }
+}

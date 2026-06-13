@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
 import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry } from '../context/AuthContext';
+import calendarEventsData from '../data/calendar_events.json';
+import villagerGiftsData from '../data/villager_gifts.json';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
+const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
 const TOTAL_DAYS = 112;
+const EVENT_ALERT_DAYS = 14;
 
 const RATION_DAYS: Record<number, [number, number, number, number]> = {
   0: [2,  4,  9,  14],  // Unsteady
@@ -124,6 +128,35 @@ function isExclusivelyDeepWoods(locations: string[] | null | undefined): boolean
   return !!locations && locations.length > 0 && locations.every((l) => l === 'Deep Woods');
 }
 
+type FestivalShopItem = { name: string; qty: number };
+
+type CalendarEventEntry = {
+  name: string;
+  season: number;
+  day: number;
+  type: 'festival' | 'story' | 'birthday';
+  shopItems?: FestivalShopItem[];
+};
+
+function getUpcomingEvents(seasonIdx: number, day: number): Array<CalendarEventEntry & { daysUntil: number }> {
+  const all: CalendarEventEntry[] = [
+    ...calendarEventsData.festivals.map((e) => ({ ...e, type: 'festival' as const, shopItems: (e as { shopItems?: FestivalShopItem[] }).shopItems ?? [] })),
+    ...calendarEventsData.storyEvents.map((e) => ({ ...e, type: 'story' as const })),
+    ...(calendarEventsData.villagerBirthdays as Array<{ name: string; season: number; day: number }>).map(
+      (e) => ({ ...e, type: 'birthday' as const }),
+    ),
+  ];
+  const currentAbsDay = seasonIdx * 28 + (day - 1);
+  return all
+    .map((event) => {
+      const eventAbsDay = event.season * 28 + (event.day - 1);
+      const daysUntil = (eventAbsDay - currentAbsDay + TOTAL_DAYS) % TOTAL_DAYS;
+      return { ...event, daysUntil };
+    })
+    .filter((e) => e.daysUntil <= EVENT_ALERT_DAYS)
+    .sort((a, b) => a.daysUntil - b.daysUntil);
+}
+
 function questAbsDays(quest: Quest): [number, number] {
   const startAbs = toAbsDay(0, quest.available_start_season!, quest.available_first_day!);
   const endYearOffset = quest.available_end_season! < quest.available_start_season! ? 1 : 0;
@@ -188,7 +221,7 @@ function questTypeInfo(quest: Quest): TypeInfo {
 
 function ItemIcon({ name, amount, donated = 0 }: { name: string; amount: number; donated?: number }) {
   const safeName = name.replace(/ /g, '_');
-  const paths = [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isDone = donated >= amount;
@@ -469,6 +502,80 @@ function RewardIcon({ name, amount, type }: {
         isRel ? 'top-0 rounded-bl bg-violet-400/90' : 'bottom-0 rounded-tl bg-black/65'
       }`}>
         {isRel ? `+${amount}` : amount}
+      </span>
+    </div>
+  );
+}
+
+function FestivalItemIcon({ name, qty }: { name: string; qty: number }) {
+  const safeName = name.replace(/ /g, '_');
+  const [imgOk, setImgOk] = useState(true);
+  const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
+
+  return (
+    <div className="flex flex-col items-center gap-1 w-16" title={`${name} ×${qty}`}>
+      <div className="relative h-14 w-14 overflow-hidden rounded-lg border border-violet-200/70 bg-white dark:border-violet-600/40 dark:bg-violet-900/20 [box-shadow:inset_0_0_10px_rgba(139,92,246,0.15)]">
+        {imgOk ? (
+          <img
+            src={`/festival_store_items/${safeName}.png`}
+            alt={name}
+            className="h-full w-full object-contain p-1 image-rendering-pixelated"
+            style={{ imageRendering: 'pixelated' }}
+            onError={() => setImgOk(false)}
+          />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight text-violet-400 dark:text-violet-500">
+            {initials}
+          </span>
+        )}
+        <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl bg-violet-500/80 px-1 py-px text-[11px] font-bold text-white">
+          ×{qty}
+        </span>
+      </div>
+      <span className="text-center text-xs leading-tight text-slate-500 dark:text-slate-400 w-full break-words">
+        {name}
+      </span>
+    </div>
+  );
+}
+
+type VillagerGifts = { favorites: string[]; dislikes: string[] };
+const villagerGifts: Record<string, VillagerGifts> = villagerGiftsData as Record<string, VillagerGifts>;
+
+function GiftItemIcon({ name, sentiment }: { name: string; sentiment: 'favorite' | 'dislike' }) {
+  const safeName = name.replace(/ /g, '_');
+  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const [pathIdx, setPathIdx] = useState(0);
+  const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
+  const isFav = sentiment === 'favorite';
+
+  return (
+    <div
+      className={`flex flex-col items-center gap-1 w-14`}
+      title={isFav ? `Favorite: ${name}` : `Dislikes: ${name}`}
+    >
+      <div
+        className={`h-14 w-14 overflow-hidden rounded-lg border ${
+          isFav
+            ? 'border-[#5c9a30]/50 bg-white dark:border-[#6aae36]/50 dark:bg-emerald-900/20 [box-shadow:inset_0_0_10px_rgba(92,154,48,0.22)]'
+            : 'border-red-300/60 bg-white dark:border-red-400/60 dark:bg-red-900/20 [box-shadow:inset_0_0_10px_rgba(239,68,68,0.18)]'
+        }`}
+      >
+        {pathIdx < paths.length ? (
+          <img
+            src={paths[pathIdx]}
+            alt={name}
+            className="h-full w-full object-contain p-1"
+            onError={() => setPathIdx((i) => i + 1)}
+          />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight text-slate-400 dark:text-slate-500">
+            {initials}
+          </span>
+        )}
+      </div>
+      <span className="text-center text-xs leading-tight text-slate-500 dark:text-slate-400 w-full break-words">
+        {name}
       </span>
     </div>
   );
@@ -927,11 +1034,11 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                      <img src={`/items/${req.material.replace(/ /g, '_')}.png`} alt="" className="h-9 w-9 object-contain" />
+                      <img src={`/items/${req.material.replace(/ /g, '_')}.png`} alt="" className="h-11 w-11 object-contain -mt-2" />
                       {req.amount}× {req.material}
                     </span>
                     <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                      <img src="/items/Bottled_Coins.png" alt="" className="h-9 w-9 object-contain" />
+                      <img src="/items/Coin.png" alt="" className="h-6 w-6 object-contain" />
                       {req.coins} coins
                     </span>
                   </div>
@@ -1161,6 +1268,7 @@ export default function Tips() {
   const [museumItems, setMuseumItems] = useState<MuseumItem[]>([]);
   const [revealUndiscovered, setRevealUndiscovered] = useState(false);
   const [useCharacterDate, setUseCharacterDate] = useState(false);
+  const [showVillagerGifts, setShowVillagerGifts] = useState(false);
   const [fishScheduleMap, setFishScheduleMap] = useState<Record<number, FishScheduleEntry>>({});
   const [mineralDataMap, setMineralDataMap] = useState<Record<number, MineralInfo>>({});
   const [forageableScheduleMap, setForageableScheduleMap] = useState<Record<number, ForageableEntry>>({});
@@ -1301,6 +1409,140 @@ export default function Tips() {
           .
         </p>
       </header>
+
+      {/* Upcoming Calendar Events */}
+      {(() => {
+        const upcoming = getUpcomingEvents(effectiveSeasonIdx, effectiveDay);
+        if (upcoming.length === 0) return null;
+        const hasBirthdays = upcoming.some((e) => e.type === 'birthday');
+        return (
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Coming Up (next {EVENT_ALERT_DAYS} days)
+              </p>
+              {hasBirthdays && (
+                <label className="flex cursor-pointer select-none items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={showVillagerGifts}
+                    onChange={(e) => setShowVillagerGifts(e.target.checked)}
+                    className="h-3.5 w-3.5 accent-rose-500"
+                  />
+                  Show Favorites / Disliked Items
+                </label>
+              )}
+            </div>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {upcoming.map((event) => {
+              const timeLabel =
+                event.daysUntil === 0 ? 'Today' : event.daysUntil === 1 ? 'Tomorrow' : `In ${event.daysUntil} days`;
+              const dateStr = `${SEASON_NAMES[event.season]} ${event.day}`;
+              const isFestival = event.type === 'festival';
+              const isStory = event.type === 'story';
+              const isBirthday = event.type === 'birthday';
+              const containerClass = isFestival
+                ? 'border-violet-200 bg-violet-50 text-violet-900 dark:border-violet-700/50 dark:bg-violet-900/20 dark:text-violet-200'
+                : isStory
+                  ? 'border-indigo-200 bg-indigo-50 text-indigo-900 dark:border-indigo-700/50 dark:bg-indigo-900/20 dark:text-indigo-200'
+                  : 'border-stone-200 bg-amber-50 text-stone-800 dark:border-rose-700/50 dark:bg-rose-900/20 dark:text-rose-200';
+              const badgeClass = isFestival
+                ? 'bg-violet-200 text-violet-700 dark:bg-violet-700/60 dark:text-violet-100'
+                : isStory
+                  ? 'bg-indigo-200 text-indigo-700 dark:bg-indigo-700/60 dark:text-indigo-100'
+                  : 'bg-yellow-200 text-yellow-800 dark:bg-yellow-700/60 dark:text-yellow-100';
+              const typeLabel = isFestival ? 'Festival' : isStory ? 'Event' : 'Birthday';
+
+              const gifts = isBirthday ? (villagerGifts[event.name] ?? null) : null;
+              const hasFavs = gifts && gifts.favorites.length > 0;
+              const hasDislikes = gifts && gifts.dislikes.length > 0;
+              const showGifts = showVillagerGifts && isBirthday && gifts && (hasFavs || hasDislikes);
+              const hasShopData = isFestival && event.shopItems && event.shopItems.length > 0;
+
+              return (
+                <div
+                  key={`${event.type}-${event.season}-${event.day}-${event.name}`}
+                  className={`rounded-xl border ${containerClass}`}
+                >
+                  <div className="flex items-center gap-3 px-4 py-3 text-base">
+                    <span className={`shrink-0 rounded-md px-2 py-0.5 text-sm font-bold uppercase tracking-wide ${badgeClass}`}>
+                      {timeLabel}
+                    </span>
+                    <span className="font-semibold">{event.name}</span>
+                    <span className="opacity-60">{dateStr}</span>
+                    <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-sm font-medium opacity-70 ${badgeClass}`}>
+                      {typeLabel}
+                    </span>
+                  </div>
+
+                  {showGifts && (
+                    <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
+                      <div className="flex flex-wrap gap-x-6 gap-y-3">
+                      {hasFavs && (
+                        <div className="min-w-0">
+                          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[#5c9a30] dark:text-[#6aae36]">
+                            Favorites
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {gifts!.favorites.map((item) => (
+                              <GiftItemIcon key={item} name={item} sentiment="favorite" />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {hasFavs && hasDislikes && (
+                        <div className="hidden self-stretch sm:block">
+                          <div className="h-full w-px bg-stone-200/80 dark:bg-slate-600/40 mb-2" />
+                        </div>
+                      )}
+                      {hasDislikes && (
+                        <div className="min-w-0">
+                          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-red-400 dark:text-red-300">
+                            Dislikes
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {gifts!.dislikes.map((item) => (
+                              <GiftItemIcon key={item} name={item} sentiment="dislike" />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      </div>
+                      {!hasFavs && !hasDislikes && (
+                        <p className="text-xs italic text-rose-400/70 dark:text-rose-500/70">
+                          Gift data not yet extracted for {event.name} — run extractVillagerGifts.py.
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {showVillagerGifts && isBirthday && !gifts && (
+                    <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
+                      <p className="text-xs italic text-stone-400/70 dark:text-rose-500/70">
+                        No gift data found for {event.name}.
+                      </p>
+                    </div>
+                  )}
+
+                  {hasShopData && (
+                    <div className="border-t border-violet-200/60 px-4 pb-3 pt-2.5 dark:border-violet-700/30">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+                        Festival Shop · Decorative Items
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {event.shopItems!.map((item) => (
+                          <FestivalItemIcon key={item.name} name={item.name} qty={item.qty} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Active Quests */}
       <section>
