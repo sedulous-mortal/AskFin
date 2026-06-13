@@ -65,13 +65,17 @@ function daysRemainingInRange(
   const endDay = toAbsoluteDay(end);
   const currentDay = toAbsoluteDay(now);
 
-  // Ensure current date is inside the range
-  if (currentDay < startDay || currentDay > endDay) {
-    return 0;
+  if (startDay <= endDay) {
+    // Normal range within one year (e.g. Spring 1 to Fall 28)
+    if (currentDay < startDay || currentDay > endDay) return 0;
+    return endDay - currentDay + 1;
+  } else {
+    // Year-wrapping range (e.g. Winter 21 to Spring 28)
+    if (currentDay > endDay && currentDay < startDay) return 0;
+    const daysInYear = SEASONS.length * DAYS_PER_SEASON;
+    if (currentDay >= startDay) return daysInYear - currentDay + endDay + 1;
+    return endDay - currentDay + 1;
   }
-
-  // Inclusive remaining days
-  return endDay - currentDay + 1;
 }
 
 // Example usage

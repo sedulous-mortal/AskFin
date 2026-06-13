@@ -33,8 +33,17 @@ export function daysRemainingInRange(range: string, current: string): number {
     const endDay = toAbsoluteDay(parseSeasonDate(endRaw));
     const currentDay = toAbsoluteDay(parseSeasonDate(current));
 
-    if (currentDay < startDay || currentDay > endDay) return 0;
-    return endDay - currentDay + 1;
+    if (startDay <= endDay) {
+      // Normal range within one year (e.g. Spring 1 to Fall 28)
+      if (currentDay < startDay || currentDay > endDay) return 0;
+      return endDay - currentDay + 1;
+    } else {
+      // Year-wrapping range (e.g. Winter 21 to Spring 28)
+      if (currentDay > endDay && currentDay < startDay) return 0;
+      const daysInYear = SEASONS.length * DAYS_PER_SEASON;
+      if (currentDay >= startDay) return daysInYear - currentDay + endDay + 1;
+      return endDay - currentDay + 1;
+    }
   } catch {
     return 0;
   }
