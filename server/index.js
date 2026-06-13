@@ -23,10 +23,14 @@ const questsFile = require('./helpers/quests.json');
 const craftingItemsFile = require('./helpers/crafting_items.json');
 const cookingRecipesFile = require('./helpers/cooking_recipes.json');
 const forageablesFile = require('./helpers/forageables_schedule.json');
+const farmablesFile = require('./helpers/farmables_schedule.json');
 const fishScheduleFile = require('./helpers/fish_schedule.json');
 const museumItemsFile = require('./helpers/museum_items.json');
 const mineralDataFile = require('./helpers/mineral_data.json');
-const forageablesList = forageablesFile.forageables || [];
+const forageablesList = [
+  ...(forageablesFile.forageables || []),
+  ...(farmablesFile.farmables || []),
+];
 const fishScheduleList = fishScheduleFile.fish || [];
 const mineralDataList = mineralDataFile.minerals || [];
 const questsList = questsFile.quests || [];

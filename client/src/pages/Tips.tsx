@@ -71,11 +71,16 @@ type ForageableEntry = {
   id: number;
   item_id?: number;
   type: string;
+  source?: string;
   start_season: number;
   start_day: number;
   end_season: number;
   end_day: number;
-  locations: string[];
+  locations?: string[];
+  forage_start_season?: number;
+  forage_start_day?: number;
+  forage_end_season?: number;
+  forage_end_day?: number;
 };
 
 function toAbsDay(yearOffset: number, season: number, day: number): number {
@@ -357,28 +362,82 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
       </div>
     );
   }
-  const availableFrom = `${TOOLTIP_SEASON_NAMES[plant.start_season]} ${plant.start_day}`;
-  const disappearsOn = `${TOOLTIP_SEASON_NAMES[plant.end_season]} ${plant.end_day}`;
+  const isBoth = plant.source === 'both';
+  const isFarmable = plant.source === 'farmable';
+  const plantStart = `${TOOLTIP_SEASON_NAMES[plant.start_season]} ${plant.start_day}`;
+  const plantEnd = `${TOOLTIP_SEASON_NAMES[plant.end_season]} ${plant.end_day}`;
+  const hasForageWindow = isBoth
+    && plant.forage_start_season != null && plant.forage_start_day != null
+    && plant.forage_end_season != null && plant.forage_end_day != null;
+  const forageStart = hasForageWindow
+    ? `${TOOLTIP_SEASON_NAMES[plant.forage_start_season!]} ${plant.forage_start_day}`
+    : null;
+  const forageEnd = hasForageWindow
+    ? `${TOOLTIP_SEASON_NAMES[plant.forage_end_season!]} ${plant.forage_end_day}`
+    : null;
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5">
         <span className="text-slate-400 text-xs">Type</span>
         <span className="font-medium text-white text-sm">{plant.type}</span>
       </div>
-      <div className="flex items-center gap-1.5">
-        <span className="text-slate-400 text-xs">Available</span>
-        <span className="text-white text-sm">{availableFrom}</span>
-      </div>
-      <div>
-        <div className="text-slate-400 text-xs mb-0.5">Disappears on</div>
-        <div className="text-white text-sm">{disappearsOn}</div>
-      </div>
-      <div className="pt-0.5">
-        <div className="text-slate-400 text-xs mb-1">Locations</div>
-        {plant.locations.map((loc) => (
-          <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
-        ))}
-      </div>
+
+      {(isFarmable || isBoth) && (
+        <>
+          {isBoth && <div className="text-slate-400 text-xs font-semibold pt-0.5">Planting</div>}
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-xs">Plant from</span>
+            <span className="text-white text-sm">{plantStart}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-xs">Last plant</span>
+            <span className="text-white text-sm">{plantEnd}</span>
+          </div>
+        </>
+      )}
+
+      {hasForageWindow && (
+        <>
+          <div className="text-slate-400 text-xs font-semibold pt-0.5">Wild forage</div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-xs">Available</span>
+            <span className="text-white text-sm">{forageStart}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-xs">Disappears</span>
+            <span className="text-white text-sm">{forageEnd}</span>
+          </div>
+          {plant.locations && plant.locations.length > 0 && (
+            <div>
+              <div className="text-slate-400 text-xs mb-1">Locations</div>
+              {plant.locations.map((loc) => (
+                <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {!isFarmable && !isBoth && (
+        <>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-xs">Available</span>
+            <span className="text-white text-sm">{plantStart}</span>
+          </div>
+          <div>
+            <div className="text-slate-400 text-xs mb-0.5">Disappears on</div>
+            <div className="text-white text-sm">{plantEnd}</div>
+          </div>
+          {plant.locations && plant.locations.length > 0 && (
+            <div className="pt-0.5">
+              <div className="text-slate-400 text-xs mb-1">Locations</div>
+              {plant.locations.map((loc) => (
+                <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
