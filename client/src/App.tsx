@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { DeviceProvider } from './context/DeviceContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DateProvider } from './context/DateContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
@@ -98,12 +100,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <DateProvider>
+        <DeviceProvider>
         <AuthProvider>
           <SettingsProvider>
+          <TooltipPrimitive.Provider delayDuration={400}>
           <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#b88968] to-white text-slate-900 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
             <EnrollmentGate />
             <Header />
-            <main className="mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-[1400px] 3xl:max-w-[1800px] 4xl:max-w-[2300px] flex-1 px-8 py-10">
+            <main className="mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-[1400px] 3xl:max-w-[1800px] 4xl:max-w-[2300px] flex-1 px-4 py-6 md:px-8 md:py-10">
               <Routes>
                 <Route
                   path="/login"
@@ -200,8 +204,10 @@ export default function App() {
             </main>
             <Footer />
           </div>
+          </TooltipPrimitive.Provider>
           </SettingsProvider>
         </AuthProvider>
+        </DeviceProvider>
       </DateProvider>
     </BrowserRouter>
   );

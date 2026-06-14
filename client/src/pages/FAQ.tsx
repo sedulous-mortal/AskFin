@@ -184,6 +184,19 @@ export default function FAQ() {
           </svg>
           r/GrimshireGame
         </a>
+        <a
+          href="https://grimshire.wiki.gg/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium shadow-sm transition-all duration-150
+            border-[#c9a07a] bg-[#fdf4e3] text-[#7B4A28] hover:bg-[#f5e8d0] hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm
+            dark:border-[#7B4A28]/60 dark:bg-[#3a2010]/30 dark:text-[#c9a07a] dark:hover:bg-[#3a2010]/50"
+        >
+          <svg className="h-3.5 w-3.5 flex-none" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+          Grimshire Wiki
+        </a>
       </div>
 
       {/* Tag filters */}

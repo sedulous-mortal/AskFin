@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useDate } from '../context/DateContext';
 import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, buildStorageMap, buildStorageMapByName } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
+import { useDevice } from '../context/DeviceContext';
 import { SpoilerGate } from '../components/SpoilerGate';
 import calendarEventsData from '../data/calendar_events.json';
 import villagerGiftsData from '../data/villager_gifts.json';
@@ -226,17 +228,67 @@ function questTypeInfo(quest: Quest): TypeInfo {
   return { label: 'Side Quest', color: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' };
 }
 
+function AppTooltip({ children, content, width = 'w-44' }: {
+  children: React.ReactNode;
+  content: React.ReactNode;
+  width?: string;
+}) {
+  if (!content) return <>{children}</>;
+  return (
+    <TooltipPrimitive.Root>
+      <TooltipPrimitive.Trigger asChild>
+        {children}
+      </TooltipPrimitive.Trigger>
+      <TooltipPrimitive.Portal>
+        <TooltipPrimitive.Content
+          side="top"
+          sideOffset={8}
+          className={`${width} z-50 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl`}
+        >
+          {content}
+          <TooltipPrimitive.Arrow className="fill-slate-700" width={8} height={4} />
+        </TooltipPrimitive.Content>
+      </TooltipPrimitive.Portal>
+    </TooltipPrimitive.Root>
+  );
+}
+
 function ItemIcon({ name, amount, donated = 0, storageCount }: { name: string; amount: number; donated?: number; storageCount?: number }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
-  const [hovered, setHovered] = useState(false);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isDone = donated >= amount;
   const remaining = Math.max(0, amount - donated);
 
+  const tooltipContent = (
+    <>
+      <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{name}</div>
+      {isDone ? (
+        <div className="text-emerald-400 text-sm">Complete ✓</div>
+      ) : donated > 0 ? (
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-sm">Donated</span>
+            <span className="text-white text-sm">{donated}/{amount}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-sm">Remaining</span>
+            <span className="text-white text-sm">{remaining}</span>
+          </div>
+        </div>
+      ) : null}
+      {storageCount !== undefined && (
+        <div className="flex items-center gap-1.5 mt-1">
+          <span className="text-slate-400 text-sm">In storage</span>
+          <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+        </div>
+      )}
+    </>
+  );
+
   return (
-    <div className="relative" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <AppTooltip content={tooltipContent}>
       <div
         className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${
           isDone
@@ -271,33 +323,7 @@ function ItemIcon({ name, amount, donated = 0, storageCount }: { name: string; a
           {isDone ? '✓' : remaining}
         </span>
       </div>
-      {hovered && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
-          <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{name}</div>
-          {isDone ? (
-            <div className="text-emerald-400 text-sm">Complete ✓</div>
-          ) : donated > 0 ? (
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5">
-                <span className="text-slate-400 text-sm">Donated</span>
-                <span className="text-white text-sm">{donated}/{amount}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-slate-400 text-sm">Remaining</span>
-                <span className="text-white text-sm">{remaining}</span>
-              </div>
-            </div>
-          ) : null}
-          {storageCount !== undefined && (
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className="text-slate-400 text-sm">In storage</span>
-              <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
-            </div>
-          )}
-          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
-        </div>
-      )}
-    </div>
+    </AppTooltip>
   );
 }
 
@@ -500,7 +526,6 @@ function DonationItemIcon({
     ? [`/fish/${safeName}.png`, `/items/${safeName}.png`]
     : [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
-  const [hovered, setHovered] = useState(false);
   const initials = (item.name ?? '??').split(' ').slice(0, 2).map((w) => w[0]).join('');
 
   const highlighted = inInventory || inSeason;
@@ -516,12 +541,25 @@ function DonationItemIcon({
     || (item.category === 'mineral' && mineralInfo)
     || item.category === 'plant';
 
+  const tooltipContent = hasTooltip ? (
+    <>
+      <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">
+        {item.name ?? `Item #${item.id}`}
+      </div>
+      {storageCount !== undefined && (
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <span className="text-slate-400 text-sm">In storage</span>
+          <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+        </div>
+      )}
+      {item.category === 'fish' && fishInfo && <FishTooltipContent fish={fishInfo} />}
+      {item.category === 'mineral' && mineralInfo && <MineralTooltipContent mineral={mineralInfo} />}
+      {item.category === 'plant' && <PlantTooltipContent plant={plantInfo} />}
+    </>
+  ) : null;
+
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <AppTooltip content={tooltipContent} width="w-52">
       <div
         className={`h-[84px] w-16 overflow-hidden rounded-lg ${disappearsSoon ? 'bg-orange-100 dark:bg-orange-950/40' : 'bg-slate-50 dark:bg-slate-800/50'} ${borderColor} ${opacity}`}
       >
@@ -538,25 +576,7 @@ function DonationItemIcon({
           </span>
         )}
       </div>
-
-      {hovered && hasTooltip && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-52 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
-          <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">
-            {item.name ?? `Item #${item.id}`}
-          </div>
-          {storageCount !== undefined && (
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-slate-400 text-sm">In storage</span>
-              <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
-            </div>
-          )}
-          {item.category === 'fish' && fishInfo && <FishTooltipContent fish={fishInfo} />}
-          {item.category === 'mineral' && mineralInfo && <MineralTooltipContent mineral={mineralInfo} />}
-          {item.category === 'plant' && <PlantTooltipContent plant={plantInfo} />}
-          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
-        </div>
-      )}
-    </div>
+    </AppTooltip>
   );
 }
 
@@ -645,55 +665,52 @@ function GiftItemIcon({ name, sentiment, storageCount }: { name: string; sentime
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
-  const [hovered, setHovered] = useState(false);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isFav = sentiment === 'favorite';
 
-  return (
-    <div
-      className="relative flex flex-col items-center gap-1 w-14"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div
-        className={`h-14 w-14 overflow-hidden rounded-lg border ${
-          isFav
-            ? 'border-[#5c9a30]/50 bg-white dark:border-[#6aae36]/50 dark:bg-emerald-900/20 [box-shadow:inset_0_0_10px_rgba(92,154,48,0.22)]'
-            : 'border-red-300/60 bg-white dark:border-red-400/60 dark:bg-red-900/20 [box-shadow:inset_0_0_10px_rgba(239,68,68,0.18)]'
-        }`}
-      >
-        {pathIdx < paths.length ? (
-          <img
-            src={paths[pathIdx]}
-            alt={name}
-            className="h-full w-full object-contain p-1"
-            onError={() => setPathIdx((i) => i + 1)}
-          />
-        ) : (
-          <span className="flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight text-slate-400 dark:text-slate-500">
-            {initials}
-          </span>
-        )}
+  const tooltipContent = (
+    <>
+      <div className={`text-sm font-semibold mb-1 leading-tight ${isFav ? 'text-emerald-400' : 'text-red-400'}`}>
+        {isFav ? 'Favorite' : 'Dislikes'}
       </div>
-      <span className="text-center text-xs leading-tight text-slate-500 dark:text-slate-400 w-full break-words">
-        {name}
-      </span>
-      {hovered && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
-          <div className={`text-sm font-semibold mb-1 leading-tight ${isFav ? 'text-emerald-400' : 'text-red-400'}`}>
-            {isFav ? 'Favorite' : 'Dislikes'}
-          </div>
-          <div className="text-slate-200 text-sm mb-1.5">{name}</div>
-          {storageCount !== undefined && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-400 text-sm">In storage</span>
-              <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
-            </div>
-          )}
-          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
+      <div className="text-slate-200 text-sm mb-1.5">{name}</div>
+      {storageCount !== undefined && (
+        <div className="flex items-center gap-1.5">
+          <span className="text-slate-400 text-sm">In storage</span>
+          <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
         </div>
       )}
-    </div>
+    </>
+  );
+
+  return (
+    <AppTooltip content={tooltipContent}>
+      <div className="flex flex-col items-center gap-1 w-20">
+        <div
+          className={`h-20 w-20 overflow-hidden rounded-lg border ${
+            isFav
+              ? 'border-[#5c9a30]/50 bg-white dark:border-[#6aae36]/50 dark:bg-emerald-900/20 [box-shadow:inset_0_0_10px_rgba(92,154,48,0.22)]'
+              : 'border-red-300/60 bg-white dark:border-red-400/60 dark:bg-red-900/20 [box-shadow:inset_0_0_10px_rgba(239,68,68,0.18)]'
+          }`}
+        >
+          {pathIdx < paths.length ? (
+            <img
+              src={paths[pathIdx]}
+              alt={name}
+              className="h-full w-full object-contain p-1.5"
+              onError={() => setPathIdx((i) => i + 1)}
+            />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center text-center text-sm font-semibold leading-tight text-slate-400 dark:text-slate-500">
+              {initials}
+            </span>
+          )}
+        </div>
+        <span className="text-center text-sm leading-tight text-slate-500 dark:text-slate-400 w-full break-words">
+          {name}
+        </span>
+      </div>
+    </AppTooltip>
   );
 }
 
@@ -1012,17 +1029,10 @@ function QuestCard({
 }
 
 function ChipTooltip({ children, tipContent }: { children: React.ReactNode; tipContent: React.ReactNode }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <div className="relative" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <AppTooltip content={tipContent}>
       {children}
-      {hovered && tipContent && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
-          {tipContent}
-          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
-        </div>
-      )}
-    </div>
+    </AppTooltip>
   );
 }
 
@@ -1485,6 +1495,7 @@ export default function Tips() {
   const { season, day } = useDate();
   const { selectedCharacter } = useAuth();
   const { preferences } = useSettings();
+  const { isMobile } = useDevice();
   const showCommunityEvents = preferences.spoilers.show_undiscovered_community_events;
 
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
@@ -1625,17 +1636,26 @@ export default function Tips() {
 
   return (
     <div className="space-y-10">
-      <header>
-        <h1 className="font-sans text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-          Tips
-        </h1>
-        <p className="mt-2 text-lg text-slate-700 dark:text-slate-300">
-          Personalised next steps for{' '}
-          <span className="font-semibold">
-            {selectedCharacter?.character_name ?? 'your character'}
-          </span>
-          .
-        </p>
+      <header className="grid grid-cols-5 items-center gap-4">
+        <div>
+          <h1 className="font-sans text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            Tips
+          </h1>
+          <p className="mt-2 text-lg text-slate-700 dark:text-slate-300">
+            Personalised next steps for{' '}
+            <span className="font-semibold">
+              {selectedCharacter?.character_name ?? 'your character'}
+            </span>
+            .
+          </p>
+        </div>
+        <div className="col-span-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-base text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-300 flex items-center gap-3">
+          <svg viewBox="0 0 24 24" className="flex-none w-[3.6rem] h-[3.6rem]" aria-hidden>
+            <polygon points="21.24,8.17 15.83,2.76 8.17,2.76 2.76,8.17 2.76,15.83 8.17,21.24 15.83,21.24 21.24,15.83" fill="none" stroke="#8B1A1A" strokeWidth="1.5" />
+            <text x="12" y="17" textAnchor="middle" fontSize="13" fontWeight="bold" fill="#8B1A1A">!</text>
+          </svg>
+          <span>{isMobile ? 'Long-press' : 'Hover over'} any icon or chip for details — fish locations, storage counts, donation progress, and more. For bug reports, feature requests, or to discuss missing/incorrect info, click the ISSUES button in the header. Feedback is welcome!</span>
+        </div>
       </header>
 
       {/* Upcoming Calendar Events */}
@@ -1673,27 +1693,41 @@ export default function Tips() {
           return (
             <div
               key={`${event.type}-${event.season}-${event.day}-${event.name}`}
-              className={`rounded-xl border ${containerClass}`}
+              className={`rounded-xl border ${containerClass}${isFestival && !hasShopData ? ' flex flex-col flex-1' : ''}`}
             >
-              <div className="flex items-center gap-3 px-4 py-3 text-base">
+              <div className="relative z-10 flex items-center gap-3 px-4 py-4 text-base">
                 <span className={`shrink-0 rounded-md px-2 py-0.5 text-sm font-bold uppercase tracking-wide ${badgeClass}`}>
                   {timeLabel}
                 </span>
-                <span className="font-semibold">{event.name}</span>
-                <span className="opacity-60">{dateStr}</span>
-                <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-sm font-medium opacity-70 ${badgeClass}`}>
+                {isBirthday && (
+                  <div className="-my-4 h-14 shrink-0">
+                    <img
+                      src={`/villagers/${event.name.replace(/ /g, '_')}.png`}
+                      alt={event.name}
+                      className="h-full w-auto object-contain object-bottom"
+                      style={{ transform: 'translateY(7%) scale(1.15)' }}
+                      onError={(e) => {
+                        const p = e.currentTarget.parentElement;
+                        if (p) p.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+                <span className={isBirthday ? 'self-end translate-y-4 pl-2 text-4xl font-normal text-slate-700 dark:text-slate-200' : 'font-semibold'}>{event.name}</span>
+                <span className={isBirthday ? 'self-end translate-y-4 pl-4 text-xl opacity-60' : 'opacity-60'}>{dateStr}</span>
+                <span className={`ml-auto shrink-0 rounded-full px-3 py-1 text-base font-medium ${badgeClass}`}>
                   {typeLabel}
                 </span>
               </div>
               {showGifts && (
                 <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
-                  <div className="flex flex-wrap gap-x-6 gap-y-3">
+                  <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
                   {hasFavs && (
-                    <div className="min-w-0">
-                      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[#5c9a30] dark:text-[#6aae36]">
+                    <div className="flex flex-col items-center">
+                      <p className="mb-1.5 text-sm font-semibold uppercase tracking-wide text-[#5c9a30] dark:text-[#6aae36]">
                         Favorites
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap justify-center gap-2">
                         {gifts!.favorites.map((item) => (
                           <GiftItemIcon key={item} name={item} sentiment="favorite" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
                         ))}
@@ -1706,11 +1740,11 @@ export default function Tips() {
                     </div>
                   )}
                   {hasDislikes && (
-                    <div className="min-w-0">
-                      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-red-400 dark:text-red-300">
+                    <div className="flex flex-col items-center">
+                      <p className="mb-1.5 text-sm font-semibold uppercase tracking-wide text-red-400 dark:text-red-300">
                         Dislikes
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap justify-center gap-2">
                         {gifts!.dislikes.map((item) => (
                           <GiftItemIcon key={item} name={item} sentiment="dislike" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
                         ))}
@@ -1719,7 +1753,7 @@ export default function Tips() {
                   )}
                   </div>
                   {!hasFavs && !hasDislikes && (
-                    <p className="text-xs italic text-rose-400/70 dark:text-rose-500/70">
+                    <p className="text-center text-xs italic text-rose-400/70 dark:text-rose-500/70">
                       Gift data not yet extracted for {event.name} — run extractVillagerGifts.py.
                     </p>
                   )}
@@ -1727,21 +1761,28 @@ export default function Tips() {
               )}
               {showVillagerGifts && isBirthday && !gifts && (
                 <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
-                  <p className="text-xs italic text-stone-400/70 dark:text-rose-500/70">
+                  <p className="text-center text-xs italic text-stone-400/70 dark:text-rose-500/70">
                     No gift data found for {event.name}.
                   </p>
                 </div>
               )}
               {hasShopData && (
                 <div className="border-t border-violet-200/60 px-4 pb-3 pt-2.5 dark:border-violet-700/30">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+                  <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
                     Festival Shop · Decorative Items
                   </p>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap justify-center gap-3">
                     {event.shopItems!.map((item) => (
                       <FestivalItemIcon key={item.name} name={item.name} qty={item.qty} storageCount={selectedCharacter ? storageNameMap.get(item.name) ?? 0 : undefined} />
                     ))}
                   </div>
+                </div>
+              )}
+              {isFestival && !hasShopData && (
+                <div className="flex-1 flex items-center justify-center border-t border-violet-200/60 px-4 pb-3 pt-2.5 dark:border-violet-700/30">
+                  <p className="px-6 py-3 text-center text-base text-violet-900 dark:text-violet-200">
+                    This event does not involve purchaseable items — it is exclusively a plot-based event.<br />Therefore, there are no shop items to display here.
+                  </p>
                 </div>
               )}
             </div>
@@ -1750,21 +1791,21 @@ export default function Tips() {
         return (
           <div className="space-y-2">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 <p className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">
                   Coming Up (next 7 days)
                 </p>
-                <div className="space-y-3">
+                <div className="flex-1 flex flex-col gap-3">
                   {soon.length > 0
                     ? soon.map(renderCard)
                     : <p className="text-sm italic text-slate-400 dark:text-slate-500">Nothing in the next 7 days.</p>}
                 </div>
               </div>
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 <p className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">
                   Coming Up (&gt;7 days away)
                 </p>
-                <div className="space-y-3">
+                <div className="flex-1 flex flex-col gap-3">
                   {later.length > 0
                     ? later.map(renderCard)
                     : <p className="text-sm italic text-slate-400 dark:text-slate-500">Nothing 8–14 days out.</p>}

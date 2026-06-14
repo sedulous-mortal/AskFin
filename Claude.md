@@ -45,8 +45,6 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 2. **For us to test later: Fix logout functionality** — Executing a logout still has different issues, I can describe them when we get to this. For example, the login page has "visit as guest" button or whatever it's called encroaching visually on the regular login space, something with the css is off there. Then when I do log in as guest, we need to handle a lot of weird bugs/blank space that should have stubbed data with a warning that this is just a sample of what you'd get, with a notice to hit Login button in the top right to see your own data.
 
-3. **Ensure settings make it to DB** - can you confirm that dark mode is actually saving as a setting in the supabase db when we hit save on the toggle? same question for all the other toggles, are those user settings being saved to the db? we should shift that from being at the character level (unique to the character selected in the header dropdown) to instead being tied to the user who is logged in at this time. that data should be stored against the userid somewhere in supabase.
-
 4. **Missing item icons** — The following items exist in game data but have no icon file in `client/public/items/`. Source from in-game screenshots or the Unity asset extractor and name the files exactly as listed:
    - `Coal.png` (distinct from `Charcoal.png`)
    - `Fur.png` (ID 651 — distinct from Hide)
@@ -55,10 +53,20 @@ The save file stores progress as arrays of integer IDs, e.g.:
    - `Mithril_Bar.png` (ID 371 — ore already exists, bar does not)
    - `Fossil.png` (ID 235)
 
-
 7. **Reformat what lives in Nav versus on Tips page** - we do want to have reference data in this app for users who want to see information that is not necessarily specific to their currently loaded character, but we want to differentiate where that data lives (in Navigation tabs) from where they can easily (without a page reload) see all the most urgent/applicable details for their character's current save state. In order to do that, I propose a "tabs" format that lives on the Tips page directly, wherein we pull some functionality that's already on the Tips page into Tips tabs for Events, Quests, Research, and Upgrades, and add a tab for Critters that pulls only the in-season critter data (emulating the full Critters nav tab but with no toggle) into that tab on the Tips page.
 
 8. **Human To Do: Email SMTP Server Setup** - Supabase is doing some severe rate-limiting on outgoing emails for password resets or enrollment (two or three emails total per day allotted total for the app across all users) - we will need to set up a server to handle the email volume when this is live/hosted for the general public. Research has indicated there are only two or three good options for which service to use for SMTP, so the human dev will have to do setup and then coordinate with Claude to ensure that all necessary code (if any) is written into the app to appropriately ensure expected functionality is maintained as it currently works great directly through SupaBase email functions.
 
 9. **Test new user enrollment** - we need to test that the SMTP server is allowing new enrollments, and test the new enrollment page/modal that Claude previously created to ensure that it is capturing each setting correctly and mainatining it across logout/navigating away and back to the app, etc.
+
+10. **UI polish pass — responsive layout, spacing, and mobile views** — There are myriad issues across the app with resizing, spacing, and mobile/small-screen layouts. When touching any component, also fix nearby responsive issues. General standards to apply:
+    - All pages should be usable on mobile (≥320px wide) and not overflow horizontally.
+    - Cards, grids, and columns should reflow gracefully at small viewports (prefer CSS Grid with `auto-fill`/`minmax` or Flexbox wrapping rather than fixed column counts).
+    - Touch targets (buttons, links, interactive elements) should be at least 44×44px on mobile.
+    - Padding and margin should scale down on small screens — avoid hardcoded large values that look fine on desktop but crowd mobile.
+    - The Header/Nav should collapse or adapt cleanly on narrow screens (hamburger menu or similar) rather than overflowing or overlapping content.
+    - Modal/dialog overlays must be fully visible and scrollable on small screens.
+    - Test at 375px (iPhone SE), 768px (tablet), and 1280px (desktop) breakpoints as a baseline.
+
+11. **Issues / Feedback button + Linear integration** — Add a clearly visible "Issues" button to the header. The button will need to live alongside Logout/Load Files on desktop and appear in the hamburger menu on mobile — placement TBD when we get to it. Clicking it routes to a public `/feedback` page that requires no login. That page hosts a form with fields for: type (Bug / Feature Request / Missing Info Noticed / Providing Missing Info / Incorrect Info Present / Other), title, description, and optionally contact email. On submit the form POSTs to a server endpoint that creates a ticket in Linear via the Linear API. Linear workspace does not exist yet — human dev needs to create it and obtain an API key and Team ID before Claude can wire up the integration. Once those credentials are available, store them as server-side env vars (`LINEAR_API_KEY`, `LINEAR_TEAM_ID`) and implement `POST /api/feedback` on the server to call the Linear GraphQL mutation `issueCreate`.
 

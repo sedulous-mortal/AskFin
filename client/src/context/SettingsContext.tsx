@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import { supabase } from '../lib/supabase';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 const LS_DARK_KEY = 'askfin_dark_mode';
@@ -78,7 +79,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       return;
     }
     setLoading(true);
-    fetch(`${API_BASE}/api/settings/${user.id}`)
+    supabase.auth.getSession().then(({ data: sessionData }) => {
+      const token = sessionData.session?.access_token;
+      return fetch(`${API_BASE}/api/settings/${user.id}`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      });
+    })
       .then((r) => r.json())
       .then((data: UserPreferences) => {
         setPreferences((prev) => ({
@@ -106,9 +112,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
       if (!user || isGuestSession) return;
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
       const res = await fetch(`${API_BASE}/api/settings/${user.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify(updates),
       });
       if (!res.ok) {
