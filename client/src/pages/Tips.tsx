@@ -1409,7 +1409,7 @@ export default function Tips() {
   const matPileByQuest = new Map<number, Map<string, number>>();
   for (const pile of (selectedCharacter?.project_mat_pile_data ?? []) as MatPileEntry[]) {
     const itemMap = new Map<string, number>();
-    for (const item of pile.donatedItems) itemMap.set(item.name, item.amount);
+    for (const item of pile.donatedItems) itemMap.set(item.name, (itemMap.get(item.name) ?? 0) + item.amount);
     matPileByQuest.set(pile.questID, itemMap);
   }
 

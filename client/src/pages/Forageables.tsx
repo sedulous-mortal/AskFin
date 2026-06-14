@@ -44,7 +44,9 @@ const TYPE_BG: Record<string, string> = {
   Fruit:    'bg-orange-500',
   Herb:     'bg-emerald-600',
   Mushroom: 'bg-stone-500',
+  Nut:      'bg-yellow-700',
   Root:     'bg-amber-600',
+  Seed:     'bg-lime-700',
 };
 
 function LocationChips({ locations }: { locations: string[] }) {

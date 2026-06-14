@@ -55,6 +55,7 @@
   "villagerBirthdays": [
     { "name": "Prudence", "season": 0, "day": 5 },
     { "name": "Gruff",    "season": 0, "day": 9 },
+    { "name": "Fin",      "season": 0, "day": 14 },
     { "name": "Lila",     "season": 0, "day": 15 },
     { "name": "Theo",     "season": 0, "day": 18 },
     { "name": "Kai",      "season": 0, "day": 27 },

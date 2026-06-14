@@ -850,13 +850,17 @@ app.post('/api/save/parse', async (req, res) => {
         home_level: character.homeLevel ?? null,
         home_construction_days: character.daysOfHomeConstruction ?? 0,
         barn_data: character.barnData ?? [],
-        project_mat_pile_data: (character.projectMatPileData ?? []).map(pile => ({
-          questID: pile.questID,
-          donatedItems: pile.donatedItems.map(({ id, amount }) => ({
-            name: itemNames[id] ?? null,
-            amount,
-          })).filter(item => item.name !== null),
-        })),
+        project_mat_pile_data: (character.projectMatPileData ?? []).map(pile => {
+          const totals = new Map();
+          for (const { id, amount } of pile.donatedItems) {
+            const name = itemNames[id] ?? null;
+            if (name !== null) totals.set(name, (totals.get(name) ?? 0) + amount);
+          }
+          return {
+            questID: pile.questID,
+            donatedItems: Array.from(totals.entries()).map(([name, amount]) => ({ name, amount })),
+          };
+        }),
       };
 
       let characterId;
@@ -877,7 +881,8 @@ app.post('/api/save/parse', async (req, res) => {
         characterId = inserted?.id;
       }
 
-      return res.json({ character, saved: true, characterId });
+      console.log('[parse] project_mat_pile_data saved:', JSON.stringify(payload.project_mat_pile_data, null, 2));
+      return res.json({ character, saved: true, characterId, _debug_matPile: payload.project_mat_pile_data });
     } catch (err) {
       console.error('Failed to save character to Supabase:', err);
       return res.json({ character, saved: false, error: 'Parsed OK but failed to save to database.' });
@@ -889,6 +894,7 @@ app.post('/api/save/parse', async (req, res) => {
 
 // Get a single character's full data with integer IDs resolved to item names.
 app.get('/api/characters/:id', async (req, res) => {
+  res.set('Cache-Control', 'no-store');
   const { id } = req.params;
   try {
     const { data, error } = await supabase

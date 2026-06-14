@@ -15,7 +15,7 @@ const SAVES_PATH = 'C:\\Users\\<YourUsername>\\AppData\\LocalLow\\AcuteOwlStudio
 
 export default function LoadSaveFile() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { user, refreshCharacters, refreshSelectedCharacter } = useAuth();
+  const { user, refreshCharacters, refreshCharacterById, selectedCharacterId } = useAuth();
   const { setSeason, setDay } = useDate();
   const [status, setStatus] = useState<UploadStatus>({ type: 'idle' });
   const [copied, setCopied] = useState(false);
@@ -33,9 +33,13 @@ export default function LoadSaveFile() {
     setStatus({ type: 'loading' });
 
     try {
-      await uploadSaveFile(file, user?.id ?? null);
+      const result = await uploadSaveFile(file, user?.id ?? null);
+      if (!result.saved) {
+        throw new Error(result.error || 'Save file was parsed but could not be saved to the database.');
+      }
       await refreshCharacters();
-      const character = await refreshSelectedCharacter();
+      const targetId = result.characterId ?? selectedCharacterId;
+      const character = targetId ? await refreshCharacterById(targetId) : null;
       if (character) {
         const seasonIndex = character.current_season ?? 0;
         const seasonName = SEASON_NAMES[seasonIndex] ?? 'Spring';

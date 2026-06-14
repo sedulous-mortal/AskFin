@@ -59,6 +59,18 @@
       "Carrot"
     ]
   },
+  "Fin": {
+    "favorites": [
+      "Pickled Eggs",
+      "Mead",
+      "Fruit Wine"
+    ],
+    "dislikes": [
+      "Yarrow",
+      "Daylily Flower",
+      "Red Clover"
+    ]
+  },
   "Greta": {
     "favorites": [
       "Fish Root Chowder",

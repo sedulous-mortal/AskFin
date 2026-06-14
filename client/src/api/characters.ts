@@ -13,6 +13,7 @@ export type CharacterData = {
 export type ParseSaveResult = {
   character: CharacterData;
   saved: boolean;
+  characterId?: string;
   error?: string;
 };
 
