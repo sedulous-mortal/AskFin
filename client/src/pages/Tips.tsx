@@ -1645,12 +1645,111 @@ export default function Tips() {
         const upcoming = getUpcomingEvents(effectiveSeasonIdx, effectiveDay);
         if (upcoming.length === 0) return null;
         const hasBirthdays = upcoming.some((e) => e.type === 'birthday');
+        const soon = upcoming.filter((e) => e.daysUntil <= 7);
+        const later = upcoming.filter((e) => e.daysUntil > 7);
+        const renderCard = (event: CalendarEventEntry & { daysUntil: number }) => {
+          const timeLabel =
+            event.daysUntil === 0 ? 'Today' : event.daysUntil === 1 ? 'Tomorrow' : `In ${event.daysUntil} days`;
+          const dateStr = `${SEASON_NAMES[event.season]} ${event.day}`;
+          const isFestival = event.type === 'festival';
+          const isStory = event.type === 'story';
+          const isBirthday = event.type === 'birthday';
+          const containerClass = isFestival
+            ? 'border-violet-200 bg-violet-50 text-violet-900 dark:border-violet-700/50 dark:bg-violet-900/20 dark:text-violet-200'
+            : isStory
+              ? 'border-indigo-200 bg-indigo-50 text-indigo-900 dark:border-indigo-700/50 dark:bg-indigo-900/20 dark:text-indigo-200'
+              : 'border-stone-200 bg-amber-50 text-stone-800 dark:border-rose-700/50 dark:bg-rose-900/20 dark:text-rose-200';
+          const badgeClass = isFestival
+            ? 'bg-violet-200 text-violet-700 dark:bg-violet-700/60 dark:text-violet-100'
+            : isStory
+              ? 'bg-indigo-200 text-indigo-700 dark:bg-indigo-700/60 dark:text-indigo-100'
+              : 'bg-yellow-200 text-yellow-800 dark:bg-yellow-700/60 dark:text-yellow-100';
+          const typeLabel = isFestival ? 'Festival' : isStory ? 'Event' : 'Birthday';
+          const gifts = isBirthday ? (villagerGifts[event.name] ?? null) : null;
+          const hasFavs = gifts && gifts.favorites.length > 0;
+          const hasDislikes = gifts && gifts.dislikes.length > 0;
+          const showGifts = showVillagerGifts && isBirthday && gifts && (hasFavs || hasDislikes);
+          const hasShopData = isFestival && event.shopItems && event.shopItems.length > 0;
+          return (
+            <div
+              key={`${event.type}-${event.season}-${event.day}-${event.name}`}
+              className={`rounded-xl border ${containerClass}`}
+            >
+              <div className="flex items-center gap-3 px-4 py-3 text-base">
+                <span className={`shrink-0 rounded-md px-2 py-0.5 text-sm font-bold uppercase tracking-wide ${badgeClass}`}>
+                  {timeLabel}
+                </span>
+                <span className="font-semibold">{event.name}</span>
+                <span className="opacity-60">{dateStr}</span>
+                <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-sm font-medium opacity-70 ${badgeClass}`}>
+                  {typeLabel}
+                </span>
+              </div>
+              {showGifts && (
+                <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
+                  <div className="flex flex-wrap gap-x-6 gap-y-3">
+                  {hasFavs && (
+                    <div className="min-w-0">
+                      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[#5c9a30] dark:text-[#6aae36]">
+                        Favorites
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {gifts!.favorites.map((item) => (
+                          <GiftItemIcon key={item} name={item} sentiment="favorite" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {hasFavs && hasDislikes && (
+                    <div className="hidden self-stretch sm:block">
+                      <div className="h-full w-px bg-stone-200/80 dark:bg-slate-600/40 mb-2" />
+                    </div>
+                  )}
+                  {hasDislikes && (
+                    <div className="min-w-0">
+                      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-red-400 dark:text-red-300">
+                        Dislikes
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {gifts!.dislikes.map((item) => (
+                          <GiftItemIcon key={item} name={item} sentiment="dislike" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  </div>
+                  {!hasFavs && !hasDislikes && (
+                    <p className="text-xs italic text-rose-400/70 dark:text-rose-500/70">
+                      Gift data not yet extracted for {event.name} — run extractVillagerGifts.py.
+                    </p>
+                  )}
+                </div>
+              )}
+              {showVillagerGifts && isBirthday && !gifts && (
+                <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
+                  <p className="text-xs italic text-stone-400/70 dark:text-rose-500/70">
+                    No gift data found for {event.name}.
+                  </p>
+                </div>
+              )}
+              {hasShopData && (
+                <div className="border-t border-violet-200/60 px-4 pb-3 pt-2.5 dark:border-violet-700/30">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+                    Festival Shop · Decorative Items
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {event.shopItems!.map((item) => (
+                      <FestivalItemIcon key={item.name} name={item.name} qty={item.qty} storageCount={selectedCharacter ? storageNameMap.get(item.name) ?? 0 : undefined} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        };
         return (
           <div className="space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Coming Up (next {EVENT_ALERT_DAYS} days)
-              </p>
               {hasBirthdays && (
                 <label className="flex cursor-pointer select-none items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
                   <input
@@ -1663,112 +1762,27 @@ export default function Tips() {
                 </label>
               )}
             </div>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {upcoming.map((event) => {
-              const timeLabel =
-                event.daysUntil === 0 ? 'Today' : event.daysUntil === 1 ? 'Tomorrow' : `In ${event.daysUntil} days`;
-              const dateStr = `${SEASON_NAMES[event.season]} ${event.day}`;
-              const isFestival = event.type === 'festival';
-              const isStory = event.type === 'story';
-              const isBirthday = event.type === 'birthday';
-              const containerClass = isFestival
-                ? 'border-violet-200 bg-violet-50 text-violet-900 dark:border-violet-700/50 dark:bg-violet-900/20 dark:text-violet-200'
-                : isStory
-                  ? 'border-indigo-200 bg-indigo-50 text-indigo-900 dark:border-indigo-700/50 dark:bg-indigo-900/20 dark:text-indigo-200'
-                  : 'border-stone-200 bg-amber-50 text-stone-800 dark:border-rose-700/50 dark:bg-rose-900/20 dark:text-rose-200';
-              const badgeClass = isFestival
-                ? 'bg-violet-200 text-violet-700 dark:bg-violet-700/60 dark:text-violet-100'
-                : isStory
-                  ? 'bg-indigo-200 text-indigo-700 dark:bg-indigo-700/60 dark:text-indigo-100'
-                  : 'bg-yellow-200 text-yellow-800 dark:bg-yellow-700/60 dark:text-yellow-100';
-              const typeLabel = isFestival ? 'Festival' : isStory ? 'Event' : 'Birthday';
-
-              const gifts = isBirthday ? (villagerGifts[event.name] ?? null) : null;
-              const hasFavs = gifts && gifts.favorites.length > 0;
-              const hasDislikes = gifts && gifts.dislikes.length > 0;
-              const showGifts = showVillagerGifts && isBirthday && gifts && (hasFavs || hasDislikes);
-              const hasShopData = isFestival && event.shopItems && event.shopItems.length > 0;
-
-              return (
-                <div
-                  key={`${event.type}-${event.season}-${event.day}-${event.name}`}
-                  className={`rounded-xl border ${containerClass}`}
-                >
-                  <div className="flex items-center gap-3 px-4 py-3 text-base">
-                    <span className={`shrink-0 rounded-md px-2 py-0.5 text-sm font-bold uppercase tracking-wide ${badgeClass}`}>
-                      {timeLabel}
-                    </span>
-                    <span className="font-semibold">{event.name}</span>
-                    <span className="opacity-60">{dateStr}</span>
-                    <span className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-sm font-medium opacity-70 ${badgeClass}`}>
-                      {typeLabel}
-                    </span>
-                  </div>
-
-                  {showGifts && (
-                    <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
-                      <div className="flex flex-wrap gap-x-6 gap-y-3">
-                      {hasFavs && (
-                        <div className="min-w-0">
-                          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[#5c9a30] dark:text-[#6aae36]">
-                            Favorites
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {gifts!.favorites.map((item) => (
-                              <GiftItemIcon key={item} name={item} sentiment="favorite" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {hasFavs && hasDislikes && (
-                        <div className="hidden self-stretch sm:block">
-                          <div className="h-full w-px bg-stone-200/80 dark:bg-slate-600/40 mb-2" />
-                        </div>
-                      )}
-                      {hasDislikes && (
-                        <div className="min-w-0">
-                          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-red-400 dark:text-red-300">
-                            Dislikes
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {gifts!.dislikes.map((item) => (
-                              <GiftItemIcon key={item} name={item} sentiment="dislike" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      </div>
-                      {!hasFavs && !hasDislikes && (
-                        <p className="text-xs italic text-rose-400/70 dark:text-rose-500/70">
-                          Gift data not yet extracted for {event.name} — run extractVillagerGifts.py.
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {showVillagerGifts && isBirthday && !gifts && (
-                    <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
-                      <p className="text-xs italic text-stone-400/70 dark:text-rose-500/70">
-                        No gift data found for {event.name}.
-                      </p>
-                    </div>
-                  )}
-
-                  {hasShopData && (
-                    <div className="border-t border-violet-200/60 px-4 pb-3 pt-2.5 dark:border-violet-700/30">
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
-                        Festival Shop · Decorative Items
-                      </p>
-                      <div className="flex flex-wrap gap-3">
-                        {event.shopItems!.map((item) => (
-                          <FestivalItemIcon key={item.name} name={item.name} qty={item.qty} storageCount={selectedCharacter ? storageNameMap.get(item.name) ?? 0 : undefined} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="space-y-3">
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">
+                  Coming Up (next 7 days)
+                </p>
+                <div className="space-y-3">
+                  {soon.length > 0
+                    ? soon.map(renderCard)
+                    : <p className="text-sm italic text-slate-400 dark:text-slate-500">Nothing in the next 7 days.</p>}
                 </div>
-              );
-            })}
+              </div>
+              <div className="space-y-3">
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">
+                  Coming Up (&gt;7 days away)
+                </p>
+                <div className="space-y-3">
+                  {later.length > 0
+                    ? later.map(renderCard)
+                    : <p className="text-sm italic text-slate-400 dark:text-slate-500">Nothing 8–14 days out.</p>}
+                </div>
+              </div>
             </div>
           </div>
         );
