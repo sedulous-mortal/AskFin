@@ -30,10 +30,6 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 **RESOLVED for items/fish/recipes:** ID → name mappings have been extracted and live at `server/helpers/game_id_maps.json`. 701 item names mapped (fish are InventoryItems so they're included). The extraction script is `server/helpers/extractGameData.py` — a Python/UnityPy script that reads the game's Unity Addressables localization bundles from `Grimshire_Data/StreamingAssets/aa/StandaloneWindows64/`.
 
-**Still needed — critter species names:** `crittersDiscovered` IDs map to `CritterData` ScriptableObjects whose `displayName` is NOT in the localization tables. The `CritterNames` table in the localization bundles contains tamed critter pet names (Apollo, Mochi, etc.), not species names. Options:
-- A) Accept that we can't show critter species names for now and skip them in the UI.
-- B) Manually build a small static JSON of critter ID → species name by loading the game and checking which critters are discoverable in-game.
-
 ### How the extraction works (for reference)
 - The game uses Unity Addressables + Unity Localization. Item names are in `InventoryItems Shared Data` (key: `{id}_name`) and `InventoryItems_en` (numeric key → localized string). The Python script joins these two bundles to produce `{game_id: name}`.
 - The decompiled C# is in `grimshire-decompiled/Assembly-CSharp/` — useful for understanding save file structure. Key files: `GameData.cs`, `SaveObject.cs`, `ResourceManager.cs`.
@@ -45,7 +41,7 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 **Next Steps:**
 
-0. **Can't meaningfully use the Tips section** - Right now we are missing data for upgrade action options with Wilfred or Gruff because we don't know what the status is - have we started or completed some upgrades? Where does that live in our save file? If we can find that out, what is the requirement for next upgrade, and can we render that to a card under the appropriate section on tips page?
+1. **Fix the colors on the Tips page** - We need to fix the colors to be less obtrusive/clashy for favorites and dislikes on the pale yellow Birthday cards. Also, we need to account for any other types of events that might not be festivals or birthdays, if there are any other types of Calendar events from in the game that we are omitting, and set a color standard for those. 
 
 2. **For us to test later: Fix logout functionality** — Executing a logout still has different issues, I can describe them when we get to this. For example, the login page has "visit as guest" button or whatever it's called encroaching visually on the regular login space, something with the css is off there. Then when I do log in as guest, we need to handle a lot of weird bugs/blank space that should have stubbed data with a warning that this is just a sample of what you'd get, with a notice to hit Login button in the top right to see your own data.
 
@@ -59,7 +55,11 @@ The save file stores progress as arrays of integer IDs, e.g.:
    - `Mithril_Bar.png` (ID 371 — ore already exists, bar does not)
    - `Fossil.png` (ID 235)
 
-5. **Darkmode ineffective on Critters Page** - we need to fix up the critters page to adequately render the data for visibility while removing all the white background. see image below. ![alt text](image-1.png) - note that the title Critters and description "Field notes..." are almost illegible in how dark they are on a dark background, and then there's a ton of white backgrounds (and pale yellow highlight backgrounds further down the page actually not in the image) but we want the highlight function to still work but be maybe a dark teal on top of a background that would be by default dark blue-grey, like the rest of the background on the image page.
+5. **Move some toggle controls** - We want to move some toggle controls into the user settings out of the tips page (show favorites/disliked items, Show/Hide Undiscovered), and we want to generate a one-time enrollment questionnaire that describes key settings and allows the user to choose what to toggle on/off (maybe give them checkboxes with affirmative statements like "I want to see all the undiscovered items that I can donate every time I'm in the app") and save those as their initial user settings. Add a note to that enrollment page (which only shows one time when they log in for the first time) to explain that they can update these settings at any time in the Settings tab.
 
 6. **Fix spoiler settings application to Quests page** - If a user has set their spoiler gate toggle to FALSE for quests, we still want them to be able to see stats about their previously completed quests in this section, even if their spoiler protection is set to "on" for upcoming/undiscovered quests on this character. we will need to separate the existing toggle into two separate toggles in the user settings - right now we have upcoming/undiscovered quests, but we need one for upcoming/undiscovered Villager quests, and one for upcoming/undiscovered Community quests/events.
+
+7. **Reformat what lives in Nav versus on Tips page** - we do want to have reference data in this app for users who want to see information that is not necessarily specific to their currently loaded character, but we want to differentiate where that data lives (in Navigation tabs) from where they can easily (without a page reload) see all the most urgent/applicable details for their character's current save state. In order to do that, I propose a "tabs" format that lives on the Tips page directly, wherein we pull some functionality that's already on the Tips page into Tips tabs for Events, Quests, Research, and Upgrades, and add a tab for Critters that pulls only the in-season critter data (emulating the full Critters nav tab but with no toggle) into that tab on the Tips page.
+
+8. **Human To Do: Email SMTP Server Setup** - Supabase is doing some severe rate-limiting on outgoing emails for password resets or enrollment (two or three emails total per day allotted total for the app across all users) - we will need to set up a server to handle the email volume when this is live/hosted for the general public. Research has indicated there are only two or three good options for which service to use for SMTP, so the human dev will have to do setup and then coordinate with Claude to ensure that all necessary code (if any) is written into the app to appropriately ensure expected functionality is maintained as it currently works great directly through SupaBase email functions.
 

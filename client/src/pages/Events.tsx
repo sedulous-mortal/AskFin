@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
-import { useAuth, type MatPileEntry } from '../context/AuthContext';
+import { useAuth, type MatPileEntry, buildStorageMapByName } from '../context/AuthContext';
 import { SpoilerOutcome } from '../components/SpoilerOutcome';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
@@ -22,7 +22,7 @@ type Quest = {
   is_town_quest: boolean;
 };
 
-function ItemIcon({ name, amount, donated = 0 }: { name: string; amount: number; donated?: number }) {
+function ItemIcon({ name, amount, donated = 0, storageCount }: { name: string; amount: number; donated?: number; storageCount?: number }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
@@ -37,7 +37,7 @@ function ItemIcon({ name, amount, donated = 0 }: { name: string; amount: number;
           ? 'border-slate-200 bg-slate-100 dark:border-slate-600 dark:bg-slate-700/40'
           : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
       }`}
-      title={isDone ? `${name} — complete` : donated > 0 ? `${name} (${donated}/${amount} donated, ${remaining} remaining)` : name}
+      title={`${isDone ? `${name} — complete` : donated > 0 ? `${name} (${donated}/${amount} donated, ${remaining} remaining)` : name}${storageCount !== undefined ? ` • ${storageCount} in storage` : ''}`}
     >
       {pathIdx < paths.length ? (
         <img
@@ -133,6 +133,8 @@ export default function Events() {
   );
 
   // Build lookup: questID → item name → donated amount
+  const storageNameMap = buildStorageMapByName(selectedCharacter?.chest_data ?? []);
+
   const matPileByQuest = new Map<number, Map<string, number>>();
   for (const pile of (selectedCharacter?.project_mat_pile_data ?? []) as MatPileEntry[]) {
     const itemMap = new Map<string, number>();
@@ -345,6 +347,7 @@ export default function Events() {
                                   name={req.name}
                                   amount={req.amount}
                                   donated={donationMap.get(req.name) ?? 0}
+                                  storageCount={selectedCharacter ? storageNameMap.get(req.name) ?? 0 : undefined}
                                 />
                               ))}
                             </div>

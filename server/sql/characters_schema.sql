@@ -44,7 +44,9 @@ alter table public.characters
   add column if not exists barn_data                  jsonb       default '[]'::jsonb,
   add column if not exists donated_museum_items       integer[]   default '{}',
   add column if not exists player_inventory           jsonb       default '[]'::jsonb,
-  add column if not exists project_mat_pile_data      jsonb       default '[]'::jsonb;
+  add column if not exists project_mat_pile_data      jsonb       default '[]'::jsonb,
+  add column if not exists chest_data                 jsonb       default '[]'::jsonb,
+  add column if not exists money                      integer;
 
 -- Unique save file per user (nulls excluded so rows without a name don't conflict).
 create unique index if not exists characters_user_save_file_unique

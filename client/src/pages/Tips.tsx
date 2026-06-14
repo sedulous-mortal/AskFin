@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
-import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry } from '../context/AuthContext';
+import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, buildStorageMap, buildStorageMapByName } from '../context/AuthContext';
 import calendarEventsData from '../data/calendar_events.json';
 import villagerGiftsData from '../data/villager_gifts.json';
 
@@ -224,49 +224,77 @@ function questTypeInfo(quest: Quest): TypeInfo {
   return { label: 'Side Quest', color: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' };
 }
 
-function ItemIcon({ name, amount, donated = 0 }: { name: string; amount: number; donated?: number }) {
+function ItemIcon({ name, amount, donated = 0, storageCount }: { name: string; amount: number; donated?: number; storageCount?: number }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
+  const [hovered, setHovered] = useState(false);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isDone = donated >= amount;
   const remaining = Math.max(0, amount - donated);
 
   return (
-    <div
-      className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${
-        isDone
-          ? 'border-slate-200 bg-slate-100 dark:border-slate-600 dark:bg-slate-700/40'
-          : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
-      }`}
-      title={isDone ? `${name} — complete` : donated > 0 ? `${name} (${donated}/${amount} donated, ${remaining} remaining)` : name}
-    >
-      {pathIdx < paths.length ? (
-        <img
-          src={paths[pathIdx]}
-          alt={name}
-          className={`h-full w-full object-contain px-1 pt-1 pb-[20px] ${isDone ? 'opacity-30' : ''}`}
-          onError={() => setPathIdx((i) => i + 1)}
-        />
-      ) : (
-        <span className={`flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight ${isDone ? 'text-slate-300 dark:text-slate-600' : 'text-indigo-400 dark:text-indigo-500'}`}>
-          {initials}
+    <div className="relative" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <div
+        className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${
+          isDone
+            ? 'border-slate-200 bg-slate-100 dark:border-slate-600 dark:bg-slate-700/40'
+            : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
+        }`}
+      >
+        {pathIdx < paths.length ? (
+          <img
+            src={paths[pathIdx]}
+            alt={name}
+            className={`h-full w-full object-contain px-1 pt-1 pb-[20px] ${isDone ? 'opacity-30' : ''}`}
+            onError={() => setPathIdx((i) => i + 1)}
+          />
+        ) : (
+          <span className={`flex h-full w-full items-center justify-center text-center text-xs font-semibold leading-tight ${isDone ? 'text-slate-300 dark:text-slate-600' : 'text-indigo-400 dark:text-indigo-500'}`}>
+            {initials}
+          </span>
+        )}
+        {isDone && (
+          <svg
+            className="pointer-events-none absolute inset-0 h-full w-full"
+            viewBox="0 0 64 84"
+            preserveAspectRatio="none"
+          >
+            <line x1="0" y1="0" x2="64" y2="84" stroke="white" strokeWidth="2.5" strokeOpacity="0.8" />
+          </svg>
+        )}
+        <span className={`absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl px-1.5 py-0.5 text-[14px] font-bold ${
+          isDone ? 'bg-slate-400/80 text-white dark:bg-slate-500/80' : 'bg-black/65 text-white'
+        }`}>
+          {isDone ? '✓' : remaining}
         </span>
+      </div>
+      {hovered && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
+          <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{name}</div>
+          {isDone ? (
+            <div className="text-emerald-400 text-sm">Complete ✓</div>
+          ) : donated > 0 ? (
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400 text-sm">Donated</span>
+                <span className="text-white text-sm">{donated}/{amount}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400 text-sm">Remaining</span>
+                <span className="text-white text-sm">{remaining}</span>
+              </div>
+            </div>
+          ) : null}
+          {storageCount !== undefined && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="text-slate-400 text-sm">In storage</span>
+              <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+            </div>
+          )}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
+        </div>
       )}
-      {isDone && (
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          viewBox="0 0 64 84"
-          preserveAspectRatio="none"
-        >
-          <line x1="0" y1="0" x2="64" y2="84" stroke="white" strokeWidth="2.5" strokeOpacity="0.8" />
-        </svg>
-      )}
-      <span className={`absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl px-1.5 py-0.5 text-[14px] font-bold ${
-        isDone ? 'bg-slate-400/80 text-white dark:bg-slate-500/80' : 'bg-black/65 text-white'
-      }`}>
-        {isDone ? '✓' : remaining}
-      </span>
     </div>
   );
 }
@@ -452,6 +480,7 @@ function DonationItemIcon({
   mineralInfo,
   plantInfo,
   disappearsSoon,
+  storageCount,
 }: {
   item: MuseumItem;
   inInventory: boolean;
@@ -462,6 +491,7 @@ function DonationItemIcon({
   mineralInfo?: MineralInfo;
   plantInfo?: ForageableEntry;
   disappearsSoon?: boolean;
+  storageCount?: number;
 }) {
   const safeName = (item.name ?? '').replace(/ /g, '_');
   const paths = item.category === 'fish'
@@ -479,7 +509,8 @@ function DonationItemIcon({
       : 'border border-slate-400 dark:border-slate-500';
   const opacity = highlighted || discovered ? '' : 'opacity-40';
 
-  const hasTooltip = (item.category === 'fish' && fishInfo && fishInfo.locations)
+  const hasTooltip = storageCount !== undefined
+    || (item.category === 'fish' && fishInfo && fishInfo.locations)
     || (item.category === 'mineral' && mineralInfo)
     || item.category === 'plant';
 
@@ -511,6 +542,12 @@ function DonationItemIcon({
           <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">
             {item.name ?? `Item #${item.id}`}
           </div>
+          {storageCount !== undefined && (
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <span className="text-slate-400 text-sm">In storage</span>
+              <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+            </div>
+          )}
           {item.category === 'fish' && fishInfo && <FishTooltipContent fish={fishInfo} />}
           {item.category === 'mineral' && mineralInfo && <MineralTooltipContent mineral={mineralInfo} />}
           {item.category === 'plant' && <PlantTooltipContent plant={plantInfo} />}
@@ -521,10 +558,11 @@ function DonationItemIcon({
   );
 }
 
-function RewardIcon({ name, amount, type }: {
+function RewardIcon({ name, amount, type, storageCount }: {
   name: string;
   amount: number;
   type: 'item' | 'relationship';
+  storageCount?: number;
 }) {
   const safeName = name.replace(/ /g, '_');
   const paths = type === 'item'
@@ -541,7 +579,7 @@ function RewardIcon({ name, amount, type }: {
           ? 'border-blue-300 bg-blue-50 dark:border-blue-500/40 dark:bg-blue-900/20'
           : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
       }`}
-      title={isRel ? `+${amount} relationship with ${name}` : `${name} ×${amount}`}
+      title={isRel ? `+${amount} relationship with ${name}` : `${name} ×${amount}${!isRel && storageCount !== undefined ? ` • ${storageCount} in storage` : ''}`}
     >
       {pathIdx < paths.length ? (
         <img
@@ -566,13 +604,13 @@ function RewardIcon({ name, amount, type }: {
   );
 }
 
-function FestivalItemIcon({ name, qty }: { name: string; qty: number }) {
+function FestivalItemIcon({ name, qty, storageCount }: { name: string; qty: number; storageCount?: number }) {
   const safeName = name.replace(/ /g, '_');
   const [imgOk, setImgOk] = useState(true);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
 
   return (
-    <div className="flex flex-col items-center gap-1 w-16" title={`${name} ×${qty}`}>
+    <div className="flex flex-col items-center gap-1 w-16" title={`${name} ×${qty}${storageCount !== undefined ? ` • ${storageCount} in storage` : ''}`}>
       <div className="relative h-14 w-14 overflow-hidden rounded-lg border border-violet-200/70 bg-white dark:border-violet-600/40 dark:bg-violet-900/20 [box-shadow:inset_0_0_10px_rgba(139,92,246,0.15)]">
         {imgOk ? (
           <img
@@ -601,17 +639,19 @@ function FestivalItemIcon({ name, qty }: { name: string; qty: number }) {
 type VillagerGifts = { favorites: string[]; dislikes: string[] };
 const villagerGifts: Record<string, VillagerGifts> = villagerGiftsData as Record<string, VillagerGifts>;
 
-function GiftItemIcon({ name, sentiment }: { name: string; sentiment: 'favorite' | 'dislike' }) {
+function GiftItemIcon({ name, sentiment, storageCount }: { name: string; sentiment: 'favorite' | 'dislike'; storageCount?: number }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
+  const [hovered, setHovered] = useState(false);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isFav = sentiment === 'favorite';
 
   return (
     <div
-      className={`flex flex-col items-center gap-1 w-14`}
-      title={isFav ? `Favorite: ${name}` : `Dislikes: ${name}`}
+      className="relative flex flex-col items-center gap-1 w-14"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div
         className={`h-14 w-14 overflow-hidden rounded-lg border ${
@@ -636,6 +676,21 @@ function GiftItemIcon({ name, sentiment }: { name: string; sentiment: 'favorite'
       <span className="text-center text-xs leading-tight text-slate-500 dark:text-slate-400 w-full break-words">
         {name}
       </span>
+      {hovered && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
+          <div className={`text-sm font-semibold mb-1 leading-tight ${isFav ? 'text-emerald-400' : 'text-red-400'}`}>
+            {isFav ? 'Favorite' : 'Dislikes'}
+          </div>
+          <div className="text-slate-200 text-sm mb-1.5">{name}</div>
+          {storageCount !== undefined && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-400 text-sm">In storage</span>
+              <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+            </div>
+          )}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
+        </div>
+      )}
     </div>
   );
 }
@@ -718,6 +773,7 @@ function QuestCard({
   difficulty,
   currentSeasonIdx,
   donationMap,
+  storageNameMap,
 }: {
   quest: Quest;
   inProgressQuestIds: Set<number>;
@@ -725,6 +781,7 @@ function QuestCard({
   difficulty?: number | null;
   currentSeasonIdx?: number;
   donationMap?: Map<string, number>;
+  storageNameMap?: Map<string, number>;
 }) {
   const { label, color } = questTypeInfo(quest);
   const daysAway = daysUntilActive(quest, currentAbs);
@@ -874,7 +931,7 @@ function QuestCard({
               {hasRewardIcons && (
                 <div className="flex flex-wrap gap-1.5">
                   {rewardRows.filter((r) => r.icon).map((r, i) => (
-                    <RewardIcon key={i} name={r.icon!.name} amount={r.icon!.amount} type={r.icon!.type} />
+                    <RewardIcon key={i} name={r.icon!.name} amount={r.icon!.amount} type={r.icon!.type} storageCount={r.icon!.type === 'item' && storageNameMap ? storageNameMap.get(r.icon!.name) ?? 0 : undefined} />
                   ))}
                 </div>
               )}
@@ -952,6 +1009,21 @@ function QuestCard({
   );
 }
 
+function ChipTooltip({ children, tipContent }: { children: React.ReactNode; tipContent: React.ReactNode }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div className="relative" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      {children}
+      {hovered && tipContent && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 rounded-lg bg-slate-900 border border-slate-700 px-3 py-2.5 shadow-xl pointer-events-none">
+          {tipContent}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-700" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 const TOOL_DISPLAY_NAMES: Record<string, string> = {
   watercan: 'Watering Can',
   hoe: 'Hoe',
@@ -994,12 +1066,14 @@ function TierDots({ current, max }: { current: number; max: number }) {
   );
 }
 
-function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
+function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData, storageNameMap, money }: {
   name: string;
   role: string;
   toolNames: string[];
   chipColor: string;
   toolData: ToolData[] | null;
+  storageNameMap?: Map<string, number>;
+  money?: number | null;
 }) {
   const isRod = toolNames.length === 1 && toolNames[0] === 'rod';
   const reqLookup = isRod ? ROD_UPGRADE_REQ : TOOL_UPGRADE_REQ;
@@ -1030,10 +1104,10 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
   return (
     <div className="rounded-xl border border-slate-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="mb-4 flex items-center gap-2">
-        <span className={`inline-flex items-center rounded-full px-3 py-0.5 text-sm font-semibold ${chipColor}`}>
+        <span className={`inline-flex items-center rounded-full px-3 py-0.5 text-base font-semibold ${chipColor}`}>
           {name}
         </span>
-        <span className="text-sm text-slate-500 dark:text-slate-400">{role}</span>
+        <span className="text-base text-slate-500 dark:text-slate-400">{role}</span>
       </div>
 
       {/* Per-tool tier rows */}
@@ -1092,14 +1166,32 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
                     {TOOL_DISPLAY_NAMES[toolName] ?? toolName} → Tier {currentTier + 1}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                      <img src={`/items/${req.material.replace(/ /g, '_')}.png`} alt="" className="h-11 w-11 object-contain -mt-2" />
-                      {req.amount}× {req.material}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                      <img src="/items/Coin.png" alt="" className="h-6 w-6 object-contain" />
-                      {req.coins} coins
-                    </span>
+                    <ChipTooltip tipContent={
+                      storageNameMap ? (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-slate-400 text-sm">In storage</span>
+                          <span className="font-semibold text-amber-300 text-sm">{storageNameMap.get(req.material) ?? 0}</span>
+                        </div>
+                      ) : null
+                    }>
+                      <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                        <img src={`/items/${req.material.replace(/ /g, '_')}.png`} alt="" className="h-11 w-11 object-contain -mt-2" />
+                        {req.amount}× {req.material}
+                      </span>
+                    </ChipTooltip>
+                    <ChipTooltip tipContent={
+                      money != null ? (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-slate-400 text-sm">You have</span>
+                          <span className="font-semibold text-amber-300 text-sm">{money.toLocaleString()} coins</span>
+                        </div>
+                      ) : null
+                    }>
+                      <span className="inline-flex items-center gap-1.5 rounded bg-amber-50 px-3 py-1.5 text-base text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                        <img src="/items/Coin.png" alt="" className="h-6 w-6 object-contain" />
+                        {req.coins} coins
+                      </span>
+                    </ChipTooltip>
                   </div>
                 </div>
               );
@@ -1116,34 +1208,66 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData }: {
   );
 }
 
+type UpgradeMaterial = { name: string; qty: number };
+
 const BARN_NAMES: Record<number, string> = {
-  0: 'Barn',
-  1: 'Coop',
-  2: 'Pen',
-  3: 'Hutch',
+  0: 'Alpheep Barn',
+  1: 'Chikree Coop',
+  2: 'Girtle Pen',
+  3: 'Bluggy Hutch',
 };
 const ALL_BARN_TYPES = [0, 1, 2, 3];
 
 const HOME_LEVEL_LABELS: Record<number, string> = {
-  0: 'Starter home',
-  1: 'First expansion',
-  2: 'Second expansion (max)',
+  0: 'Starter Home',
+  1: 'Humble Home',
+  2: 'Family Den (max)',
 };
 
-function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
+const HOME_UPGRADE_TARGETS: Record<number, { name: string; coins: number; materials: UpgradeMaterial[] }> = {
+  1: { name: 'Humble Home', coins: 1000, materials: [
+    { name: 'Plank', qty: 99 },
+    { name: 'Stone', qty: 99 },
+    { name: 'Clay', qty: 99 },
+    { name: 'Nickel Bar', qty: 30 },
+  ]},
+  2: { name: 'Family Den', coins: 3000, materials: [
+    { name: 'Plank', qty: 99 },
+    { name: 'Sandstone', qty: 99 },
+    { name: 'Marble', qty: 99 },
+    { name: 'Titanium Bar', qty: 30 },
+  ]},
+};
+
+const BARN_REQUIREMENTS: Record<'build' | 'expand', { coins: number; materials: UpgradeMaterial[] }> = {
+  build: { coins: 500, materials: [
+    { name: 'Plank', qty: 50 },
+    { name: 'Stone', qty: 50 },
+  ]},
+  expand: { coins: 1000, materials: [
+    { name: 'Plank', qty: 99 },
+    { name: 'Clay', qty: 50 },
+    { name: 'Sandstone', qty: 50 },
+    { name: 'Nickel Bar', qty: 10 },
+  ]},
+};
+
+function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData, storageNameMap, money }: {
   homeLevel: number | null;
   homeConstructionDays: number;
   barnData: BarnData[];
+  storageNameMap?: Map<string, number>;
+  money?: number | null;
 }) {
   const barnByType = new Map(barnData.map((b) => [b.prefabId, b]));
 
   return (
     <div className="rounded-xl border border-slate-900/10 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="mb-4 flex items-center gap-2">
-        <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-0.5 text-sm font-semibold text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+        <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-0.5 text-base font-semibold text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
           Rowan
         </span>
-        <span className="text-sm text-slate-500 dark:text-slate-400">Carpenter · Building Upgrades</span>
+        <span className="text-base text-slate-500 dark:text-slate-400">Carpenter · Building Upgrades</span>
       </div>
 
       {homeLevel === null ? (
@@ -1155,7 +1279,7 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
           {/* Home row */}
           <div className="flex items-center justify-between px-3 py-2">
             <div className="flex items-center gap-2.5">
-              <span className="w-24 text-sm text-slate-700 dark:text-slate-300">Home</span>
+              <span className="w-32 text-sm text-slate-700 dark:text-slate-300">Home</span>
               <span className="text-sm text-slate-500 dark:text-slate-400">
                 {HOME_LEVEL_LABELS[homeLevel] ?? `Level ${homeLevel}`}
               </span>
@@ -1178,10 +1302,10 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
             return (
               <div key={typeId} className="flex items-center justify-between px-3 py-2">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-24 text-sm text-slate-700 dark:text-slate-300">{label}</span>
+                  <span className="w-32 text-sm text-slate-700 dark:text-slate-300">{label}</span>
                   {barn ? (
                     <span className="text-sm text-slate-500 dark:text-slate-400">
-                      {barn.level >= 1 ? 'Expanded (8 animals)' : 'Standard (4 animals)'}
+                      {barn.level >= 1 ? 'Big (8 animals)' : 'Basic (4 animals)'}
                     </span>
                   ) : (
                     <span className="text-xs italic text-slate-400 dark:text-slate-500">not built</span>
@@ -1204,40 +1328,75 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData }: {
           <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
             Available upgrades
           </p>
-          <div className="space-y-1.5">
-            {homeLevel < 2 && homeConstructionDays === 0 && (
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Home → {HOME_LEVEL_LABELS[(homeLevel + 1) as keyof typeof HOME_LEVEL_LABELS] ?? `Level ${homeLevel + 1}`}
-                </p>
-                <p className="mt-1 text-xs italic text-slate-400 dark:text-slate-500">
-                  Check with the Carpenter in-game for materials and cost.
-                </p>
-              </div>
-            )}
+          <div className="space-y-3">
+            {homeLevel < 2 && homeConstructionDays === 0 && (() => {
+              const target = HOME_UPGRADE_TARGETS[homeLevel + 1];
+              if (!target) return null;
+              return (
+                <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
+                  <p className="mb-2 text-base font-medium text-slate-600 dark:text-slate-300">
+                    Home → {target.name}
+                  </p>
+                  <div className="mb-2 flex flex-wrap gap-1">
+                    <ChipTooltip tipContent={
+                      money != null ? (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-slate-400 text-sm">You have</span>
+                          <span className="font-semibold text-amber-300 text-sm">{money.toLocaleString()} coins</span>
+                        </div>
+                      ) : null
+                    }>
+                      <span className="inline-flex scale-[1.05] items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-sm font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                        <img src="/items/Coin.png" alt="" className="h-5 w-5 object-contain" />
+                        {target.coins.toLocaleString()} coins
+                      </span>
+                    </ChipTooltip>
+                  </div>
+                  <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${target.materials.length}, 4rem)` }}>
+                    {target.materials.map((mat) => (
+                      <ItemIcon key={mat.name} name={mat.name} amount={mat.qty} storageCount={storageNameMap ? storageNameMap.get(mat.name) ?? 0 : undefined} />
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
             {ALL_BARN_TYPES.filter((t) => {
               const b = barnByType.get(t);
               return !b || b.level < 1;
             }).map((typeId) => {
               const barn = barnByType.get(typeId);
+              const req = barn ? BARN_REQUIREMENTS.expand : BARN_REQUIREMENTS.build;
               return (
                 <div key={typeId} className="rounded-lg border border-slate-100 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-700/50">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {barn ? `${BARN_NAMES[typeId]} → Expanded` : `${BARN_NAMES[typeId]} → Build`}
+                  <p className="mb-2 text-base font-medium text-slate-600 dark:text-slate-300">
+                    {barn ? `${BARN_NAMES[typeId]} → Expand to Big` : `${BARN_NAMES[typeId]} → Build`}
                   </p>
-                  <p className="mt-1 text-xs italic text-slate-400 dark:text-slate-500">
-                    Check with the Carpenter in-game for materials and cost.
-                  </p>
+                  <div className="mb-2 flex flex-wrap gap-1">
+                    <ChipTooltip tipContent={
+                      money != null ? (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-slate-400 text-sm">You have</span>
+                          <span className="font-semibold text-amber-300 text-sm">{money.toLocaleString()} coins</span>
+                        </div>
+                      ) : null
+                    }>
+                      <span className="inline-flex scale-[1.05] items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-sm font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                        <img src="/items/Coin.png" alt="" className="h-5 w-5 object-contain" />
+                        {req.coins.toLocaleString()} coins
+                      </span>
+                    </ChipTooltip>
+                  </div>
+                  <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${req.materials.length}, 4rem)` }}>
+                    {req.materials.map((mat) => (
+                      <ItemIcon key={mat.name} name={mat.name} amount={mat.qty} storageCount={storageNameMap ? storageNameMap.get(mat.name) ?? 0 : undefined} />
+                    ))}
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
       )}
-
-      <p className="mt-3 text-xs italic text-slate-400 dark:text-slate-500">
-        Home and building upgrade costs are stored in Unity assets and not yet extracted — verify requirements in-game.
-      </p>
     </div>
   );
 }
@@ -1247,11 +1406,13 @@ function DonatedSpecimensCard({
   donatedSections,
   fishScheduleMap,
   mineralDataMap,
+  storageMap,
 }: {
   selectedCharacter: ReturnType<typeof useAuth>['selectedCharacter'];
   donatedSections: { label: string; items: MuseumItem[] }[];
   fishScheduleMap: Record<number, FishScheduleEntry>;
   mineralDataMap: Record<number, MineralInfo>;
+  storageMap: Map<number, number>;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -1304,6 +1465,7 @@ function DonatedSpecimensCard({
                         discovered={true}
                         fishInfo={item.category === 'fish' ? fishScheduleMap[item.id] : undefined}
                         mineralInfo={item.category === 'mineral' ? mineralDataMap[item.id] : undefined}
+                        storageCount={selectedCharacter ? storageMap.get(item.id) ?? 0 : undefined}
                       />
                     ))}
                   </div>
@@ -1427,6 +1589,9 @@ export default function Tips() {
     ...(selectedCharacter?.fish_discovered ?? []).map((i) => i.id),
   ]);
 
+  const storageMap = buildStorageMap(selectedCharacter?.chest_data ?? []);
+  const storageNameMap = buildStorageMapByName(selectedCharacter?.chest_data ?? []);
+
   const toDonateSections = (['fish', 'mineral', 'plant'] as const).map((cat) => {
     const label = cat === 'fish' ? 'Fish' : cat === 'mineral' ? 'Minerals' : 'Plants';
     const catItems = museumItems.filter((item) => item.category === cat && !donatedSet.has(item.id));
@@ -1544,7 +1709,7 @@ export default function Tips() {
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {gifts!.favorites.map((item) => (
-                              <GiftItemIcon key={item} name={item} sentiment="favorite" />
+                              <GiftItemIcon key={item} name={item} sentiment="favorite" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
                             ))}
                           </div>
                         </div>
@@ -1561,7 +1726,7 @@ export default function Tips() {
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {gifts!.dislikes.map((item) => (
-                              <GiftItemIcon key={item} name={item} sentiment="dislike" />
+                              <GiftItemIcon key={item} name={item} sentiment="dislike" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
                             ))}
                           </div>
                         </div>
@@ -1590,7 +1755,7 @@ export default function Tips() {
                       </p>
                       <div className="flex flex-wrap gap-3">
                         {event.shopItems!.map((item) => (
-                          <FestivalItemIcon key={item.name} name={item.name} qty={item.qty} />
+                          <FestivalItemIcon key={item.name} name={item.name} qty={item.qty} storageCount={selectedCharacter ? storageNameMap.get(item.name) ?? 0 : undefined} />
                         ))}
                       </div>
                     </div>
@@ -1632,6 +1797,7 @@ export default function Tips() {
                 difficulty={selectedCharacter?.difficulty ?? null}
                 currentSeasonIdx={currentSeasonIdx}
                 donationMap={quest.is_town_quest ? (matPileByQuest.get(quest.id) ?? new Map()) : undefined}
+                storageNameMap={selectedCharacter ? storageNameMap : undefined}
               />
             ))}
           </div>
@@ -1779,6 +1945,7 @@ export default function Tips() {
                               mineralInfo={item.category === 'mineral' ? mineralDataMap[item.id] : undefined}
                               plantInfo={item.category === 'plant' ? forageableScheduleMap[item.id] : undefined}
                               disappearsSoon={itemDisappearsSoon}
+                              storageCount={selectedCharacter ? storageMap.get(item.id) ?? 0 : undefined}
                             />
                           );
                         })}
@@ -1802,6 +1969,7 @@ export default function Tips() {
           donatedSections={donatedSections}
           fishScheduleMap={fishScheduleMap}
           mineralDataMap={mineralDataMap}
+          storageMap={storageMap}
         />
       </section>
 
@@ -1818,6 +1986,8 @@ export default function Tips() {
             toolNames={['watercan', 'hoe', 'pick', 'axe', 'scythe']}
             chipColor="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400"
             toolData={selectedCharacter?.tool_data ?? null}
+            storageNameMap={selectedCharacter ? storageNameMap : undefined}
+            money={selectedCharacter?.money}
           />
           <div className="flex flex-col gap-6">
             <UpgradeStatusCard
@@ -1826,11 +1996,15 @@ export default function Tips() {
               toolNames={['rod']}
               chipColor="bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
               toolData={selectedCharacter?.tool_data ?? null}
+              storageNameMap={selectedCharacter ? storageNameMap : undefined}
+              money={selectedCharacter?.money}
             />
             <BuildingStatusCard
               homeLevel={selectedCharacter?.home_level ?? null}
               homeConstructionDays={selectedCharacter?.home_construction_days ?? 0}
               barnData={selectedCharacter?.barn_data ?? []}
+              storageNameMap={selectedCharacter ? storageNameMap : undefined}
+              money={selectedCharacter?.money}
             />
           </div>
         </div>

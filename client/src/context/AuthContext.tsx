@@ -22,6 +22,35 @@ export type QuestStatus = { id: number; status: number };
 export type MatPileEntry = { questID: number; donatedItems: { name: string; amount: number }[] };
 export type InventorySlot = { id: number; amount: number };
 export type MuseumItem = { id: number; name: string | null; category: 'fish' | 'mineral' | 'plant' };
+export type ChestItem = { id: number; name: string | null; amount: number };
+export type ChestEntry = {
+  objId: number;
+  itemId: number | null;
+  scene: string | null;
+  isIcebox: boolean;
+  isRotten: boolean;
+  items: ChestItem[];
+};
+
+export function buildStorageMap(chestData: ChestEntry[]): Map<number, number> {
+  const map = new Map<number, number>();
+  for (const chest of chestData) {
+    for (const { id, amount } of chest.items) {
+      map.set(id, (map.get(id) ?? 0) + amount);
+    }
+  }
+  return map;
+}
+
+export function buildStorageMapByName(chestData: ChestEntry[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const chest of chestData) {
+    for (const { name, amount } of chest.items) {
+      if (name) map.set(name, (map.get(name) ?? 0) + amount);
+    }
+  }
+  return map;
+}
 
 export type ToolData = {
   toolName: string;
@@ -69,8 +98,10 @@ export type CharacterDetail = {
   tool_data: ToolData[];
   home_level: number | null;
   home_construction_days: number;
+  money: number | null;
   barn_data: BarnData[];
   project_mat_pile_data: MatPileEntry[];
+  chest_data: ChestEntry[];
 };
 
 type AuthContextType = {
@@ -172,7 +203,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { prefabId: 0, level: 0, name: 'Barn' },
       { prefabId: 1, level: 1, name: 'Coop' },
     ],
+    money: 1250,
     project_mat_pile_data: [],
+    chest_data: [],
   };
 
   const guestUser = {

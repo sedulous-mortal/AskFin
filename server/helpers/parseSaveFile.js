@@ -220,6 +220,67 @@ function extractProjectMatPileData(text) {
   return result;
 }
 
+function extractChestData(text) {
+  const content = extractBalancedArray(text, 'listOfChestData');
+  if (!content) return [];
+  const result = [];
+  let i = 0;
+  while (i < content.length) {
+    while (i < content.length && content[i] !== '{') i++;
+    if (i >= content.length) break;
+    const start = i;
+    let depth = 0;
+    while (i < content.length) {
+      if (content[i] === '{') depth++;
+      else if (content[i] === '}') { depth--; if (depth === 0) { i++; break; } }
+      i++;
+    }
+    const objStr = content.slice(start, i);
+    const objIDMatch = objStr.match(/"objID"\s*[=:;,]\s*([>0-9]+)/);
+    if (!objIDMatch) continue;
+    const itemIDMatch = objStr.match(/"itemID"\s*[=:;,]\s*([>0-9]+)/);
+    const sceneMatch = objStr.match(/"nameOfScene"\s*[=:;,]\s*"([^"]*)"/);
+    const isIceboxMatch = objStr.match(/"isIcebox"\s*[=:;,]\s*(true|false)/);
+    const isRottenMatch = objStr.match(/"isRotten"\s*[=:;,]\s*(true|false)/);
+    const items = [];
+    const invMatch = /"inventory"\s*[=:;,]\s*\{/.exec(objStr);
+    if (invMatch) {
+      let j = invMatch.index + invMatch[0].length;
+      let invDepth = 1;
+      while (j < objStr.length && invDepth > 0) {
+        if (objStr[j] === '{') invDepth++;
+        else if (objStr[j] === '}') invDepth--;
+        j++;
+      }
+      const invBlock = objStr.slice(invMatch.index + invMatch[0].length, j - 1);
+      const slotsContent = extractBalancedArray(invBlock, 'itemSlots');
+      if (slotsContent) {
+        const slotPattern = /\{([^}]*)\}/g;
+        let slotMatch;
+        while ((slotMatch = slotPattern.exec(slotsContent)) !== null) {
+          const s = slotMatch[1];
+          const idMatch = s.match(/"itemID"\s*[=:;,]\s*([>0-9]+)/);
+          const amountMatch = s.match(/"stackAmount"\s*[=:;,]\s*([>0-9]+)/);
+          if (idMatch) {
+            const id = parseInt(idMatch[1].replace(/>/g, ''), 10);
+            const amount = amountMatch ? parseInt(amountMatch[1].replace(/>/g, ''), 10) : 1;
+            if (!isNaN(id) && id > 0 && amount > 0) items.push({ id, amount });
+          }
+        }
+      }
+    }
+    result.push({
+      objId: parseInt(objIDMatch[1].replace(/>/g, ''), 10),
+      itemId: itemIDMatch ? parseInt(itemIDMatch[1].replace(/>/g, ''), 10) : null,
+      scene: sceneMatch ? sceneMatch[1] : null,
+      isIcebox: isIceboxMatch ? isIceboxMatch[1] === 'true' : false,
+      isRotten: isRottenMatch ? isRottenMatch[1] === 'true' : false,
+      items,
+    });
+  }
+  return result;
+}
+
 export function parseSaveFile(buffer) {
   const text = xorDecrypt(buffer);
   return {
@@ -244,9 +305,11 @@ export function parseSaveFile(buffer) {
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),
     currentDateYear: extractNestedNumber(text, "currentDate", "Year"),
+    money: extractNumber(text, "money"),
     homeLevel: extractNumber(text, "homeLevel"),
     daysOfHomeConstruction: extractNumber(text, "daysOfHomeConstruction"),
     barnData: extractBarnData(text),
     projectMatPileData: extractProjectMatPileData(text),
+    chestData: extractChestData(text),
   };
 }

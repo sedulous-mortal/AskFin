@@ -847,6 +847,7 @@ app.post('/api/save/parse', async (req, res) => {
         current_season: character.currentDateSeason ?? null,
         current_year: character.currentDateYear ?? null,
         tool_data: character.toolData ?? [],
+        money: character.money ?? null,
         home_level: character.homeLevel ?? null,
         home_construction_days: character.daysOfHomeConstruction ?? 0,
         barn_data: character.barnData ?? [],
@@ -861,6 +862,18 @@ app.post('/api/save/parse', async (req, res) => {
             donatedItems: Array.from(totals.entries()).map(([name, amount]) => ({ name, amount })),
           };
         }),
+        chest_data: (character.chestData ?? []).map(chest => ({
+          objId: chest.objId,
+          itemId: chest.itemId,
+          scene: chest.scene,
+          isIcebox: chest.isIcebox,
+          isRotten: chest.isRotten,
+          items: chest.items.map(({ id, amount }) => ({
+            id,
+            name: itemNames[id] ?? null,
+            amount,
+          })),
+        })),
       };
 
       let characterId;
@@ -940,10 +953,12 @@ app.get('/api/characters/:id', async (req, res) => {
       difficulty: data.difficulty ?? null,
       updated_at: data.updated_at ?? null,
       tool_data: data.tool_data || [],
+      money: data.money ?? null,
       home_level: data.home_level ?? null,
       home_construction_days: data.home_construction_days ?? 0,
       barn_data: data.barn_data || [],
       project_mat_pile_data: data.project_mat_pile_data || [],
+      chest_data: data.chest_data || [],
     });
   } catch (err) {
     console.error('Failed to fetch character detail:', err);
