@@ -1,41 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-function storageKey(questId: number) {
+// Tracks explicit user reveals (used when global setting is off)
+function revealedKey(questId: number) {
   return `askfin_event_outcome_${questId}`;
+}
+
+// Tracks explicit user hides (used when global setting is on)
+function hiddenKey(questId: number) {
+  return `askfin_event_outcome_hidden_${questId}`;
+}
+
+function ls(key: string): string | null {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+function lsSet(key: string, val: string) {
+  try { localStorage.setItem(key, val); } catch {}
+}
+function lsRemove(key: string) {
+  try { localStorage.removeItem(key); } catch {}
 }
 
 interface Props {
   questId: number;
   synopsis: string;
+  globalReveal?: boolean;
 }
 
-export function SpoilerOutcome({ questId, synopsis }: Props) {
+export function SpoilerOutcome({ questId, synopsis, globalReveal = false }: Props) {
   const [revealed, setRevealed] = useState(() => {
-    try {
-      return localStorage.getItem(storageKey(questId)) === 'true';
-    } catch {
-      return false;
-    }
+    if (globalReveal) return ls(hiddenKey(questId)) !== 'true';
+    return ls(revealedKey(questId)) === 'true';
   });
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Sync when the global setting changes without a page reload.
+  useEffect(() => {
+    if (globalReveal) {
+      setRevealed(ls(hiddenKey(questId)) !== 'true');
+    } else {
+      setRevealed(ls(revealedKey(questId)) === 'true');
+    }
+  }, [globalReveal, questId]);
+
   const handleReveal = () => {
     setRevealed(true);
-    try {
-      localStorage.setItem(storageKey(questId), 'true');
-    } catch {
-      // localStorage unavailable — reveal for this session only
-    }
+    lsSet(revealedKey(questId), 'true');
+    lsRemove(hiddenKey(questId));
     setModalOpen(false);
   };
 
   const handleHide = () => {
     setRevealed(false);
-    try {
-      localStorage.removeItem(storageKey(questId));
-    } catch {
-      // ignore
-    }
+    lsRemove(revealedKey(questId));
+    if (globalReveal) lsSet(hiddenKey(questId), 'true');
   };
 
   if (revealed) {

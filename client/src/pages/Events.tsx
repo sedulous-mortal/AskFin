@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
 import { useAuth, type MatPileEntry, buildStorageMapByName } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 import { SpoilerOutcome } from '../components/SpoilerOutcome';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
@@ -124,6 +125,8 @@ function groupEvents(townQuests: Quest[]): EventGroup[] {
 export default function Events() {
   const { season, day } = useDate();
   const { selectedCharacter } = useAuth();
+  const { preferences } = useSettings();
+  const globalRevealOutcomes = preferences.spoilers.show_event_choice_outcomes;
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -337,7 +340,7 @@ export default function Events() {
 
                           <div className="flex flex-1">
                             {synopsis ? (
-                              <SpoilerOutcome questId={quest.id} synopsis={synopsis} />
+                              <SpoilerOutcome questId={quest.id} synopsis={synopsis} globalReveal={globalRevealOutcomes} />
                             ) : (
                               <div className="flex-1 rounded-lg bg-slate-50 px-3 py-2 text-sm italic text-slate-400 dark:bg-slate-700/50 dark:text-slate-500">
                                 Outcome synopsis coming soon.

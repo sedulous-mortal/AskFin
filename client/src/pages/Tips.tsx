@@ -1491,9 +1491,9 @@ export default function Tips() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [museumItems, setMuseumItems] = useState<MuseumItem[]>([]);
-  const [revealUndiscovered, setRevealUndiscovered] = useState(false);
   const [useCharacterDate, setUseCharacterDate] = useState(false);
-  const [showVillagerGifts, setShowVillagerGifts] = useState(false);
+  const revealUndiscovered = preferences.spoilers.show_undiscovered_items;
+  const showVillagerGifts = preferences.spoilers.show_villager_gifts;
   const [fishScheduleMap, setFishScheduleMap] = useState<Record<number, FishScheduleEntry>>({});
   const [mineralDataMap, setMineralDataMap] = useState<Record<number, MineralInfo>>({});
   const [forageableScheduleMap, setForageableScheduleMap] = useState<Record<number, ForageableEntry>>({});
@@ -1749,19 +1749,6 @@ export default function Tips() {
         };
         return (
           <div className="space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              {hasBirthdays && (
-                <label className="flex cursor-pointer select-none items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
-                  <input
-                    type="checkbox"
-                    checked={showVillagerGifts}
-                    onChange={(e) => setShowVillagerGifts(e.target.checked)}
-                    className="h-3.5 w-3.5 accent-rose-500"
-                  />
-                  Show Favorites / Disliked Items
-                </label>
-              )}
-            </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-3">
                 <p className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">
@@ -1884,13 +1871,10 @@ export default function Tips() {
                   Use Character's In-Game Date (ignore Date Picker in Header)
                 </label>
               )}
-              {selectedCharacter && toDonateSections.length > 0 && (
-                <button
-                  onClick={() => setRevealUndiscovered((v) => !v)}
-                  className="shrink-0 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-base font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
-                >
-                  {revealUndiscovered ? 'Hide undiscovered' : 'Reveal undiscovered'}
-                </button>
+              {selectedCharacter && toDonateSections.length > 0 && !revealUndiscovered && (
+                <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+                  Undiscovered hidden — enable in Settings to reveal
+                </span>
               )}
             </div>
           </div>
@@ -1927,7 +1911,7 @@ export default function Tips() {
                     <p className="text-base italic text-slate-400 dark:text-slate-500">
                       All discovered {label.toLowerCase()} specimens donated.
                       {hiddenCount > 0 && !revealUndiscovered && (
-                        <> ({hiddenCount} undiscovered — toggle to reveal)</>
+                        <> ({hiddenCount} undiscovered — enable in Settings to reveal)</>
                       )}
                     </p>
                   ) : (
@@ -1972,7 +1956,7 @@ export default function Tips() {
                       </div>
                       {hiddenCount > 0 && !revealUndiscovered && (
                         <p className="mt-1.5 text-base italic text-slate-400 dark:text-slate-500">
-                          +{hiddenCount} undiscovered {label.toLowerCase()} specimen{hiddenCount !== 1 ? 's' : ''} hidden — toggle to reveal.
+                          +{hiddenCount} undiscovered {label.toLowerCase()} specimen{hiddenCount !== 1 ? 's' : ''} hidden — enable in Settings to reveal.
                         </p>
                       )}
                     </>

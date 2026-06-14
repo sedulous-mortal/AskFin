@@ -61,3 +61,5 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 8. **Human To Do: Email SMTP Server Setup** - Supabase is doing some severe rate-limiting on outgoing emails for password resets or enrollment (two or three emails total per day allotted total for the app across all users) - we will need to set up a server to handle the email volume when this is live/hosted for the general public. Research has indicated there are only two or three good options for which service to use for SMTP, so the human dev will have to do setup and then coordinate with Claude to ensure that all necessary code (if any) is written into the app to appropriately ensure expected functionality is maintained as it currently works great directly through SupaBase email functions.
 
+9. **Test new user enrollment** - we need to test that the SMTP server is allowing new enrollments, and test the new enrollment page/modal that Claude previously created to ensure that it is capturing each setting correctly and mainatining it across logout/navigating away and back to the app, etc.
+

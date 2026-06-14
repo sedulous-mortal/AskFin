@@ -14,17 +14,21 @@ export type SpoilerPreferences = {
   show_undiscovered_community_quests: boolean;
   show_undiscovered_community_events: boolean;
   show_undiscovered_critters: boolean;
+  show_villager_gifts: boolean;
+  show_event_choice_outcomes: boolean;
 };
 
 export type UserPreferences = {
   timezone: string;
   dark_mode: boolean;
+  onboarded: boolean;
   spoilers: SpoilerPreferences;
 };
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
   timezone: 'America/New_York',
   dark_mode: false,
+  onboarded: false,
   spoilers: {
     show_undiscovered_fish: true,
     show_undiscovered_cooking_recipes: true,
@@ -35,6 +39,8 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
     show_undiscovered_community_quests: true,
     show_undiscovered_community_events: true,
     show_undiscovered_critters: true,
+    show_villager_gifts: false,
+    show_event_choice_outcomes: false,
   },
 };
 
@@ -44,6 +50,8 @@ type SettingsContextType = {
   updateTimezone: (tz: string) => Promise<void>;
   updateDarkMode: (enabled: boolean) => Promise<void>;
   updateSpoiler: (key: keyof SpoilerPreferences, value: boolean) => Promise<void>;
+  updateOnboarded: (value: boolean) => Promise<void>;
+  updateManySpoilers: (updates: Partial<SpoilerPreferences>) => Promise<void>;
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -86,12 +94,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [user?.id, isGuestSession]);
 
   const patch = useCallback(
-    async (updates: { timezone?: string; dark_mode?: boolean; spoilers?: Partial<SpoilerPreferences> }) => {
+    async (updates: { timezone?: string; dark_mode?: boolean; onboarded?: boolean; spoilers?: Partial<SpoilerPreferences> }) => {
       // Optimistic update first so the UI never lags.
       setPreferences((prev) => ({
         ...prev,
         ...(updates.timezone !== undefined ? { timezone: updates.timezone } : {}),
         ...(updates.dark_mode !== undefined ? { dark_mode: updates.dark_mode } : {}),
+        ...(updates.onboarded !== undefined ? { onboarded: updates.onboarded } : {}),
         spoilers: { ...prev.spoilers, ...(updates.spoilers || {}) },
       }));
 
@@ -113,6 +122,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         ...DEFAULT_PREFERENCES,
         ...data,
         dark_mode: data.dark_mode ?? prev.dark_mode,
+        onboarded: data.onboarded ?? prev.onboarded,
         spoilers: { ...DEFAULT_PREFERENCES.spoilers, ...(data.spoilers || {}) },
       }));
     },
@@ -135,8 +145,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [patch]
   );
 
+  const updateOnboarded = useCallback(
+    (value: boolean) => patch({ onboarded: value }),
+    [patch]
+  );
+
+  const updateManySpoilers = useCallback(
+    (updates: Partial<SpoilerPreferences>) => patch({ spoilers: updates }),
+    [patch]
+  );
+
   return (
-    <SettingsContext.Provider value={{ preferences, loading, updateTimezone, updateDarkMode, updateSpoiler }}>
+    <SettingsContext.Provider value={{ preferences, loading, updateTimezone, updateDarkMode, updateSpoiler, updateOnboarded, updateManySpoilers }}>
       {children}
     </SettingsContext.Provider>
   );

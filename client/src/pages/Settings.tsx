@@ -47,6 +47,13 @@ const SPOILER_GROUPS: SpoilerGroup[] = [
       { key: 'show_undiscovered_villager_quests', label: 'Show upcoming / undiscovered villager quests' },
       { key: 'show_undiscovered_community_quests', label: 'Show upcoming / undiscovered community quests' },
       { key: 'show_undiscovered_community_events', label: 'Show upcoming community events (birthdays & festivals)' },
+      { key: 'show_event_choice_outcomes', label: 'Show event choice outcome info by default (spoilers)' },
+    ],
+  },
+  {
+    heading: 'Tips Page',
+    items: [
+      { key: 'show_villager_gifts', label: 'Show villager favorite & disliked gifts on birthday cards' },
     ],
   },
 ];

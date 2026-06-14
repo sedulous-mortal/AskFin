@@ -1,10 +1,11 @@
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DateProvider } from './context/DateContext';
-import { SettingsProvider } from './context/SettingsContext';
+import { SettingsProvider, useSettings } from './context/SettingsContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import EnrollmentQuestionnaire from './components/EnrollmentQuestionnaire';
 import Dashboard from './pages/Dashboard';
 import DashboardOverview from './pages/DashboardOverview';
 import Events from './pages/Events';
@@ -65,6 +66,16 @@ function HomeRedirect() {
   return user ? <Navigate to="/tips" replace /> : <Navigate to="/login" replace />;
 }
 
+function EnrollmentGate() {
+  const { user, loading: authLoading, isGuestSession } = useAuth();
+  const { preferences, loading: settingsLoading } = useSettings();
+
+  if (authLoading || settingsLoading || !user || isGuestSession) return null;
+  if (preferences.onboarded) return null;
+
+  return <EnrollmentQuestionnaire />;
+}
+
 // Redirects already-authenticated users away from auth-only pages (login/signup)
 // to the dashboard. Shows the page itself while auth state is still resolving or
 // when the user is logged out.
@@ -90,6 +101,7 @@ export default function App() {
         <AuthProvider>
           <SettingsProvider>
           <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#b88968] to-white text-slate-900 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
+            <EnrollmentGate />
             <Header />
             <main className="mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-[1400px] 3xl:max-w-[1800px] 4xl:max-w-[2300px] flex-1 px-8 py-10">
               <Routes>
