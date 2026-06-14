@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDate } from '../context/DateContext';
 import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, buildStorageMap, buildStorageMapByName } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
+import { SpoilerGate } from '../components/SpoilerGate';
 import calendarEventsData from '../data/calendar_events.json';
 import villagerGiftsData from '../data/villager_gifts.json';
 
@@ -901,7 +903,7 @@ function QuestCard({
             </span>
           )}
         </div>
-        <span className="text-sm text-slate-400 dark:text-slate-500">{availability}</span>
+        <span className="text-sm text-slate-500 dark:text-slate-400">{availability}</span>
       </div>
 
       {/* Body: left fills remaining space, right column sizes to estimated-optimal width */}
@@ -1482,6 +1484,8 @@ function DonatedSpecimensCard({
 export default function Tips() {
   const { season, day } = useDate();
   const { selectedCharacter } = useAuth();
+  const { preferences } = useSettings();
+  const showCommunityEvents = preferences.spoilers.show_undiscovered_community_events;
 
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1635,7 +1639,9 @@ export default function Tips() {
       </header>
 
       {/* Upcoming Calendar Events */}
-      {(() => {
+      {!showCommunityEvents ? (
+        <SpoilerGate label="Upcoming community events (birthdays & festivals)" />
+      ) : (() => {
         const upcoming = getUpcomingEvents(effectiveSeasonIdx, effectiveDay);
         if (upcoming.length === 0) return null;
         const hasBirthdays = upcoming.some((e) => e.type === 'birthday');

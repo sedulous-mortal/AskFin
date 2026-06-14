@@ -69,11 +69,9 @@ function daysUntilActive(quest: Quest, currentAbs: number): number {
     return 0;
   }
   const [startAbs, endAbs] = questAbsDays(quest);
-  for (let i = 0; i < WINDOW_SIZE; i++) {
-    const d = currentAbs + i;
-    if (d >= startAbs && d <= endAbs) return i;
-  }
-  return WINDOW_SIZE;
+  if (currentAbs >= startAbs && currentAbs <= endAbs) return 0;
+  if (currentAbs < startAbs) return startAbs - currentAbs;
+  return 0;
 }
 
 function isAlwaysActive(quest: Quest): boolean {
@@ -156,7 +154,7 @@ function QuestCard({
               </span>
             )}
           </div>
-          <span className="text-sm text-slate-400 dark:text-slate-500">{availability}</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">{availability}</span>
         </div>
 
         <h2 className="mt-2 text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
@@ -442,7 +440,34 @@ export default function Quests() {
     upcoming.filter((q) => !q.is_rootcellar_quest && !q.is_donation_quest && !q.is_town_quest),
   );
 
-  const townQuests = sortUpcoming(upcoming.filter((q) => q.is_town_quest));
+  // Mutually exclusive town quest pairs: if one is chosen (in progress or completed), hide the other.
+  const MUTEX_PAIRS: [number, number][] = [
+    [350, 439],  // Herb Garden / Mushroom Hut
+    [582, 583],  // Fish Farm / Redtide Remediation
+    [584, 585],  // Crow Repellent / Crow Traps
+    [586, 587],  // Predator Taming / Hunting Party
+  ];
+  const chosenIds = new Set([...inProgressQuestIds, ...completedQuestIds]);
+  const hiddenAlternativeIds = new Set<number>();
+  for (const [a, b] of MUTEX_PAIRS) {
+    if (chosenIds.has(a)) hiddenAlternativeIds.add(b);
+    if (chosenIds.has(b)) hiddenAlternativeIds.add(a);
+  }
+
+  // Town quests bypass the 14-day window — show all unchosen future pairs so players can plan ahead.
+  const townQuests = sortUpcoming(
+    allQuests.filter((q) => {
+      if (!q.is_town_quest) return false;
+      if (hiddenAlternativeIds.has(q.id)) return false;
+      if (completedQuestIds.has(q.id)) return false;
+      if (q.available_end_season !== null && q.available_start_season !== null && q.available_last_day !== null) {
+        const endYearOffset = q.available_end_season < q.available_start_season ? 1 : 0;
+        const endAbs = toAbsDay(endYearOffset, q.available_end_season, q.available_last_day);
+        if (endAbs < currentAbs) return false;
+      }
+      return true;
+    }),
+  );
 
   const completedDonationQuests = allQuests
     .filter((q) => q.is_donation_quest && q.id !== 1331 && isDonationQuestComplete(q, donatedSpecimenCount, completedQuestIds))
@@ -531,7 +556,7 @@ export default function Quests() {
 
             <div className={`grid grid-cols-1 gap-6 ${showTownQuests ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
               <QuestColumn
-                title="Donation"
+                title="Donations for Research"
                 quests={donationQuests}
                 gated={!showVillagerQuests}
                 gateLabel="Donation quests"
@@ -540,7 +565,7 @@ export default function Quests() {
                 currentAbs={currentAbs}
               />
               <QuestColumn
-                title="Side Quests"
+                title="Villager Side Quests"
                 quests={sideQuests}
                 gated={!showVillagerQuests}
                 gateLabel="Side quests"
@@ -550,7 +575,7 @@ export default function Quests() {
               />
               {showTownQuests && (
                 <QuestColumn
-                  title="Town Quests"
+                  title="Town Quests (Events)"
                   quests={townQuests}
                   gated={!showCommunityQuests}
                   gateLabel="Town quests"
@@ -574,12 +599,12 @@ export default function Quests() {
                 </h2>
                 <div className={`grid grid-cols-1 gap-6 ${gridClass}`}>
                   <CompletedQuestColumn
-                    title="Donation"
+                    title="Donations for Research"
                     quests={completedDonationQuests}
                     emptyText="No donation quests completed."
                   />
                   <CompletedQuestColumn
-                    title="Side Quests"
+                    title="Villager Side Quests"
                     quests={completedSideQuests}
                     emptyText="No side quests completed."
                   />
@@ -593,7 +618,7 @@ export default function Quests() {
                   )}
                   {showTownQuests && (
                     <CompletedQuestColumn
-                      title="Town Quests"
+                      title="Town Quests (Events)"
                       quests={completedTownQuests}
                       emptyText="No town quests completed."
                     />

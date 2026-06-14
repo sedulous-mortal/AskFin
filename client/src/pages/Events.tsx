@@ -183,6 +183,12 @@ export default function Events() {
             const isAvailableNow = absCurrent >= absStart && absCurrent <= absEnd;
             const daysAway = isAvailableNow || isPast ? 0 : absStart - absCurrent;
             const completedOption = event.options.find((q) => completedQuestIds.has(q.id));
+            const inProgressOption = !completedOption
+              ? event.options.find((q) => {
+                  const dMap = matPileByQuest.get(q.id);
+                  return dMap !== undefined && [...dMap.values()].some((v) => v > 0);
+                })
+              : undefined;
 
             return (
               <div
@@ -191,33 +197,39 @@ export default function Events() {
                     completedOption
                       ? 'border-0'
                       : 'border border-slate-900/10 dark:border-slate-700'
-                  }`}
+                  } ${event.options.length === 1 ? 'sm:w-1/2' : ''}`}
               >
                 {/* Event header row */}
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-3 dark:border-slate-700">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-semibold text-sky-800 dark:bg-sky-900/30 dark:text-sky-300">
+                    <span className="inline-flex items-center rounded-full bg-sky-100 px-2.5 py-0.5 text-sm font-semibold text-sky-800 dark:bg-sky-900/30 dark:text-sky-300">
                       Town Event {idx + 1}
                     </span>
                     {completedOption ? (
-                      <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                      <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                         Completed — {completedOption.display_title || completedOption.name}
                       </span>
                     ) : isPast ? (
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
+                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
                         Passed this year
                       </span>
                     ) : isAvailableNow ? (
-                      <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-600">
-                        Available now
-                      </span>
+                      inProgressOption ? (
+                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-sm font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-600">
+                          In Progress
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-sm font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-600">
+                          Available now
+                        </span>
+                      )
                     ) : (
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
+                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
                         In {daysAway} day{daysAway !== 1 ? 's' : ''}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-slate-400 dark:text-slate-500">
+                  <span className="text-sm text-slate-500 dark:text-slate-400">
                     {SEASON_NAMES[event.startSeason]} {event.startDay}
                     {' '}–{' '}
                     {SEASON_NAMES[event.endSeason]} {event.endDay}
@@ -233,7 +245,7 @@ export default function Events() {
                   {event.options.map((quest, optIdx) => {
                     const title = quest.display_title || quest.name;
                     const synopsis = SYNOPSES[quest.id];
-                    const isChosen = completedQuestIds.has(quest.id);
+                    const isChosen = completedQuestIds.has(quest.id) || quest.id === inProgressOption?.id;
                     const donationMap = matPileByQuest.get(quest.id) ?? new Map<string, number>();
                     // Round the corners that sit at the card's outer edge so the border
                     // curves naturally instead of being clipped by the parent overflow-hidden.

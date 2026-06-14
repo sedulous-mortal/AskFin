@@ -143,7 +143,9 @@ const DEFAULT_PREFERENCES = {
     show_undiscovered_crafting_recipes: true,
     show_undiscovered_items: true,
     show_undiscovered_forageables: true,
-    show_undiscovered_quests: true,
+    show_undiscovered_villager_quests: true,
+    show_undiscovered_community_quests: true,
+    show_undiscovered_community_events: true,
     show_undiscovered_critters: true,
   },
 };
