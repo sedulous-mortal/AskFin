@@ -170,6 +170,30 @@ The app uses a hosted PostgreSQL instance via Supabase. Key tables:
 
 Row-Level Security (RLS) is enabled on user-facing tables. The backend uses the service-role key to bypass RLS where needed for admin operations. Note: this area is currently under construction — the key architecture is expected to change in a future update to leverage public keys instead.
 
+## Enrollment Questionnaire
+
+The enrollment modal (`client/src/components/EnrollmentQuestionnaire.tsx`) is shown **once**, the first time a user logs in. It presents each spoiler/preference toggle with plain-English, first-person checkbox labels and descriptions so users can make informed choices before they ever reach the Settings page. Once the user clicks "Start exploring!", `updateOnboarded(true)` is called and the modal never appears again for that account. All settings chosen here can be changed at any time from the Settings tab.
+
+Every enrollment checkbox maps 1-to-1 to a toggle in the Settings page Spoiler Settings section. The `SpoilerPreferences` keys are identical in both places; only the display labels differ (enrollment uses descriptive first-person phrasing, Settings uses concise toggle labels).
+
+| Enrollment checkbox key | Settings toggle label |
+|---|---|
+| `show_undiscovered_fish` | Show undiscovered fish |
+| `show_undiscovered_items` | Show undiscovered items |
+| `show_undiscovered_cooking_recipes` | Show undiscovered cooking recipes |
+| `show_undiscovered_crafting_recipes` | Show undiscovered crafting recipes |
+| `show_undiscovered_critters` | Show undiscovered critters |
+| `show_undiscovered_forageables` | Show undiscovered forageables |
+| `show_undiscovered_villager_quests` | Show upcoming / undiscovered villager quests |
+| `show_undiscovered_community_quests` | Show upcoming / undiscovered community quests |
+| `show_undiscovered_community_events` | Show upcoming community events (birthdays & festivals) |
+| `show_event_choice_outcomes` | Show event choice outcome info by default (spoilers) |
+| `show_villager_gifts` | Show villager favorite & disliked gifts on birthday cards |
+
+If you add a new key to `SpoilerPreferences` in `SettingsContext.tsx`, add it to **both** `SETTING_GROUPS` in `EnrollmentQuestionnaire.tsx` and `SPOILER_GROUPS` in `Settings.tsx` to keep them in sync.
+
+---
+
 ## API Overview
 
 The Express server runs on port 4000 and exposes these endpoints:
