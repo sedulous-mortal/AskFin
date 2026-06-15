@@ -512,22 +512,38 @@ export default function Quests() {
         <p className="text-red-600">{error}</p>
       ) : (
         <>
-          {/* Root Cellar — full width */}
-          <QuestColumn
-            title="Root Cellar"
-            quests={rootCellarQuests}
-            gated={!showVillagerQuests}
-            gateLabel="Root Cellar quests"
-            emptyText="No Root Cellar quests in the next 14 days."
-            inProgressQuestIds={inProgressQuestIds}
-            currentAbs={currentAbs}
-            info={
-              <RootCellarInfo
-                difficulty={selectedCharacter?.difficulty ?? null}
-                currentSeasonIdx={currentSeasonIdx}
-              />
-            }
-          />
+          {/* Root Cellar — two columns: info box | quest cards */}
+          <section>
+            <h2 className="mb-3 text-lg font-semibold text-slate-800 dark:text-slate-200">Root Cellar</h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div>
+                <RootCellarInfo
+                  difficulty={selectedCharacter?.difficulty ?? null}
+                  currentSeasonIdx={currentSeasonIdx}
+                />
+              </div>
+              <div>
+                {!showVillagerQuests ? (
+                  <SpoilerGate label="Root Cellar quests" />
+                ) : rootCellarQuests.length === 0 ? (
+                  <p className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-5 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
+                    No Root Cellar quests in the next 14 days.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {rootCellarQuests.map((quest) => (
+                      <QuestCard
+                        key={quest.id}
+                        quest={quest}
+                        inProgressQuestIds={inProgressQuestIds}
+                        currentAbs={currentAbs}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
 
           {/* Donation + Side Quests (+ optional Town Quests) */}
           <div>

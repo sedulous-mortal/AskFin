@@ -40,7 +40,8 @@ export default function Header() {
       const center = centerRef.current;
       const ghost = ghostNavRef.current;
       if (!center || !ghost) return;
-      setUseHamburger(ghost.scrollWidth > center.clientWidth);
+      // Small buffer so the hamburger kicks in before overflow-hidden clips the last nav item.
+      setUseHamburger(ghost.scrollWidth + 12 > center.clientWidth);
     };
 
     const ro = new ResizeObserver(check);
@@ -103,11 +104,11 @@ export default function Header() {
         <div
           ref={ghostNavRef}
           aria-hidden
-          className="pointer-events-none absolute flex flex-nowrap gap-1"
+          className="pointer-events-none absolute flex flex-nowrap gap-1 xl:gap-2"
           style={{ top: -9999, left: 0, visibility: 'hidden' }}
         >
           {navItems.map((item) => (
-            <span key={item.to} className="rounded-lg px-3 py-3 text-lg whitespace-nowrap">
+            <span key={item.to} className="rounded-lg px-3 xl:px-4 py-3 text-lg whitespace-nowrap">
               {item.label}
             </span>
           ))}
@@ -175,13 +176,21 @@ export default function Header() {
 
         {/* CharacterSelector — always visible when authenticated */}
         {showAuthenticatedNav && (
-          <div className="flex flex-none items-center self-start">
-            {isGuestSession && isNarrowScreen && (
-              <span className="mr-2 rounded-full bg-yellow-300 px-2 py-0.5 text-xs font-semibold text-slate-900">
-                Guest
-              </span>
-            )}
-            <CharacterSelector />
+          <div className="flex flex-none flex-col items-end justify-between self-stretch gap-1">
+            <div className="flex items-center">
+              {isGuestSession && isNarrowScreen && (
+                <span className="mr-2 rounded-full bg-yellow-300 px-2 py-0.5 text-xs font-semibold text-slate-900">
+                  Guest
+                </span>
+              )}
+              <CharacterSelector />
+            </div>
+            <button
+              type="button"
+              className="flex items-center justify-center rounded-lg border border-transparent px-6 py-[15px] text-sm text-white transition-colors bg-[#8B5523] hover:bg-[#6E1414] hover:border-[#F5F0E8]"
+            >
+              ISSUES
+            </button>
           </div>
         )}
 

@@ -163,11 +163,11 @@ function TypeFilterPills({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3 pl-1">
-        <p className="text-base text-slate-700 dark:text-slate-300">Filter by Type</p>
+        <p className="text-lg font-medium text-slate-700 dark:text-slate-300">Filter by Type</p>
         <button
           type="button"
           onClick={() => onMultiSelectChange(!multiSelect)}
-          className="flex items-center gap-2 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
+          className="flex items-center gap-2 text-base font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
         >
           <span className={`inline-flex h-5 w-9 items-center rounded-full transition-colors ${multiSelect ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
             <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${multiSelect ? 'translate-x-[18px]' : 'translate-x-0.5'}`} />
@@ -228,14 +228,26 @@ export default function Forageables() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const [allForageables, setAllForageables] = useState<Forageable[] | null>(null);
-  const [allLoading, setAllLoading] = useState(false);
-  const [selectedView, setSelectedView] = useState<null | 'all' | string>(null);
+  const [allLoading, setAllLoading] = useState(true);
+  const [selectedView, setSelectedView] = useState<null | 'all' | string>('all');
   const [multiSelect, setMultiSelect] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
   const seasonIdx = SEASON_IDX[season] ?? 0;
+
+  useEffect(() => {
+    setAllLoading(true);
+    fetch(`${API_BASE}/api/forageables/all`)
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed');
+        return r.json();
+      })
+      .then((d: Forageable[]) => setAllForageables(d))
+      .catch(() => {})
+      .finally(() => setAllLoading(false));
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -278,7 +290,8 @@ export default function Forageables() {
       setSelectedTypes([]);
       setSelectedView('all');
     } else {
-      setSelectedTypes(['Berry']);
+      const carryOver = selectedView && selectedView !== 'all' ? selectedView : null;
+      setSelectedTypes(carryOver ? [carryOver] : ['Berry']);
       setSelectedView(null);
     }
   };
