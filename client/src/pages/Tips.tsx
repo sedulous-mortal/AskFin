@@ -1771,7 +1771,7 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
 
               <div className="min-w-0 flex-1 space-y-1.5">
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-base font-semibold text-slate-800 dark:text-slate-200">{g.name}</span>
+                  <span className="text-lg font-semibold text-slate-800 dark:text-slate-200">{g.name}</span>
                   {g.isMultiHarvest && (
                     <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                       multi-harvest
@@ -1779,19 +1779,19 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5 pb-3">
                   {hasReady && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3.5 py-1 text-base font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                       ✓ {g.readyCount} ready to harvest
                     </span>
                   )}
                   {hasGrowing && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-0.5 text-sm font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-3.5 py-1 text-base font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
                       {g.growingEntries.length} growing — {daysLeft} day{daysLeft !== 1 ? 's' : ''} to first ready
                     </span>
                   )}
                   {g.deadCount > 0 && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-2.5 py-0.5 text-sm font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-3.5 py-1 text-base font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
                       {g.deadCount} dead — replant
                     </span>
                   )}
@@ -1799,14 +1799,14 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
 
                 {/* Progress bar for growing tiles */}
                 {hasGrowing && (
-                  <div className="w-full">
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                  <div className="w-full pr-14">
+                    <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
                       <div
-                        className="h-full rounded-full bg-orange-400 dark:bg-orange-500 transition-all"
+                        className="h-full rounded-full bg-orange-300 dark:bg-orange-300 transition-all"
                         style={{ width: `${Math.round((minDaysWatered / g.daysToMaturity) * 100)}%` }}
                       />
                     </div>
-                    <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                    <p className="mt-1.5 text-base text-slate-600 dark:text-slate-300">
                       {minDaysWatered}/{g.daysToMaturity} days (furthest along)
                     </p>
                   </div>
