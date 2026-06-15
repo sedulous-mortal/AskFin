@@ -13,6 +13,7 @@ create table if not exists public.characters (
   total_play_time_seconds float,
   player_pronouns         integer,
   save_file_version       integer,
+  crops_data              jsonb       default '[]'::jsonb,
   created_at              timestamptz not null default now(),
   updated_at              timestamptz not null default now()
 );
@@ -46,7 +47,8 @@ alter table public.characters
   add column if not exists player_inventory           jsonb       default '[]'::jsonb,
   add column if not exists project_mat_pile_data      jsonb       default '[]'::jsonb,
   add column if not exists chest_data                 jsonb       default '[]'::jsonb,
-  add column if not exists money                      integer;
+  add column if not exists money                      integer,
+  add column if not exists crops_data                 jsonb       default '[]'::jsonb;
 
 -- Unique save file per user (nulls excluded so rows without a name don't conflict).
 create unique index if not exists characters_user_save_file_unique

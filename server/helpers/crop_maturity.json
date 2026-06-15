@@ -1,0 +1,23 @@
+{
+  "91":  { "name": "Asparagus",   "daysToMaturity": 5,  "isMultiHarvest": false, "image": "/edibles/Asparagus.png"   },
+  "92":  { "name": "Bell Pepper", "daysToMaturity": 8,  "isMultiHarvest": true,  "image": "/edibles/Bell_Pepper.png" },
+  "93":  { "name": "Carrot",      "daysToMaturity": 5,  "isMultiHarvest": false, "image": "/edibles/Carrot.png"      },
+  "94":  { "name": "Corn",        "daysToMaturity": 10, "isMultiHarvest": true,  "image": "/edibles/Corn.png"        },
+  "98":  { "name": "Cabbage",     "daysToMaturity": 6,  "isMultiHarvest": false, "image": "/edibles/Cabbage.png"     },
+  "101": { "name": "Peanut",      "daysToMaturity": 7,  "isMultiHarvest": false, "image": "/edibles/Peanut.png"      },
+  "102": { "name": "Potato",      "daysToMaturity": 8,  "isMultiHarvest": false, "image": "/edibles/Potato.png"      },
+  "103": { "name": "Pumpkin",     "daysToMaturity": 10, "isMultiHarvest": true,  "image": "/edibles/Pumpkin.png"     },
+  "104": { "name": "Radish",      "daysToMaturity": 4,  "isMultiHarvest": false, "image": "/edibles/Radish.png"      },
+  "106": { "name": "Strawberry",  "daysToMaturity": 9,  "isMultiHarvest": true,  "image": "/edibles/Strawberry.png"  },
+  "179": { "name": "Mint",        "daysToMaturity": 4,  "isMultiHarvest": false, "image": "/edibles/Mint.png"        },
+  "229": { "name": "Beans",       "daysToMaturity": 7,  "isMultiHarvest": true,  "image": "/edibles/Beans.png"       },
+  "233": { "name": "Lavender",    "daysToMaturity": 4,  "isMultiHarvest": false, "image": "/edibles/Lavender.png"    },
+  "238": { "name": "Cucumber",    "daysToMaturity": 7,  "isMultiHarvest": true,  "image": "/edibles/Cucumber.png"    },
+  "241": { "name": "Sunflower",   "daysToMaturity": 6,  "isMultiHarvest": false, "image": "/edibles/Sunflower.png"   },
+  "249": { "name": "Cantaloupe",  "daysToMaturity": 8,  "isMultiHarvest": true,  "image": "/edibles/Cantaloupe.png"  },
+  "250": { "name": "Daylily",     "daysToMaturity": 5,  "isMultiHarvest": false, "image": "/edibles/Daylily.png"     },
+  "251": { "name": "Rhubarb",     "daysToMaturity": 5,  "isMultiHarvest": false, "image": "/edibles/Rhubarb.png"     },
+  "306": { "name": "Onion",       "daysToMaturity": 6,  "isMultiHarvest": false, "image": "/edibles/Onion.png"       },
+  "321": { "name": "Sunroot",     "daysToMaturity": 6,  "isMultiHarvest": false, "image": "/edibles/Sunroot.png"     },
+  "325": { "name": "Oats",        "daysToMaturity": 6,  "isMultiHarvest": false, "image": "/edibles/Oats.png"        }
+}

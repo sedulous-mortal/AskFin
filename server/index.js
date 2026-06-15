@@ -24,12 +24,24 @@ const craftingItemsFile = require('./helpers/crafting_items.json');
 const cookingRecipesFile = require('./helpers/cooking_recipes.json');
 const forageablesFile = require('./helpers/forageables_schedule.json');
 const farmablesFile = require('./helpers/farmables_schedule.json');
+const cropMaturityFile = require('./helpers/crop_maturity.json');
 const fishScheduleFile = require('./helpers/fish_schedule.json');
 const museumItemsFile = require('./helpers/museum_items.json');
 const mineralDataFile = require('./helpers/mineral_data.json');
 const forageablesList = [
   ...(forageablesFile.forageables || []),
-  ...(farmablesFile.farmables || []),
+  // Only include farmables that are also forageable in the wild (source === 'both').
+  // Pure farmable crops (source === 'farmable') require planted/harvest state we don't
+  // yet parse from the save file, so they are excluded here.
+  ...(farmablesFile.farmables || [])
+    .filter(f => f.source === 'both')
+    .map(f => ({
+      ...f,
+      start_season: f.forage_start_season ?? f.start_season,
+      start_day:    f.forage_start_day    ?? f.start_day,
+      end_season:   f.forage_end_season   ?? f.end_season,
+      end_day:      f.forage_end_day      ?? f.end_day,
+    })),
 ];
 const fishScheduleList = fishScheduleFile.fish || [];
 const mineralDataList = mineralDataFile.minerals || [];
@@ -847,7 +859,7 @@ app.post('/api/save/parse', async (req, res) => {
         quest_data: character.questData,
         donated_specimen_count: character.donatedMuseumItemsList?.length ?? 0,
         donated_museum_items: character.donatedMuseumItemsList ?? [],
-        player_inventory: character.playerInventory ?? [],
+        player_inventory: (character.playerInventory ?? []).map(({ id, amount }) => ({ id, name: itemNames[id] ?? null, amount })),
         current_day: character.currentDateDay ?? null,
         current_season: character.currentDateSeason ?? null,
         current_year: character.currentDateYear ?? null,
@@ -856,6 +868,19 @@ app.post('/api/save/parse', async (req, res) => {
         home_level: character.homeLevel ?? null,
         home_construction_days: character.daysOfHomeConstruction ?? 0,
         barn_data: character.barnData ?? [],
+        crops_data: (character.cropData ?? []).map(({ cropRefId, daysWatered, isDead }) => {
+          const meta = cropMaturityFile[String(cropRefId)];
+          if (!meta) return null;
+          return {
+            cropRefId,
+            name: meta.name,
+            image: meta.image,
+            daysToMaturity: meta.daysToMaturity,
+            isMultiHarvest: meta.isMultiHarvest,
+            daysWatered,
+            isDead,
+          };
+        }).filter(Boolean),
         project_mat_pile_data: (character.projectMatPileData ?? []).map(pile => {
           const totals = new Map();
           for (const { id, amount } of pile.donatedItems) {
@@ -951,7 +976,7 @@ app.get('/api/characters/:id', async (req, res) => {
       quest_data: data.quest_data || [],
       donated_specimen_count: data.donated_specimen_count ?? 0,
       donated_museum_items: data.donated_museum_items || [],
-      player_inventory: data.player_inventory || [],
+      player_inventory: (data.player_inventory || []).map(({ id, amount }) => ({ id, name: itemNames[id] ?? null, amount })),
       current_day: data.current_day ?? null,
       current_season: data.current_season ?? null,
       current_year: data.current_year ?? null,
@@ -962,6 +987,7 @@ app.get('/api/characters/:id', async (req, res) => {
       home_level: data.home_level ?? null,
       home_construction_days: data.home_construction_days ?? 0,
       barn_data: data.barn_data || [],
+      crops_data: data.crops_data || [],
       project_mat_pile_data: data.project_mat_pile_data || [],
       chest_data: data.chest_data || [],
     });

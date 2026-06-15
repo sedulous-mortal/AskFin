@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useDate } from '../context/DateContext';
-import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, buildStorageMap, buildStorageMapByName } from '../context/AuthContext';
+import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, type CropEntry, buildStorageMap, buildStorageMapByName, buildInventoryMapByName } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { useDevice } from '../context/DeviceContext';
 import { SpoilerGate } from '../components/SpoilerGate';
 import calendarEventsData from '../data/calendar_events.json';
 import villagerGiftsData from '../data/villager_gifts.json';
-import { fetchCritters, type Critter } from '../api/critters';
+import { fetchCritters, type Critter, type CritterFood } from '../api/critters';
 import { CUSTOM_CRITTER_FOODS } from '../data/critterCustomFoods';
 import { daysRemainingInRange } from '../utils/seasonalRange';
 
@@ -77,6 +77,7 @@ type MineralInfo = {
 type ForageableEntry = {
   id: number;
   item_id?: number;
+  name?: string;
   type: string;
   source?: string;
   start_season: number;
@@ -340,13 +341,26 @@ const RARITY_COLOR: Record<string, string> = {
 };
 
 // Single source of truth for location name colours — update here to change everywhere
+// Compound names inherit the colour of their first meaningful word.
 const LOCATION_COLOR: Record<string, string> = {
-  'Deep Woods': 'text-green-400',
-  Farm:         'text-amber-400',
-  Forest:       'text-emerald-400',
-  Marsh:        'text-teal-300',
-  Mountain:     'text-cyan-400',
-  Mountains:    'text-cyan-400',
+  'Deep Woods':     'text-green-400',
+  Farm:             'text-amber-400',
+  'Farm River':     'text-amber-400',
+  Forest:           'text-emerald-400',
+  'Forest Coast':   'text-emerald-400',
+  'Forest Lake':    'text-emerald-400',
+  'Forest River':   'text-emerald-400',
+  Marsh:            'text-teal-300',
+  'Marsh Coast':    'text-teal-300',
+  'The Marsh':      'text-teal-300',
+  Mountain:         'text-cyan-400',
+  Mountains:        'text-cyan-400',
+  'Mountain Lake':  'text-cyan-400',
+  'Mountain River': 'text-cyan-400',
+  Town:             'text-violet-400',
+  Village:          'text-violet-400',
+  'Village Coast':  'text-violet-400',
+  'Village Lake':   'text-violet-400',
 };
 
 function LocationText({ loc }: { loc: string }) {
@@ -385,11 +399,13 @@ function FishTooltipContent({ fish }: { fish: FishScheduleEntry }) {
           <div className="text-white text-sm">{disappearsOn}</div>
         </div>
       )}
-      <div className="pt-0.5">
-        <div className="text-slate-400 text-sm mb-1">Locations</div>
-        {fish.locations.map((loc) => (
-          <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
-        ))}
+      <div className="flex items-baseline gap-1.5 pt-0.5">
+        <span className="shrink-0 text-slate-400 text-sm">Locations</span>
+        <span className="text-sm leading-snug">
+          {fish.locations.map((loc, i) => (
+            <span key={loc}>{i > 0 && <span className="text-slate-300">, </span>}<span className="inline-block whitespace-nowrap"><LocationText loc={loc} /></span></span>
+          ))}
+        </span>
       </div>
     </div>
   );
@@ -443,7 +459,6 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
 
       {(isFarmable || isBoth) && (
         <>
-          {isBoth && <div className="text-slate-400 text-xs font-semibold pt-0.5">Planting</div>}
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400 text-xs">Plant from</span>
             <span className="text-white text-sm">{plantStart}</span>
@@ -457,21 +472,22 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
 
       {hasForageWindow && (
         <>
-          <div className="text-slate-400 text-xs font-semibold pt-0.5">Wild forage</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Available</span>
+            <span className="text-slate-400 text-xs">Forage Available</span>
             <span className="text-white text-sm">{forageStart}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Disappears</span>
+            <span className="text-slate-400 text-xs">Forage Disappears</span>
             <span className="text-white text-sm">{forageEnd}</span>
           </div>
           {plant.locations && plant.locations.length > 0 && (
-            <div>
-              <div className="text-slate-400 text-xs mb-1">Locations</div>
-              {plant.locations.map((loc) => (
-                <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
-              ))}
+            <div className="flex items-baseline gap-1.5">
+              <span className="shrink-0 text-slate-400 text-xs">Locations</span>
+              <span className="text-sm leading-snug">
+                {plant.locations.map((loc, i) => (
+                  <span key={loc}>{i > 0 && <span className="text-slate-300">, </span>}<span className="inline-block whitespace-nowrap"><LocationText loc={loc} /></span></span>
+                ))}
+              </span>
             </div>
           )}
         </>
@@ -480,24 +496,64 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
       {!isFarmable && !isBoth && (
         <>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Available</span>
+            <span className="text-slate-400 text-xs">Forage Available</span>
             <span className="text-white text-sm">{plantStart}</span>
           </div>
-          <div>
-            <div className="text-slate-400 text-xs mb-0.5">Disappears on</div>
-            <div className="text-white text-sm">{plantEnd}</div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-xs">Forage Disappears</span>
+            <span className="text-white text-sm">{plantEnd}</span>
           </div>
           {plant.locations && plant.locations.length > 0 && (
-            <div className="pt-0.5">
-              <div className="text-slate-400 text-xs mb-1">Locations</div>
-              {plant.locations.map((loc) => (
-                <div key={loc} className="text-sm leading-snug">• <LocationText loc={loc} /></div>
-              ))}
+            <div className="flex items-baseline gap-1.5 pt-0.5">
+              <span className="shrink-0 text-slate-400 text-xs">Locations</span>
+              <span className="text-sm leading-snug">
+                {plant.locations.map((loc, i) => (
+                  <span key={loc}>{i > 0 && <span className="text-slate-300">, </span>}<span className="inline-block whitespace-nowrap"><LocationText loc={loc} /></span></span>
+                ))}
+              </span>
             </div>
           )}
         </>
       )}
     </div>
+  );
+}
+
+function CritterFoodTooltipContent({ food, forageableInfo, inventoryCount, storageCount }: {
+  food: CritterFood;
+  forageableInfo?: ForageableEntry;
+  inventoryCount?: number;
+  storageCount?: number;
+}) {
+  return (
+    <>
+      <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{food.name}</div>
+      {food.locationHint ? (
+        <>
+          <div className="text-slate-300 text-sm leading-snug">{food.locationHint}</div>
+          {food.coinCost != null && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <span className="text-slate-400 text-sm">Cost</span>
+              <span className="font-semibold text-amber-300 text-sm">{food.coinCost.toLocaleString()} Coins</span>
+            </div>
+          )}
+        </>
+      ) : forageableInfo ? (
+        <PlantTooltipContent plant={forageableInfo} />
+      ) : null}
+      {inventoryCount !== undefined && (
+        <div className="flex items-center gap-1.5 mt-1.5">
+          <span className="text-slate-400 text-sm">In Inventory:</span>
+          <span className="font-semibold text-amber-300 text-sm">{inventoryCount}</span>
+        </div>
+      )}
+      {storageCount !== undefined && (
+        <div className="flex items-center gap-1.5 mt-1">
+          <span className="text-slate-400 text-sm">In Storage:</span>
+          <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -1137,11 +1193,11 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData, storage
             return (
               <div key={toolName} className="flex items-center justify-between px-3 py-2">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-24 text-sm text-slate-700 dark:text-slate-300">
+                  <span className="w-28 text-base text-slate-700 dark:text-slate-300">
                     {TOOL_DISPLAY_NAMES[toolName] ?? toolName}
                   </span>
                   <TierDots current={tier} max={maxTier} />
-                  <span className="text-xs text-slate-400 dark:text-slate-500">
+                  <span className="text-sm text-slate-400 dark:text-slate-500">
                     {tier}/{maxTier}
                   </span>
                 </div>
@@ -1494,7 +1550,7 @@ function DonatedSpecimensCard({
   );
 }
 
-type TipsTab = 'events' | 'quests' | 'research' | 'upgrades' | 'critters';
+type TipsTab = 'events' | 'quests' | 'research' | 'upgrades' | 'critters' | 'farm';
 const TIPS_TAB_KEY = 'tips-active-tab';
 
 function critterSeasonContainerClass(colCount: number, itemCount: number): string {
@@ -1514,7 +1570,7 @@ function critterSeasonArticleClass(colCount: number): string {
   return 'flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-6';
 }
 
-function renderCritterCard(variant: Critter, dateStr: string, articleClass: string, extraClass = '') {
+function renderCritterCard(variant: Critter, dateStr: string, articleClass: string, extraClass = '', forageableByName?: Map<string, ForageableEntry>, storageNameMap?: Map<string, number>, inventoryNameMap?: Map<string, number>) {
   const isActive = daysRemainingInRange(variant.activeAt, dateStr) > 0;
   const bg = `transition-colors duration-200${isActive ? ' bg-yellow-50 dark:bg-teal-900/40' : ''}`;
   const imgBg = isActive ? 'bg-gradient-to-b from-white to-yellow-50 dark:from-slate-800 dark:to-teal-900/40' : '';
@@ -1529,7 +1585,7 @@ function renderCritterCard(variant: Critter, dateStr: string, articleClass: stri
         />
       </div>
       <div className={`px-6 pt-3 ${bg}`}>
-        <h2 className="font-bold text-slate-900 dark:text-slate-100 [text-shadow:0_1px_3px_rgba(0,0,0,0.18)] dark:[text-shadow:0_1px_4px_rgba(0,0,0,0.55)]">
+        <h2 className="font-bold text-slate-900 dark:text-slate-100 [text-shadow:0_1px_3px_rgba(0,0,0,0.18)] dark:[text-shadow:0_1px_4px_rgba(0,0,0,0.55)] [@media(min-width:1920px)]:text-xl">
           {variant.subtype} {variant.critterType}
         </h2>
       </div>
@@ -1540,12 +1596,28 @@ function renderCritterCard(variant: Critter, dateStr: string, articleClass: stri
             <span className="italic text-slate-400 dark:text-slate-500">None listed</span>
           ) : (
             <ul className="space-y-1">
-              {foods.map((food, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  {food.image && <img src={food.image} alt={food.name} className="h-9 w-9 flex-shrink-0 rounded object-contain" />}
-                  <span>{food.name}</span>
-                </li>
-              ))}
+              {foods.map((food, i) => {
+                const forageableInfo = forageableByName?.get(food.name.toLowerCase());
+                const storageCount = storageNameMap ? (storageNameMap.get(food.name) ?? 0) : undefined;
+                const inventoryCount = inventoryNameMap ? (inventoryNameMap.get(food.name) ?? 0) : undefined;
+                const hasTooltip = food.locationHint || forageableInfo || storageCount !== undefined || inventoryCount !== undefined;
+                if (!hasTooltip) {
+                  return (
+                    <li key={i} className="flex items-center gap-2">
+                      {food.image && <img src={food.image} alt={food.name} className="h-9 w-9 flex-shrink-0 rounded object-contain" />}
+                      <span>{food.name}</span>
+                    </li>
+                  );
+                }
+                return (
+                  <AppTooltip key={i} content={<CritterFoodTooltipContent food={food} forageableInfo={forageableInfo} inventoryCount={inventoryCount} storageCount={storageCount} />} width="w-56">
+                    <li className="flex cursor-help items-center gap-2">
+                      {food.image && <img src={food.image} alt={food.name} className="h-9 w-9 flex-shrink-0 rounded object-contain" />}
+                      <span>{food.name}</span>
+                    </li>
+                  </AppTooltip>
+                );
+              })}
             </ul>
           )}
         </dd>
@@ -1569,6 +1641,185 @@ function renderCritterCard(variant: Critter, dateStr: string, articleClass: stri
   );
 }
 
+type CropGroup = {
+  cropRefId: number;
+  name: string;
+  image: string;
+  daysToMaturity: number;
+  isMultiHarvest: boolean;
+  readyCount: number;
+  growingEntries: number[];  // daysWatered values for growing (not-yet-ready) tiles
+  deadCount: number;
+};
+
+function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; hasCharacter: boolean }) {
+  const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
+
+  if (!hasCharacter) {
+    return (
+      <section>
+        <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Farm Crops</h2>
+        <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
+          See what&apos;s planted and how close each crop is to harvest.
+        </p>
+        <p className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-5 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
+          Load a save file to see your farm status.
+        </p>
+      </section>
+    );
+  }
+
+  if (!cropsData || cropsData.length === 0) {
+    return (
+      <section>
+        <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Farm Crops</h2>
+        <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
+          See what&apos;s planted and how close each crop is to harvest.
+        </p>
+        <p className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-5 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
+          No crops detected on your farm.
+        </p>
+      </section>
+    );
+  }
+
+  // Aggregate tiles by crop type
+  const groupMap = new Map<number, CropGroup>();
+  for (const entry of cropsData) {
+    if (!groupMap.has(entry.cropRefId)) {
+      groupMap.set(entry.cropRefId, {
+        cropRefId: entry.cropRefId,
+        name: entry.name,
+        image: entry.image,
+        daysToMaturity: entry.daysToMaturity,
+        isMultiHarvest: entry.isMultiHarvest,
+        readyCount: 0,
+        growingEntries: [],
+        deadCount: 0,
+      });
+    }
+    const g = groupMap.get(entry.cropRefId)!;
+    if (entry.isDead) {
+      g.deadCount++;
+    } else if (entry.daysWatered >= entry.daysToMaturity) {
+      g.readyCount++;
+    } else {
+      g.growingEntries.push(entry.daysWatered);
+    }
+  }
+
+  // Sort: ready first, then growing (fewest days remaining first), then dead-only groups
+  const groups = Array.from(groupMap.values()).sort((a, b) => {
+    const aReady = a.readyCount > 0;
+    const bReady = b.readyCount > 0;
+    if (aReady !== bReady) return aReady ? -1 : 1;
+    const aGrowing = a.growingEntries.length > 0;
+    const bGrowing = b.growingEntries.length > 0;
+    if (aGrowing !== bGrowing) return aGrowing ? -1 : 1;
+    // Both growing: sort by min days remaining
+    const aMinDays = a.daysToMaturity - Math.max(...a.growingEntries);
+    const bMinDays = b.daysToMaturity - Math.max(...b.growingEntries);
+    return aMinDays - bMinDays;
+  });
+
+  const totalTiles = cropsData.length;
+  const readyTiles = cropsData.filter((c) => !c.isDead && c.daysWatered >= c.daysToMaturity).length;
+  const deadTiles = cropsData.filter((c) => c.isDead).length;
+
+  return (
+    <section>
+      <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Farm Crops</h2>
+      <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
+        {totalTiles} crop tile{totalTiles !== 1 ? 's' : ''} planted
+        {readyTiles > 0 && <> — <span className="font-semibold text-emerald-700 dark:text-emerald-400">{readyTiles} ready to harvest</span></>}
+        {deadTiles > 0 && <> — <span className="font-semibold text-slate-500">{deadTiles} dead</span></>}
+        .
+      </p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {groups.map((g) => {
+          const isFullyReady = g.readyCount > 0 && g.growingEntries.length === 0 && g.deadCount === 0;
+          const hasReady = g.readyCount > 0;
+          const hasGrowing = g.growingEntries.length > 0;
+          const hasOnlyDead = g.deadCount > 0 && g.readyCount === 0 && g.growingEntries.length === 0;
+          const minDaysWatered = hasGrowing ? Math.max(...g.growingEntries) : 0;
+          const daysLeft = hasGrowing ? g.daysToMaturity - minDaysWatered : 0;
+
+          return (
+            <div
+              key={g.cropRefId}
+              className={`flex items-start gap-3 rounded-xl border p-3 shadow-sm ${
+                hasOnlyDead
+                  ? 'border-slate-200 bg-slate-50 opacity-60 dark:border-slate-700 dark:bg-slate-800/40'
+                  : isFullyReady
+                    ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-700/50 dark:bg-emerald-900/10'
+                    : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'
+              }`}
+            >
+              {/* Crop icon */}
+              {!imgErrors[g.cropRefId] ? (
+                <img
+                  src={g.image}
+                  alt={g.name}
+                  className={`h-11 w-11 flex-none rounded object-contain ${hasOnlyDead ? 'grayscale' : ''}`}
+                  onError={() => setImgErrors((prev) => ({ ...prev, [g.cropRefId]: true }))}
+                />
+              ) : (
+                <div className="flex h-11 w-11 flex-none items-center justify-center rounded bg-slate-100 text-lg dark:bg-slate-700">
+                  🌱
+                </div>
+              )}
+
+              <div className="min-w-0 flex-1 space-y-1.5">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-base font-semibold text-slate-800 dark:text-slate-200">{g.name}</span>
+                  {g.isMultiHarvest && (
+                    <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                      multi-harvest
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {hasReady && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                      ✓ {g.readyCount} ready to harvest
+                    </span>
+                  )}
+                  {hasGrowing && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-0.5 text-sm font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+                      {g.growingEntries.length} growing — {daysLeft} day{daysLeft !== 1 ? 's' : ''} to first ready
+                    </span>
+                  )}
+                  {g.deadCount > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-2.5 py-0.5 text-sm font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+                      {g.deadCount} dead — replant
+                    </span>
+                  )}
+                </div>
+
+                {/* Progress bar for growing tiles */}
+                {hasGrowing && (
+                  <div className="w-full">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                      <div
+                        className="h-full rounded-full bg-orange-400 dark:bg-orange-500 transition-all"
+                        style={{ width: `${Math.round((minDaysWatered / g.daysToMaturity) * 100)}%` }}
+                      />
+                    </div>
+                    <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                      {minDaysWatered}/{g.daysToMaturity} days (furthest along)
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 export default function Tips() {
   const { season, day, getCurrentDateString } = useDate();
   const { selectedCharacter } = useAuth();
@@ -1586,6 +1837,7 @@ export default function Tips() {
   const [fishScheduleMap, setFishScheduleMap] = useState<Record<number, FishScheduleEntry>>({});
   const [mineralDataMap, setMineralDataMap] = useState<Record<number, MineralInfo>>({});
   const [forageableScheduleMap, setForageableScheduleMap] = useState<Record<number, ForageableEntry>>({});
+  const [forageableByName, setForageableByName] = useState<Map<string, ForageableEntry>>(new Map());
   const [activeTab, setActiveTab] = useState<TipsTab>(() => (sessionStorage.getItem(TIPS_TAB_KEY) as TipsTab) ?? 'quests');
   const [critters, setCritters] = useState<Critter[]>([]);
   const [crittersLoading, setCrittersLoading] = useState(true);
@@ -1635,8 +1887,17 @@ export default function Tips() {
       .then((r) => r.ok ? r.json() : [])
       .then((data: ForageableEntry[]) => {
         const map: Record<number, ForageableEntry> = {};
-        for (const f of data) map[f.item_id ?? f.id] = f;
+        const byName = new Map<string, ForageableEntry>();
+        for (const f of data) {
+          map[f.item_id ?? f.id] = f;
+          if (f.name) {
+            byName.set(f.name.toLowerCase(), f);
+            // The DB stores "Pepperwort Flower" but the JSON entry name is "Pepperwort"
+            if (f.name === 'Pepperwort') byName.set('pepperwort flower', f);
+          }
+        }
         setForageableScheduleMap(map);
+        setForageableByName(byName);
       })
       .catch(() => {});
   }, []);
@@ -1698,6 +1959,7 @@ export default function Tips() {
 
   const storageMap = buildStorageMap(selectedCharacter?.chest_data ?? []);
   const storageNameMap = buildStorageMapByName(selectedCharacter?.chest_data ?? []);
+  const inventoryNameMap = buildInventoryMapByName(selectedCharacter?.player_inventory ?? []);
 
   const toDonateSections = (['fish', 'mineral', 'plant'] as const).map((cat) => {
     const label = cat === 'fish' ? 'Fish' : cat === 'mineral' ? 'Minerals' : 'Plants';
@@ -1774,6 +2036,7 @@ export default function Tips() {
           ['upgrades', 'Upgrades', 'bg-amber-300 dark:bg-amber-500',     'bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 dark:hover:bg-amber-800/70'],
           ['critters', 'Critters', 'bg-rose-300 dark:bg-rose-600',       'bg-rose-100 hover:bg-rose-200 dark:bg-rose-900/50 dark:hover:bg-rose-800/70'],
           ['events',   'Events',   'bg-violet-300 dark:bg-violet-600',   'bg-violet-100 hover:bg-violet-200 dark:bg-violet-900/50 dark:hover:bg-violet-800/70'],
+          ['farm',     'Farm',     'bg-orange-300 dark:bg-orange-500',   'bg-orange-100 hover:bg-orange-200 dark:bg-orange-900/50 dark:hover:bg-orange-800/70'],
         ] as [TipsTab, string, string, string][]).map(([tab, label, activeColor, inactiveColor]) => {
           const isActive = activeTab === tab;
           return (
@@ -2189,6 +2452,11 @@ export default function Tips() {
         </div>
       </section>}
 
+      {/* Farm Crops */}
+      {activeTab === 'farm' && (
+        <FarmTab cropsData={selectedCharacter?.crops_data ?? null} hasCharacter={!!selectedCharacter} />
+      )}
+
       {/* In-Season Critters */}
       {activeTab === 'critters' && (
         <section>
@@ -2213,6 +2481,9 @@ export default function Tips() {
                     crittersDateStr,
                     critterSeasonArticleClass(crittersColCount),
                     crittersActiveVariants.length === 8 && i >= 4 ? 'lg:border-t lg:border-slate-900/10' : '',
+                    forageableByName,
+                    selectedCharacter ? storageNameMap : undefined,
+                    selectedCharacter ? inventoryNameMap : undefined,
                   )
                 )}
               </div>

@@ -9,7 +9,7 @@
     { "id": 238, "name": "Cucumber",   "type": "Vegetable", "image": "/edibles/Cucumber.png",   "source": "farmable", "start_season": 0, "start_day": 21, "end_season": 1, "end_day": 21 },
     { "id": 250, "name": "Daylily",    "type": "Flower",    "image": "/edibles/Daylily.png",    "source": "both", "start_season": 0, "start_day": 21, "end_season": 1, "end_day": 21, "forage_start_season": 0, "forage_start_day": 21, "forage_end_season": 1, "forage_end_day": 21, "locations": ["Mountains"] },
     { "id": 233, "name": "Lavender",   "type": "Flower",    "image": "/edibles/Lavender.png",   "source": "both", "start_season": 0, "start_day": 21, "end_season": 1, "end_day": 28, "forage_start_season": 0, "forage_start_day": 21, "forage_end_season": 1, "forage_end_day": 28, "locations": ["Mountains"] },
-    { "id": 172, "name": "Bellpepper", "type": "Vegetable", "image": "/edibles/Bellpepper.png", "source": "farmable", "start_season": 1, "start_day": 1,  "end_season": 1, "end_day": 28 },
+    { "id": 172, "name": "Bell Pepper", "type": "Vegetable", "image": "/edibles/Bell_Pepper.png", "source": "farmable", "start_season": 1, "start_day": 1,  "end_season": 1, "end_day": 28 },
     { "id": 237, "name": "Cantaloupe", "type": "Fruit",     "image": "/edibles/Cantaloupe.png", "source": "farmable", "start_season": 1, "start_day": 7,  "end_season": 2, "end_day": 7  },
     { "id": 230, "name": "Beans",      "type": "Vegetable", "image": "/edibles/Beans.png",      "source": "farmable", "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 14 },
     { "id": 35,  "name": "Corn",       "type": "Vegetable", "image": "/edibles/Corn.png",       "source": "farmable", "start_season": 1, "start_day": 14, "end_season": 2, "end_day": 14 },

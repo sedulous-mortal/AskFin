@@ -20,7 +20,7 @@ export type CookingRecipeItem = { id: number; name: string | null; diet: string 
 
 export type QuestStatus = { id: number; status: number };
 export type MatPileEntry = { questID: number; donatedItems: { name: string; amount: number }[] };
-export type InventorySlot = { id: number; amount: number };
+export type InventorySlot = { id: number; name: string | null; amount: number };
 export type MuseumItem = { id: number; name: string | null; category: 'fish' | 'mineral' | 'plant' };
 export type ChestItem = { id: number; name: string | null; amount: number };
 export type ChestEntry = {
@@ -52,6 +52,14 @@ export function buildStorageMapByName(chestData: ChestEntry[]): Map<string, numb
   return map;
 }
 
+export function buildInventoryMapByName(inventory: InventorySlot[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const { name, amount } of inventory) {
+    if (name) map.set(name, (map.get(name) ?? 0) + amount);
+  }
+  return map;
+}
+
 export type ToolData = {
   toolName: string;
   tier: number;
@@ -66,6 +74,16 @@ export type BarnData = {
   prefabId: number;  // 0=Barn, 1=Coop, 2=Pen, 3=Hutch
   level: number;     // 0=base (4 animals), 1=upgraded (8 animals)
   name: string | null;
+};
+
+export type CropEntry = {
+  cropRefId: number;
+  name: string;
+  image: string;
+  daysToMaturity: number;
+  isMultiHarvest: boolean;
+  daysWatered: number;
+  isDead: boolean;
 };
 
 export type CharacterDetail = {
@@ -100,6 +118,7 @@ export type CharacterDetail = {
   home_construction_days: number;
   money: number | null;
   barn_data: BarnData[];
+  crops_data: CropEntry[];
   project_mat_pile_data: MatPileEntry[];
   chest_data: ChestEntry[];
 };
@@ -204,6 +223,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { prefabId: 1, level: 1, name: 'Coop' },
     ],
     money: 1250,
+    crops_data: [
+      { cropRefId: 98,  name: 'Cabbage',    image: '/edibles/Cabbage.png',    daysToMaturity: 6,  isMultiHarvest: false, daysWatered: 6, isDead: false },
+      { cropRefId: 93,  name: 'Carrot',     image: '/edibles/Carrot.png',     daysToMaturity: 5,  isMultiHarvest: false, daysWatered: 3, isDead: false },
+      { cropRefId: 106, name: 'Strawberry', image: '/edibles/Strawberry.png', daysToMaturity: 9,  isMultiHarvest: true,  daysWatered: 2, isDead: false },
+      { cropRefId: 93,  name: 'Carrot',     image: '/edibles/Carrot.png',     daysToMaturity: 5,  isMultiHarvest: false, daysWatered: 5, isDead: false },
+      { cropRefId: 104, name: 'Radish',     image: '/edibles/Radish.png',     daysToMaturity: 4,  isMultiHarvest: false, daysWatered: 1, isDead: true  },
+    ],
     project_mat_pile_data: [],
     chest_data: [],
   };

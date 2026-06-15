@@ -281,6 +281,33 @@ function extractChestData(text) {
   return result;
 }
 
+function extractCropData(text) {
+  const content = extractBalancedArray(text, 'listOfPersistentCropData');
+  if (!content) return [];
+  const result = [];
+  // Each crop entry is a flat struct — no nested objects, so {[^}]*} safely finds boundaries.
+  const objPattern = /\{([^}]*)\}/g;
+  let objMatch;
+  while ((objMatch = objPattern.exec(content)) !== null) {
+    const s = objMatch[1];
+    const cropRefIdMatch = s.match(/"cropRefID"\s*[=:;,]\s*([>0-9]+)/);
+    if (!cropRefIdMatch) continue;
+    const cropRefId = parseInt(cropRefIdMatch[1].replace(/>/g, ''), 10);
+    if (isNaN(cropRefId) || cropRefId === 0) continue;
+    const daysWateredMatch = s.match(/"daysWatered"\s*[=:;,]\s*([>0-9]+)/);
+    const isDeadMatch = s.match(/"isDead"\s*[=:;,]\s*(true|false)/);
+    const isForageMatch = s.match(/"isForage"\s*[=:;,]\s*(true|false)/);
+    const isForage = isForageMatch ? isForageMatch[1] === 'true' : false;
+    if (isForage) continue; // skip wild-spawned forage plants
+    result.push({
+      cropRefId,
+      daysWatered: daysWateredMatch ? parseInt(daysWateredMatch[1].replace(/>/g, ''), 10) : 0,
+      isDead: isDeadMatch ? isDeadMatch[1] === 'true' : false,
+    });
+  }
+  return result;
+}
+
 export function parseSaveFile(buffer) {
   const text = xorDecrypt(buffer);
   return {
@@ -311,5 +338,6 @@ export function parseSaveFile(buffer) {
     barnData: extractBarnData(text),
     projectMatPileData: extractProjectMatPileData(text),
     chestData: extractChestData(text),
+    cropData: extractCropData(text),
   };
 }

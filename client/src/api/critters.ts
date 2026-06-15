@@ -11,6 +11,8 @@
 export type CritterFood = {
   name: string;
   image?: string;
+  locationHint?: string;
+  coinCost?: number;
 };
 
 export type Critter = {

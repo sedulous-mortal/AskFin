@@ -45,6 +45,8 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 2. **For us to test later: Fix logout functionality** — Executing a logout still has different issues, I can describe them when we get to this. For example, the login page has "visit as guest" button or whatever it's called encroaching visually on the regular login space, something with the css is off there. Then when I do log in as guest, we need to handle a lot of weird bugs/blank space that should have stubbed data with a warning that this is just a sample of what you'd get, with a notice to hit Login button in the top right to see your own data.
 
+3. **Update the icon on Tips info box** - we want to keep the hexagon shape but swap the exclamation point for an "i" (for info) and choose a deep orange color instead of the red since the red seems to alert people of an error where there isn't one.
+
 4. **Missing item icons** — The following items exist in game data but have no icon file in `client/public/items/`. Source from in-game screenshots or the Unity asset extractor and name the files exactly as listed:
    - `Coal.png` (distinct from `Charcoal.png`)
    - `Fur.png` (ID 651 — distinct from Hide)

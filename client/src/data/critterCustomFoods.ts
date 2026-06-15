@@ -12,6 +12,8 @@ import type { CritterFood } from '../api/critters';
 export const CUSTOM_CRITTER_FOODS: CritterFood[] = [
   {
     name: 'Critters Delight',
-    image: '/purchaseables/Critters_Delight.png', // drop the asset in public/foods/ to activate
+    image: '/purchaseables/Critters_Delight.png',
+    locationHint: 'Purchased from Fin on Saturdays at the pier register, next to Wilfred\'s shop.',
+    coinCost: 200,
   },
 ];
