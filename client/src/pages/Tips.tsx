@@ -7,6 +7,9 @@ import { useDevice } from '../context/DeviceContext';
 import { SpoilerGate } from '../components/SpoilerGate';
 import calendarEventsData from '../data/calendar_events.json';
 import villagerGiftsData from '../data/villager_gifts.json';
+import { fetchCritters, type Critter } from '../api/critters';
+import { CUSTOM_CRITTER_FOODS } from '../data/critterCustomFoods';
+import { daysRemainingInRange } from '../utils/seasonalRange';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
 const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
@@ -687,7 +690,7 @@ function GiftItemIcon({ name, sentiment, storageCount }: { name: string; sentime
     <AppTooltip content={tooltipContent}>
       <div className="flex flex-col items-center gap-1 w-20">
         <div
-          className={`h-20 w-20 overflow-hidden rounded-lg border ${
+          className={`h-16 w-16 overflow-hidden rounded-lg border ${
             isFav
               ? 'border-[#5c9a30]/50 bg-white dark:border-[#6aae36]/50 dark:bg-emerald-900/20 [box-shadow:inset_0_0_10px_rgba(92,154,48,0.22)]'
               : 'border-red-300/60 bg-white dark:border-red-400/60 dark:bg-red-900/20 [box-shadow:inset_0_0_10px_rgba(239,68,68,0.18)]'
@@ -1491,8 +1494,83 @@ function DonatedSpecimensCard({
   );
 }
 
+type TipsTab = 'events' | 'quests' | 'research' | 'upgrades' | 'critters';
+const TIPS_TAB_KEY = 'tips-active-tab';
+
+function critterSeasonContainerClass(colCount: number, itemCount: number): string {
+  const base = 'grid divide-y divide-slate-900/10 dark:divide-slate-700 pt-4';
+  if (colCount === 1) return `${base} grid-cols-1`;
+  if (colCount === 2) return `${base} grid-cols-1 sm:grid-cols-2 sm:grid-rows-[auto_auto_auto_auto_auto_auto] sm:divide-x sm:divide-y-0`;
+  if (colCount === 3) return `${base} grid-cols-1 sm:grid-cols-3 sm:grid-rows-[auto_auto_auto_auto_auto_auto] sm:divide-x sm:divide-y-0`;
+  if (colCount === 4 && itemCount === 8) return `${base} grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0`;
+  if (colCount === 4) return `${base} grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0`;
+  if (colCount === 5) return `${base} grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0`;
+  return `${base} grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 lg:grid-rows-[auto_auto_auto_auto_auto_auto] lg:divide-x lg:divide-y-0`;
+}
+
+function critterSeasonArticleClass(colCount: number): string {
+  if (colCount === 1) return 'flex flex-col';
+  if (colCount <= 3) return 'flex flex-col sm:grid sm:grid-rows-subgrid sm:row-span-6';
+  return 'flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-6';
+}
+
+function renderCritterCard(variant: Critter, dateStr: string, articleClass: string, extraClass = '') {
+  const isActive = daysRemainingInRange(variant.activeAt, dateStr) > 0;
+  const bg = `transition-colors duration-200${isActive ? ' bg-yellow-50 dark:bg-teal-900/40' : ''}`;
+  const imgBg = isActive ? 'bg-gradient-to-b from-white to-yellow-50 dark:from-slate-800 dark:to-teal-900/40' : '';
+  const foods = [...variant.foods, ...CUSTOM_CRITTER_FOODS];
+  return (
+    <article key={variant.id} className={`${articleClass}${extraClass ? ` ${extraClass}` : ''}`}>
+      <div className={`flex h-36 items-center justify-center overflow-hidden px-6 pt-6 transition-colors duration-200${imgBg ? ` ${imgBg}` : ''}`}>
+        <img
+          src={variant.image}
+          alt={`${variant.subtype} ${variant.critterType}`}
+          className={`rounded-lg object-contain ${variant.critterType === 'Bluggy' ? 'max-h-[72px] max-w-[90px]' : 'max-h-full max-w-[180px]'}`}
+        />
+      </div>
+      <div className={`px-6 pt-3 ${bg}`}>
+        <h2 className="font-bold text-slate-900 dark:text-slate-100 [text-shadow:0_1px_3px_rgba(0,0,0,0.18)] dark:[text-shadow:0_1px_4px_rgba(0,0,0,0.55)]">
+          {variant.subtype} {variant.critterType}
+        </h2>
+      </div>
+      <div className={`px-6 pt-4 ${bg}`}>
+        <dt className="font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Tame With</dt>
+        <dd className="mt-1 text-slate-800 dark:text-slate-200">
+          {foods.length === 0 ? (
+            <span className="italic text-slate-400 dark:text-slate-500">None listed</span>
+          ) : (
+            <ul className="space-y-1">
+              {foods.map((food, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  {food.image && <img src={food.image} alt={food.name} className="h-9 w-9 flex-shrink-0 rounded object-contain" />}
+                  <span>{food.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </dd>
+      </div>
+      <div className={`px-6 pt-4 ${bg}`}>
+        <dt className="font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Habitat</dt>
+        <dd className="mt-1 text-slate-800 dark:text-slate-200">{variant.habitat}</dd>
+      </div>
+      <div className={`px-6 pt-4 ${bg}`}>
+        <dt className="font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Active</dt>
+        <dd className="mt-1 text-slate-800 dark:text-slate-200">
+          {variant.activeAt.includes(' to ') ? (
+            <>{variant.activeAt.split(' to ')[0]}<br />{'to ' + variant.activeAt.split(' to ')[1]}</>
+          ) : variant.activeAt}
+        </dd>
+      </div>
+      <div className={`px-6 pt-4 pb-6 ${bg}`}>
+        <p className="text-sm italic text-slate-700 dark:text-white">{variant.description}</p>
+      </div>
+    </article>
+  );
+}
+
 export default function Tips() {
-  const { season, day } = useDate();
+  const { season, day, getCurrentDateString } = useDate();
   const { selectedCharacter } = useAuth();
   const { preferences } = useSettings();
   const { isMobile } = useDevice();
@@ -1508,6 +1586,9 @@ export default function Tips() {
   const [fishScheduleMap, setFishScheduleMap] = useState<Record<number, FishScheduleEntry>>({});
   const [mineralDataMap, setMineralDataMap] = useState<Record<number, MineralInfo>>({});
   const [forageableScheduleMap, setForageableScheduleMap] = useState<Record<number, ForageableEntry>>({});
+  const [activeTab, setActiveTab] = useState<TipsTab>(() => (sessionStorage.getItem(TIPS_TAB_KEY) as TipsTab) ?? 'quests');
+  const [critters, setCritters] = useState<Critter[]>([]);
+  const [crittersLoading, setCrittersLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/quests')
@@ -1558,6 +1639,17 @@ export default function Tips() {
         setForageableScheduleMap(map);
       })
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchCritters(controller.signal)
+      .then((data) => setCritters(data))
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
+      })
+      .finally(() => setCrittersLoading(false));
+    return () => controller.abort();
   }, []);
 
   const currentSeasonIdx = SEASON_IDX[season] ?? 0;
@@ -1634,6 +1726,22 @@ export default function Tips() {
   const nextMilestone = donationMilestones.find((q) => (donationThreshold(q) ?? 0) > donatedCount);
   const completedMilestones = donationMilestones.filter((q) => (donationThreshold(q) ?? 0) <= donatedCount);
 
+  const crittersDateStr = getCurrentDateString();
+  const crittersGrouped = critters.reduce<Map<string, Critter[]>>((acc, c) => {
+    const group = acc.get(c.critterType) ?? [];
+    acc.set(c.critterType, [...group, c]);
+    return acc;
+  }, new Map());
+  const crittersActiveVariants: Critter[] = [];
+  for (const [, variants] of crittersGrouped) {
+    for (const v of variants) {
+      if (daysRemainingInRange(v.activeAt, crittersDateStr) > 0) crittersActiveVariants.push(v);
+    }
+  }
+  const crittersColCount = crittersActiveVariants.length === 8
+    ? 4
+    : Math.min(Math.max(crittersActiveVariants.length, 1), 6);
+
   return (
     <div className="space-y-10">
       <header className="grid grid-cols-5 items-center gap-4">
@@ -1658,8 +1766,34 @@ export default function Tips() {
         </div>
       </header>
 
+      {/* Tab Bar */}
+      <div className="flex flex-wrap gap-1.5 items-end border-b-2 border-slate-300 dark:border-slate-600">
+        {([
+          ['quests',   'Quests',   'bg-sky-300 dark:bg-sky-600',         'bg-sky-100 hover:bg-sky-200 dark:bg-sky-900/50 dark:hover:bg-sky-800/70'],
+          ['research', 'Research', 'bg-emerald-300 dark:bg-emerald-600', 'bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/50 dark:hover:bg-emerald-800/70'],
+          ['upgrades', 'Upgrades', 'bg-amber-300 dark:bg-amber-500',     'bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 dark:hover:bg-amber-800/70'],
+          ['critters', 'Critters', 'bg-rose-300 dark:bg-rose-600',       'bg-rose-100 hover:bg-rose-200 dark:bg-rose-900/50 dark:hover:bg-rose-800/70'],
+          ['events',   'Events',   'bg-violet-300 dark:bg-violet-600',   'bg-violet-100 hover:bg-violet-200 dark:bg-violet-900/50 dark:hover:bg-violet-800/70'],
+        ] as [TipsTab, string, string, string][]).map(([tab, label, activeColor, inactiveColor]) => {
+          const isActive = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              onClick={() => { setActiveTab(tab); sessionStorage.setItem(TIPS_TAB_KEY, tab); }}
+              className={`relative px-5 rounded-t-lg text-base font-semibold transition-all text-slate-900 dark:text-slate-100 ${
+                isActive
+                  ? `pt-3 pb-3 -mb-px border border-b-0 border-slate-300 dark:border-slate-500 shadow-sm z-10 ${activeColor}`
+                  : `pt-2.5 pb-2 ${inactiveColor}`
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Upcoming Calendar Events */}
-      {!showCommunityEvents ? (
+      {activeTab === 'events' && (!showCommunityEvents ? (
         <SpoilerGate label="Upcoming community events (birthdays & festivals)" />
       ) : (() => {
         const upcoming = getUpcomingEvents(effectiveSeasonIdx, effectiveDay);
@@ -1792,8 +1926,8 @@ export default function Tips() {
           <div className="space-y-2">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">
-                  Coming Up (next 7 days)
+                <p className="pl-4 text-xl font-semibold tracking-wide text-slate-700 dark:text-slate-100">
+                  Coming Up (Next 7 days)
                 </p>
                 <div className="flex-1 flex flex-col gap-3">
                   {soon.length > 0
@@ -1802,8 +1936,8 @@ export default function Tips() {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">
-                  Coming Up (&gt;7 days away)
+                <p className="pl-4 text-xl font-semibold tracking-wide text-slate-700 dark:text-slate-100">
+                  Coming Up (7-14 Days Away)
                 </p>
                 <div className="flex-1 flex flex-col gap-3">
                   {later.length > 0
@@ -1814,10 +1948,10 @@ export default function Tips() {
             </div>
           </div>
         );
-      })()}
+      })())}
 
       {/* Active Quests */}
-      <section>
+      {activeTab === 'quests' && <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Active Quests</h2>
         <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
           Quests you've accepted and are currently working on.
@@ -1850,10 +1984,10 @@ export default function Tips() {
             ))}
           </div>
         )}
-      </section>
+      </section>}
 
       {/* Museum Donations */}
-      <section>
+      {activeTab === 'research' && <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Museum Donations</h2>
         <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
           Track your specimen milestones and see what you could donate next.
@@ -2016,10 +2150,10 @@ export default function Tips() {
           mineralDataMap={mineralDataMap}
           storageMap={storageMap}
         />
-      </section>
+      </section>}
 
       {/* Upgrade Progression */}
-      <section>
+      {activeTab === 'upgrades' && <section>
         <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Upgrade Progression</h2>
         <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
           Current tool tiers, building levels, and what to work on next.
@@ -2053,7 +2187,39 @@ export default function Tips() {
             />
           </div>
         </div>
-      </section>
+      </section>}
+
+      {/* In-Season Critters */}
+      {activeTab === 'critters' && (
+        <section>
+          <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">In-Season Critters</h2>
+          <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
+            Tameable creatures currently active in Grimshire.
+          </p>
+          {crittersLoading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-slate-700" />
+            </div>
+          ) : crittersActiveVariants.length === 0 ? (
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
+              <p className="text-slate-600 dark:text-slate-400">No critters are currently in season.</p>
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-2xl border border-slate-900/10 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
+              <div className={critterSeasonContainerClass(crittersColCount, crittersActiveVariants.length)}>
+                {crittersActiveVariants.map((v, i) =>
+                  renderCritterCard(
+                    v,
+                    crittersDateStr,
+                    critterSeasonArticleClass(crittersColCount),
+                    crittersActiveVariants.length === 8 && i >= 4 ? 'lg:border-t lg:border-slate-900/10' : '',
+                  )
+                )}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
