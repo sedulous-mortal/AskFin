@@ -1729,8 +1729,8 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
   return (
     <section>
       <h2 className="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-200">Farm Crops</h2>
-      <p className="mb-4 text-base text-slate-600 dark:text-slate-400">
-        {totalTiles} crop tile{totalTiles !== 1 ? 's' : ''} planted
+      <p className="mb-4 text-lg text-slate-700 dark:text-slate-300">
+        <span className="font-semibold">{totalTiles}</span> crop tile{totalTiles !== 1 ? 's' : ''} planted
         {readyTiles > 0 && <> — <span className="font-semibold text-emerald-700 dark:text-emerald-400">{readyTiles} ready to harvest</span></>}
         {deadTiles > 0 && <> — <span className="font-semibold text-slate-500">{deadTiles} dead</span></>}
         .
@@ -1747,12 +1747,12 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
           return (
             <div
               key={g.cropRefId}
-              className={`flex items-start gap-3 rounded-xl border p-3 shadow-sm ${
+              className={`flex items-start gap-3 rounded-xl p-3 shadow-sm ${
                 hasOnlyDead
-                  ? 'border-slate-200 bg-slate-50 opacity-60 dark:border-slate-700 dark:bg-slate-800/40'
+                  ? 'border border-slate-200 bg-slate-50 opacity-60 dark:border-slate-700 dark:bg-slate-800/40'
                   : isFullyReady
-                    ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-700/50 dark:bg-emerald-900/10'
-                    : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'
+                    ? 'border-2 border-emerald-600 bg-white dark:border-emerald-500 dark:bg-slate-800'
+                    : 'border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'
               }`}
             >
               {/* Crop icon */}
@@ -2258,17 +2258,17 @@ export default function Tips() {
 
         {/* Specimen milestone tracker */}
         <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 dark:border-amber-700/50 dark:bg-amber-900/20">
-          <p className="mb-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
+          <p className="mb-1 text-base font-semibold text-slate-700 dark:text-slate-200">
             Specimens donated:{' '}
             <span className="text-amber-700 dark:text-amber-400">
               {selectedCharacter ? donatedCount : '—'}
             </span>
           </p>
           {!selectedCharacter ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400 italic">Load a save file to see your donation progress.</p>
+            <p className="text-base text-slate-500 dark:text-slate-400 italic">Load a save file to see your donation progress.</p>
           ) : nextMilestone ? (
             <>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-base text-slate-600 dark:text-slate-400">
                 Next milestone:{' '}
                 <span className="font-semibold">{donationThreshold(nextMilestone)} specimens</span>
                 {' '}— {nextMilestone.display_title || nextMilestone.name}
@@ -2281,7 +2281,7 @@ export default function Tips() {
               {completedMilestones.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {completedMilestones.map((q) => (
-                    <span key={q.id} className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                    <span key={q.id} className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                       ✓ {donationThreshold(q)} specimens
                     </span>
                   ))}
@@ -2289,7 +2289,7 @@ export default function Tips() {
               )}
             </>
           ) : donationMilestones.length > 0 ? (
-            <p className="text-sm text-slate-600 dark:text-slate-400">All donation milestones completed!</p>
+            <p className="text-base text-slate-600 dark:text-slate-400">All donation milestones completed!</p>
           ) : null}
         </div>
 

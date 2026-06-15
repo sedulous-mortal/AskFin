@@ -37,17 +37,18 @@ const LOCATION_CHIP_CLASSES: Record<string, string> = {
 };
 const DEFAULT_CHIP = 'bg-slate-500 text-slate-100 dark:bg-slate-700/50 dark:text-slate-300';
 
-// Treemap type colours
 const TYPE_BG: Record<string, string> = {
   Berry:    'bg-rose-500',
   Flower:   'bg-violet-500',
-  Fruit:    'bg-orange-500',
+  Root:     'bg-amber-600',
+  Fruit:    'bg-red-600',
   Herb:     'bg-emerald-600',
   Mushroom: 'bg-stone-500',
   Nut:      'bg-yellow-700',
-  Root:     'bg-amber-600',
   Seed:     'bg-lime-700',
 };
+
+const TYPE_ORDER = ['Berry', 'Flower', 'Root', 'Fruit', 'Herb', 'Mushroom', 'Nut', 'Seed'];
 
 function LocationChips({ locations }: { locations: string[] }) {
   if (!locations || locations.length === 0) return null;
@@ -86,31 +87,102 @@ function ForageableCard({ item }: { item: Forageable }) {
   );
 }
 
-function TypeFilterPills({ items, selectedView, onSelect }: {
+function TypeFilterPills({
+  items,
+  selectedView,
+  onSelect,
+  multiSelect,
+  selectedTypes,
+  onSelectedTypesChange,
+  onMultiSelectChange,
+}: {
   items: Forageable[];
   selectedView: string | null;
   onSelect: (view: string | null) => void;
+  multiSelect: boolean;
+  selectedTypes: string[];
+  onSelectedTypesChange: (types: string[]) => void;
+  onMultiSelectChange: (val: boolean) => void;
 }) {
   const typeCounts = items.reduce<Record<string, number>>((acc, f) => {
     acc[f.type] = (acc[f.type] ?? 0) + 1;
     return acc;
   }, {});
 
-  const types = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+  const types = Object.entries(typeCounts).sort((a, b) => {
+    const ai = TYPE_ORDER.indexOf(a[0]);
+    const bi = TYPE_ORDER.indexOf(b[0]);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return b[1] - a[1];
+  });
+
+  const allTypeNames = types.map(([t]) => t);
+
+  // Single-select state
   const somethingSelected = selectedView !== null;
   const allSelected = selectedView === 'all';
 
+  // Multi-select state
+  const allSelectedMulti = selectedTypes.length === allTypeNames.length && allTypeNames.length > 0;
+
+  const handleAllClick = () => {
+    if (multiSelect) {
+      onSelectedTypesChange(allSelectedMulti ? [] : allTypeNames);
+    } else {
+      onSelect(allSelected ? null : 'all');
+    }
+  };
+
+  const handleTypeClick = (type: string) => {
+    if (multiSelect) {
+      onSelectedTypesChange(
+        selectedTypes.includes(type)
+          ? selectedTypes.filter(t => t !== type)
+          : [...selectedTypes, type]
+      );
+    } else {
+      onSelect(selectedView === type ? null : type);
+    }
+  };
+
+  const isAllActive = multiSelect ? allSelectedMulti : allSelected;
+  const isAllDimmed = multiSelect
+    ? selectedTypes.length > 0 && !allSelectedMulti
+    : somethingSelected && !allSelected;
+
+  const isTypeDimmed = (type: string) =>
+    multiSelect
+      ? selectedTypes.length > 0 && !selectedTypes.includes(type)
+      : somethingSelected && selectedView !== type;
+
+  const isTypeSelected = (type: string) =>
+    multiSelect ? selectedTypes.includes(type) : selectedView === type;
+
   return (
     <div className="space-y-2">
-      <p className="text-sm text-slate-500 dark:text-slate-400">Filter by type</p>
+      <div className="flex items-center gap-3 pl-1">
+        <p className="text-base text-slate-700 dark:text-slate-300">Filter by Type</p>
+        <button
+          type="button"
+          onClick={() => onMultiSelectChange(!multiSelect)}
+          className="flex items-center gap-2 text-sm text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
+        >
+          <span className={`inline-flex h-5 w-9 items-center rounded-full transition-colors ${multiSelect ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-600'}`}>
+            <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${multiSelect ? 'translate-x-[18px]' : 'translate-x-0.5'}`} />
+          </span>
+          Multi-Select
+        </button>
+      </div>
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          onClick={() => onSelect(allSelected ? null : 'all')}
+          onClick={handleAllClick}
           style={{ background: 'linear-gradient(to right, #f43f5e, #a855f7, #3b82f6, #10b981, #f97316, #f59e0b)', textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}
           className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-all ${
-            somethingSelected && !allSelected ? 'opacity-35' : 'opacity-100'
-          } ${allSelected ? 'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 ring-white shadow-md' : 'hover:brightness-110'}`}
+            isAllDimmed ? 'opacity-35' : 'opacity-100'
+          } ${isAllActive ? 'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 ring-white shadow-md' : 'hover:brightness-110'}`}
         >
           All
           <span className="rounded-full bg-white/25 px-1.5 py-0.5 text-xs leading-none tabular-nums">
@@ -119,13 +191,13 @@ function TypeFilterPills({ items, selectedView, onSelect }: {
         </button>
 
         {types.map(([type, count]) => {
-          const isSelected = selectedView === type;
-          const isDimmed = somethingSelected && !isSelected;
+          const isSelected = isTypeSelected(type);
+          const isDimmed = isTypeDimmed(type);
           return (
             <button
               key={type}
               type="button"
-              onClick={() => onSelect(isSelected ? null : type)}
+              onClick={() => handleTypeClick(type)}
               style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-all ${
                 TYPE_BG[type] ?? 'bg-slate-500'
@@ -159,8 +231,9 @@ export default function Forageables() {
   const [showAll, setShowAll] = useState(false);
   const [allForageables, setAllForageables] = useState<Forageable[] | null>(null);
   const [allLoading, setAllLoading] = useState(false);
-  // null = no list shown, 'all' = full list, string = type-filtered list
   const [selectedView, setSelectedView] = useState<null | 'all' | string>(null);
+  const [multiSelect, setMultiSelect] = useState(false);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
   const seasonIdx = SEASON_IDX[season] ?? 0;
 
@@ -181,26 +254,58 @@ export default function Forageables() {
     setShowAll(val);
     if (!val) {
       setSelectedView(null);
-    } else if (!allForageables) {
-      setAllLoading(true);
-      fetch(`${API_BASE}/api/forageables/all`)
-        .then((r) => {
-          if (!r.ok) throw new Error('Failed');
-          return r.json();
-        })
-        .then((d: Forageable[]) => setAllForageables(d))
-        .catch(() => {})
-        .finally(() => setAllLoading(false));
+      setMultiSelect(false);
+      setSelectedTypes([]);
+    } else {
+      setSelectedView('all');
+      if (!allForageables) {
+        setAllLoading(true);
+        fetch(`${API_BASE}/api/forageables/all`)
+          .then((r) => {
+            if (!r.ok) throw new Error('Failed');
+            return r.json();
+          })
+          .then((d: Forageable[]) => setAllForageables(d))
+          .catch(() => {})
+          .finally(() => setAllLoading(false));
+      }
     }
   };
 
+  const handleMultiSelectChange = (val: boolean) => {
+    setMultiSelect(val);
+    if (!val) {
+      setSelectedTypes([]);
+      setSelectedView('all');
+    } else {
+      setSelectedTypes(['Berry']);
+      setSelectedView(null);
+    }
+  };
+
+  const allTypeNames = allForageables ? [...new Set(allForageables.map(f => f.type))] : [];
+
   const listItems: Forageable[] = allForageables
-    ? selectedView === 'all'
-      ? allForageables
-      : selectedView
-        ? allForageables.filter((f) => f.type === selectedView)
+    ? multiSelect
+      ? selectedTypes.length > 0
+        ? allForageables.filter(f => selectedTypes.includes(f.type))
         : []
+      : selectedView === 'all'
+        ? allForageables
+        : selectedView
+          ? allForageables.filter(f => f.type === selectedView)
+          : []
     : [];
+
+  const showList = multiSelect ? selectedTypes.length > 0 : !!selectedView;
+
+  const sectionTitle = multiSelect
+    ? selectedTypes.length === allTypeNames.length
+      ? 'All Forageables'
+      : selectedTypes.join(', ')
+    : selectedView === 'all'
+      ? 'All Forageables'
+      : (selectedView ?? '');
 
   return (
     <div className="space-y-8">
@@ -312,13 +417,16 @@ export default function Forageables() {
               items={allForageables}
               selectedView={selectedView}
               onSelect={setSelectedView}
+              multiSelect={multiSelect}
+              selectedTypes={selectedTypes}
+              onSelectedTypesChange={setSelectedTypes}
+              onMultiSelectChange={handleMultiSelectChange}
             />
 
-            {/* List — only shown when something is selected */}
-            {selectedView && (
+            {showList ? (
               <section>
                 <h2 className="mb-3 text-xl font-semibold text-slate-800 dark:text-slate-200">
-                  {selectedView === 'all' ? 'All Forageables' : selectedView}
+                  {sectionTitle}
                   <span className="ml-2 text-base font-normal text-slate-500">
                     ({listItems.length} item{listItems.length !== 1 ? 's' : ''})
                   </span>
@@ -329,6 +437,12 @@ export default function Forageables() {
                   ))}
                 </div>
               </section>
+            ) : (
+              <div className="inline-block rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-700/50 dark:bg-amber-900/20">
+                <p className="text-base font-medium text-slate-700 dark:text-slate-200">
+                  Please click a chip above to choose which Forageables to view. You can enable Multi-Select to see a specific set of types at once.
+                </p>
+              </div>
             )}
           </div>
         ) : null
