@@ -2497,16 +2497,16 @@ export default function Tips() {
                 {/* Right: "After today…" next-available list */}
                 {milestoneStillNeeded > 0 ? (
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                    <p className="text-base text-slate-500 dark:text-slate-400">
                       After today you'd still need{' '}
                       <span className="font-semibold text-slate-700 dark:text-slate-300">{milestoneStillNeeded}</span>{' '}
                       more.
                     </p>
-                    <p className="mb-1.5 mt-1 text-sm text-slate-500 dark:text-slate-400">Next to become available:</p>
-                    <div className="space-y-1">
+                    <p className="mb-2 mt-1.5 text-base text-slate-500 dark:text-slate-400">Next to become available:</p>
+                    <div className="space-y-1.5">
                       {milestoneCatAvail.map((cat) => {
                         if (cat.tierLocked > 0) return (
-                          <p key={cat.label} className="text-sm text-slate-500 dark:text-slate-400">
+                          <p key={cat.label} className="text-base text-slate-500 dark:text-slate-400">
                             <span className="font-medium text-slate-700 dark:text-slate-300">{catIconEl(cat.label)}{cat.label}:</span>{' '}
                             {cat.tierLocked} locked behind pickaxe upgrade
                           </p>
@@ -2514,7 +2514,7 @@ export default function Tips() {
                         if (cat.nextItems.length === 0) return null;
                         const next = cat.nextItems[0];
                         return (
-                          <p key={cat.label} className="text-sm text-slate-500 dark:text-slate-400">
+                          <p key={cat.label} className="text-base text-slate-500 dark:text-slate-400">
                             <span className="font-medium text-slate-700 dark:text-slate-300">{catIconEl(cat.label)}{cat.label}:</span>{' '}
                             {next.name} in {next.daysUntil} day{next.daysUntil !== 1 ? 's' : ''}{' '}
                             <span className="text-slate-400 dark:text-slate-500">({SEASON_NAMES[next.startSeason]} {next.startDay})</span>
