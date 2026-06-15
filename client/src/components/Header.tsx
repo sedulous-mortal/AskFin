@@ -13,10 +13,7 @@ const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
 const navItems = [
   { to: '/tips', label: 'Tips' },
   { to: '/dashboard', label: 'Stats' },
-  { to: '/critters', label: 'Critters' },
-  { to: '/forageables', label: 'Forageables' },
-  { to: '/quests', label: 'Quests' },
-  { to: '/events', label: 'Events' },
+  { to: '/ref', label: 'Ref' },
   { to: '/faq', label: 'FAQ' },
   { to: '/dashboard-overview', label: 'Dashboard' },
   { to: '/settings', label: 'Settings' },

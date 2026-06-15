@@ -1,0 +1,30 @@
+{
+  "Smoking Hut": {
+    "description": "A humble shack where food is preserved and flavored by smoke and heat.",
+    "wiki": "https://grimshire.wiki.gg/wiki/Smoking_Hut"
+  },
+  "Mushroom Log": {
+    "description": "A pile of logs that can be used to grow mushrooms. Can only be used once, the mushrooms will consume the logs.",
+    "wiki": "https://grimshire.wiki.gg/wiki/Mushroom_Log"
+  },
+  "Fermentation Barrel": {
+    "description": "A sturdy barrel used to preserve foods, enhancing flavor and longevity. Use salt, honey, vinegar or oil to preserve your goods.",
+    "wiki": "https://grimshire.wiki.gg/wiki/Fermentation_Barrel"
+  },
+  "Press": {
+    "description": "Press is a station used to transform input food items into different food items, also changing some of their diet types.",
+    "wiki": "https://grimshire.wiki.gg/wiki/Press"
+  },
+  "Seed Maker": {
+    "description": "A machine that extracts and prepares seeds from fruit.",
+    "wiki": "https://grimshire.wiki.gg/wiki/Seed_Maker"
+  },
+  "Titanium Water Pump": {
+    "description": "Titanium Water Pump supplies water to the Irrigation Pipe in a 7x7 area around it.",
+    "wiki": "https://grimshire.wiki.gg/wiki/Titanium_Water_Pump"
+  },
+  "Icebox": {
+    "description": "Cold storage box that prevents spoilage.",
+    "wiki": "https://grimshire.wiki.gg/wiki/Icebox"
+  }
+}

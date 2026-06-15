@@ -10,10 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import EnrollmentQuestionnaire from './components/EnrollmentQuestionnaire';
 import Dashboard from './pages/Dashboard';
 import DashboardOverview from './pages/DashboardOverview';
-import Events from './pages/Events';
-import Forageables from './pages/Forageables';
-import Critters from './pages/Critters';
-import Quests from './pages/Quests';
+import Ref from './pages/Ref';
 import Tips from './pages/Tips';
 import FAQ from './pages/FAQ';
 import Settings from './pages/Settings';
@@ -145,37 +142,17 @@ export default function App() {
                   }
                 />
                 <Route
-                  path="/events"
+                  path="/ref"
                   element={
                     <ProtectedRoute>
-                      <Events />
+                      <Ref />
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="/forageables"
-                  element={
-                    <ProtectedRoute>
-                      <Forageables />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/critters"
-                  element={
-                    <ProtectedRoute>
-                      <Critters />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/quests"
-                  element={
-                    <ProtectedRoute>
-                      <Quests />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path="/events" element={<Navigate to="/ref" replace />} />
+                <Route path="/forageables" element={<Navigate to="/ref" replace />} />
+                <Route path="/critters" element={<Navigate to="/ref" replace />} />
+                <Route path="/quests" element={<Navigate to="/ref" replace />} />
                 <Route
                   path="/tips"
                   element={

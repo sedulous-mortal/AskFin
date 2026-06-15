@@ -7,6 +7,7 @@ import { useDevice } from '../context/DeviceContext';
 import { SpoilerGate } from '../components/SpoilerGate';
 import calendarEventsData from '../data/calendar_events.json';
 import villagerGiftsData from '../data/villager_gifts.json';
+import researchRewardsData from '../data/research_rewards.json';
 import { fetchCritters, type Critter, type CritterFood } from '../api/critters';
 import { CUSTOM_CRITTER_FOODS } from '../data/critterCustomFoods';
 import { daysRemainingInRange } from '../utils/seasonalRange';
@@ -639,11 +640,12 @@ function DonationItemIcon({
   );
 }
 
-function RewardIcon({ name, amount, type, storageCount }: {
+function RewardIcon({ name, amount, type, storageCount, description }: {
   name: string;
   amount: number;
   type: 'item' | 'relationship';
   storageCount?: number;
+  description?: string;
 }) {
   const safeName = name.replace(/ /g, '_');
   const paths = type === 'item'
@@ -653,14 +655,14 @@ function RewardIcon({ name, amount, type, storageCount }: {
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isRel = type === 'relationship';
 
-  return (
+  const card = (
     <div
       className={`relative h-[84px] w-16 overflow-hidden rounded-lg border ${
         isRel
           ? 'border-blue-300 bg-blue-50 dark:border-blue-500/40 dark:bg-blue-900/20'
           : 'border-indigo-200 bg-indigo-50 dark:border-indigo-700/50 dark:bg-indigo-900/20'
       }`}
-      title={isRel ? `+${amount} relationship with ${name}` : `${name} ×${amount}${!isRel && storageCount !== undefined ? ` • ${storageCount} in storage` : ''}`}
+      title={description ? undefined : (isRel ? `+${amount} relationship with ${name}` : `${name} ×${amount}${storageCount !== undefined ? ` • ${storageCount} in storage` : ''}`)}
     >
       {pathIdx < paths.length ? (
         <img
@@ -682,6 +684,76 @@ function RewardIcon({ name, amount, type, storageCount }: {
         {isRel ? `+${amount}` : amount}
       </span>
     </div>
+  );
+
+  if (description) {
+    return (
+      <AppTooltip
+        content={
+          <div>
+            <p className="text-sm font-semibold text-slate-100">{name}</p>
+            <p className="mt-1 text-sm text-slate-300">{description}</p>
+          </div>
+        }
+        width="w-64"
+      >
+        {card}
+      </AppTooltip>
+    );
+  }
+  return card;
+}
+
+const BLUEPRINT_BUILD_REQS: Record<string, { material: string; qty: number }[]> = {
+  Press: [
+    { material: 'Iron Bar',   qty: 5  },
+    { material: 'Plank',      qty: 20 },
+    { material: 'Hard Wood',  qty: 20 },
+  ],
+};
+
+function BlueprintRewardIcon({ name, amount }: { name: string; amount: number }) {
+  const baseName = name.replace(' Blueprint', '');
+  const reqs = BLUEPRINT_BUILD_REQS[baseName];
+  return (
+    <AppTooltip
+      content={
+        <div>
+          <p className="text-sm font-semibold text-slate-100">{name}</p>
+          <p className="mt-1 text-sm text-slate-300">
+            Allows you to craft more {baseName} at a Crafting Table.
+          </p>
+          {reqs && (
+            <div className="mt-2 border-t border-slate-700 pt-2">
+              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">Build requires</p>
+              <div className="space-y-0.5">
+                {reqs.map((r) => (
+                  <div key={r.material} className="flex items-center gap-1.5">
+                    <span className="text-amber-300 text-sm font-semibold">{r.qty}×</span>
+                    <span className="text-slate-200 text-sm">{r.material}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      }
+      width="w-52"
+    >
+      <div className="relative h-[84px] w-16 overflow-hidden rounded-lg border border-sky-200 bg-sky-50 dark:border-sky-700/50 dark:bg-sky-900/20">
+        <svg viewBox="0 0 48 56" className="w-full px-2 pt-2 pb-5" aria-hidden>
+          <rect x="3" y="2" width="36" height="46" rx="3" fill="#BFDBFE" stroke="#60A5FA" strokeWidth="1.5" />
+          <polygon points="27,2 39,14 27,14" fill="#93C5FD" stroke="#60A5FA" strokeWidth="1" />
+          <line x1="9" y1="20" x2="33" y2="20" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+          <line x1="9" y1="27" x2="29" y2="27" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+          <line x1="9" y1="34" x2="31" y2="34" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+          <line x1="9" y1="41" x2="23" y2="41" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        </svg>
+        <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-tl bg-black/65 px-1.5 py-0.5 text-[13px] font-bold text-white">
+          {amount}
+        </span>
+      </div>
+    </AppTooltip>
   );
 }
 
@@ -1986,7 +2058,88 @@ export default function Tips() {
     .sort((a, b) => donationSortKey(a) - donationSortKey(b));
 
   const nextMilestone = donationMilestones.find((q) => (donationThreshold(q) ?? 0) > donatedCount);
-  const completedMilestones = donationMilestones.filter((q) => (donationThreshold(q) ?? 0) <= donatedCount);
+
+  // Compute per-category "available today" counts and upcoming items for "When Can I Hit That?" card
+  type MilestoneCatAvail = {
+    label: string;
+    availableCount: number;
+    nextItems: Array<{ name: string; daysUntil: number; startSeason: number; startDay: number }>;
+    tierLocked: number;
+  };
+  const milestoneCurrentAbsDay = effectiveSeasonIdx * 28 + (effectiveDay - 1);
+  const milestoneNeeded = nextMilestone ? (donationThreshold(nextMilestone) ?? 0) - donatedCount : 0;
+  const milestoneCatAvail: MilestoneCatAvail[] = (['fish', 'mineral', 'plant'] as const).map((cat) => {
+    const catLabel = cat === 'fish' ? 'Fish' : cat === 'mineral' ? 'Minerals' : 'Plants';
+    const notDonated = museumItems.filter((item) => item.category === cat && !donatedSet.has(item.id));
+    const catIsAvailableToday = (item: MuseumItem): boolean => {
+      if (cat === 'mineral') return isMineAccessible(mineralDataMap[item.id], pickaxeTier);
+      const locs = cat === 'fish' ? fishScheduleMap[item.id]?.locations : forageableScheduleMap[item.id]?.locations;
+      if (!deepWoodsUnlocked && isExclusivelyDeepWoods(locs)) return false;
+      return cat === 'fish'
+        ? isFishAvailable(fishScheduleMap[item.id], effectiveSeasonIdx, effectiveDay)
+        : isForageableAvailable(forageableScheduleMap[item.id], effectiveSeasonIdx, effectiveDay);
+    };
+    const availableCount = notDonated.filter(catIsAvailableToday).length;
+    let nextItems: MilestoneCatAvail['nextItems'] = [];
+    let tierLocked = 0;
+    if (cat === 'mineral') {
+      tierLocked = notDonated.filter((item) => !catIsAvailableToday(item)).length;
+    } else {
+      nextItems = notDonated
+        .filter((item) => !catIsAvailableToday(item))
+        .flatMap((item) => {
+          const sched = cat === 'fish' ? fishScheduleMap[item.id] : forageableScheduleMap[item.id];
+          if (!sched || sched.start_season == null || sched.start_day == null) return [];
+          const startAbs = sched.start_season * 28 + (sched.start_day - 1);
+          const daysUntil = ((startAbs - milestoneCurrentAbsDay) % TOTAL_DAYS + TOTAL_DAYS) % TOTAL_DAYS;
+          if (daysUntil === 0) return [];
+          return [{ name: item.name ?? '', daysUntil, startSeason: sched.start_season, startDay: sched.start_day }];
+        })
+        .sort((a, b) => a.daysUntil - b.daysUntil);
+    }
+    return { label: catLabel, availableCount, nextItems, tierLocked };
+  });
+  const milestoneTotalAvailableToday = milestoneCatAvail.reduce((sum, c) => sum + c.availableCount, 0);
+  const milestoneStillNeeded = Math.max(0, milestoneNeeded - milestoneTotalAvailableToday);
+
+  // Earliest possible date to hit the milestone: take all future fish+plant items sorted by daysUntil,
+  // then find when the milestoneStillNeeded-th one becomes available.
+  // Minerals have no time window (tier-gated), so they can't contribute here.
+  const milestoneAllFutureItems = [
+    ...(milestoneCatAvail.find((c) => c.label === 'Fish')?.nextItems ?? []),
+    ...(milestoneCatAvail.find((c) => c.label === 'Plants')?.nextItems ?? []),
+  ].sort((a, b) => a.daysUntil - b.daysUntil);
+
+  let milestoneEarliestDate: string | null = null;
+  if (milestoneStillNeeded > 0 && milestoneAllFutureItems.length >= milestoneStillNeeded) {
+    const keyItem = milestoneAllFutureItems[milestoneStillNeeded - 1];
+    const futureAbsDay = milestoneCurrentAbsDay + keyItem.daysUntil;
+    const earnedSeason = Math.floor(futureAbsDay / 28) % 4;
+    const earnedDay = (futureAbsDay % 28) + 1;
+    milestoneEarliestDate = `${SEASON_NAMES[earnedSeason]} ${earnedDay}`;
+  }
+
+  // Build per-day acquisition table: group future items by daysUntil, stop once milestoneStillNeeded is reached
+  // Each entry becomes one column; dates are abbreviated to 3-char season + day number.
+  type MilestoneDayCol = { shortLabel: string; count: number; runningTotal: number; isGoal: boolean };
+  const milestoneDayCols: MilestoneDayCol[] = [];
+  if (milestoneStillNeeded > 0) {
+    let cumulative = 0;
+    for (const item of milestoneAllFutureItems) {
+      if (cumulative >= milestoneStillNeeded) break;
+      cumulative++;
+      const abs = milestoneCurrentAbsDay + item.daysUntil;
+      const shortLabel = `${SEASON_NAMES[Math.floor(abs / 28) % 4].slice(0, 3)} ${(abs % 28) + 1}`;
+      const last = milestoneDayCols[milestoneDayCols.length - 1];
+      if (last && last.shortLabel === shortLabel) {
+        last.count++;
+        last.runningTotal = cumulative;
+        last.isGoal = cumulative >= milestoneStillNeeded;
+      } else {
+        milestoneDayCols.push({ shortLabel, count: 1, runningTotal: cumulative, isGoal: cumulative >= milestoneStillNeeded });
+      }
+    }
+  }
 
   const crittersDateStr = getCurrentDateString();
   const crittersGrouped = critters.reduce<Map<string, Critter[]>>((acc, c) => {
@@ -2256,41 +2409,188 @@ export default function Tips() {
           Track your specimen milestones and see what you could donate next.
         </p>
 
-        {/* Specimen milestone tracker */}
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 dark:border-amber-700/50 dark:bg-amber-900/20">
-          <p className="mb-1 text-base font-semibold text-slate-700 dark:text-slate-200">
-            Specimens donated:{' '}
-            <span className="text-amber-700 dark:text-amber-400">
-              {selectedCharacter ? donatedCount : '—'}
-            </span>
-          </p>
-          {!selectedCharacter ? (
-            <p className="text-base text-slate-500 dark:text-slate-400 italic">Load a save file to see your donation progress.</p>
-          ) : nextMilestone ? (
-            <>
-              <p className="text-base text-slate-600 dark:text-slate-400">
-                Next milestone:{' '}
-                <span className="font-semibold">{donationThreshold(nextMilestone)} specimens</span>
-                {' '}— {nextMilestone.display_title || nextMilestone.name}
-                {nextMilestone.reward_items?.length ? (
-                  <> (rewards: {nextMilestone.reward_items.map((r) => r.name).join(', ')})</>
-                ) : null}
-                . You need{' '}
-                <span className="font-semibold">{(donationThreshold(nextMilestone) ?? 0) - donatedCount} more</span>.
-              </p>
-              {completedMilestones.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {completedMilestones.map((q) => (
-                    <span key={q.id} className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-sm font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
-                      ✓ {donationThreshold(q)} specimens
-                    </span>
+        {/* Specimen milestone tracker + When Can I Hit That? */}
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+
+          {/* Left: milestone tracker — 1/3 width */}
+          <div className="md:col-span-1 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 dark:border-amber-700/50 dark:bg-amber-900/20">
+            <p className="mb-1 text-base font-semibold text-slate-700 dark:text-slate-200">
+              Specimens donated:{' '}
+              <span className="text-amber-700 dark:text-amber-400">
+                {selectedCharacter ? donatedCount : '—'}
+              </span>
+            </p>
+            {!selectedCharacter ? (
+              <p className="text-base text-slate-500 dark:text-slate-400 italic">Load a save file to see your donation progress.</p>
+            ) : nextMilestone ? (
+              <div className="text-base text-slate-600 dark:text-slate-400">
+                <p>
+                  Next milestone:{' '}
+                  <span className="font-semibold">{donationThreshold(nextMilestone)} specimens</span>
+                  {' '}— {nextMilestone.display_title || nextMilestone.name}. You need{' '}
+                  <span className="font-semibold">{(donationThreshold(nextMilestone) ?? 0) - donatedCount} more</span>.
+                </p>
+                {(() => {
+                  const allRewards = nextMilestone.reward_items ?? [];
+                  if (!allRewards.length) return null;
+                  return (
+                    <div className="mt-2.5">
+                      <p className="mb-1.5 text-base font-medium text-slate-500 dark:text-slate-400">Rewards:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {allRewards.map((r) => {
+                          const isBlueprint = r.name.endsWith(' Blueprint');
+                          const info = (researchRewardsData as Record<string, { description: string }>)[r.name];
+                          return (
+                            <div key={r.name} className="flex flex-col items-center gap-1">
+                              {isBlueprint
+                                ? <BlueprintRewardIcon name={r.name} amount={r.amount} />
+                                : <RewardIcon name={r.name} amount={r.amount} type="item" description={info?.description} />
+                              }
+                              <span className="text-center text-xs leading-tight text-slate-500 dark:text-slate-400 max-w-[64px]">{r.name}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : donationMilestones.length > 0 ? (
+              <p className="text-base text-slate-600 dark:text-slate-400">All donation milestones completed!</p>
+            ) : null}
+          </div>
+
+          {/* Right: When Can I Hit That? — 2/3 width */}
+          {nextMilestone && selectedCharacter && (
+            <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+              <p className="mb-3 text-base font-semibold text-slate-700 dark:text-slate-200">When Can I Hit that Milestone?</p>
+
+              {/* Top row: availability table + "After today…" side by side */}
+              {(() => {
+                const CAT_ICON: Record<string, string> = { Fish: '🐟', Minerals: '💎', Plants: '🌿' };
+                const mineralFilter = { filter: 'hue-rotate(155deg) saturate(3) brightness(1.15) contrast(1.6)' };
+                const catIconEl = (label: string) => (
+                  <span aria-hidden className="mr-1 select-none" style={label === 'Minerals' ? mineralFilter : undefined}>
+                    {CAT_ICON[label]}
+                  </span>
+                );
+                return (
+              <div className="grid grid-cols-2 gap-4">
+                {/* Left: per-category table */}
+                <div className="divide-y divide-slate-100 rounded-lg border border-slate-100 dark:divide-slate-700 dark:border-slate-700">
+                  {milestoneCatAvail.map((cat) => (
+                    <div key={cat.label} className="flex items-center justify-between px-3 py-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">
+                        {catIconEl(cat.label)}{cat.label} Remaining (Available Today)
+                      </span>
+                      <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                        {cat.availableCount}
+                      </span>
+                    </div>
                   ))}
+                  <div className="flex items-center justify-between px-3 py-2">
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Total Available Today</span>
+                    <span className="text-sm font-bold text-slate-800 dark:text-slate-100">{milestoneTotalAvailableToday}</span>
+                  </div>
+                </div>
+
+                {/* Right: "After today…" next-available list */}
+                {milestoneStillNeeded > 0 ? (
+                  <div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      After today you'd still need{' '}
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">{milestoneStillNeeded}</span>{' '}
+                      more.
+                    </p>
+                    <p className="mb-1.5 mt-1 text-sm text-slate-500 dark:text-slate-400">Next to become available:</p>
+                    <div className="space-y-1">
+                      {milestoneCatAvail.map((cat) => {
+                        if (cat.tierLocked > 0) return (
+                          <p key={cat.label} className="text-sm text-slate-500 dark:text-slate-400">
+                            <span className="font-medium text-slate-700 dark:text-slate-300">{catIconEl(cat.label)}{cat.label}:</span>{' '}
+                            {cat.tierLocked} locked behind pickaxe upgrade
+                          </p>
+                        );
+                        if (cat.nextItems.length === 0) return null;
+                        const next = cat.nextItems[0];
+                        return (
+                          <p key={cat.label} className="text-sm text-slate-500 dark:text-slate-400">
+                            <span className="font-medium text-slate-700 dark:text-slate-300">{catIconEl(cat.label)}{cat.label}:</span>{' '}
+                            {next.name} in {next.daysUntil} day{next.daysUntil !== 1 ? 's' : ''}{' '}
+                            <span className="text-slate-400 dark:text-slate-500">({SEASON_NAMES[next.startSeason]} {next.startDay})</span>
+                          </p>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="self-center text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                    Everything available today is enough to get you there!
+                  </p>
+                )}
+              </div>
+                ); })()}
+
+              {/* Bottom: text left, day-by-day table right */}
+              {milestoneStillNeeded > 0 && (
+                <div className="mt-3 grid grid-cols-2 gap-4 border-t border-slate-100 pt-3 dark:border-slate-700">
+                  <p className="self-center text-base leading-snug text-slate-500 dark:text-slate-400">
+                    Assuming you do not get anything from the root cellar that unlocks an item early, the earliest you could hit this Specimen goal is{' '}
+                    {milestoneEarliestDate ? (
+                      <span className="font-semibold text-slate-700 dark:text-slate-200"> {milestoneEarliestDate}</span>
+                    ) : (
+                      <span className="text-slate-400 dark:text-slate-500"> unknown — some remaining items require a pickaxe upgrade</span>
+                    )}
+                    .
+                  </p>
+
+                  {milestoneDayCols.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-separate border-spacing-0 text-sm">
+                        <thead>
+                          <tr>
+                            <th className="w-12 pb-1" />
+                            {milestoneDayCols.map((col) => (
+                              <th
+                                key={col.shortLabel}
+                                className={`whitespace-nowrap px-2 pb-1 text-center font-semibold ${col.isGoal ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
+                              >
+                                {col.shortLabel}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td className="pr-2 text-right text-slate-400 dark:text-slate-500">+new</td>
+                            {milestoneDayCols.map((col) => (
+                              <td
+                                key={col.shortLabel}
+                                className={`px-2 py-0.5 text-center ${col.isGoal ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}
+                              >
+                                +{col.count}
+                              </td>
+                            ))}
+                          </tr>
+                          <tr>
+                            <td className="pr-2 text-right text-slate-400 dark:text-slate-500">total</td>
+                            {milestoneDayCols.map((col) => (
+                              <td
+                                key={col.shortLabel}
+                                className={`px-2 py-0.5 text-center font-semibold ${col.isGoal ? 'font-bold text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}`}
+                              >
+                                {col.runningTotal}{col.isGoal ? ' ✓' : ''}
+                              </td>
+                            ))}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               )}
-            </>
-          ) : donationMilestones.length > 0 ? (
-            <p className="text-base text-slate-600 dark:text-slate-400">All donation milestones completed!</p>
-          ) : null}
+            </div>
+          )}
         </div>
 
         {/* Items available to donate */}
