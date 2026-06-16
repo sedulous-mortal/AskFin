@@ -1,6 +1,28 @@
 import { useState, ReactNode } from 'react';
 import { useSettings, SpoilerPreferences } from '../context/SettingsContext';
 
+const TIMEZONES = [
+  { label: 'UTC−12:00 — Baker Island', value: 'Etc/GMT+12' },
+  { label: 'UTC−11:00 — American Samoa', value: 'Pacific/Pago_Pago' },
+  { label: 'UTC−10:00 — Hawaii', value: 'Pacific/Honolulu' },
+  { label: 'UTC−09:00 — Alaska', value: 'America/Anchorage' },
+  { label: 'UTC−08:00 — Pacific Time (US)', value: 'America/Los_Angeles' },
+  { label: 'UTC−07:00 — Mountain Time (US)', value: 'America/Denver' },
+  { label: 'UTC−06:00 — Central Time (US)', value: 'America/Chicago' },
+  { label: 'UTC−05:00 — Eastern Time (US)', value: 'America/New_York' },
+  { label: 'UTC−04:00 — Atlantic Time', value: 'America/Halifax' },
+  { label: 'UTC−03:00 — Brasília', value: 'America/Sao_Paulo' },
+  { label: 'UTC±00:00 — London', value: 'Europe/London' },
+  { label: 'UTC+01:00 — Central Europe', value: 'Europe/Paris' },
+  { label: 'UTC+02:00 — Eastern Europe', value: 'Europe/Helsinki' },
+  { label: 'UTC+03:00 — Moscow', value: 'Europe/Moscow' },
+  { label: 'UTC+05:30 — India', value: 'Asia/Kolkata' },
+  { label: 'UTC+08:00 — China / Singapore', value: 'Asia/Singapore' },
+  { label: 'UTC+09:00 — Japan / Korea', value: 'Asia/Tokyo' },
+  { label: 'UTC+10:00 — Sydney', value: 'Australia/Sydney' },
+  { label: 'UTC+12:00 — New Zealand', value: 'Pacific/Auckland' },
+];
+
 type SettingItem = {
   key: keyof SpoilerPreferences;
   label: ReactNode;
@@ -132,11 +154,12 @@ function SettingGroupSection({
 }
 
 export default function EnrollmentQuestionnaire() {
-  const { preferences, updateOnboarded, updateManySpoilers } = useSettings();
+  const { preferences, updateOnboarded, updateManySpoilers, updateTimezone } = useSettings();
 
   const [selections, setSelections] = useState<Partial<SpoilerPreferences>>(() => ({
     ...preferences.spoilers,
   }));
+  const [timezone, setTimezone] = useState(preferences.timezone);
   const [saving, setSaving] = useState(false);
 
   const toggle = (key: keyof SpoilerPreferences) => {
@@ -146,6 +169,7 @@ export default function EnrollmentQuestionnaire() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      await updateTimezone(timezone);
       await updateManySpoilers(selections as SpoilerPreferences);
       await updateOnboarded(true);
     } finally {
@@ -178,6 +202,27 @@ export default function EnrollmentQuestionnaire() {
             <SettingGroupSection group={SETTING_GROUPS[1]} selections={selections} toggle={toggle} />
             <SettingGroupSection group={SETTING_GROUPS[2]} selections={selections} toggle={toggle} />
           </div>
+        </div>
+
+        {/* Timezone */}
+        <div className="border-t border-slate-200 px-6 py-5 dark:border-slate-700">
+          <label className="mb-1.5 block text-sm font-medium text-slate-800 dark:text-slate-100">
+            Your timezone
+          </label>
+          <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
+            Used to display save-file upload times in your local time.
+          </p>
+          <select
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 sm:max-w-xs"
+          >
+            {TIMEZONES.map((tz) => (
+              <option key={tz.value} value={tz.value}>
+                {tz.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Footer */}

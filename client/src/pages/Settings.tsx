@@ -44,10 +44,10 @@ const SPOILER_GROUPS: SpoilerGroup[] = [
   {
     heading: 'Quests',
     items: [
-      { key: 'show_undiscovered_villager_quests', label: 'Show upcoming / undiscovered villager quests' },
-      { key: 'show_undiscovered_community_quests', label: 'Show upcoming / undiscovered community quests' },
-      { key: 'show_undiscovered_community_events', label: 'Show upcoming community events (birthdays & festivals)' },
-      { key: 'show_event_choice_outcomes', label: 'Show event choice outcome info by default (spoilers)' },
+      { key: 'show_undiscovered_villager_quests', label: 'Show upcoming / undiscovered villager quests (side quests)' },
+      { key: 'show_undiscovered_community_quests', label: 'Show upcoming / undiscovered community quests (crisis events)' },
+      { key: 'show_undiscovered_community_events', label: 'Show upcoming community events (birthdays & festivals, also shown on in-game Calendar tab)' },
+      { key: 'show_event_choice_outcomes', label: 'Show event choice outcome info by default (spoilers on crisis outcomes if you succeed at remediation efforts)' },
     ],
   },
   {
@@ -82,9 +82,9 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
 function SaveIndicator({ state }: { state: SaveState }) {
   if (state === 'idle') return null;
-  if (state === 'saving') return <span className="text-xs text-slate-400">Saving…</span>;
-  if (state === 'saved') return <span className="text-xs font-medium text-emerald-600">✓ Saved</span>;
-  return <span className="text-xs font-medium text-red-600">Save failed</span>;
+  if (state === 'saving') return <span className="text-sm text-slate-400">Saving…</span>;
+  if (state === 'saved') return <span className="text-sm font-medium text-emerald-600">✓ Saved</span>;
+  return <span className="text-sm font-medium text-red-600">Save failed</span>;
 }
 
 function useSaveState() {
@@ -119,14 +119,14 @@ export default function Settings() {
       <header>
         <h1 className="font-sans text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Settings</h1>
         {isGuestSession && (
-          <p className="mt-2 text-sm text-amber-700 bg-amber-50 rounded-lg px-4 py-2 dark:bg-amber-900/20 dark:text-amber-300">
+          <p className="mt-2 text-base text-amber-700 bg-amber-50 rounded-lg px-4 py-2 dark:bg-amber-900/20 dark:text-amber-300">
             You're in guest mode. Settings changes will apply for this session only.
           </p>
         )}
       </header>
 
       {loading ? (
-        <p className="text-slate-600 dark:text-slate-400">Loading settings…</p>
+        <p className="text-base text-slate-600 dark:text-slate-400">Loading settings…</p>
       ) : (
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_minmax(0,22rem)] lg:items-start">
 
@@ -134,8 +134,8 @@ export default function Settings() {
           <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Spoiler Settings</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Spoiler Settings</h2>
+                <p className="text-base text-slate-500 dark:text-slate-400">
                   Turn off a toggle to hide undiscovered content and avoid spoilers.
                 </p>
               </div>
@@ -144,7 +144,7 @@ export default function Settings() {
             <div className="space-y-6">
               {SPOILER_GROUPS.map((group) => (
                 <div key={group.heading}>
-                  <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     {group.heading}
                   </h3>
                   <ul className={
@@ -154,7 +154,7 @@ export default function Settings() {
                   }>
                     {group.items.map(({ key, label }) => (
                       <li key={key} className="flex items-center justify-between gap-4 rounded-lg border border-slate-100 px-3 py-2.5 dark:border-slate-700/60">
-                        <span className="text-sm text-slate-700 dark:text-slate-300">{label}</span>
+                        <span className="text-base text-slate-700 dark:text-slate-300">{label}</span>
                         <Toggle
                           checked={preferences.spoilers[key]}
                           onChange={(v) => spoilerSave.run(() => updateSpoiler(key, v))}
@@ -172,11 +172,11 @@ export default function Settings() {
             {/* Appearance */}
             <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Appearance</h2>
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Appearance</h2>
                 <SaveIndicator state={darkSave.state} />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-700 dark:text-slate-300">Dark mode</span>
+                <span className="text-base text-slate-700 dark:text-slate-300">Dark mode</span>
                 <Toggle
                   checked={preferences.dark_mode}
                   onChange={(v) => darkSave.run(() => updateDarkMode(v))}
@@ -188,8 +188,8 @@ export default function Settings() {
             <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Timezone</h2>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Timezone</h2>
+                  <p className="text-base text-slate-500 dark:text-slate-400">
                     Used to display save-file upload times in your local time.
                   </p>
                 </div>
@@ -199,7 +199,7 @@ export default function Settings() {
                 value={preferences.timezone}
                 disabled={tzSave.state === 'saving'}
                 onChange={(e) => tzSave.run(() => updateTimezone(e.target.value))}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-slate-800 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
               >
                 {TIMEZONES.map((tz) => (
                   <option key={tz.value} value={tz.value}>
