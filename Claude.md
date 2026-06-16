@@ -47,14 +47,6 @@ The save file stores progress as arrays of integer IDs, e.g.:
 
 3. **Update the icon on Tips info box** - we want to keep the hexagon shape but swap the exclamation point for an "i" (for info) and choose a deep orange color instead of the red since the red seems to alert people of an error where there isn't one.
 
-4. **Missing item icons** — The following items exist in game data but have no icon file in `client/public/items/`. Source from in-game screenshots or the Unity asset extractor and name the files exactly as listed:
-   - `Coal.png` (distinct from `Charcoal.png`)
-   - `Fur.png` (ID 651 — distinct from Hide)
-   - `Lean_Meat.png` (ID 643)
-   - `Rich_Meat.png` (ID 644)
-   - `Mithril_Bar.png` (ID 371 — ore already exists, bar does not)
-   - `Fossil.png` (ID 235)
-
 8. **Human To Do: Email SMTP Server Setup** - Supabase is doing some severe rate-limiting on outgoing emails for password resets or enrollment (two or three emails total per day allotted total for the app across all users) - we will need to set up a server to handle the email volume when this is live/hosted for the general public. Research has indicated there are only two or three good options for which service to use for SMTP, so the human dev will have to do setup and then coordinate with Claude to ensure that all necessary code (if any) is written into the app to appropriately ensure expected functionality is maintained as it currently works great directly through SupaBase email functions.
 
 9. **Test new user enrollment** - we need to test that the SMTP server is allowing new enrollments, and test the new enrollment page/modal that Claude previously created to ensure that it is capturing each setting correctly and mainatining it across logout/navigating away and back to the app, etc.
