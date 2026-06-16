@@ -1550,12 +1550,14 @@ function DonatedSpecimensCard({
   fishScheduleMap,
   mineralDataMap,
   storageMap,
+  refDataReady,
 }: {
   selectedCharacter: ReturnType<typeof useAuth>['selectedCharacter'];
   donatedSections: { label: string; items: MuseumItem[] }[];
   fishScheduleMap: Record<number, FishScheduleEntry>;
   mineralDataMap: Record<number, MineralInfo>;
   storageMap: Map<number, number>;
+  refDataReady: boolean;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -1586,6 +1588,10 @@ function DonatedSpecimensCard({
           {!selectedCharacter ? (
             <p className="text-sm italic text-slate-400 dark:text-slate-500">
               Load a save file to see your donated specimens.
+            </p>
+          ) : !refDataReady ? (
+            <p className="text-sm italic text-slate-400 dark:text-slate-500">
+              Item reference data failed to load — please refresh the page.
             </p>
           ) : donatedSections.length === 0 ? (
             <p className="text-sm italic text-slate-400 dark:text-slate-500">
@@ -1894,7 +1900,7 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
 
 export default function Tips() {
   const { season, day, getCurrentDateString } = useDate();
-  const { selectedCharacter } = useAuth();
+  const { selectedCharacter, characterDetailLoading } = useAuth();
   const { preferences } = useSettings();
   const { isMobile } = useDevice();
   const showCommunityEvents = preferences.spoilers.show_undiscovered_community_events;
@@ -1903,6 +1909,7 @@ export default function Tips() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [museumItems, setMuseumItems] = useState<MuseumItem[]>([]);
+  const [museumItemsLoaded, setMuseumItemsLoaded] = useState(false);
   const [useCharacterDate, setUseCharacterDate] = useState(false);
   const revealUndiscovered = preferences.spoilers.show_undiscovered_items;
   const showVillagerGifts = preferences.spoilers.show_villager_gifts;
@@ -1927,9 +1934,9 @@ export default function Tips() {
 
   useEffect(() => {
     fetch('/api/museum-items')
-      .then((r) => r.ok ? r.json() : [])
-      .then((data: MuseumItem[]) => setMuseumItems(data))
-      .catch(() => {});
+      .then((r) => r.ok ? r.json() : Promise.reject(new Error(`${r.status}`)))
+      .then((data: MuseumItem[]) => { setMuseumItems(data); setMuseumItemsLoaded(true); })
+      .catch(() => { setMuseumItemsLoaded(true); });
   }, []);
 
   useEffect(() => {
@@ -2376,6 +2383,10 @@ export default function Tips() {
           <p className="text-slate-600 dark:text-slate-400">Loading quests...</p>
         ) : error ? (
           <p className="text-red-600">{error}</p>
+        ) : characterDetailLoading ? (
+          <p className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-5 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
+            Loading character data…
+          </p>
         ) : !selectedCharacter ? (
           <p className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-5 text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-500">
             Load a save file to see your active quests.
@@ -2420,7 +2431,9 @@ export default function Tips() {
                 {selectedCharacter ? donatedCount : '—'}
               </span>
             </p>
-            {!selectedCharacter ? (
+            {characterDetailLoading ? (
+              <p className="text-base text-slate-500 dark:text-slate-400 italic">Loading character data…</p>
+            ) : !selectedCharacter ? (
               <p className="text-base text-slate-500 dark:text-slate-400 italic">Load a save file to see your donation progress.</p>
             ) : nextMilestone ? (
               <div className="text-base text-slate-600 dark:text-slate-400">
@@ -2630,9 +2643,17 @@ export default function Tips() {
             )}
           </div>
 
-          {!selectedCharacter ? (
+          {characterDetailLoading ? (
+            <p className="text-base italic text-slate-400 dark:text-slate-500">Loading character data…</p>
+          ) : !selectedCharacter ? (
             <p className="text-base italic text-slate-400 dark:text-slate-500">
               Load a save file to see items available to donate.
+            </p>
+          ) : !museumItemsLoaded ? (
+            <p className="text-base italic text-slate-400 dark:text-slate-500">Loading item data…</p>
+          ) : museumItems.length === 0 ? (
+            <p className="text-base italic text-slate-amber-600 dark:text-slate-400">
+              Item reference data failed to load — please refresh the page.
             </p>
           ) : toDonateSections.length === 0 ? (
             <p className="text-base italic text-slate-400 dark:text-slate-500">
@@ -2712,6 +2733,7 @@ export default function Tips() {
           fishScheduleMap={fishScheduleMap}
           mineralDataMap={mineralDataMap}
           storageMap={storageMap}
+          refDataReady={museumItemsLoaded && museumItems.length > 0}
         />
       </section>}
 

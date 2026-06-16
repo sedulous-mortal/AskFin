@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 const LS_DARK_KEY = 'askfin_dark_mode';
+const LS_ONBOARDED_KEY = 'askfin_onboarded';
 
 export type SpoilerPreferences = {
   show_undiscovered_fish: boolean;
@@ -64,6 +65,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<UserPreferences>(() => ({
     ...DEFAULT_PREFERENCES,
     dark_mode: localStorage.getItem(LS_DARK_KEY) === 'true',
+    onboarded: localStorage.getItem(LS_ONBOARDED_KEY) === 'true',
   }));
   const [loading, setLoading] = useState(false);
 
@@ -90,12 +92,17 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setPreferences((prev) => ({
           ...DEFAULT_PREFERENCES,
           ...data,
-          // Server may be returning stale data without dark_mode; localStorage is authoritative.
+          // localStorage is authoritative for dark_mode and onboarded — server may have stale/missing data.
           dark_mode: data.dark_mode ?? prev.dark_mode,
+          onboarded: data.onboarded || localStorage.getItem(LS_ONBOARDED_KEY) === 'true',
           spoilers: { ...DEFAULT_PREFERENCES.spoilers, ...(data.spoilers || {}) },
         }));
       })
-      .catch(() => setPreferences((prev) => ({ ...DEFAULT_PREFERENCES, dark_mode: prev.dark_mode })))
+      .catch(() => setPreferences((prev) => ({
+        ...DEFAULT_PREFERENCES,
+        dark_mode: prev.dark_mode,
+        onboarded: localStorage.getItem(LS_ONBOARDED_KEY) === 'true',
+      })))
       .finally(() => setLoading(false));
   }, [user?.id, isGuestSession]);
 
@@ -109,6 +116,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         ...(updates.onboarded !== undefined ? { onboarded: updates.onboarded } : {}),
         spoilers: { ...prev.spoilers, ...(updates.spoilers || {}) },
       }));
+      if (updates.onboarded !== undefined) {
+        try { localStorage.setItem(LS_ONBOARDED_KEY, String(updates.onboarded)); } catch {}
+      }
 
       if (!user || isGuestSession) return;
 

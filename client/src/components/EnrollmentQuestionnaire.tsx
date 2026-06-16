@@ -161,6 +161,7 @@ export default function EnrollmentQuestionnaire() {
   }));
   const [timezone, setTimezone] = useState(preferences.timezone);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const toggle = (key: keyof SpoilerPreferences) => {
     setSelections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -168,10 +169,13 @@ export default function EnrollmentQuestionnaire() {
 
   const handleSave = async () => {
     setSaving(true);
+    setSaveError(null);
     try {
       await updateTimezone(timezone);
       await updateManySpoilers(selections as SpoilerPreferences);
       await updateOnboarded(true);
+    } catch {
+      setSaveError('Settings could not be saved to the server. Your preferences may not persist after a refresh. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -226,17 +230,24 @@ export default function EnrollmentQuestionnaire() {
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 flex items-center gap-8 rounded-b-2xl border-t border-slate-200 bg-white px-6 py-4 dark:border-slate-700 dark:bg-slate-900">
-          <div className="flex-1 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-200">
-            Note: these settings are at the User level, not the Character level, so whatever you set these to will apply no matter which of your character files you are looking at.
+        <div className="sticky bottom-0 flex flex-col gap-2 rounded-b-2xl border-t border-slate-200 bg-white px-6 py-4 dark:border-slate-700 dark:bg-slate-900">
+          {saveError && (
+            <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700 dark:border-red-700/50 dark:bg-red-900/20 dark:text-red-300">
+              {saveError}
+            </p>
+          )}
+          <div className="flex items-center gap-8">
+            <div className="flex-1 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-200">
+              Note: these settings are at the User level, not the Character level, so whatever you set these to will apply no matter which of your character files you are looking at.
+            </div>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="shrink-0 rounded-lg bg-amber-600 px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-amber-700 disabled:opacity-60"
+            >
+              {saving ? 'Saving…' : 'Start exploring!'}
+            </button>
           </div>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="shrink-0 rounded-lg bg-amber-600 px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-amber-700 disabled:opacity-60"
-          >
-            {saving ? 'Saving…' : 'Start exploring!'}
-          </button>
         </div>
       </div>
     </div>
