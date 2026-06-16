@@ -2,6 +2,32 @@ import { useCallback, useRef, useState } from 'react';
 import { useSettings, SpoilerPreferences } from '../context/SettingsContext';
 import { useAuth } from '../context/AuthContext';
 
+const NAV_PAGES = [
+  { value: 'stats',              label: 'Stats' },
+  { value: 'tips',               label: 'Tips' },
+  { value: 'ref',                label: 'Ref' },
+  { value: 'faq',                label: 'FAQ' },
+  { value: 'dashboard-overview', label: 'Dashboard' },
+  { value: 'settings',           label: 'Settings' },
+];
+
+const SUBTABS: Record<string, { value: string; label: string }[]> = {
+  tips: [
+    { value: 'quests',   label: 'Quests' },
+    { value: 'research', label: 'Research' },
+    { value: 'upgrades', label: 'Upgrades' },
+    { value: 'critters', label: 'Critters' },
+    { value: 'events',   label: 'Events' },
+    { value: 'farm',     label: 'Farm' },
+  ],
+  ref: [
+    { value: 'critters',    label: 'Critters' },
+    { value: 'forageables', label: 'Forageables' },
+    { value: 'quests',      label: 'Quests' },
+    { value: 'events',      label: 'Events' },
+  ],
+};
+
 const TIMEZONES = [
   { label: 'UTC−12:00 — Baker Island', value: 'Etc/GMT+12' },
   { label: 'UTC−11:00 — American Samoa', value: 'Pacific/Pago_Pago' },
@@ -108,11 +134,12 @@ function useSaveState() {
 }
 
 export default function Settings() {
-  const { preferences, loading, updateTimezone, updateDarkMode, updateSpoiler } = useSettings();
+  const { preferences, loading, updateTimezone, updateDarkMode, updateSpoiler, updateDefaultLanding } = useSettings();
   const { isGuestSession } = useAuth();
   const darkSave = useSaveState();
   const tzSave = useSaveState();
   const spoilerSave = useSaveState();
+  const tabSave = useSaveState();
 
   return (
     <div className="space-y-8">
@@ -208,6 +235,57 @@ export default function Settings() {
                 ))}
               </select>
             </section>
+
+            {/* Default Landing Tab */}
+            {(() => {
+              const currentTab = preferences.default_tab ?? 'stats';
+              const subtabOptions = SUBTABS[currentTab] ?? [];
+              const currentSubtab = subtabOptions.some((s) => s.value === preferences.default_subtab)
+                ? (preferences.default_subtab ?? subtabOptions[0]?.value ?? null)
+                : (subtabOptions[0]?.value ?? null);
+              return (
+                <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Default Landing Tab</h2>
+                      <p className="text-base text-slate-500 dark:text-slate-400">
+                        Which tab opens when you log in.
+                      </p>
+                    </div>
+                    <SaveIndicator state={tabSave.state} />
+                  </div>
+                  <div className="space-y-3">
+                    <select
+                      value={currentTab}
+                      disabled={tabSave.state === 'saving'}
+                      onChange={(e) => {
+                        const newTab = e.target.value;
+                        const subs = SUBTABS[newTab] ?? [];
+                        const newSubtab = subs.length > 0 ? subs[0].value : null;
+                        tabSave.run(() => updateDefaultLanding(newTab, newSubtab));
+                      }}
+                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-slate-800 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                    >
+                      {NAV_PAGES.map(({ value, label }) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))}
+                    </select>
+                    {subtabOptions.length > 0 && currentSubtab && (
+                      <select
+                        value={currentSubtab}
+                        disabled={tabSave.state === 'saving'}
+                        onChange={(e) => tabSave.run(() => updateDefaultLanding(currentTab, e.target.value))}
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-slate-800 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                      >
+                        {subtabOptions.map(({ value, label }) => (
+                          <option key={value} value={value}>{label}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </section>
+              );
+            })()}
           </div>
 
         </div>

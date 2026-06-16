@@ -3,7 +3,21 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { DeviceProvider } from './context/DeviceContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DateProvider } from './context/DateContext';
-import { SettingsProvider, useSettings } from './context/SettingsContext';
+import { SettingsProvider, useSettings, DEFAULT_PREFERENCES } from './context/SettingsContext';
+
+const DEFAULT_TAB_PATHS: Record<string, string> = {
+  stats:              '/dashboard',
+  tips:               '/tips',
+  ref:                '/ref',
+  faq:                '/faq',
+  'dashboard-overview': '/dashboard-overview',
+  settings:           '/settings',
+};
+
+const SUBTAB_SESSION_KEYS: Record<string, string> = {
+  tips: 'tips-active-tab',
+  ref:  'ref-active-tab',
+};
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -42,6 +56,7 @@ function Spinner() {
 
 function HomeRedirect() {
   const { user, loading } = useAuth();
+  const { preferences, loading: settingsLoading } = useSettings();
   const location = useLocation();
 
   // A recovery link lands on "/" with the tokens in the hash. Forward to the
@@ -58,11 +73,22 @@ function HomeRedirect() {
     return <Navigate to={`/reset-password${recoveryHash}`} replace />;
   }
 
-  if (loading) {
+  if (loading || (user && settingsLoading)) {
     return <Spinner />;
   }
 
-  return user ? <Navigate to="/tips" replace /> : <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" replace />;
+
+  const tab = preferences.default_tab ?? DEFAULT_PREFERENCES.default_tab ?? 'stats';
+  const subtab = preferences.default_subtab;
+  const path = DEFAULT_TAB_PATHS[tab] ?? '/dashboard';
+
+  const sessionKey = SUBTAB_SESSION_KEYS[tab];
+  if (sessionKey && subtab) {
+    sessionStorage.setItem(sessionKey, subtab);
+  }
+
+  return <Navigate to={path} replace />;
 }
 
 function EnrollmentGate() {

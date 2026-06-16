@@ -1294,10 +1294,6 @@ export default function Dashboard() {
             />
           </section>
 
-          <ResearchCenterCrosscut
-            characters={characters}
-            prefetchedDetail={selectedCharacter}
-          />
         </>
       )}
     </div>

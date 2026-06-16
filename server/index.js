@@ -158,6 +158,8 @@ const DEFAULT_PREFERENCES = {
   timezone: 'America/New_York',
   dark_mode: false,
   onboarded: false,
+  default_tab: 'stats',
+  default_subtab: null,
   spoilers: {
     show_undiscovered_fish: true,
     show_undiscovered_cooking_recipes: true,
@@ -1075,6 +1077,8 @@ app.patch('/api/settings/:userId', async (req, res) => {
     if (updates.timezone !== undefined) current.timezone = updates.timezone;
     if (updates.dark_mode !== undefined) current.dark_mode = updates.dark_mode;
     if (updates.onboarded !== undefined) current.onboarded = updates.onboarded;
+    if (updates.default_tab !== undefined) current.default_tab = updates.default_tab;
+    if ('default_subtab' in updates) current.default_subtab = updates.default_subtab ?? null;
     if (updates.spoilers && typeof updates.spoilers === 'object') {
       current.spoilers = { ...current.spoilers, ...updates.spoilers };
     }

@@ -35,6 +35,31 @@ The save file stores progress as arrays of integer IDs, e.g.:
 - The decompiled C# is in `grimshire-decompiled/Assembly-CSharp/` — useful for understanding save file structure. Key files: `GameData.cs`, `SaveObject.cs`, `ResourceManager.cs`.
 - **Do NOT use dnSpy advice from old notes** — that was superseded. The extraction is done via the Python script above.
 
+## Settings System — How It Works
+
+All user preferences live in a single `preferences` JSONB column on `public.profiles` (no separate columns). The server reads/writes the whole blob at `GET /api/settings/:userId` and `PATCH /api/settings/:userId`. The client merges server data with `DEFAULT_PREFERENCES` on load so missing keys always fall back gracefully.
+
+**Key files:**
+- `server/index.js` — `DEFAULT_PREFERENCES` constant (~line 157); `GET` and `PATCH` `/api/settings/:userId` routes (~line 1038)
+- `client/src/context/SettingsContext.tsx` — `UserPreferences` type, `DEFAULT_PREFERENCES`, `SettingsProvider`, all updater hooks
+- `client/src/pages/Settings.tsx` — Settings UI (spoiler toggles, appearance, timezone, default landing tab)
+- `server/sql/profiles_preferences_schema.sql` — documents the column and all JSONB keys
+
+**Adding a new preference:** add the key + default to `DEFAULT_PREFERENCES` in both `server/index.js` and `client/src/context/SettingsContext.tsx`, handle it in the PATCH route, add an updater in `SettingsContext`, and expose it in the `Settings` page. No schema change needed.
+
+### Default Landing Tab
+
+Stored in `preferences.default_tab` (string, e.g. `'stats'`) and `preferences.default_subtab` (string | null, only meaningful for Tips and Ref). Default is `'stats'` / `null`.
+
+**Valid `default_tab` values** (match the `navItems` labels in `Header.tsx`):
+`stats` → `/dashboard`, `tips` → `/tips`, `ref` → `/ref`, `faq` → `/faq`, `dashboard-overview` → `/dashboard-overview`, `settings` → `/settings`
+
+**Subtabs by page:**
+- `tips`: `quests`, `research`, `upgrades`, `critters`, `events`, `farm`
+- `ref`: `critters`, `forageables`, `quests`, `events`
+
+**How routing works:** After login, `Login.tsx` navigates to `/` (not `/dashboard`). `HomeRedirect` in `App.tsx` reads the loaded preferences, seeds `sessionStorage` with the subtab key if needed (`tips-active-tab` / `ref-active-tab`), then issues a `<Navigate>` to the resolved path. A spinner is shown while settings are loading. Guest login bypasses this and goes straight to `/dashboard`. The `EnrollmentQuestionnaire` does **not** include this setting — it lives only on the Settings page.
+
 ## Authentication System Implementation
 
 **Status**: AuthContext.tsx created; database schema ready (profiles, characters tables). Pending: client-side auth UI and routing still needs debugging.

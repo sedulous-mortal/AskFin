@@ -93,7 +93,7 @@ export default function Login() {
     if (access_token && refresh_token) {
       supabase.auth
         .setSession({ access_token, refresh_token })
-        .then(() => navigate('/dashboard'))
+        .then(() => navigate('/'))
         .catch(() => setError('Unable to complete invite sign-in.'));
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }
@@ -149,7 +149,7 @@ export default function Login() {
 
       // ensure loading state is cleared before navigation
       setLoading(false);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       // Timeouts and network/fetch failures land here.
       console.error('Login error:', err);

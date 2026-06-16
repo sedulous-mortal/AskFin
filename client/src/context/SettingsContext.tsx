@@ -24,6 +24,8 @@ export type UserPreferences = {
   timezone: string;
   dark_mode: boolean;
   onboarded: boolean;
+  default_tab: string | null;
+  default_subtab: string | null;
   spoilers: SpoilerPreferences;
 };
 
@@ -31,6 +33,8 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   timezone: 'America/New_York',
   dark_mode: false,
   onboarded: false,
+  default_tab: 'stats',
+  default_subtab: null,
   spoilers: {
     show_undiscovered_fish: true,
     show_undiscovered_cooking_recipes: true,
@@ -54,6 +58,7 @@ type SettingsContextType = {
   updateSpoiler: (key: keyof SpoilerPreferences, value: boolean) => Promise<void>;
   updateOnboarded: (value: boolean) => Promise<void>;
   updateManySpoilers: (updates: Partial<SpoilerPreferences>) => Promise<void>;
+  updateDefaultLanding: (tab: string, subtab: string | null) => Promise<void>;
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -107,13 +112,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [user?.id, isGuestSession]);
 
   const patch = useCallback(
-    async (updates: { timezone?: string; dark_mode?: boolean; onboarded?: boolean; spoilers?: Partial<SpoilerPreferences> }) => {
+    async (updates: { timezone?: string; dark_mode?: boolean; onboarded?: boolean; default_tab?: string | null; default_subtab?: string | null; spoilers?: Partial<SpoilerPreferences> }) => {
       // Optimistic update first so the UI never lags.
       setPreferences((prev) => ({
         ...prev,
         ...(updates.timezone !== undefined ? { timezone: updates.timezone } : {}),
         ...(updates.dark_mode !== undefined ? { dark_mode: updates.dark_mode } : {}),
         ...(updates.onboarded !== undefined ? { onboarded: updates.onboarded } : {}),
+        ...(updates.default_tab !== undefined ? { default_tab: updates.default_tab } : {}),
+        ...(updates.default_subtab !== undefined ? { default_subtab: updates.default_subtab } : {}),
         spoilers: { ...prev.spoilers, ...(updates.spoilers || {}) },
       }));
       if (updates.onboarded !== undefined) {
@@ -144,6 +151,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         ...data,
         dark_mode: data.dark_mode ?? prev.dark_mode,
         onboarded: data.onboarded ?? prev.onboarded,
+        default_tab: data.default_tab ?? prev.default_tab,
+        default_subtab: data.default_subtab ?? null,
         spoilers: { ...DEFAULT_PREFERENCES.spoilers, ...(data.spoilers || {}) },
       }));
     },
@@ -176,8 +185,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [patch]
   );
 
+  const updateDefaultLanding = useCallback(
+    (tab: string, subtab: string | null) => patch({ default_tab: tab, default_subtab: subtab }),
+    [patch]
+  );
+
   return (
-    <SettingsContext.Provider value={{ preferences, loading, updateTimezone, updateDarkMode, updateSpoiler, updateOnboarded, updateManySpoilers }}>
+    <SettingsContext.Provider value={{ preferences, loading, updateTimezone, updateDarkMode, updateSpoiler, updateOnboarded, updateManySpoilers, updateDefaultLanding }}>
       {children}
     </SettingsContext.Provider>
   );
