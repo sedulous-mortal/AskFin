@@ -32,7 +32,7 @@ const forageablesList = [
   ...(forageablesFile.forageables || []),
   // Only include farmables that are also forageable in the wild (source === 'both').
   // Pure farmable crops (source === 'farmable') require planted/harvest state we don't
-  // yet parse from the save file, so they are excluded here.
+  // yet parse from the save file, so they are excluded from the date-based endpoint.
   ...(farmablesFile.farmables || [])
     .filter(f => f.source === 'both')
     .map(f => ({
@@ -42,6 +42,14 @@ const forageablesList = [
       end_season:   f.forage_end_season   ?? f.end_season,
       end_day:      f.forage_end_day      ?? f.end_day,
     })),
+];
+
+// Full plant list for museum tooltip lookup — includes all farmables (not just 'both')
+// with original planting window dates preserved.  Served separately from /api/forageables/all
+// so the Forageables page is not affected.
+const allPlantsForTooltip = [
+  ...(forageablesFile.forageables || []),
+  ...(farmablesFile.farmables || []),
 ];
 const fishScheduleList = fishScheduleFile.fish || [];
 const mineralDataList = mineralDataFile.minerals || [];
@@ -731,8 +739,15 @@ app.get('/api/quests', (req, res) => {
 });
 
 // Returns every forageable item (all seasons) with type field.
+// Used by the Forageables page — intentionally excludes pure farmable crops.
 app.get('/api/forageables/all', (req, res) => {
   res.json(forageablesList);
+});
+
+// Returns every plant (forageables + all farmable crops) for museum tooltip lookup.
+// Used only by the Tips page — includes planting-window data for farmable crops.
+app.get('/api/plants/all', (req, res) => {
+  res.json(allPlantsForTooltip);
 });
 
 // Returns all fish with rarity, size, habitat, locations, and season data.

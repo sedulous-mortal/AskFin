@@ -1955,7 +1955,7 @@ export default function Tips() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/forageables/all')
+    fetch('/api/plants/all')
       .then((r) => r.ok ? r.json() : [])
       .then((data: ForageableEntry[]) => {
         const map: Record<number, ForageableEntry> = {};
