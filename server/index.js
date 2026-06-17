@@ -893,6 +893,7 @@ app.post('/api/save/parse', async (req, res) => {
             name: meta.name,
             image: meta.image,
             daysToMaturity: meta.daysToMaturity,
+            goneToSeedDays: meta.goneToSeedDays ?? null,
             isMultiHarvest: meta.isMultiHarvest,
             daysWatered,
             isDead,

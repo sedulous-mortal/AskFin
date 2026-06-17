@@ -1253,11 +1253,21 @@ function QuestCard({
               Requires
             </p>
             <div className="mb-3 flex flex-wrap gap-1">
-              {reqs.map((req, i) => (
-                <span key={i} className="rounded bg-amber-50 px-2 py-0.5 text-sm text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                  {req.amount > 1 ? `${req.amount}× ` : ''}{req.name}
-                </span>
-              ))}
+              {reqs.map((req, i) => {
+                const donated = donationMap?.get(req.name) ?? 0;
+                const isDone = donationMap != null && donated >= req.amount;
+                const displayAmt = donationMap != null ? Math.max(0, req.amount - donated) : req.amount;
+                return (
+                  <span
+                    key={i}
+                    className={isDone
+                      ? 'rounded px-2 py-0.5 text-sm line-through bg-slate-100 text-slate-400 dark:bg-slate-700/40 dark:text-slate-500'
+                      : 'rounded bg-amber-50 px-2 py-0.5 text-sm text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'}
+                  >
+                    {isDone ? '✓ ' : (displayAmt > 1 ? `${displayAmt}× ` : '')}{req.name}
+                  </span>
+                );
+              })}
             </div>
             {quest.is_town_quest && donationMap && (
               <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300">
@@ -2288,9 +2298,11 @@ type CropGroup = {
   name: string;
   image: string;
   daysToMaturity: number;
+  goneToSeedDays: number | null;
   isMultiHarvest: boolean;
-  readyCount: number;
-  growingEntries: number[];  // daysWatered values for growing (not-yet-ready) tiles
+  readyCount: number;       // harvestable for crop produce (daysToMaturity ≤ daysWatered < goneToSeedDays)
+  goneToSeedCount: number;  // gone to seed — yields seeds, crop only on bumper
+  growingEntries: number[];  // daysWatered values for still-growing tiles
   deadCount: number;
 };
 
@@ -2470,15 +2482,20 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
         name: entry.name,
         image: entry.image,
         daysToMaturity: entry.daysToMaturity,
+        goneToSeedDays: entry.goneToSeedDays,
         isMultiHarvest: entry.isMultiHarvest,
         readyCount: 0,
+        goneToSeedCount: 0,
         growingEntries: [],
         deadCount: 0,
       });
     }
     const g = groupMap.get(entry.cropRefId)!;
+    const gts = entry.goneToSeedDays;
     if (entry.isDead) {
       g.deadCount++;
+    } else if (gts !== null && entry.daysWatered >= gts) {
+      g.goneToSeedCount++;
     } else if (entry.daysWatered >= entry.daysToMaturity) {
       g.readyCount++;
     } else {
@@ -2486,11 +2503,11 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
     }
   }
 
-  // Sort: ready first, then growing (fewest days remaining first), then dead-only groups
+  // Sort: ready first, then gone-to-seed, then growing (fewest days remaining first), then dead-only groups
   const groups = Array.from(groupMap.values()).sort((a, b) => {
-    const aReady = a.readyCount > 0;
-    const bReady = b.readyCount > 0;
-    if (aReady !== bReady) return aReady ? -1 : 1;
+    const aHarvestable = a.readyCount > 0 || a.goneToSeedCount > 0;
+    const bHarvestable = b.readyCount > 0 || b.goneToSeedCount > 0;
+    if (aHarvestable !== bHarvestable) return aHarvestable ? -1 : 1;
     const aGrowing = a.growingEntries.length > 0;
     const bGrowing = b.growingEntries.length > 0;
     if (aGrowing !== bGrowing) return aGrowing ? -1 : 1;
@@ -2501,7 +2518,14 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
   });
 
   const totalTiles = cropsData.length;
-  const readyTiles = cropsData.filter((c) => !c.isDead && c.daysWatered >= c.daysToMaturity).length;
+  const readyTiles = cropsData.filter((c) => {
+    const gts = c.goneToSeedDays;
+    return !c.isDead && c.daysWatered >= c.daysToMaturity && (gts === null || c.daysWatered < gts);
+  }).length;
+  const goneToSeedTiles = cropsData.filter((c) => {
+    const gts = c.goneToSeedDays;
+    return !c.isDead && gts !== null && c.daysWatered >= gts;
+  }).length;
   const deadTiles = cropsData.filter((c) => c.isDead).length;
 
   return (
@@ -2511,15 +2535,18 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
       <p className="mb-4 text-lg text-slate-700 dark:text-slate-300">
         <span className="font-semibold">{totalTiles}</span> crop tile{totalTiles !== 1 ? 's' : ''} planted
         {readyTiles > 0 && <> — <span className="font-semibold text-emerald-700 dark:text-emerald-400">{readyTiles} ready to harvest</span></>}
+        {goneToSeedTiles > 0 && <> — <span className="font-semibold text-amber-600 dark:text-amber-400">{goneToSeedTiles} gone to seed</span></>}
         {deadTiles > 0 && <> — <span className="font-semibold text-slate-500">{deadTiles} dead</span></>}
         .
       </p>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((g) => {
-          const isFullyReady = g.readyCount > 0 && g.growingEntries.length === 0 && g.deadCount === 0;
           const hasReady = g.readyCount > 0;
+          const hasGoneToSeed = g.goneToSeedCount > 0;
           const hasGrowing = g.growingEntries.length > 0;
-          const hasOnlyDead = g.deadCount > 0 && g.readyCount === 0 && g.growingEntries.length === 0;
+          const hasOnlyDead = g.deadCount > 0 && !hasReady && !hasGoneToSeed && !hasGrowing;
+          const isFullyReady = hasReady && !hasGoneToSeed && !hasGrowing && g.deadCount === 0;
+          const isFullyGoneToSeed = !hasReady && hasGoneToSeed && !hasGrowing && g.deadCount === 0;
           const minDaysWatered = hasGrowing ? Math.max(...g.growingEntries) : 0;
           const daysLeft = hasGrowing ? g.daysToMaturity - minDaysWatered : 0;
 
@@ -2531,7 +2558,11 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
                   ? 'border border-slate-200 bg-slate-50 opacity-60 dark:border-slate-700 dark:bg-slate-800/40'
                   : isFullyReady
                     ? 'border-2 border-emerald-600 bg-white dark:border-emerald-500 dark:bg-slate-800'
-                    : 'border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'
+                    : isFullyGoneToSeed
+                      ? 'border-2 border-amber-500 bg-white dark:border-amber-400 dark:bg-slate-800'
+                      : (hasReady || hasGoneToSeed)
+                        ? 'border-2 border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800'
+                        : 'border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'
               }`}
             >
               {/* Crop icon */}
@@ -2562,6 +2593,11 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
                   {hasReady && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3.5 py-1 text-base font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                       ✓ {g.readyCount} ready to harvest
+                    </span>
+                  )}
+                  {hasGoneToSeed && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3.5 py-1 text-base font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                      ⚠ {g.goneToSeedCount} gone to seed — harvest for seeds
                     </span>
                   )}
                   {hasGrowing && (
@@ -2871,18 +2907,30 @@ export default function Tips() {
 
   // Crops
   const cropsData = selectedCharacter?.crops_data ?? [];
-  const readyToHarvest = cropsData.filter((c) => !c.isDead && c.daysWatered >= c.daysToMaturity);
+  const readyToHarvest = cropsData.filter((c) => {
+    const gts = c.goneToSeedDays;
+    return !c.isDead && c.daysWatered >= c.daysToMaturity && (gts === null || c.daysWatered < gts);
+  });
+  const goneToSeedCrops = cropsData.filter((c) => {
+    const gts = c.goneToSeedDays;
+    return !c.isDead && gts !== null && c.daysWatered >= gts;
+  });
   const needsWatering = cropsData.filter((c) => !c.isDead && c.daysWatered < c.daysToMaturity);
   const deadCrops = cropsData.filter((c) => c.isDead);
 
-  // Active quest item requirements vs what player has (inventory + storage combined)
-  const allPendingReqs = activeQuests.flatMap((q) =>
-    (q.requirements ?? []).map((req) => {
+  // Active quest item requirements vs what player has (inventory + storage combined).
+  // For town quests, subtract already-donated (player + NPC) before computing what still needs gathering.
+  const allPendingReqs = activeQuests.flatMap((q) => {
+    const donationMap = q.is_town_quest ? matPileByQuest.get(q.id) : undefined;
+    return (q.requirements ?? []).flatMap((req) => {
+      const alreadyDonated = donationMap?.get(req.name) ?? 0;
+      const trueRemaining = Math.max(0, req.amount - alreadyDonated);
+      if (trueRemaining === 0) return [];
       const have = (inventoryNameMap.get(req.name) ?? 0) + (storageNameMap.get(req.name) ?? 0);
-      const stillNeed = Math.max(0, req.amount - have);
-      return { name: req.name, amount: req.amount, have, stillNeed, questName: q.display_title || q.name };
-    }).filter((r) => r.stillNeed > 0)
-  );
+      const stillNeed = Math.max(0, trueRemaining - have);
+      return [{ name: req.name, amount: trueRemaining, have, stillNeed, questName: q.display_title || q.name }];
+    }).filter((r) => r.stillNeed > 0);
+  });
 
   // Classify quest items by how they're obtained (farmable plant / wild forageable / other)
   const farmQuestItems = allPendingReqs.filter((r) => {
@@ -2926,8 +2974,16 @@ export default function Tips() {
     readyByCropName.set(crop.name, arr);
   }
 
+  // Group gone-to-seed crops by name
+  const goneToSeedByCropName = new Map<string, CropEntry[]>();
+  for (const crop of goneToSeedCrops) {
+    const arr = goneToSeedByCropName.get(crop.name) ?? [];
+    arr.push(crop);
+    goneToSeedByCropName.set(crop.name, arr);
+  }
+
   // Farmable quest items that are still growing (not yet ready to harvest)
-  const farmQuestItemsGrowing = farmQuestItems.filter((r) => !readyByCropName.has(r.name));
+  const farmQuestItemsGrowing = farmQuestItems.filter((r) => !readyByCropName.has(r.name) && !goneToSeedByCropName.has(r.name));
 
   const farmCropItems: ChecklistItem[] = [];
 
@@ -3025,6 +3081,17 @@ export default function Tips() {
       kind: 'callout',
       label: 'Seeds sell for more than the raw crop — let crops with this pink star go to seed and harvest them the following morning. These seeds can\'t be planted after tomorrow anyway, so sell them or keep them for next year.',
     });
+  }
+
+  // Gone-to-seed harvest tasks folded into the same Harvest: section
+  for (const [cropName, crops] of goneToSeedByCropName) {
+    const count = crops.length;
+    farmCropItems.push({
+      id: `gts-harvest-${cropName.toLowerCase().replace(/\s+/g, '-')}`,
+      label: `Harvest ${count} ${cropName} (gone to seed)`,
+      dividerLabel: isFirstHarvestItem ? 'Harvest:' : undefined,
+    });
+    isFirstHarvestItem = false;
   }
 
   // Dead crop removal task

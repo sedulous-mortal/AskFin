@@ -1,0 +1,128 @@
+{
+  "91": {
+    "name": "Asparagus",
+    "daysToMaturity": 5,
+    "goneToSeedDays": 6,
+    "isMultiHarvest": false
+  },
+  "92": {
+    "name": "BellPepper",
+    "daysToMaturity": 8,
+    "goneToSeedDays": null,
+    "isMultiHarvest": true
+  },
+  "93": {
+    "name": "Carro",
+    "daysToMaturity": 5,
+    "goneToSeedDays": 6,
+    "isMultiHarvest": false
+  },
+  "94": {
+    "name": "Corn",
+    "daysToMaturity": 10,
+    "goneToSeedDays": null,
+    "isMultiHarvest": true
+  },
+  "98": {
+    "name": "Cabbage",
+    "daysToMaturity": 6,
+    "goneToSeedDays": 7,
+    "isMultiHarvest": false
+  },
+  "101": {
+    "name": "Peanu",
+    "daysToMaturity": 7,
+    "goneToSeedDays": null,
+    "isMultiHarvest": false
+  },
+  "102": {
+    "name": "Potato",
+    "daysToMaturity": 8,
+    "goneToSeedDays": null,
+    "isMultiHarvest": false
+  },
+  "103": {
+    "name": "Pumpkin",
+    "daysToMaturity": 10,
+    "goneToSeedDays": null,
+    "isMultiHarvest": true
+  },
+  "104": {
+    "name": "Radish",
+    "daysToMaturity": 4,
+    "goneToSeedDays": 5,
+    "isMultiHarvest": false
+  },
+  "106": {
+    "name": "Strawberry",
+    "daysToMaturity": 9,
+    "goneToSeedDays": null,
+    "isMultiHarvest": true
+  },
+  "179": {
+    "name": "Min",
+    "daysToMaturity": 4,
+    "goneToSeedDays": null,
+    "isMultiHarvest": false
+  },
+  "229": {
+    "name": "Bean",
+    "daysToMaturity": 7,
+    "goneToSeedDays": null,
+    "isMultiHarvest": true
+  },
+  "233": {
+    "name": "Lavender",
+    "daysToMaturity": 4,
+    "goneToSeedDays": null,
+    "isMultiHarvest": false
+  },
+  "238": {
+    "name": "Cucumber",
+    "daysToMaturity": 7,
+    "goneToSeedDays": null,
+    "isMultiHarvest": true
+  },
+  "241": {
+    "name": "Sunflower",
+    "daysToMaturity": 6,
+    "goneToSeedDays": null,
+    "isMultiHarvest": false
+  },
+  "249": {
+    "name": "Cantaloupe",
+    "daysToMaturity": 8,
+    "goneToSeedDays": null,
+    "isMultiHarvest": true
+  },
+  "250": {
+    "name": "DayLily",
+    "daysToMaturity": 5,
+    "goneToSeedDays": null,
+    "isMultiHarvest": false
+  },
+  "251": {
+    "name": "Rhubarb",
+    "daysToMaturity": 5,
+    "goneToSeedDays": 6,
+    "isMultiHarvest": false
+  },
+  "306": {
+    "name": "Onion",
+    "daysToMaturity": 6,
+    "goneToSeedDays": 7,
+    "isMultiHarvest": false
+  },
+  "321": {
+    "name": "Sunroo",
+    "daysToMaturity": 6,
+    "goneToSeedDays": 7,
+    "isMultiHarvest": false
+  },
+  "325": {
+    "name": "Oats",
+    "daysToMaturity": 6,
+    "goneToSeedDays": null,
+    "isMultiHarvest": false
+  }
+}
