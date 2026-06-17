@@ -454,18 +454,18 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5">
-        <span className="text-slate-400 text-xs">Type</span>
+        <span className="text-slate-400 text-sm">Type</span>
         <span className="font-medium text-white text-sm">{plant.type}</span>
       </div>
 
       {(isFarmable || isBoth) && (
         <>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Plant from</span>
+            <span className="text-slate-400 text-sm">Plant from</span>
             <span className="text-white text-sm">{plantStart}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Last plant</span>
+            <span className="text-slate-400 text-sm">Last plant</span>
             <span className="text-white text-sm">{plantEnd}</span>
           </div>
         </>
@@ -474,16 +474,16 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
       {hasForageWindow && (
         <>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Forage Available</span>
+            <span className="text-slate-400 text-sm">Forage Available</span>
             <span className="text-white text-sm">{forageStart}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Forage Disappears</span>
+            <span className="text-slate-400 text-sm">Forage Disappears</span>
             <span className="text-white text-sm">{forageEnd}</span>
           </div>
           {plant.locations && plant.locations.length > 0 && (
             <div className="flex items-baseline gap-1.5">
-              <span className="shrink-0 text-slate-400 text-xs">Locations</span>
+              <span className="shrink-0 text-slate-400 text-sm">Locations</span>
               <span className="text-sm leading-snug">
                 {plant.locations.map((loc, i) => (
                   <span key={loc}>{i > 0 && <span className="text-slate-300">, </span>}<span className="inline-block whitespace-nowrap"><LocationText loc={loc} /></span></span>
@@ -497,16 +497,16 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
       {!isFarmable && !isBoth && (
         <>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Forage Available</span>
+            <span className="text-slate-400 text-sm">Forage Available</span>
             <span className="text-white text-sm">{plantStart}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 text-xs">Forage Disappears</span>
+            <span className="text-slate-400 text-sm">Forage Disappears</span>
             <span className="text-white text-sm">{plantEnd}</span>
           </div>
           {plant.locations && plant.locations.length > 0 && (
             <div className="flex items-baseline gap-1.5 pt-0.5">
-              <span className="shrink-0 text-slate-400 text-xs">Locations</span>
+              <span className="shrink-0 text-slate-400 text-sm">Locations</span>
               <span className="text-sm leading-snug">
                 {plant.locations.map((loc, i) => (
                   <span key={loc}>{i > 0 && <span className="text-slate-300">, </span>}<span className="inline-block whitespace-nowrap"><LocationText loc={loc} /></span></span>
@@ -717,13 +717,13 @@ function QuestItemIcon({ name, stillNeed, have, amount, questName }: {
       <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{name}</div>
       <div className="space-y-1">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-slate-400 text-xs">Still need</span>
-          <span className="font-semibold text-amber-300 text-xs">{stillNeed} of {amount}</span>
+          <span className="text-slate-400 text-sm">Still need</span>
+          <span className="font-semibold text-amber-300 text-sm">{stillNeed} of {amount}</span>
         </div>
         {have > 0 && (
           <div className="flex items-center justify-between gap-3">
-            <span className="text-slate-400 text-xs">In inventory/storage</span>
-            <span className="font-semibold text-emerald-400 text-xs">{have}</span>
+            <span className="text-slate-400 text-sm">In inventory/storage</span>
+            <span className="font-semibold text-emerald-400 text-sm">{have}</span>
           </div>
         )}
         <div className="mt-1 pt-1.5 border-t border-slate-700 text-[11px] text-slate-500 leading-tight">For: {questName}</div>
@@ -2052,28 +2052,28 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                   const barTooltip = (
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-slate-400 text-xs">In storage</span>
-                        <span className="font-semibold text-amber-300 text-xs">{ud.barCount}</span>
+                        <span className="text-slate-400 text-sm">In storage</span>
+                        <span className="font-semibold text-amber-300 text-sm">{ud.barCount}</span>
                       </div>
                       {ud.orePerLoc.length > 0 ? (
                         <div className="border-t border-slate-700 pt-1.5">
-                          <div className="text-slate-400 text-xs mb-1">{ud.oreName}:</div>
+                          <div className="text-slate-400 text-sm mb-1">{ud.oreName}:</div>
                           {ud.orePerLoc.map(({ label, count }) => (
                             <div key={label} className="flex items-center justify-between gap-4">
-                              <span className="text-slate-400 text-xs">{label}</span>
-                              <span className="font-semibold text-amber-300 text-xs">{count}</span>
+                              <span className="text-slate-400 text-sm">{label}</span>
+                              <span className="font-semibold text-amber-300 text-sm">{count}</span>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div className="border-t border-slate-700 pt-1.5 text-slate-500 text-xs">{ud.oreName}: none in storage</div>
+                        <div className="border-t border-slate-700 pt-1.5 text-slate-500 text-sm">{ud.oreName}: none in storage</div>
                       )}
                     </div>
                   );
                   const coinTooltip = ud.money != null ? (
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-slate-400 text-xs">You have</span>
-                      <span className="font-semibold text-amber-300 text-xs">{ud.money.toLocaleString()} coins</span>
+                      <span className="text-slate-400 text-sm">You have</span>
+                      <span className="font-semibold text-amber-300 text-sm">{ud.money.toLocaleString()} coins</span>
                     </div>
                   ) : null;
                   const barDone = checked.has(item.id + '-req-bar') || done;
