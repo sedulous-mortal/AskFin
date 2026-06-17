@@ -35,6 +35,57 @@ The save file stores progress as arrays of integer IDs, e.g.:
 - The decompiled C# is in `grimshire-decompiled/Assembly-CSharp/` — useful for understanding save file structure. Key files: `GameData.cs`, `SaveObject.cs`, `ResourceManager.cs`.
 - **Do NOT use dnSpy advice from old notes** — that was superseded. The extraction is done via the Python script above.
 
+### Crop death timing (confirmed from decompiled source)
+
+**The end date is the last safe day. Death starts the next morning.**
+
+When the player sleeps, `EndOfDayScreen.cs:33` calls `TimeControl.ChangeDay(1)`, which increments the date and immediately fires `newDayEvent`. That event calls `CropManager.UpdateAllPlantsStatus` with the date already advanced to the new day. The check (`ShouldPlantBeDead`, `CropManager.cs:126`) works as follows:
+
+1. If `IfInSeason(0)` returns true (inclusive end: `currentDayNum <= endDayNum`), the plant is safe.
+2. Otherwise, `GetDaysBetweenDates(endDate, currentDate)` returns how many days have passed since the end date. If `< 7`, there is a **10% chance to die** each morning (`Random.Range(0, 10) == 0`). If `>= 7`, the plant is **guaranteed dead**.
+
+Example timeline for a crop with end date Spring 28 (season 0, day# 28):
+
+| Day | Days past end date | Result |
+|---|---|---|
+| Spring 28 | — | `IfInSeason` true → safe |
+| Summer 1 | 1 | 10% chance to die |
+| Summer 2–6 | 2–6 | 10% chance to die each morning |
+| Summer 7+ | ≥7 | Guaranteed dead |
+
+Once `isDead` is set it is never cleared. Key source files: `CropManager.cs` (lines 92–138), `AvailableDateRange.cs` (line 80), `TimeControl.cs` (lines 393–398, 435–445).
+
+### Gone-to-seed harvest: when you get the crop vs. just seeds (confirmed from decompiled source)
+
+**You always get seeds. You only get the crop produce too when `IsBumperCrop()` fires.**
+
+`SpawnDrops` (`CropObject.cs:307`) always gives the gone-to-seed growth stage's `HarvestItemDrops` (seeds). Then two bumper bonuses are checked. Since the gone-to-seed stage has both `GoneToSeedStage = true` AND `Harvestable = true`, both apply when `IsBumperCrop()` returns true:
+- `IsGoneToSeed() && IsBumperCrop()` → +1 extra seed (`CropObject.cs:330`)
+- `IsHarvestable() && IsBumperCrop()` → +1 crop produce (`CropObject.cs:334`)
+
+`IsBumperCrop()` re-seeds the same RNG each call so it returns the same value both times. When bumper fires: base seeds + extra seed + crop produce. When it doesn't: just base seeds.
+
+**`IsBumperCrop()` formula** (`CropObject.cs:227`):
+```
+minChanceForMega = fertility / (DaysToMaturity + 1)   [+ 0.1 if skill 876 unlocked]
+minChanceForMega = min(minChanceForMega, 0.8)          [hard cap]
+bumper = Random.Range(minChanceForMega, 1.0) > 0.9
+```
+Probability = `0.1 / (1.0 − minChanceForMega)`:
+
+| minChanceForMega | Bumper chance |
+|---|---|
+| 0.0 (no compost, no skill) | 10% |
+| 0.5 | 20% |
+| 0.75 | 40% |
+| 0.8 (max) | 50% |
+
+**Compost does help.** Fertility accumulates +1 per watered day on fertilized soil (`CropManager.cs:105`). `minChanceForMega = fertility / (DaysToMaturity + 1)`, so a fully composted grow (fertility ≈ DaysToMaturity) hits the 0.8 cap → 50% bumper chance. Forage plants are excluded (`isForage` always returns false from `IsBumperCrop`).
+
+**Deterministic per crop instance.** The RNG is seeded with `objID + posX + posY` before every roll, so the outcome is fixed for a given crop on a given tile. Compost shifts the threshold — it can push a specific crop from non-bumper to bumper — but it's not re-randomized each harvest attempt.
+
+Skill 888 also gives a separate 10% chance for +1 bonus seed on any harvestable crop (`CropObject.cs:326`), independent of bumper.
+
 ## Settings System — How It Works
 
 All user preferences live in a single `preferences` JSONB column on `public.profiles` (no separate columns). The server reads/writes the whole blob at `GET /api/settings/:userId` and `PATCH /api/settings/:userId`. The client merges server data with `DEFAULT_PREFERENCES` on load so missing keys always fall back gracefully.
