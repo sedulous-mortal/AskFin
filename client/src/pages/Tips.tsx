@@ -903,7 +903,7 @@ function FestivalItemIcon({ name, qty, storageCount }: { name: string; qty: numb
 type VillagerGifts = { favorites: string[]; dislikes: string[] };
 const villagerGifts: Record<string, VillagerGifts> = villagerGiftsData as Record<string, VillagerGifts>;
 
-function GiftItemIcon({ name, sentiment, storageCount }: { name: string; sentiment: 'favorite' | 'dislike'; storageCount?: number }) {
+function GiftItemIcon({ name, sentiment, storageCount, size = 'default' }: { name: string; sentiment: 'favorite' | 'dislike'; storageCount?: number; size?: 'sm' | 'default' }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
@@ -924,6 +924,28 @@ function GiftItemIcon({ name, sentiment, storageCount }: { name: string; sentime
       )}
     </>
   );
+
+  if (size === 'sm') {
+    return (
+      <AppTooltip content={tooltipContent}>
+        <div
+          className={`h-9 w-9 cursor-default overflow-hidden rounded-md border ${
+            isFav
+              ? 'border-[#5c9a30]/50 bg-white dark:border-[#6aae36]/50 dark:bg-emerald-900/20 [box-shadow:inset_0_0_6px_rgba(92,154,48,0.22)]'
+              : 'border-red-300/60 bg-white dark:border-red-400/60 dark:bg-red-900/20 [box-shadow:inset_0_0_6px_rgba(239,68,68,0.18)]'
+          }`}
+        >
+          {pathIdx < paths.length ? (
+            <img src={paths[pathIdx]} alt={name} className="h-full w-full object-contain p-0.5" onError={() => setPathIdx((i) => i + 1)} />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center text-xs font-semibold text-slate-400 dark:text-slate-500">
+              {initials}
+            </span>
+          )}
+        </div>
+      </AppTooltip>
+    );
+  }
 
   return (
     <AppTooltip content={tooltipContent}>
@@ -1748,7 +1770,7 @@ function DonatedSpecimensCard({
 
 // ── Daily To-Do Checklist ────────────────────────────────────────────────────
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}> };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -1866,6 +1888,26 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
 
   const useDoubleRow = groups.length > 5;
 
+  const hasMinesUpgradeItem = groups.some((g) => g.items.some((i) => i.id === 'mining-upgrade' && i.upgradeDetails));
+  const gruffQuestVisible = hasMinesUpgradeItem && checked.has('mining-upgrade-show');
+  const gruffReqsDone = gruffQuestVisible && checked.has('mining-upgrade-req-bar') && checked.has('mining-upgrade-req-coins');
+  const gruffChecked = checked.has('mining-upgrade-gruff');
+
+  function toggleGruff() {
+    setChecked((prev) => {
+      const next = new Set(prev);
+      if (next.has('mining-upgrade-gruff')) {
+        next.delete('mining-upgrade-gruff');
+        next.delete('mining-upgrade');
+      } else {
+        next.add('mining-upgrade-gruff');
+        next.add('mining-upgrade');
+      }
+      try { sessionStorage.setItem(CHECKLIST_KEY, JSON.stringify([...next])); } catch { /* storage full */ }
+      return next;
+    });
+  }
+
   function renderGroupColumn(group: ChecklistGroup) {
     return (
       <div key={group.location}>
@@ -1879,7 +1921,7 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                 <li key={item.id}>
                   <div className="rounded border border-pink-300 bg-white px-3 py-2 dark:border-pink-500/50 dark:bg-pink-950/10">
                     {item.label.split('\n').map((line, i) => (
-                      <p key={i} className={`text-sm text-slate-600 dark:text-slate-300 ${i > 0 ? 'mt-1' : ''}`}>
+                      <p key={i} className={`text-base text-slate-600 dark:text-slate-300 ${i > 0 ? 'mt-1' : ''}`}>
                         {i === 0 && <span className="font-bold text-pink-500 dark:text-pink-400">* </span>}
                         {line}
                       </p>
@@ -1922,6 +1964,11 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
             const isRejected = rejected.has(item.id);
             const isStruck = done || isRejected;
             const showUpgradeReqs = item.upgradeDetails ? checked.has(item.id + '-show') : false;
+            const isUpgradeParent = item.id === 'mining-upgrade' && !!item.upgradeDetails;
+            const showInfoIcon = isUpgradeParent && !showUpgradeReqs;
+            const upgradeLabelCursor = isUpgradeParent
+              ? (showUpgradeReqs && !done ? 'cursor-not-allowed' : 'cursor-default')
+              : (isRejected ? 'cursor-not-allowed' : 'cursor-pointer');
             return (
               <li key={item.id}>
                 {item.dividerLabel && (
@@ -1929,14 +1976,35 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                     {item.dividerLabel}
                   </p>
                 )}
-                <label className={`flex cursor-pointer select-none gap-2 ${item.iconNode ? 'items-center' : 'items-start gap-2.5'}`}>
-                  <input
-                    type="checkbox"
-                    checked={done}
-                    onChange={() => toggle(item.id)}
-                    disabled={isRejected}
-                    className={`h-4 w-4 flex-none rounded border-slate-300 accent-emerald-500 ${isRejected ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'} ${item.iconNode ? '' : 'mt-0.5'}`}
-                  />
+                <label className={`flex select-none gap-2 ${upgradeLabelCursor} ${item.iconNode ? 'items-center' : 'items-start gap-2.5'}`}>
+                  {showInfoIcon ? (
+                    <svg viewBox="0 0 20 20" className="h-5 w-5 flex-none mt-0.5 shrink-0" aria-hidden style={{ filter: 'none' }}>
+                      <circle cx="10" cy="10" r="9" stroke="#d97706" strokeWidth="1.75" fill="#ffffff"/>
+                      <circle cx="10" cy="6.5" r="1.2" fill="#d97706" style={{ filter: 'none' }}/>
+                      <rect x="8.85" y="9" width="2.3" height="6" rx="1.15" fill="#d97706" style={{ filter: 'none' }}/>
+                    </svg>
+                  ) : (
+                    <AppTooltip
+                      content={isUpgradeParent && !done ? <span className="text-slate-200 text-sm leading-snug">Please gather the items, check their boxes below, and check that you have delivered to Gruff under "IN THE FOREST", then this task will be auto-completed.</span> : null}
+                      width="w-72"
+                    >
+                      <span className={`inline-flex flex-none shrink-0${item.iconNode ? '' : ' mt-0.5'}`}>
+                        <input
+                          type="checkbox"
+                          checked={done}
+                          onChange={() => toggle(item.id)}
+                          disabled={isRejected || isUpgradeParent}
+                          className={`h-4 w-4 block rounded border-slate-300 accent-emerald-500 ${
+                            isUpgradeParent
+                              ? `cursor-not-allowed${done ? '' : ' opacity-40'}`
+                              : isRejected
+                                ? 'cursor-not-allowed opacity-40'
+                                : 'cursor-pointer'
+                          }`}
+                        />
+                      </span>
+                    </AppTooltip>
+                  )}
                   {item.iconNode}
                   <span className={`text-base leading-snug ${isStruck ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
                     {item.label}
@@ -1972,6 +2040,13 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                     )}
                   </span>
                 </label>
+                {item.birthdayFavorites && item.birthdayFavorites.length > 0 && (
+                  <div className="ml-6 mt-1.5 flex flex-wrap gap-1.5">
+                    {item.birthdayFavorites.map((gift) => (
+                      <GiftItemIcon key={gift.name} name={gift.name} sentiment="favorite" storageCount={gift.storageCount} size="sm" />
+                    ))}
+                  </div>
+                )}
                 {item.upgradeDetails && showUpgradeReqs && (() => {
                   const ud = item.upgradeDetails!;
                   const barTooltip = (
@@ -2001,8 +2076,8 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                       <span className="font-semibold text-amber-300 text-xs">{ud.money.toLocaleString()} coins</span>
                     </div>
                   ) : null;
-                  const barDone = checked.has(item.id + '-req-bar');
-                  const coinDone = checked.has(item.id + '-req-coins');
+                  const barDone = checked.has(item.id + '-req-bar') || done;
+                  const coinDone = checked.has(item.id + '-req-coins') || done;
                   // Bar icons match research icon size; coin PNG is visually denser so kept smaller
                   const barIconCls = 'h-[37px] w-[37px] flex-none object-contain';
                   const coinIconCls = 'h-6 w-6 flex-none object-contain';
@@ -2042,6 +2117,22 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
               </li>
             );
           })}
+          {group.location === 'In the Forest' && gruffQuestVisible && (
+            <li>
+              <label className={`flex select-none items-start gap-2.5 ${gruffReqsDone ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
+                <input
+                  type="checkbox"
+                  checked={gruffChecked}
+                  onChange={toggleGruff}
+                  disabled={!gruffReqsDone}
+                  className={`h-4 w-4 flex-none rounded border-slate-300 accent-emerald-500 mt-0.5 ${gruffReqsDone ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'}`}
+                />
+                <span className={`text-base leading-snug ${gruffChecked ? 'text-slate-400 line-through dark:text-slate-500' : gruffReqsDone ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}`}>
+                  Deliver pickaxe upgrade items to Gruff
+                </span>
+              </label>
+            </li>
+          )}
         </ul>
       </div>
     );
@@ -3040,6 +3131,10 @@ export default function Tips() {
           id: `birthday-${bd.name}-0`,
           label: `Birthday today: ${bd.name}`,
           detail: 'Bring their favorite gift!',
+          birthdayFavorites: (villagerGifts[bd.name]?.favorites ?? []).map((giftName) => ({
+            name: giftName,
+            storageCount: selectedCharacter ? storageNameMap.get(giftName) ?? 0 : undefined,
+          })),
         }
       : {
           id: `birthday-${bd.name}-1`,
@@ -3294,9 +3389,10 @@ export default function Tips() {
           </p>
         </div>
         <div className="col-span-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-base text-slate-700 dark:border-amber-700/50 dark:bg-amber-900/20 dark:text-slate-300 flex items-center gap-3">
-          <svg viewBox="0 0 24 24" className="flex-none w-[3.6rem] h-[3.6rem]" aria-hidden>
-            <polygon points="21.24,8.17 15.83,2.76 8.17,2.76 2.76,8.17 2.76,15.83 8.17,21.24 15.83,21.24 21.24,15.83" fill="none" stroke="#8B1A1A" strokeWidth="1.5" />
-            <text x="12" y="17" textAnchor="middle" fontSize="13" fontWeight="bold" fill="#8B1A1A">!</text>
+          <svg viewBox="0 0 20 20" className="flex-none w-[3.6rem] h-[3.6rem]" aria-hidden style={{ filter: 'none' }}>
+            <circle cx="10" cy="10" r="9" stroke="#d97706" strokeWidth="1.75" fill="none"/>
+            <circle cx="10" cy="6.5" r="1.2" fill="#d97706" style={{ filter: 'none' }}/>
+            <rect x="8.85" y="9" width="2.3" height="6" rx="1.15" fill="#d97706" style={{ filter: 'none' }}/>
           </svg>
           <span>{isMobile ? 'Long-press' : 'Hover over'} any icon or chip for details — fish locations, storage counts, donation progress, and more. For bug reports, feature requests, or to discuss missing/incorrect info, click the ISSUES button in the header. Feedback is welcome!</span>
         </div>
@@ -3591,7 +3687,7 @@ export default function Tips() {
 
           {/* Right: When Can I Hit That? — 2/3 width */}
           {nextMilestone && selectedCharacter && (
-            <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+            <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 flex flex-col">
               <p className="mb-3 text-base font-semibold text-slate-700 dark:text-slate-200">When Can I Hit that Milestone?</p>
 
               {/* Top row: availability table + "After today…" side by side */}
@@ -3604,7 +3700,7 @@ export default function Tips() {
                   </span>
                 );
                 return (
-              <div className="grid grid-cols-2 gap-4">
+              <div className={`grid grid-cols-2 gap-4${milestoneStillNeeded === 0 ? ' flex-1 items-center pb-3' : ''}`}>
                 {/* Left: per-category table */}
                 <div className="divide-y divide-slate-100 rounded-lg border border-slate-100 dark:divide-slate-700 dark:border-slate-700">
                   {milestoneCatAvail.map((cat) => (
@@ -3653,7 +3749,7 @@ export default function Tips() {
                     </div>
                   </div>
                 ) : (
-                  <p className="self-center text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                  <p className="self-center text-base font-medium text-emerald-600 dark:text-emerald-400 md:px-10 lg:px-16">
                     Everything available today is enough to get you there!
                   </p>
                 )}
