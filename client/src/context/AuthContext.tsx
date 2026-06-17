@@ -84,6 +84,7 @@ export type CropEntry = {
   isMultiHarvest: boolean;
   daysWatered: number;
   isDead: boolean;
+  fertility: number;
 };
 
 export type CharacterDetail = {
@@ -224,11 +225,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ],
     money: 1250,
     crops_data: [
-      { cropRefId: 98,  name: 'Cabbage',    image: '/edibles/Cabbage.png',    daysToMaturity: 6,  isMultiHarvest: false, daysWatered: 6, isDead: false },
-      { cropRefId: 93,  name: 'Carrot',     image: '/edibles/Carrot.png',     daysToMaturity: 5,  isMultiHarvest: false, daysWatered: 3, isDead: false },
-      { cropRefId: 106, name: 'Strawberry', image: '/edibles/Strawberry.png', daysToMaturity: 9,  isMultiHarvest: true,  daysWatered: 2, isDead: false },
-      { cropRefId: 93,  name: 'Carrot',     image: '/edibles/Carrot.png',     daysToMaturity: 5,  isMultiHarvest: false, daysWatered: 5, isDead: false },
-      { cropRefId: 104, name: 'Radish',     image: '/edibles/Radish.png',     daysToMaturity: 4,  isMultiHarvest: false, daysWatered: 1, isDead: true  },
+      { cropRefId: 98,  name: 'Cabbage',    image: '/edibles/Cabbage.png',    daysToMaturity: 6,  isMultiHarvest: false, daysWatered: 6, isDead: false, fertility: 0 },
+      { cropRefId: 93,  name: 'Carrot',     image: '/edibles/Carrot.png',     daysToMaturity: 5,  isMultiHarvest: false, daysWatered: 3, isDead: false, fertility: 0 },
+      { cropRefId: 106, name: 'Strawberry', image: '/edibles/Strawberry.png', daysToMaturity: 9,  isMultiHarvest: true,  daysWatered: 2, isDead: false, fertility: 0 },
+      { cropRefId: 93,  name: 'Carrot',     image: '/edibles/Carrot.png',     daysToMaturity: 5,  isMultiHarvest: false, daysWatered: 5, isDead: false, fertility: 0 },
+      { cropRefId: 104, name: 'Radish',     image: '/edibles/Radish.png',     daysToMaturity: 4,  isMultiHarvest: false, daysWatered: 1, isDead: true,  fertility: 0 },
     ],
     project_mat_pile_data: [],
     chest_data: [],

@@ -123,6 +123,18 @@ Stored in `preferences.default_tab` (string, e.g. `'stats'`) and `preferences.de
 
 3. **Update the icon on Tips info box** - we want to keep the hexagon shape but swap the exclamation point for an "i" (for info) and choose a deep orange color instead of the red since the red seems to alert people of an error where there isn't one.
 
+4. **Human to do: fix this mess, confirm if these fertility values are something we could figure out based on interacting with game directly or if this is unintentionally exposing secrets from randomized int rolls unique to each character file** - Changes made by Claude:
+
+parseSaveFile.js — now extracts the fertility float from each crop entry in the save file
+server/index.js — passes fertility through to crops_data in the character response
+AuthContext.tsx — added fertility: number to CropEntry type; guest stub data defaults to 0
+Tips.tsx — SeedHarvestCalc now:
+Averages fertility across all tiles of the same crop type when building the dropdown options
+Shows (avg X compost days across N tiles) in the option label for multi-tile crops, or (X compost days) for single tiles with fertility > 0
+Auto-fills both maturity and fertilized days when you pick a crop
+Footnote bumped from text-xs to text-sm
+Yes, you need to re-upload your save file — the old DB rows for crops_data were stored without fertility, so the values will be 0 until you re-parse. Once you upload, selecting a crop from the dropdown will auto-fill both fields from live game data.
+
 8. **Human To Do: Email SMTP Server Setup** - Supabase is doing some severe rate-limiting on outgoing emails for password resets or enrollment (two or three emails total per day allotted total for the app across all users) - we will need to set up a server to handle the email volume when this is live/hosted for the general public. Research has indicated there are only two or three good options for which service to use for SMTP, so the human dev will have to do setup and then coordinate with Claude to ensure that all necessary code (if any) is written into the app to appropriately ensure expected functionality is maintained as it currently works great directly through SupaBase email functions.
 
 9. **Test new user enrollment** - we need to test that the SMTP server is allowing new enrollments, and test the new enrollment page/modal that Claude previously created to ensure that it is capturing each setting correctly and mainatining it across logout/navigating away and back to the app, etc.

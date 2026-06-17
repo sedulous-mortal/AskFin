@@ -297,12 +297,14 @@ function extractCropData(text) {
     const daysWateredMatch = s.match(/"daysWatered"\s*[=:;,]\s*([>0-9]+)/);
     const isDeadMatch = s.match(/"isDead"\s*[=:;,]\s*(true|false)/);
     const isForageMatch = s.match(/"isForage"\s*[=:;,]\s*(true|false)/);
+    const fertilityMatch = s.match(/"fertility"\s*[=:;,]\s*([>0-9.]+)/);
     const isForage = isForageMatch ? isForageMatch[1] === 'true' : false;
     if (isForage) continue; // skip wild-spawned forage plants
     result.push({
       cropRefId,
       daysWatered: daysWateredMatch ? parseInt(daysWateredMatch[1].replace(/>/g, ''), 10) : 0,
       isDead: isDeadMatch ? isDeadMatch[1] === 'true' : false,
+      fertility: fertilityMatch ? parseFloat(fertilityMatch[1].replace(/>/g, '')) : 0,
     });
   }
   return result;

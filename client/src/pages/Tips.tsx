@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useDate } from '../context/DateContext';
-import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, type CropEntry, buildStorageMap, buildStorageMapByName, buildInventoryMapByName } from '../context/AuthContext';
+import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, type CropEntry, type ChestEntry, buildStorageMap, buildStorageMapByName, buildInventoryMapByName } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { useDevice } from '../context/DeviceContext';
 import { SpoilerGate } from '../components/SpoilerGate';
@@ -682,11 +682,62 @@ function ResearchIconSmall({ item, fishInfo, mineralInfo, plantInfo, storageCoun
 
   return (
     <AppTooltip content={tooltipContent} width="w-52">
-      <div className={`h-8 w-8 flex-none overflow-hidden rounded border ${borderClass} ${bgClass}`}>
+      <div className={`h-[37px] w-[37px] flex-none overflow-hidden rounded border ${borderClass} ${bgClass}`}>
         {safeName && pathIdx < paths.length ? (
           <img
             src={paths[pathIdx]}
             alt={item.name ?? ''}
+            className="h-full w-full object-contain p-0.5"
+            onError={() => setPathIdx((i) => i + 1)}
+          />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center text-[10px] font-semibold leading-none text-slate-400 dark:text-slate-500">
+            {initials}
+          </span>
+        )}
+      </div>
+    </AppTooltip>
+  );
+}
+
+function QuestItemIcon({ name, stillNeed, have, amount, questName }: {
+  name: string;
+  stillNeed: number;
+  have: number;
+  amount: number;
+  questName: string;
+}) {
+  const safeName = name.replace(/ /g, '_');
+  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const [pathIdx, setPathIdx] = useState(0);
+  const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
+
+  const tooltipContent = (
+    <>
+      <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{name}</div>
+      <div className="space-y-1">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-slate-400 text-xs">Still need</span>
+          <span className="font-semibold text-amber-300 text-xs">{stillNeed} of {amount}</span>
+        </div>
+        {have > 0 && (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400 text-xs">In inventory/storage</span>
+            <span className="font-semibold text-emerald-400 text-xs">{have}</span>
+          </div>
+        )}
+        <div className="mt-1 pt-1.5 border-t border-slate-700 text-[11px] text-slate-500 leading-tight">For: {questName}</div>
+      </div>
+    </>
+  );
+
+  return (
+    <AppTooltip content={tooltipContent} width="w-56">
+      <div className="h-[37px] w-[37px] flex-none overflow-hidden rounded border border-sky-300 bg-sky-50 dark:border-sky-600/70 dark:bg-sky-950/30">
+        {safeName && pathIdx < paths.length ? (
+          <img
+            src={paths[pathIdx]}
+            alt={name}
             className="h-full w-full object-contain p-0.5"
             onError={() => setPathIdx((i) => i + 1)}
           />
@@ -1252,6 +1303,13 @@ const ROD_UPGRADE_REQ: Record<number, { material: string; amount: number; coins:
   3: { material: 'Mithril Bar',  amount: 10, coins: 500 },
 };
 
+const ORE_FOR_BAR: Record<string, string> = {
+  'Copper Bar':   'Copper Ore',
+  'Iron Bar':     'Iron Ore',
+  'Titanium Bar': 'Titanium Ore',
+  'Mithril Bar':  'Mithril Ore',
+};
+
 function TierDots({ current, max }: { current: number; max: number }) {
   return (
     <span className="flex items-center gap-0.5">
@@ -1690,11 +1748,49 @@ function DonatedSpecimensCard({
 
 // ── Daily To-Do Checklist ────────────────────────────────────────────────────
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research'; iconNode?: ReactNode; museumItemId?: number };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
+
+function sceneToStorageLabel(scene: string): string {
+  const lower = scene.toLowerCase();
+  if (lower.includes('home') || lower.includes('house') || lower.includes('interior')) return 'Home';
+  if (lower.includes('farm') || lower.includes('field') || lower.includes('outdoor')) return 'Farm';
+  return scene;
+}
+
+function buildOresByLocation(chestData: ChestEntry[], oreName: string): { label: string; count: number }[] {
+  const byScene = new Map<string, number>();
+  for (const chest of chestData) {
+    for (const item of chest.items) {
+      if (item.name === oreName && item.amount > 0) {
+        const scene = chest.scene ?? 'Unknown';
+        byScene.set(scene, (byScene.get(scene) ?? 0) + item.amount);
+      }
+    }
+  }
+  if (byScene.size === 0) return [];
+  const byLabel = new Map<string, number>();
+  for (const [scene, count] of byScene.entries()) {
+    const label = sceneToStorageLabel(scene);
+    byLabel.set(label, (byLabel.get(label) ?? 0) + count);
+  }
+  return [...byLabel.entries()].map(([label, count]) => ({ label, count }));
+}
+
+type MinesUpgradeDetails = {
+  material: string;
+  amount: number;
+  coins: number;
+  barCount: number;
+  money: number | null;
+  oreName: string;
+  orePerLoc: { label: string; count: number }[];
+};
 
 const CHECKLIST_KEY = 'grimshire-daily-checklist';
 const RESEARCH_DONE_KEY = 'grimshire-research-done';
+const REJECTED_KEY = 'grimshire-daily-rejected';
+const NATURE_LOCS = new Set(['In the Forest', 'On the Mountain', 'In the Marsh', 'In the Deep Woods']);
 const BARN_PRODUCT: Record<number, string> = { 0: 'wool', 1: 'eggs', 2: 'milk', 3: 'products' };
 const BARN_ANIMAL: Record<number, string> = { 0: 'Alpheep', 1: 'Chikree', 2: 'Girtle', 3: 'Bluggy' };
 const BARN_INTERACT: Record<number, string> = { 0: 'Pet, Shear, Milk: Alpheep', 1: 'Pet: Chikree', 2: 'Pet, Shear: Girtle', 3: 'Pet: Bluggy' };
@@ -1717,6 +1813,14 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
       return new Map();
     }
   });
+  const [rejected, setRejected] = useState<Set<string>>(() => {
+    try {
+      const raw = sessionStorage.getItem(REJECTED_KEY);
+      return raw ? new Set<string>(JSON.parse(raw) as string[]) : new Set<string>();
+    } catch {
+      return new Set<string>();
+    }
+  });
   const [collapsed, setCollapsed] = useState(false);
 
   const allRegularItems = groups.flatMap((g) => g.items).filter((i) => i.kind !== 'callout' && i.kind !== 'research');
@@ -1726,7 +1830,7 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
       .map((i) => i.museumItemId!)
   );
   const total = allRegularItems.length + allResearchIds.size;
-  const doneCount = allRegularItems.filter((i) => checked.has(i.id)).length + researchDone.size;
+  const doneCount = allRegularItems.filter((i) => checked.has(i.id) || rejected.has(i.id)).length + researchDone.size;
   const allDone = total > 0 && doneCount === total;
 
   function toggle(id: string) {
@@ -1734,6 +1838,15 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
       try { sessionStorage.setItem(CHECKLIST_KEY, JSON.stringify([...next])); } catch { /* storage full */ }
+      return next;
+    });
+  }
+
+  function toggleReject(id: string) {
+    setRejected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      try { sessionStorage.setItem(REJECTED_KEY, JSON.stringify([...next])); } catch { /* storage full */ }
       return next;
     });
   }
@@ -1751,6 +1864,189 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
     });
   }
 
+  const useDoubleRow = groups.length > 5;
+
+  function renderGroupColumn(group: ChecklistGroup) {
+    return (
+      <div key={group.location}>
+        <p className={`mb-2 text-sm font-semibold uppercase tracking-wide ${group.colorClass}`}>
+          {group.location}
+        </p>
+        <ul className="space-y-2">
+          {group.items.map((item) => {
+            if (item.kind === 'callout') {
+              return (
+                <li key={item.id}>
+                  <div className="rounded border border-pink-300 bg-white px-3 py-2 dark:border-pink-500/50 dark:bg-pink-950/10">
+                    {item.label.split('\n').map((line, i) => (
+                      <p key={i} className={`text-sm text-slate-600 dark:text-slate-300 ${i > 0 ? 'mt-1' : ''}`}>
+                        {i === 0 && <span className="font-bold text-pink-500 dark:text-pink-400">* </span>}
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </li>
+              );
+            }
+            const done = checked.has(item.id);
+            if (item.kind === 'research') {
+              const mid = item.museumItemId;
+              if (mid !== undefined) {
+                const checkedInGroup = researchDone.get(mid);
+                if (checkedInGroup !== undefined && checkedInGroup !== group.location) return null;
+                const researchDone_ = checkedInGroup === group.location;
+                return (
+                  <li key={item.id}>
+                    {item.dividerLabel && (
+                      <p className="mb-1 mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 first:mt-0">
+                        {item.dividerLabel}
+                      </p>
+                    )}
+                    <label className="flex cursor-pointer items-center gap-2 select-none">
+                      <input
+                        type="checkbox"
+                        checked={researchDone_}
+                        onChange={() => toggleResearch(mid, group.location)}
+                        className="h-4 w-4 flex-none cursor-pointer rounded border-slate-300 accent-emerald-500"
+                      />
+                      {item.iconNode}
+                      <span className={`text-base leading-snug ${researchDone_ ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                        {item.label}
+                      </span>
+                    </label>
+                  </li>
+                );
+              }
+              return null;
+            }
+            const isRejected = rejected.has(item.id);
+            const isStruck = done || isRejected;
+            const showUpgradeReqs = item.upgradeDetails ? checked.has(item.id + '-show') : false;
+            return (
+              <li key={item.id}>
+                {item.dividerLabel && (
+                  <p className="mb-1 mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 first:mt-0">
+                    {item.dividerLabel}
+                  </p>
+                )}
+                <label className={`flex cursor-pointer select-none gap-2 ${item.iconNode ? 'items-center' : 'items-start gap-2.5'}`}>
+                  <input
+                    type="checkbox"
+                    checked={done}
+                    onChange={() => toggle(item.id)}
+                    disabled={isRejected}
+                    className={`h-4 w-4 flex-none rounded border-slate-300 accent-emerald-500 ${isRejected ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'} ${item.iconNode ? '' : 'mt-0.5'}`}
+                  />
+                  {item.iconNode}
+                  <span className={`text-base leading-snug ${isStruck ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                    {item.label}
+                    {item.asterisk && (
+                      <span className="ml-0.5 font-bold text-pink-500 dark:text-pink-400"> *</span>
+                    )}
+                    {item.detail && (
+                      <span className="mt-0.5 block text-base text-slate-400 dark:text-slate-500">
+                        {item.detail}
+                        {item.upgradeDetails && (
+                          <span onClick={(e) => e.stopPropagation()}>
+                            {' '}
+                            <input
+                              type="checkbox"
+                              checked={showUpgradeReqs}
+                              onChange={() => toggle(item.id + '-show')}
+                              className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-emerald-500 align-middle"
+                            />
+                          </span>
+                        )}
+                        {item.rejectCheckbox && (
+                          <span onClick={(e) => e.stopPropagation()}>
+                            {' '}?{' '}
+                            <input
+                              type="checkbox"
+                              checked={isRejected}
+                              onChange={() => toggleReject(item.id)}
+                              className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-slate-400 align-middle"
+                            />
+                          </span>
+                        )}
+                      </span>
+                    )}
+                  </span>
+                </label>
+                {item.upgradeDetails && showUpgradeReqs && (() => {
+                  const ud = item.upgradeDetails!;
+                  const barTooltip = (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-slate-400 text-xs">In storage</span>
+                        <span className="font-semibold text-amber-300 text-xs">{ud.barCount}</span>
+                      </div>
+                      {ud.orePerLoc.length > 0 ? (
+                        <div className="border-t border-slate-700 pt-1.5">
+                          <div className="text-slate-400 text-xs mb-1">{ud.oreName}:</div>
+                          {ud.orePerLoc.map(({ label, count }) => (
+                            <div key={label} className="flex items-center justify-between gap-4">
+                              <span className="text-slate-400 text-xs">{label}</span>
+                              <span className="font-semibold text-amber-300 text-xs">{count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="border-t border-slate-700 pt-1.5 text-slate-500 text-xs">{ud.oreName}: none in storage</div>
+                      )}
+                    </div>
+                  );
+                  const coinTooltip = ud.money != null ? (
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-slate-400 text-xs">You have</span>
+                      <span className="font-semibold text-amber-300 text-xs">{ud.money.toLocaleString()} coins</span>
+                    </div>
+                  ) : null;
+                  const barDone = checked.has(item.id + '-req-bar');
+                  const coinDone = checked.has(item.id + '-req-coins');
+                  // Bar icons match research icon size; coin PNG is visually denser so kept smaller
+                  const barIconCls = 'h-[37px] w-[37px] flex-none object-contain';
+                  const coinIconCls = 'h-6 w-6 flex-none object-contain';
+                  return (
+                    <div className="mt-2 ml-6 space-y-1.5">
+                      <AppTooltip content={barTooltip} width="w-52">
+                        <label className="flex cursor-pointer select-none items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={barDone}
+                            onChange={() => toggle(item.id + '-req-bar')}
+                            className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-emerald-500"
+                          />
+                          <span className={`flex items-center gap-2 text-sm leading-snug ${barDone ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-600 dark:text-slate-400'}`}>
+                            <img src={`/items/${ud.material.replace(/ /g, '_')}.png`} alt="" className={barIconCls} />
+                            {ud.amount}× {ud.material}
+                          </span>
+                        </label>
+                      </AppTooltip>
+                      <AppTooltip content={coinTooltip}>
+                        <label className="flex cursor-pointer select-none items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={coinDone}
+                            onChange={() => toggle(item.id + '-req-coins')}
+                            className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-emerald-500"
+                          />
+                          <span className={`flex items-center gap-2 text-sm leading-snug ${coinDone ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-600 dark:text-slate-400'}`}>
+                            <img src="/items/Coin.png" alt="" className={coinIconCls} />
+                            {ud.coins} coins
+                          </span>
+                        </label>
+                      </AppTooltip>
+                    </div>
+                  );
+                })()}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <button
@@ -1762,7 +2058,7 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
           <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
             Today's To-Do
           </span>
-          <span className={`rounded-full px-2.5 py-0.5 text-sm font-medium ${
+          <span className={`rounded-full px-2.5 py-0.5 text-base font-medium ${
             allDone
               ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
               : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'
@@ -1770,7 +2066,7 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
             {doneCount}/{total}
           </span>
           {allDone && (
-            <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">All done!</span>
+            <span className="text-base font-medium text-emerald-600 dark:text-emerald-400">All done!</span>
           )}
         </div>
         <svg viewBox="0 0 20 20" fill="currentColor" className={`h-5 w-5 flex-none text-slate-400 transition-transform ${collapsed ? '' : 'rotate-180'}`} aria-hidden>
@@ -1786,93 +2082,20 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
       </div>
 
       {!collapsed && (
-        <div className="grid gap-5 px-5 pb-5 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {groups.map((group) => (
-            <div key={group.location}>
-              <p className={`mb-2 text-xs font-semibold uppercase tracking-wide ${group.colorClass}`}>
-                {group.location}
-              </p>
-              <ul className="space-y-2">
-                {group.items.map((item) => {
-                  if (item.kind === 'callout') {
-                    return (
-                      <li key={item.id}>
-                        <div className="rounded border border-pink-300 bg-white px-3 py-2 dark:border-pink-500/50 dark:bg-pink-950/10">
-                          {item.label.split('\n').map((line, i) => (
-                            <p key={i} className={`text-xs text-slate-600 dark:text-slate-300 ${i > 0 ? 'mt-1' : ''}`}>
-                              {i === 0 && <span className="font-bold text-pink-500 dark:text-pink-400">* </span>}
-                              {line}
-                            </p>
-                          ))}
-                        </div>
-                      </li>
-                    );
-                  }
-                  const done = checked.has(item.id);
-                  if (item.kind === 'research') {
-                    const mid = item.museumItemId;
-                    if (mid !== undefined) {
-                      const checkedInGroup = researchDone.get(mid);
-                      // Hide this item if it was checked in a different column
-                      if (checkedInGroup !== undefined && checkedInGroup !== group.location) return null;
-                      const researchDone_ = checkedInGroup === group.location;
-                      return (
-                        <li key={item.id}>
-                          {item.dividerLabel && (
-                            <p className="mb-1 mt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 first:mt-0">
-                              {item.dividerLabel}
-                            </p>
-                          )}
-                          <label className="flex cursor-pointer items-center gap-2 select-none">
-                            <input
-                              type="checkbox"
-                              checked={researchDone_}
-                              onChange={() => toggleResearch(mid, group.location)}
-                              className="h-4 w-4 flex-none cursor-pointer rounded border-slate-300 accent-emerald-500"
-                            />
-                            {item.iconNode}
-                            <span className={`text-sm leading-snug ${researchDone_ ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
-                              {item.label}
-                            </span>
-                          </label>
-                        </li>
-                      );
-                    }
-                    return null;
-                  }
-                  return (
-                    <li key={item.id}>
-                      {item.dividerLabel && (
-                        <p className="mb-1 mt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 first:mt-0">
-                          {item.dividerLabel}
-                        </p>
-                      )}
-                      <label className="flex cursor-pointer items-start gap-2.5 select-none">
-                        <input
-                          type="checkbox"
-                          checked={done}
-                          onChange={() => toggle(item.id)}
-                          className="mt-0.5 h-4 w-4 flex-none cursor-pointer rounded border-slate-300 accent-emerald-500"
-                        />
-                        <span className={`text-sm leading-snug ${done ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
-                          {item.label}
-                          {item.asterisk && (
-                            <span className="ml-0.5 font-bold text-pink-500 dark:text-pink-400"> *</span>
-                          )}
-                          {item.detail && (
-                            <span className="mt-0.5 block text-xs text-slate-400 dark:text-slate-500">
-                              {item.detail}
-                            </span>
-                          )}
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
+        useDoubleRow ? (
+          <div className="space-y-5 px-5 pb-5 pt-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {groups.filter((g) => !NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
             </div>
-          ))}
-        </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {groups.filter((g) => NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-5 px-5 pb-5 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {groups.map(renderGroupColumn)}
+          </div>
+        )
       )}
     </div>
   );
@@ -1981,13 +2204,24 @@ type CropGroup = {
 };
 
 function SeedHarvestCalc({ cropsData }: { cropsData: CropEntry[] | null }) {
-  const cropOptions: { name: string; daysToMaturity: number }[] = [];
+  type CropOption = { name: string; daysToMaturity: number; avgFertility: number; tileCount: number };
+  const cropOptions: CropOption[] = [];
   if (cropsData) {
-    const seen = new Map<number, { name: string; daysToMaturity: number }>();
+    const seen = new Map<number, { name: string; daysToMaturity: number; fertilitySum: number; count: number }>();
     for (const c of cropsData) {
-      if (!seen.has(c.cropRefId)) seen.set(c.cropRefId, { name: c.name, daysToMaturity: c.daysToMaturity });
+      if (!seen.has(c.cropRefId)) {
+        seen.set(c.cropRefId, { name: c.name, daysToMaturity: c.daysToMaturity, fertilitySum: c.fertility ?? 0, count: 1 });
+      } else {
+        const e = seen.get(c.cropRefId)!;
+        e.fertilitySum += c.fertility ?? 0;
+        e.count++;
+      }
     }
-    cropOptions.push(...Array.from(seen.values()).sort((a, b) => a.name.localeCompare(b.name)));
+    cropOptions.push(
+      ...Array.from(seen.values())
+        .map((e) => ({ name: e.name, daysToMaturity: e.daysToMaturity, avgFertility: e.fertilitySum / e.count, tileCount: e.count }))
+        .sort((a, b) => a.name.localeCompare(b.name))
+    );
   }
 
   const [daysToMaturity, setDaysToMaturity] = useState(10);
@@ -2014,20 +2248,23 @@ function SeedHarvestCalc({ cropsData }: { cropsData: CropEntry[] | null }) {
         {cropOptions.length > 0 && (
           <div>
             <label className="block mb-1 text-sm font-medium text-slate-600 dark:text-slate-400">
-              Pick a crop from your farm to auto-fill maturity
+              Pick a crop from your farm to auto-fill
             </label>
             <select
               defaultValue=""
               onChange={(e) => {
                 const found = cropOptions.find((c) => c.name === e.target.value);
-                if (found) setDaysToMaturity(found.daysToMaturity);
+                if (found) {
+                  setDaysToMaturity(found.daysToMaturity);
+                  setDaysOnCompost(Math.round(found.avgFertility));
+                }
               }}
               className="w-full max-w-xs rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
             >
               <option value="">— select crop —</option>
               {cropOptions.map((c) => (
                 <option key={c.name} value={c.name}>
-                  {c.name} ({c.daysToMaturity} day{c.daysToMaturity !== 1 ? 's' : ''})
+                  {c.name} ({c.daysToMaturity} day{c.daysToMaturity !== 1 ? 's' : ''}{c.tileCount > 1 ? `, avg ${Math.round(c.avgFertility)} compost days across ${c.tileCount} tiles` : c.avgFertility > 0 ? `, ${Math.round(c.avgFertility)} compost days` : ''})
                 </option>
               ))}
             </select>
@@ -2086,7 +2323,7 @@ function SeedHarvestCalc({ cropsData }: { cropsData: CropEntry[] | null }) {
             </span>
             <span className="text-base text-slate-600 dark:text-slate-400">chance: seeds + crop (bumper harvest)</span>
           </div>
-          <p className="text-xs text-slate-400 dark:text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Fertility factor: {daysOnCompost} ÷ {daysToMaturity + 1} = {(rawMin * 100).toFixed(0)}%
             {skill876 ? ' + 10% (skill)' : ''} → {(minChance * 100).toFixed(0)}% of 80% cap
           </p>
@@ -2577,20 +2814,11 @@ export default function Tips() {
   const upcomingBirthdays = getUpcomingEvents(effectiveSeasonIdx, effectiveDay)
     .filter((e) => e.type === 'birthday' && e.daysUntil <= 1);
 
-  // Museum specimens already discovered but not yet donated that are obtainable today
-  const donatableNow = museumItemsLoaded ? museumItems.filter((item) => {
-    if (donatedSet.has(item.id) || !discoveredItemIds.has(item.id)) return false;
-    if (item.category === 'mineral') return isMineAccessible(mineralDataMap[item.id], pickaxeTier);
-    if (item.category === 'fish') return isFishAvailable(fishScheduleMap[item.id], effectiveSeasonIdx, effectiveDay);
-    return isForageableAvailable(forageableScheduleMap[item.id], effectiveSeasonIdx, effectiveDay);
-  }) : [];
 
-  // Next Root Cellar Sunday: days 8, 15, 22 each season (first is Spring 8)
-  const sundayDays = [8, 15, 22];
-  const nextSundayInSeason = sundayDays.find((s) => s >= effectiveDay);
-  const daysUntilSunday = nextSundayInSeason != null
-    ? nextSundayInSeason - effectiveDay
-    : 28 - effectiveDay + 8; // wraps to next season's day 8
+  // DayOfWeek = (day - 1) % 7, Sunday = 0 (matches TimeControl.cs)
+  // Day 1, 8, 15, 22 of every season are Sundays; week carries across season boundaries
+  const dayOfWeekNow = (effectiveDay - 1) % 7;
+  const daysUntilSunday = dayOfWeekNow === 0 ? 0 : 7 - dayOfWeekNow;
   const rationDaysNow = selectedCharacter?.difficulty != null
     ? (RATION_DAYS[selectedCharacter.difficulty]?.[effectiveSeasonIdx] ?? null)
     : null;
@@ -2656,6 +2884,7 @@ export default function Tips() {
     let label: string;
     let detail: string | undefined;
     let asterisk = false;
+    let rejectCheckbox = false;
 
     if (questCount > 0 && questCount >= count) {
       // Quest needs all (or more than available) — harvest everything for the quest
@@ -2684,6 +2913,7 @@ export default function Tips() {
       // Default: leaving to seed is optimal
       label = `${count} ${cropName} ready`;
       detail = `Leave to seed for seed sale or future planting`;
+      rejectCheckbox = true;
     }
 
     farmCropItems.push({
@@ -2691,6 +2921,7 @@ export default function Tips() {
       label,
       detail,
       asterisk: asterisk || undefined,
+      rejectCheckbox: rejectCheckbox || undefined,
       dividerLabel: isFirstHarvestItem ? 'Harvest:' : undefined,
     });
     isFirstHarvestItem = false;
@@ -2744,34 +2975,79 @@ export default function Tips() {
       ];
 
   // ── Town: quests ───────────────────────────────────────────────────────────
-  let questLabel: string;
-  let questDetail: string | undefined;
-  if (!selectedCharacter) {
-    questLabel = 'Check the Town Board for new quests';
-  } else if (activeQuests.length === 0) {
-    questLabel = 'No active quests — check the Town Board for new ones';
-  } else if (allPendingReqs.length === 0) {
-    questLabel = `${activeQuests.length} quest${activeQuests.length !== 1 ? 's' : ''} ready to turn in!`;
-    questDetail = activeQuests.map((q) => q.display_title || q.name).join(', ');
-  } else {
-    questLabel = `${allPendingReqs.length} item${allPendingReqs.length !== 1 ? 's' : ''} still needed for active quests`;
-    const shown = allPendingReqs.slice(0, 4).map((r) => `${r.stillNeed}× ${r.name}`);
-    questDetail = shown.join(', ') + (allPendingReqs.length > 4 ? ` + ${allPendingReqs.length - 4} more` : '');
-  }
+  const questChecklistItems: ChecklistItem[] = (() => {
+    if (!selectedCharacter) {
+      return [{ id: 'town-board', label: 'Check the Town Board for new quests' }];
+    }
+    if (activeQuests.length === 0) {
+      return [{ id: 'town-board', label: 'No active quests — check the Town Board for new ones' }];
+    }
+    if (allPendingReqs.length === 0) {
+      return [{
+        id: 'town-board',
+        label: `${activeQuests.length} quest${activeQuests.length !== 1 ? 's' : ''} ready to turn in!`,
+        detail: activeQuests.map((q) => q.display_title || q.name).join(', '),
+      }];
+    }
+    // Group requirements by quest, render one icon+checkbox per requirement
+    const byQuest = new Map<string, typeof allPendingReqs>();
+    for (const r of allPendingReqs) {
+      if (!byQuest.has(r.questName)) byQuest.set(r.questName, []);
+      byQuest.get(r.questName)!.push(r);
+    }
+    const reqItems: ChecklistItem[] = [];
+    for (const [questName, reqs] of byQuest) {
+      reqs.forEach((r, i) => {
+        reqItems.push({
+          id: `quest-req-${r.name.replace(/\s+/g, '-').toLowerCase()}-${questName.replace(/\s+/g, '-').toLowerCase()}`,
+          label: `${r.stillNeed}× ${r.name}`,
+          dividerLabel: i === 0 ? questName : undefined,
+          iconNode: (
+            <QuestItemIcon
+              name={r.name}
+              stillNeed={r.stillNeed}
+              have={r.have}
+              amount={r.amount}
+              questName={questName}
+            />
+          ),
+        });
+      });
+    }
+    return reqItems;
+  })();
 
-  // ── Town: villagers / birthdays ────────────────────────────────────────────
-  const todayBirthdays = upcomingBirthdays.filter((e) => e.daysUntil === 0);
-  const tomorrowBirthdays = upcomingBirthdays.filter((e) => e.daysUntil === 1);
-  let villagerLabel: string;
-  let villagerDetail: string | undefined;
-  if (todayBirthdays.length > 0) {
-    villagerLabel = `Birthday today: ${todayBirthdays.map((e) => e.name).join(', ')}`;
-    villagerDetail = 'Bring their favorite gift!';
-  } else if (tomorrowBirthdays.length > 0) {
-    villagerLabel = `Birthday tomorrow: ${tomorrowBirthdays.map((e) => e.name).join(', ')}`;
-    villagerDetail = 'Prepare a gift tonight.';
-  } else {
-    villagerLabel = 'Talk to villagers to build relationships';
+  // ── Villager home locations → birthday column routing ─────────────────────
+  // Maps each villager name to the checklist location key where their birthday
+  // reminder should appear. Defaults to 'town' for unassigned villagers.
+  const VILLAGER_LOCATION: Record<string, string> = {
+    'Gruff':  'forest',
+    'Rowan':  'forest',
+    'Willow': 'forest',
+    'Kai':    'marsh',
+    'Tano':   'marsh',
+    // Adeline, Beatrix, Beryl, Dudley, Edgar, Ericka, Fin, Greta, Hazel, Jack,
+    // Lila, Logan, Oliver, Percy, Poppy, Prudence, Rose, Rufus, Rusty, Theo,
+    // Wallace, Wilfred all live in Town and fall through to the 'town' default.
+  };
+
+  const birthdayItemsByLoc = new Map<string, ChecklistItem[]>();
+  for (const bd of upcomingBirthdays) {
+    const loc = VILLAGER_LOCATION[bd.name] ?? 'town';
+    if (!birthdayItemsByLoc.has(loc)) birthdayItemsByLoc.set(loc, []);
+    birthdayItemsByLoc.get(loc)!.push(bd.daysUntil === 0
+      ? {
+          id: `birthday-${bd.name}-0`,
+          label: `Birthday today: ${bd.name}`,
+          detail: 'Bring their favorite gift!',
+        }
+      : {
+          id: `birthday-${bd.name}-1`,
+          label: `Birthday tomorrow: ${bd.name}`,
+          detail: 'Prep tomorrow instead',
+          rejectCheckbox: true,
+        }
+    );
   }
 
   // ── Mine ───────────────────────────────────────────────────────────────────
@@ -2786,18 +3062,22 @@ export default function Tips() {
     mineDetail += ` · ${toolName} upgrading, ${upgradingTool.upgradeDaysRemaining} day${upgradingTool.upgradeDaysRemaining !== 1 ? 's' : ''} left`;
   }
 
-  // ── Museum ─────────────────────────────────────────────────────────────────
-  let museumLabel: string;
-  let museumDetail: string | undefined;
-  if (!selectedCharacter) {
-    museumLabel = 'Donate discovered specimens to the Museum';
-  } else if (donatableNow.length > 0) {
-    museumLabel = `${donatableNow.length} specimen${donatableNow.length !== 1 ? 's' : ''} ready to donate today`;
-    museumDetail = donatableNow.slice(0, 4).map((i) => i.name ?? '?').join(', ')
-      + (donatableNow.length > 4 ? ` + ${donatableNow.length - 4} more` : '');
-  } else {
-    museumLabel = `Museum up to date (${donatedSet.size} donated so far)`;
-  }
+  const pickEntry = selectedCharacter?.tool_data?.find((t) => t.toolName === 'pick');
+  const pickaxeMaxTier = pickEntry?.maxTier ?? 4;
+  const pickaxeNeedsUpgrade = selectedCharacter != null && pickaxeTier < pickaxeMaxTier && !(pickEntry?.upgrading ?? false);
+  const nextPickReq = pickaxeNeedsUpgrade ? TOOL_UPGRADE_REQ[pickaxeTier] : undefined;
+  const minesUpgradeDetails: MinesUpgradeDetails | undefined = nextPickReq ? (() => {
+    const oreName = ORE_FOR_BAR[nextPickReq.material] ?? '';
+    return {
+      material: nextPickReq.material,
+      amount: nextPickReq.amount,
+      coins: nextPickReq.coins,
+      barCount: storageNameMap.get(nextPickReq.material) ?? 0,
+      money: selectedCharacter?.money ?? null,
+      oreName,
+      orePerLoc: oreName ? buildOresByLocation(selectedCharacter?.chest_data ?? [], oreName) : [],
+    };
+  })() : undefined;
 
   // ── Root Cellar ────────────────────────────────────────────────────────────
   let rootCellarLabel: string;
@@ -2946,33 +3226,48 @@ export default function Tips() {
     {
       location: 'In the Forest',
       colorClass: 'text-emerald-600 dark:text-emerald-400',
-      items: buildResearchChecklistItems(forestResearchItems, true),
+      items: [
+        ...buildResearchChecklistItems(forestResearchItems, true),
+        ...(birthdayItemsByLoc.get('forest') ?? []),
+      ],
     },
     {
       location: 'On the Mountain',
       colorClass: 'text-cyan-600 dark:text-cyan-400',
-      items: buildResearchChecklistItems(mountainResearchItems, true),
+      items: [
+        ...buildResearchChecklistItems(mountainResearchItems, true),
+        ...(birthdayItemsByLoc.get('mountain') ?? []),
+      ],
     },
     {
       location: 'In the Town',
       colorClass: 'text-violet-600 dark:text-violet-400',
       items: [
         ...buildResearchChecklistItems(townResearchItems, true),
-        { id: 'town-board', label: questLabel, detail: questDetail },
-        { id: 'villagers', label: villagerLabel, detail: villagerDetail },
-        { id: 'museum', label: museumLabel, detail: museumDetail },
+        ...questChecklistItems,
+        ...(birthdayItemsByLoc.get('town') ?? (birthdayItemsByLoc.size === 0 ? [{ id: 'villagers', label: 'Talk to villagers to build relationships' }] : [])),
         { id: 'root-cellar', label: rootCellarLabel, detail: rootCellarDetail },
       ],
     },
     {
       location: 'In the Marsh',
       colorClass: 'text-teal-600 dark:text-teal-400',
-      items: buildResearchChecklistItems(marshResearchItems, true),
+      items: [
+        ...buildResearchChecklistItems(marshResearchItems, true),
+        ...(birthdayItemsByLoc.get('marsh') ?? []),
+      ],
     },
     {
       location: 'In the Mines',
       colorClass: 'text-cyan-600 dark:text-cyan-400',
-      items: [
+      items: pickaxeNeedsUpgrade ? [
+        {
+          id: 'mining-upgrade',
+          label: 'You need to upgrade your pickaxe to access new ores/minerals.',
+          detail: 'Do you want to accept this quest today?',
+          upgradeDetails: minesUpgradeDetails,
+        },
+      ] : [
         { id: 'mining', label: 'Mine ores, gems & crafting materials', detail: mineDetail },
       ],
     },

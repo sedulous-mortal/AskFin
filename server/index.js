@@ -885,7 +885,7 @@ app.post('/api/save/parse', async (req, res) => {
         home_level: character.homeLevel ?? null,
         home_construction_days: character.daysOfHomeConstruction ?? 0,
         barn_data: character.barnData ?? [],
-        crops_data: (character.cropData ?? []).map(({ cropRefId, daysWatered, isDead }) => {
+        crops_data: (character.cropData ?? []).map(({ cropRefId, daysWatered, isDead, fertility }) => {
           const meta = cropMaturityFile[String(cropRefId)];
           if (!meta) return null;
           return {
@@ -896,6 +896,7 @@ app.post('/api/save/parse', async (req, res) => {
             isMultiHarvest: meta.isMultiHarvest,
             daysWatered,
             isDead,
+            fertility: fertility ?? 0,
           };
         }).filter(Boolean),
         project_mat_pile_data: (character.projectMatPileData ?? []).map(pile => {
