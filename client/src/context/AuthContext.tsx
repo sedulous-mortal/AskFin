@@ -32,9 +32,19 @@ export type ChestEntry = {
   items: ChestItem[];
 };
 
+// Item IDs that correspond to crafting/processing stations (not storage containers).
+// Based on game_id_maps.json: Smelter (63, 550), Smoker (551), Kiln (1316, 1320),
+// Press (675), Spinning Wheel (264), Compost Bin (175).
+const PROCESSOR_ITEM_IDS = new Set([63, 175, 264, 550, 551, 675, 1316, 1320]);
+
+function isProcessor(chest: ChestEntry): boolean {
+  return chest.itemId !== null && PROCESSOR_ITEM_IDS.has(chest.itemId);
+}
+
 export function buildStorageMap(chestData: ChestEntry[]): Map<number, number> {
   const map = new Map<number, number>();
   for (const chest of chestData) {
+    if (isProcessor(chest)) continue;
     for (const { id, amount } of chest.items) {
       map.set(id, (map.get(id) ?? 0) + amount);
     }
@@ -45,8 +55,30 @@ export function buildStorageMap(chestData: ChestEntry[]): Map<number, number> {
 export function buildStorageMapByName(chestData: ChestEntry[]): Map<string, number> {
   const map = new Map<string, number>();
   for (const chest of chestData) {
+    if (isProcessor(chest)) continue;
     for (const { name, amount } of chest.items) {
       if (name) map.set(name, (map.get(name) ?? 0) + amount);
+    }
+  }
+  return map;
+}
+
+export function buildProcessorMapByName(chestData: ChestEntry[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const chest of chestData) {
+    if (!isProcessor(chest)) continue;
+    for (const { name, amount } of chest.items) {
+      if (name) map.set(name, (map.get(name) ?? 0) + amount);
+    }
+  }
+  return map;
+}
+
+export function buildContributedMapByName(matPileData: MatPileEntry[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const pile of matPileData) {
+    for (const { name, amount } of pile.donatedItems) {
+      map.set(name, (map.get(name) ?? 0) + amount);
     }
   }
   return map;
@@ -124,6 +156,7 @@ export type CharacterDetail = {
   crops_data: CropEntry[];
   project_mat_pile_data: MatPileEntry[];
   chest_data: ChestEntry[];
+  is_rainy_or_stormy: boolean;
 };
 
 type AuthContextType = {
@@ -235,6 +268,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ],
     project_mat_pile_data: [],
     chest_data: [],
+    is_rainy_or_stormy: false,
   };
 
   const guestUser = {

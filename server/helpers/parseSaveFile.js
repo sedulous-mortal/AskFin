@@ -334,6 +334,7 @@ export function parseSaveFile(buffer) {
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),
     currentDateYear: extractNestedNumber(text, "currentDate", "Year"),
+    currentWeatherPatternId: extractNumber(text, "currentWeatherPatternID"),
     money: extractNumber(text, "money"),
     homeLevel: extractNumber(text, "homeLevel"),
     daysOfHomeConstruction: extractNumber(text, "daysOfHomeConstruction"),

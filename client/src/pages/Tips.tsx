@@ -1,7 +1,7 @@
-import { useEffect, useState, type ReactNode } from 'react';
+﻿import { useEffect, useState, type ReactNode } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useDate } from '../context/DateContext';
-import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, type CropEntry, type ChestEntry, buildStorageMap, buildStorageMapByName, buildInventoryMapByName } from '../context/AuthContext';
+import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, type CropEntry, type ChestEntry, buildStorageMap, buildStorageMapByName, buildProcessorMapByName, buildContributedMapByName, buildInventoryMapByName } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { useDevice } from '../context/DeviceContext';
 import { SpoilerGate } from '../components/SpoilerGate';
@@ -258,7 +258,7 @@ function AppTooltip({ children, content, width = 'w-44' }: {
   );
 }
 
-function ItemIcon({ name, amount, donated = 0, storageCount }: { name: string; amount: number; donated?: number; storageCount?: number }) {
+function ItemIcon({ name, amount, donated = 0, storageCount, processorCount, contributedCount }: { name: string; amount: number; donated?: number; storageCount?: number; processorCount?: number; contributedCount?: number }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
@@ -285,8 +285,20 @@ function ItemIcon({ name, amount, donated = 0, storageCount }: { name: string; a
       ) : null}
       {storageCount !== undefined && (
         <div className="flex items-center gap-1.5 mt-1">
-          <span className="text-slate-400 text-sm">In storage</span>
+          <span className="text-slate-400 text-sm">Storage</span>
           <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+        </div>
+      )}
+      {processorCount !== undefined && processorCount > 0 && (
+        <div className="flex items-center gap-1.5 mt-1">
+          <span className="text-slate-400 text-sm">Processing</span>
+          <span className="font-semibold text-sky-300 text-sm">{processorCount}</span>
+        </div>
+      )}
+      {contributedCount !== undefined && contributedCount > 0 && (
+        <div className="flex items-center gap-1.5 mt-1">
+          <span className="text-slate-400 text-sm">Contributed</span>
+          <span className="font-semibold text-rose-300 text-sm">{contributedCount}</span>
         </div>
       )}
     </>
@@ -520,11 +532,12 @@ function PlantTooltipContent({ plant }: { plant?: ForageableEntry }) {
   );
 }
 
-function CritterFoodTooltipContent({ food, forageableInfo, inventoryCount, storageCount }: {
+function CritterFoodTooltipContent({ food, forageableInfo, inventoryCount, storageCount, processorCount }: {
   food: CritterFood;
   forageableInfo?: ForageableEntry;
   inventoryCount?: number;
   storageCount?: number;
+  processorCount?: number;
 }) {
   return (
     <>
@@ -544,14 +557,20 @@ function CritterFoodTooltipContent({ food, forageableInfo, inventoryCount, stora
       ) : null}
       {inventoryCount !== undefined && (
         <div className="flex items-center gap-1.5 mt-1.5">
-          <span className="text-slate-400 text-sm">In Inventory:</span>
+          <span className="text-slate-400 text-sm">Inventory:</span>
           <span className="font-semibold text-amber-300 text-sm">{inventoryCount}</span>
         </div>
       )}
       {storageCount !== undefined && (
         <div className="flex items-center gap-1.5 mt-1">
-          <span className="text-slate-400 text-sm">In Storage:</span>
+          <span className="text-slate-400 text-sm">Storage:</span>
           <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+        </div>
+      )}
+      {processorCount !== undefined && processorCount > 0 && (
+        <div className="flex items-center gap-1.5 mt-1">
+          <span className="text-slate-400 text-sm">Processing:</span>
+          <span className="font-semibold text-sky-300 text-sm">{processorCount}</span>
         </div>
       )}
     </>
@@ -700,12 +719,15 @@ function ResearchIconSmall({ item, fishInfo, mineralInfo, plantInfo, storageCoun
   );
 }
 
-function QuestItemIcon({ name, stillNeed, have, amount, questName }: {
+function QuestItemIcon({ name, stillNeed, have, amount, questName, invCount, storCount, processorCount }: {
   name: string;
   stillNeed: number;
   have: number;
   amount: number;
   questName: string;
+  invCount?: number;
+  storCount?: number;
+  processorCount?: number;
 }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
@@ -720,10 +742,28 @@ function QuestItemIcon({ name, stillNeed, have, amount, questName }: {
           <span className="text-slate-400 text-sm">Still need</span>
           <span className="font-semibold text-amber-300 text-sm">{stillNeed} of {amount}</span>
         </div>
-        {have > 0 && (
+        {invCount !== undefined && invCount > 0 && (
           <div className="flex items-center justify-between gap-3">
-            <span className="text-slate-400 text-sm">In inventory/storage</span>
+            <span className="text-slate-400 text-sm">Inventory</span>
+            <span className="font-semibold text-emerald-400 text-sm">{invCount}</span>
+          </div>
+        )}
+        {storCount !== undefined && storCount > 0 && (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400 text-sm">Storage</span>
+            <span className="font-semibold text-emerald-400 text-sm">{storCount}</span>
+          </div>
+        )}
+        {invCount === undefined && have > 0 && (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400 text-sm">On hand</span>
             <span className="font-semibold text-emerald-400 text-sm">{have}</span>
+          </div>
+        )}
+        {processorCount !== undefined && processorCount > 0 && (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400 text-sm">Processing</span>
+            <span className="font-semibold text-sky-300 text-sm">{processorCount}</span>
           </div>
         )}
         <div className="mt-1 pt-1.5 border-t border-slate-700 text-[11px] text-slate-500 leading-tight">For: {questName}</div>
@@ -903,7 +943,7 @@ function FestivalItemIcon({ name, qty, storageCount }: { name: string; qty: numb
 type VillagerGifts = { favorites: string[]; dislikes: string[] };
 const villagerGifts: Record<string, VillagerGifts> = villagerGiftsData as Record<string, VillagerGifts>;
 
-function GiftItemIcon({ name, sentiment, storageCount, size = 'default' }: { name: string; sentiment: 'favorite' | 'dislike'; storageCount?: number; size?: 'sm' | 'default' }) {
+function GiftItemIcon({ name, sentiment, storageCount, processorCount, size = 'default' }: { name: string; sentiment: 'favorite' | 'dislike'; storageCount?: number; processorCount?: number; size?: 'sm' | 'default' }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
@@ -918,8 +958,14 @@ function GiftItemIcon({ name, sentiment, storageCount, size = 'default' }: { nam
       <div className="text-slate-200 text-sm mb-1.5">{name}</div>
       {storageCount !== undefined && (
         <div className="flex items-center gap-1.5">
-          <span className="text-slate-400 text-sm">In storage</span>
+          <span className="text-slate-400 text-sm">Storage</span>
           <span className="font-semibold text-amber-300 text-sm">{storageCount}</span>
+        </div>
+      )}
+      {processorCount !== undefined && processorCount > 0 && (
+        <div className="flex items-center gap-1.5">
+          <span className="text-slate-400 text-sm">Processing</span>
+          <span className="font-semibold text-sky-300 text-sm">{processorCount}</span>
         </div>
       )}
     </>
@@ -1461,9 +1507,23 @@ function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData, storage
                   <div className="flex flex-wrap gap-2">
                     <ChipTooltip tipContent={
                       storageNameMap ? (
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-slate-400 text-sm">In storage</span>
-                          <span className="font-semibold text-amber-300 text-sm">{storageNameMap.get(req.material) ?? 0}</span>
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-slate-400 text-sm">Storage</span>
+                            <span className="font-semibold text-amber-300 text-sm">{storageNameMap.get(req.material) ?? 0}</span>
+                          </div>
+                          {((processorNameMap?.get(req.material) ?? 0) > 0) && (
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-slate-400 text-sm">Processing</span>
+                              <span className="font-semibold text-sky-300 text-sm">{processorNameMap!.get(req.material)}</span>
+                            </div>
+                          )}
+                          {((contributedNameMap?.get(req.material) ?? 0) > 0) && (
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-slate-400 text-sm">Contributed</span>
+                              <span className="font-semibold text-rose-300 text-sm">{contributedNameMap!.get(req.material)}</span>
+                            </div>
+                          )}
                         </div>
                       ) : null
                     }>
@@ -1545,11 +1605,13 @@ const BARN_REQUIREMENTS: Record<'build' | 'expand', { coins: number; materials: 
   ]},
 };
 
-function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData, storageNameMap, money }: {
+function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData, storageNameMap, processorNameMap, contributedNameMap, money }: {
   homeLevel: number | null;
   homeConstructionDays: number;
   barnData: BarnData[];
   storageNameMap?: Map<string, number>;
+  processorNameMap?: Map<string, number>;
+  contributedNameMap?: Map<string, number>;
   money?: number | null;
 }) {
   const barnByType = new Map(barnData.map((b) => [b.prefabId, b]));
@@ -1780,7 +1842,7 @@ function DonatedSpecimensCard({
 
 // ── Daily To-Do Checklist ────────────────────────────────────────────────────
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}> };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; groupKey?: string; subtaskIds?: string[] };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -1814,6 +1876,8 @@ type MinesUpgradeDetails = {
   amount: number;
   coins: number;
   barCount: number;
+  barProcessorCount: number;
+  barContributedCount: number;
   money: number | null;
   oreName: string;
   orePerLoc: { label: string; count: number }[];
@@ -1861,9 +1925,32 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
       .filter((i) => i.kind === 'research' && i.museumItemId !== undefined)
       .map((i) => i.museumItemId!)
   );
+  // Cap researchDone so the badge and bar never exceed 100% when session state outlives the item list
+  const cappedResearchDone = Math.min(researchDone.size, allResearchIds.size);
   const total = allRegularItems.length + allResearchIds.size;
-  const doneCount = allRegularItems.filter((i) => checked.has(i.id) || rejected.has(i.id)).length + researchDone.size;
-  const allDone = total > 0 && doneCount === total;
+  const doneCount = allRegularItems.filter((i) => checked.has(i.id) || rejected.has(i.id)).length + cappedResearchDone;
+
+  // Weighted bar: group items by groupKey (singletons use their own id); items with subtaskIds
+  // track progress via those sub-IDs rather than the parent's own checked state.
+  const taskUnitMap = new Map<string, { items: ChecklistItem[]; subtaskIds?: string[] }>();
+  for (const item of allRegularItems) {
+    const key = item.groupKey ?? item.id;
+    if (!taskUnitMap.has(key)) taskUnitMap.set(key, { items: [], subtaskIds: item.subtaskIds });
+    taskUnitMap.get(key)!.items.push(item);
+  }
+  const numTaskUnits = taskUnitMap.size + allResearchIds.size;
+  let barWeight = 0;
+  for (const unit of taskUnitMap.values()) {
+    if (unit.subtaskIds && unit.subtaskIds.length > 0) {
+      barWeight += unit.subtaskIds.filter(id => checked.has(id)).length / unit.subtaskIds.length;
+    } else {
+      const c = unit.items.filter(i => checked.has(i.id) || rejected.has(i.id)).length;
+      barWeight += c / unit.items.length;
+    }
+  }
+  barWeight += cappedResearchDone;
+  const barPct = numTaskUnits > 0 ? Math.min(barWeight / numTaskUnits, 1) * 100 : 0;
+  const allDone = numTaskUnits > 0 && barPct >= 99.99;
 
   function toggle(id: string) {
     setChecked((prev) => {
@@ -1902,6 +1989,17 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
   const gruffQuestVisible = hasMinesUpgradeItem && checked.has('mining-upgrade-show');
   const gruffReqsDone = gruffQuestVisible && checked.has('mining-upgrade-req-bar') && checked.has('mining-upgrade-req-coins');
   const gruffChecked = checked.has('mining-upgrade-gruff');
+
+  function resetAll() {
+    setChecked(new Set());
+    setResearchDone(new Map());
+    setRejected(new Set());
+    try {
+      sessionStorage.removeItem(CHECKLIST_KEY);
+      sessionStorage.removeItem(RESEARCH_DONE_KEY);
+      sessionStorage.removeItem(REJECTED_KEY);
+    } catch { /* storage unavailable */ }
+  }
 
   function toggleGruff() {
     setChecked((prev) => {
@@ -2062,9 +2160,21 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                   const barTooltip = (
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-slate-400 text-sm">In storage</span>
+                        <span className="text-slate-400 text-sm">Storage</span>
                         <span className="font-semibold text-amber-300 text-sm">{ud.barCount}</span>
                       </div>
+                      {ud.barProcessorCount > 0 && (
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="text-slate-400 text-sm">Processing</span>
+                          <span className="font-semibold text-sky-300 text-sm">{ud.barProcessorCount}</span>
+                        </div>
+                      )}
+                      {ud.barContributedCount > 0 && (
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="text-slate-400 text-sm">Contributed</span>
+                          <span className="font-semibold text-rose-300 text-sm">{ud.barContributedCount}</span>
+                        </div>
+                      )}
                       {ud.orePerLoc.length > 0 ? (
                         <div className="border-t border-slate-700 pt-1.5">
                           <div className="text-slate-400 text-sm mb-1">{ud.oreName}:</div>
@@ -2170,15 +2280,36 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
             <span className="text-base font-medium text-emerald-600 dark:text-emerald-400">All done!</span>
           )}
         </div>
-        <svg viewBox="0 0 20 20" fill="currentColor" className={`h-5 w-5 flex-none text-slate-400 transition-transform ${collapsed ? '' : 'rotate-180'}`} aria-hidden>
-          <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-        </svg>
+        <div className="flex items-center gap-3">
+          <AppTooltip
+            content={
+              <p className="text-slate-200 text-sm">
+                Click Reset to uncheck all tasks on the whole list.
+              </p>
+            }
+            width="w-56"
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                resetAll();
+              }}
+              className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-slate-100"
+            >
+              Reset
+            </button>
+          </AppTooltip>
+          <svg viewBox="0 0 20 20" fill="currentColor" className={`h-5 w-5 flex-none text-slate-400 transition-transform ${collapsed ? '' : 'rotate-180'}`} aria-hidden>
+            <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+          </svg>
+        </div>
       </button>
 
       <div className="mx-5 h-1.5 rounded-full bg-slate-100 dark:bg-slate-700">
         <div
           className={`h-full rounded-full transition-all duration-300 ${allDone ? 'bg-emerald-500' : 'bg-indigo-500'}`}
-          style={{ width: `${total > 0 ? (doneCount / total) * 100 : 0}%` }}
+          style={{ width: `${barPct}%` }}
         />
       </div>
 
@@ -2778,6 +2909,8 @@ export default function Tips() {
 
   const storageMap = buildStorageMap(selectedCharacter?.chest_data ?? []);
   const storageNameMap = buildStorageMapByName(selectedCharacter?.chest_data ?? []);
+  const processorNameMap = buildProcessorMapByName(selectedCharacter?.chest_data ?? []);
+  const contributedNameMap = buildContributedMapByName(selectedCharacter?.project_mat_pile_data ?? []);
   const inventoryNameMap = buildInventoryMapByName(selectedCharacter?.player_inventory ?? []);
 
   const toDonateSections = (['fish', 'mineral', 'plant'] as const).map((cat) => {
@@ -2927,9 +3060,12 @@ export default function Tips() {
       const alreadyDonated = donationMap?.get(req.name) ?? 0;
       const trueRemaining = Math.max(0, req.amount - alreadyDonated);
       if (trueRemaining === 0) return [];
-      const have = (inventoryNameMap.get(req.name) ?? 0) + (storageNameMap.get(req.name) ?? 0);
+      const invCount = inventoryNameMap.get(req.name) ?? 0;
+      const storCount = storageNameMap.get(req.name) ?? 0;
+      const processorCount = processorNameMap.get(req.name) ?? 0;
+      const have = invCount + storCount;
       const stillNeed = Math.max(0, trueRemaining - have);
-      return [{ name: req.name, amount: trueRemaining, have, stillNeed, questName: q.display_title || q.name }];
+      return [{ name: req.name, amount: trueRemaining, have, stillNeed, questName: q.display_title || q.name, invCount, storCount, processorCount }];
     }).filter((r) => r.stillNeed > 0);
   });
 
@@ -2989,10 +3125,13 @@ export default function Tips() {
   const farmCropItems: ChecklistItem[] = [];
 
   // Watering task
+  const isRainyOrStormy = selectedCharacter?.is_rainy_or_stormy ?? false;
   if (!selectedCharacter) {
     farmCropItems.push({ id: 'water-crops', label: 'Water crops & harvest anything ready' });
   } else if (cropsData.length === 0) {
     farmCropItems.push({ id: 'water-crops', label: 'No crops planted — consider planting some!' });
+  } else if (isRainyOrStormy) {
+    farmCropItems.push({ id: 'water-crops', label: 'Rain today — crops watered automatically' });
   } else {
     const waterLabel = needsWatering.length > 0
       ? `Water ${needsWatering.length} crop${needsWatering.length !== 1 ? 's' : ''}`
@@ -3120,16 +3259,19 @@ export default function Tips() {
           id: `barn-collect-${b.prefabId}`,
           label: BARN_NAMES[b.prefabId] ?? 'Animal Building',
           dividerLabel: i === 0 ? 'Collect from:' : undefined,
+          groupKey: 'barn-collect',
         })),
         ...uniqueBarnTypes.map((b, i) => ({
           id: `barn-feed-${b.prefabId}`,
           label: BARN_ANIMAL[b.prefabId] ?? 'Animals',
           dividerLabel: i === 0 ? 'Feed:' : undefined,
+          groupKey: 'barn-feed',
         })),
         ...uniqueBarnTypes.map((b, i) => ({
           id: `barn-interact-${b.prefabId}`,
           label: BARN_INTERACT[b.prefabId] ?? `Interact with ${BARN_ANIMAL[b.prefabId] ?? 'animals'}`,
           dividerLabel: i === 0 ? 'Interact:' : undefined,
+          groupKey: 'barn-interact',
         })),
       ];
 
@@ -3161,6 +3303,7 @@ export default function Tips() {
           id: `quest-req-${r.name.replace(/\s+/g, '-').toLowerCase()}-${questName.replace(/\s+/g, '-').toLowerCase()}`,
           label: `${r.amount}× ${r.name}`,
           dividerLabel: i === 0 ? questName : undefined,
+          groupKey: `quest-${questName}`,
           iconNode: (
             <QuestItemIcon
               name={r.name}
@@ -3168,6 +3311,9 @@ export default function Tips() {
               have={r.have}
               amount={r.amount}
               questName={questName}
+              invCount={r.invCount}
+              storCount={r.storCount}
+              processorCount={r.processorCount}
             />
           ),
         });
@@ -3236,6 +3382,8 @@ export default function Tips() {
       amount: nextPickReq.amount,
       coins: nextPickReq.coins,
       barCount: storageNameMap.get(nextPickReq.material) ?? 0,
+      barProcessorCount: processorNameMap.get(nextPickReq.material) ?? 0,
+      barContributedCount: contributedNameMap.get(nextPickReq.material) ?? 0,
       money: selectedCharacter?.money ?? null,
       oreName,
       orePerLoc: oreName ? buildOresByLocation(selectedCharacter?.chest_data ?? [], oreName) : [],
@@ -3429,6 +3577,7 @@ export default function Tips() {
           label: 'You need to upgrade your pickaxe to access new ores/minerals.',
           detail: 'Do you want to accept this quest today?',
           upgradeDetails: minesUpgradeDetails,
+          subtaskIds: ['mining-upgrade-req-bar', 'mining-upgrade-req-coins', 'mining-upgrade-gruff'],
         },
       ] : [
         { id: 'mining', label: 'Mine ores, gems & crafting materials', detail: mineDetail },
@@ -3566,7 +3715,7 @@ export default function Tips() {
                       </p>
                       <div className="flex flex-wrap justify-center gap-2">
                         {gifts!.favorites.map((item) => (
-                          <GiftItemIcon key={item} name={item} sentiment="favorite" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
+                          <GiftItemIcon key={item} name={item} sentiment="favorite" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} processorCount={selectedCharacter ? processorNameMap.get(item) ?? 0 : undefined} />
                         ))}
                       </div>
                     </div>
@@ -3583,7 +3732,7 @@ export default function Tips() {
                       </p>
                       <div className="flex flex-wrap justify-center gap-2">
                         {gifts!.dislikes.map((item) => (
-                          <GiftItemIcon key={item} name={item} sentiment="dislike" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} />
+                          <GiftItemIcon key={item} name={item} sentiment="dislike" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} processorCount={selectedCharacter ? processorNameMap.get(item) ?? 0 : undefined} />
                         ))}
                       </div>
                     </div>

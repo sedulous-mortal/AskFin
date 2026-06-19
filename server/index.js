@@ -27,6 +27,7 @@ const farmablesFile = require('./helpers/farmables_schedule.json');
 const cropMaturityFile = require('./helpers/crop_maturity.json');
 const fishScheduleFile = require('./helpers/fish_schedule.json');
 const museumItemsFile = require('./helpers/museum_items.json');
+const weatherPatternTypes = require('./helpers/weather_pattern_types.json');
 const mineralDataFile = require('./helpers/mineral_data.json');
 const forageablesList = [
   ...(forageablesFile.forageables || []),
@@ -76,6 +77,11 @@ const allEdibles = new Map();
 for (const id of (ediblesRaw.forageable || [])) allEdibles.set(id, 'forageable');
 for (const id of (ediblesRaw.farmable || [])) allEdibles.set(id, 'farmable');
 for (const id of (ediblesRaw.both || [])) allEdibles.set(id, 'both');
+
+function isRainyOrStormy(patternId) {
+  const type = weatherPatternTypes[String(patternId)];
+  return type === 'Rain' || type === 'Storm';
+}
 
 function resolveIds(ids) {
   return (ids || []).map(id => ({ id, name: itemNames[id] ?? null }));
@@ -924,6 +930,7 @@ app.post('/api/save/parse', async (req, res) => {
             amount,
           })),
         })),
+        current_weather_pattern_id: character.currentWeatherPatternId ?? null,
       };
 
       let characterId;
@@ -1010,6 +1017,7 @@ app.get('/api/characters/:id', async (req, res) => {
       crops_data: data.crops_data || [],
       project_mat_pile_data: data.project_mat_pile_data || [],
       chest_data: data.chest_data || [],
+      is_rainy_or_stormy: isRainyOrStormy(data.current_weather_pattern_id),
     });
   } catch (err) {
     console.error('Failed to fetch character detail:', err);
