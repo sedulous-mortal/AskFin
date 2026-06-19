@@ -1405,13 +1405,15 @@ function TierDots({ current, max }: { current: number; max: number }) {
   );
 }
 
-function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData, storageNameMap, money }: {
+function UpgradeStatusCard({ name, role, toolNames, chipColor, toolData, storageNameMap, processorNameMap, contributedNameMap, money }: {
   name: string;
   role: string;
   toolNames: string[];
   chipColor: string;
   toolData: ToolData[] | null;
   storageNameMap?: Map<string, number>;
+  processorNameMap?: Map<string, number>;
+  contributedNameMap?: Map<string, number>;
   money?: number | null;
 }) {
   const isRod = toolNames.length === 1 && toolNames[0] === 'rod';
@@ -1709,7 +1711,7 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData, storage
                   </div>
                   <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${target.materials.length}, 4rem)` }}>
                     {target.materials.map((mat) => (
-                      <ItemIcon key={mat.name} name={mat.name} amount={mat.qty} storageCount={storageNameMap ? storageNameMap.get(mat.name) ?? 0 : undefined} />
+                      <ItemIcon key={mat.name} name={mat.name} amount={mat.qty} storageCount={storageNameMap ? storageNameMap.get(mat.name) ?? 0 : undefined} processorCount={storageNameMap ? processorNameMap?.get(mat.name) ?? 0 : undefined} contributedCount={storageNameMap ? contributedNameMap?.get(mat.name) ?? 0 : undefined} />
                     ))}
                   </div>
                 </div>
@@ -1743,7 +1745,7 @@ function BuildingStatusCard({ homeLevel, homeConstructionDays, barnData, storage
                   </div>
                   <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${req.materials.length}, 4rem)` }}>
                     {req.materials.map((mat) => (
-                      <ItemIcon key={mat.name} name={mat.name} amount={mat.qty} storageCount={storageNameMap ? storageNameMap.get(mat.name) ?? 0 : undefined} />
+                      <ItemIcon key={mat.name} name={mat.name} amount={mat.qty} storageCount={storageNameMap ? storageNameMap.get(mat.name) ?? 0 : undefined} processorCount={storageNameMap ? processorNameMap?.get(mat.name) ?? 0 : undefined} contributedCount={storageNameMap ? contributedNameMap?.get(mat.name) ?? 0 : undefined} />
                     ))}
                   </div>
                 </div>
@@ -2276,11 +2278,6 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
           }`}>
             {doneCount}/{total}
           </span>
-          {allDone && (
-            <span className="text-base font-medium text-emerald-600 dark:text-emerald-400">All done!</span>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
           <AppTooltip
             content={
               <p className="text-slate-200 text-sm">
@@ -2295,15 +2292,21 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                 e.stopPropagation();
                 resetAll();
               }}
-              className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-slate-100"
+              className="flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100 hover:text-amber-800 dark:border-amber-600/50 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40 dark:hover:text-amber-300"
             >
-              Reset
+              <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5 flex-none" aria-hidden>
+                <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clipRule="evenodd" />
+              </svg>
+              RESET
             </button>
           </AppTooltip>
-          <svg viewBox="0 0 20 20" fill="currentColor" className={`h-5 w-5 flex-none text-slate-400 transition-transform ${collapsed ? '' : 'rotate-180'}`} aria-hidden>
-            <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-          </svg>
+          {allDone && (
+            <span className="text-base font-medium text-emerald-600 dark:text-emerald-400">All done!</span>
+          )}
         </div>
+        <svg viewBox="0 0 20 20" fill="currentColor" className={`h-5 w-5 flex-none text-slate-400 transition-transform ${collapsed ? '' : 'rotate-180'}`} aria-hidden>
+          <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+        </svg>
       </button>
 
       <div className="mx-5 h-1.5 rounded-full bg-slate-100 dark:bg-slate-700">
@@ -2353,7 +2356,7 @@ function critterSeasonArticleClass(colCount: number): string {
   return 'flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-6';
 }
 
-function renderCritterCard(variant: Critter, dateStr: string, articleClass: string, extraClass = '', forageableByName?: Map<string, ForageableEntry>, storageNameMap?: Map<string, number>, inventoryNameMap?: Map<string, number>) {
+function renderCritterCard(variant: Critter, dateStr: string, articleClass: string, extraClass = '', forageableByName?: Map<string, ForageableEntry>, storageNameMap?: Map<string, number>, inventoryNameMap?: Map<string, number>, processorNameMap?: Map<string, number>) {
   const isActive = daysRemainingInRange(variant.activeAt, dateStr) > 0;
   const bg = `transition-colors duration-200${isActive ? ' bg-yellow-50 dark:bg-teal-900/40' : ''}`;
   const imgBg = isActive ? 'bg-gradient-to-b from-white to-yellow-50 dark:from-slate-800 dark:to-teal-900/40' : '';
@@ -2393,7 +2396,7 @@ function renderCritterCard(variant: Critter, dateStr: string, articleClass: stri
                   );
                 }
                 return (
-                  <AppTooltip key={i} content={<CritterFoodTooltipContent food={food} forageableInfo={forageableInfo} inventoryCount={inventoryCount} storageCount={storageCount} />} width="w-56">
+                  <AppTooltip key={i} content={<CritterFoodTooltipContent food={food} forageableInfo={forageableInfo} inventoryCount={inventoryCount} storageCount={storageCount} processorCount={processorNameMap ? (processorNameMap.get(food.name) ?? 0) : undefined} />} width="w-56">
                     <li className="flex cursor-help items-center gap-2">
                       {food.image && <img src={food.image} alt={food.name} className="h-9 w-9 flex-shrink-0 rounded object-contain" />}
                       <span>{food.name}</span>
@@ -4180,6 +4183,8 @@ export default function Tips() {
             chipColor="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400"
             toolData={selectedCharacter?.tool_data ?? null}
             storageNameMap={selectedCharacter ? storageNameMap : undefined}
+            processorNameMap={selectedCharacter ? processorNameMap : undefined}
+            contributedNameMap={selectedCharacter ? contributedNameMap : undefined}
             money={selectedCharacter?.money}
           />
           <div className="flex flex-col gap-6">
@@ -4190,6 +4195,8 @@ export default function Tips() {
               chipColor="bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
               toolData={selectedCharacter?.tool_data ?? null}
               storageNameMap={selectedCharacter ? storageNameMap : undefined}
+              processorNameMap={selectedCharacter ? processorNameMap : undefined}
+              contributedNameMap={selectedCharacter ? contributedNameMap : undefined}
               money={selectedCharacter?.money}
             />
             <BuildingStatusCard
@@ -4197,6 +4204,8 @@ export default function Tips() {
               homeConstructionDays={selectedCharacter?.home_construction_days ?? 0}
               barnData={selectedCharacter?.barn_data ?? []}
               storageNameMap={selectedCharacter ? storageNameMap : undefined}
+              processorNameMap={selectedCharacter ? processorNameMap : undefined}
+              contributedNameMap={selectedCharacter ? contributedNameMap : undefined}
               money={selectedCharacter?.money}
             />
           </div>
@@ -4235,6 +4244,7 @@ export default function Tips() {
                     forageableByName,
                     selectedCharacter ? storageNameMap : undefined,
                     selectedCharacter ? inventoryNameMap : undefined,
+                    selectedCharacter ? processorNameMap : undefined,
                   )
                 )}
               </div>
