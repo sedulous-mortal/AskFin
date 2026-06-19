@@ -895,6 +895,7 @@ app.post('/api/save/parse', async (req, res) => {
             daysToMaturity: meta.daysToMaturity,
             goneToSeedDays: meta.goneToSeedDays ?? null,
             isMultiHarvest: meta.isMultiHarvest,
+            requiresWatering: meta.requiresWatering ?? true,
             daysWatered,
             isDead,
             fertility: fertility ?? 0,

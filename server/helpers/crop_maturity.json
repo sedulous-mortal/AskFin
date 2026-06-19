@@ -19,5 +19,6 @@
   "251": { "name": "Rhubarb",     "daysToMaturity": 5,  "goneToSeedDays": 6,    "isMultiHarvest": false, "image": "/edibles/Rhubarb.png"     },
   "306": { "name": "Onion",       "daysToMaturity": 6,  "goneToSeedDays": 7,    "isMultiHarvest": false, "image": "/edibles/Onion.png"       },
   "321": { "name": "Sunroot",     "daysToMaturity": 6,  "goneToSeedDays": 7,    "isMultiHarvest": false, "image": "/edibles/Sunroot.png"     },
-  "325": { "name": "Oats",        "daysToMaturity": 6,  "goneToSeedDays": null, "isMultiHarvest": false, "image": "/edibles/Oats.png"        }
+  "325": { "name": "Oats",        "daysToMaturity": 6,  "goneToSeedDays": null, "isMultiHarvest": false, "image": "/edibles/Oats.png"        },
+  "415": { "name": "Hay Grass",   "daysToMaturity": 4,  "goneToSeedDays": null, "isMultiHarvest": true,  "requiresWatering": false, "image": "/edibles/Hay.png"         }
 }

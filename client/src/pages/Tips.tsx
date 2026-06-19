@@ -2312,6 +2312,7 @@ function SeedHarvestCalc({ cropsData }: { cropsData: CropEntry[] | null }) {
   if (cropsData) {
     const seen = new Map<number, { name: string; daysToMaturity: number; fertilitySum: number; count: number }>();
     for (const c of cropsData) {
+      if (c.requiresWatering === false) continue;
       if (!seen.has(c.cropRefId)) {
         seen.set(c.cropRefId, { name: c.name, daysToMaturity: c.daysToMaturity, fertilitySum: c.fertility ?? 0, count: 1 });
       } else {
@@ -2915,7 +2916,7 @@ export default function Tips() {
     const gts = c.goneToSeedDays;
     return !c.isDead && gts !== null && c.daysWatered >= gts;
   });
-  const needsWatering = cropsData.filter((c) => !c.isDead && c.daysWatered < c.daysToMaturity);
+  const needsWatering = cropsData.filter((c) => !c.isDead && c.daysWatered < c.daysToMaturity && c.requiresWatering !== false);
   const deadCrops = cropsData.filter((c) => c.isDead);
 
   // Active quest item requirements vs what player has (inventory + storage combined).
@@ -3158,7 +3159,7 @@ export default function Tips() {
       reqs.forEach((r, i) => {
         reqItems.push({
           id: `quest-req-${r.name.replace(/\s+/g, '-').toLowerCase()}-${questName.replace(/\s+/g, '-').toLowerCase()}`,
-          label: `${r.stillNeed}× ${r.name}`,
+          label: `${r.amount}× ${r.name}`,
           dividerLabel: i === 0 ? questName : undefined,
           iconNode: (
             <QuestItemIcon
