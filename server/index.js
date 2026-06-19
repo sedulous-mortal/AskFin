@@ -891,22 +891,12 @@ app.post('/api/save/parse', async (req, res) => {
         home_level: character.homeLevel ?? null,
         home_construction_days: character.daysOfHomeConstruction ?? 0,
         barn_data: character.barnData ?? [],
-        crops_data: (character.cropData ?? []).map(({ cropRefId, daysWatered, isDead, fertility }) => {
-          const meta = cropMaturityFile[String(cropRefId)];
-          if (!meta) return null;
-          return {
-            cropRefId,
-            name: meta.name,
-            image: meta.image,
-            daysToMaturity: meta.daysToMaturity,
-            goneToSeedDays: meta.goneToSeedDays ?? null,
-            isMultiHarvest: meta.isMultiHarvest,
-            requiresWatering: meta.requiresWatering ?? true,
-            daysWatered,
-            isDead,
-            fertility: fertility ?? 0,
-          };
-        }).filter(Boolean),
+        crops_data: (character.cropData ?? []).map(({ cropRefId, daysWatered, isDead, fertility }) => ({
+          cropRefId,
+          daysWatered,
+          isDead,
+          fertility: fertility ?? 0,
+        })),
         project_mat_pile_data: (character.projectMatPileData ?? []).map(pile => {
           const totals = new Map();
           for (const { id, amount } of pile.donatedItems) {
@@ -1014,7 +1004,22 @@ app.get('/api/characters/:id', async (req, res) => {
       home_level: data.home_level ?? null,
       home_construction_days: data.home_construction_days ?? 0,
       barn_data: data.barn_data || [],
-      crops_data: data.crops_data || [],
+      crops_data: (data.crops_data || []).map(entry => {
+        const meta = cropMaturityFile[String(entry.cropRefId)];
+        if (!meta) return null;
+        return {
+          cropRefId: entry.cropRefId,
+          name: meta.name,
+          image: meta.image,
+          daysToMaturity: meta.daysToMaturity,
+          goneToSeedDays: meta.goneToSeedDays ?? null,
+          isMultiHarvest: meta.isMultiHarvest,
+          requiresWatering: meta.requiresWatering ?? true,
+          daysWatered: entry.daysWatered,
+          isDead: entry.isDead,
+          fertility: entry.fertility ?? 0,
+        };
+      }).filter(Boolean),
       project_mat_pile_data: data.project_mat_pile_data || [],
       chest_data: data.chest_data || [],
       is_rainy_or_stormy: isRainyOrStormy(data.current_weather_pattern_id),
