@@ -1844,7 +1844,7 @@ function DonatedSpecimensCard({
 
 // ── Daily To-Do Checklist ────────────────────────────────────────────────────
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; groupKey?: string; subtaskIds?: string[] };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research' | 'hold-warning'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }> };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -2036,6 +2036,36 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                         {line}
                       </p>
                     ))}
+                  </div>
+                </li>
+              );
+            }
+            if (item.kind === 'hold-warning') {
+              return (
+                <li key={item.id}>
+                  <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2.5 dark:border-amber-600/50 dark:bg-amber-900/20">
+                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">
+                      Hold on to your items!
+                    </p>
+                    <p className="text-sm text-amber-700 dark:text-amber-400 leading-snug">
+                      {item.holdItems && item.holdItems.length > 0 ? (
+                        <>
+                          Do not sell or otherwise lose your{' '}
+                          {item.holdItems.map((hi, idx) => (
+                            <span key={hi.name}>
+                              {idx > 0 && (idx === item.holdItems!.length - 1 ? ' or ' : ', ')}
+                              <strong>{hi.amount > 1 ? `${hi.amount}× ` : ''}{hi.name}</strong>
+                            </span>
+                          ))}
+                          {' '}— keep {item.holdItems.length === 1 ? 'it' : 'them'} to turn in for <strong>{item.label}</strong>.
+                        </>
+                      ) : (
+                        <>Do not sell items needed for <strong>{item.label}</strong>.</>
+                      )}
+                    </p>
+                    {item.detail && (
+                      <p className="text-xs text-amber-600 dark:text-amber-500 mt-1">{item.detail}</p>
+                    )}
                   </div>
                 </li>
               );
@@ -3279,6 +3309,13 @@ export default function Tips() {
       ];
 
   // ── Town: quests ───────────────────────────────────────────────────────────
+  // Villagers with restricted weekly availability (0=Sun, 1=Mon, ..., 6=Sat).
+  // Omitted villagers are assumed always available.
+  const VILLAGER_AVAILABLE_DAYS: Record<string, number[]> = {
+    Fin: [6], // Saturdays only
+  };
+  const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
   const questChecklistItems: ChecklistItem[] = (() => {
     if (!selectedCharacter) {
       return [{ id: 'town-board', label: 'Check the Town Board for new quests' }];
@@ -3286,43 +3323,78 @@ export default function Tips() {
     if (activeQuests.length === 0) {
       return [{ id: 'town-board', label: 'No active quests — check the Town Board for new ones' }];
     }
-    if (allPendingReqs.length === 0) {
-      return [{
-        id: 'town-board',
-        label: `${activeQuests.length} quest${activeQuests.length !== 1 ? 's' : ''} ready to turn in!`,
-        detail: activeQuests.map((q) => q.display_title || q.name).join(', '),
-      }];
-    }
-    // Group requirements by quest, render one icon+checkbox per requirement
-    const byQuest = new Map<string, typeof allPendingReqs>();
+
+    // Index pending reqs by quest name for O(1) lookup
+    const pendingByQuestName = new Map<string, typeof allPendingReqs>();
     for (const r of allPendingReqs) {
-      if (!byQuest.has(r.questName)) byQuest.set(r.questName, []);
-      byQuest.get(r.questName)!.push(r);
+      if (!pendingByQuestName.has(r.questName)) pendingByQuestName.set(r.questName, []);
+      pendingByQuestName.get(r.questName)!.push(r);
     }
-    const reqItems: ChecklistItem[] = [];
-    for (const [questName, reqs] of byQuest) {
-      reqs.forEach((r, i) => {
-        reqItems.push({
-          id: `quest-req-${r.name.replace(/\s+/g, '-').toLowerCase()}-${questName.replace(/\s+/g, '-').toLowerCase()}`,
-          label: `${r.amount}× ${r.name}`,
-          dividerLabel: i === 0 ? questName : undefined,
-          groupKey: `quest-${questName}`,
-          iconNode: (
-            <QuestItemIcon
-              name={r.name}
-              stillNeed={r.stillNeed}
-              have={r.have}
-              amount={r.amount}
-              questName={questName}
-              invCount={r.invCount}
-              storCount={r.storCount}
-              processorCount={r.processorCount}
-            />
-          ),
+
+    // Root cellar quests ("Defenders Ration" etc.) are already covered by the
+    // dedicated root-cellar line in the same column, so skip them here.
+    const checklistQuests = activeQuests.filter((q) => !q.is_rootcellar_quest);
+    if (checklistQuests.length === 0) {
+      return [{ id: 'town-board', label: 'No active quests — check the Town Board for new ones' }];
+    }
+
+    const items: ChecklistItem[] = [];
+    for (const quest of checklistQuests) {
+      const questName = quest.display_title || quest.name;
+      const pendingReqs = pendingByQuestName.get(questName) ?? [];
+      const isReady = pendingReqs.length === 0;
+      const giver = quest.quest_giver;
+      const availDays = giver ? (VILLAGER_AVAILABLE_DAYS[giver] ?? null) : null;
+      const giverAvailableToday = !availDays || availDays.includes(dayOfWeekNow);
+
+      if (isReady) {
+        if (giverAvailableToday) {
+          items.push({
+            id: `quest-ready-${quest.id}`,
+            label: `Turn in: ${questName}`,
+            detail: giver ? `Bring to ${giver}` : undefined,
+          });
+        } else {
+          // Villager not available today — warn player to hold their items
+          const dueDate = quest.available_end_season_name && quest.available_last_day
+            ? `${quest.available_end_season_name} ${quest.available_last_day}`
+            : null;
+          const nextAvailDay = availDays![0];
+          const daysUntilAvail = ((nextAvailDay - dayOfWeekNow + 7) % 7) || 7;
+          const nextAvailDayName = DAY_NAMES[nextAvailDay];
+          items.push({
+            id: `quest-hold-${quest.id}`,
+            kind: 'hold-warning',
+            label: questName,
+            holdItems: (quest.requirements ?? []).map((r) => ({ name: r.name, amount: r.amount })),
+            detail: `Turn in to ${giver} — ${nextAvailDayName}s only (in ${daysUntilAvail} day${daysUntilAvail !== 1 ? 's' : ''})${dueDate ? ` · Due by ${dueDate}` : ''}`,
+          });
+        }
+      } else {
+        // Show remaining requirements for this quest
+        pendingReqs.forEach((r, i) => {
+          items.push({
+            id: `quest-req-${r.name.replace(/\s+/g, '-').toLowerCase()}-${questName.replace(/\s+/g, '-').toLowerCase()}`,
+            label: `${r.amount}× ${r.name}`,
+            dividerLabel: i === 0 ? questName : undefined,
+            groupKey: `quest-${questName}`,
+            iconNode: (
+              <QuestItemIcon
+                name={r.name}
+                stillNeed={r.stillNeed}
+                have={r.have}
+                amount={r.amount}
+                questName={questName}
+                invCount={r.invCount}
+                storCount={r.storCount}
+                processorCount={r.processorCount}
+              />
+            ),
+          });
         });
-      });
+      }
     }
-    return reqItems;
+    return items;
   })();
 
   // ── Villager home locations → birthday column routing ─────────────────────

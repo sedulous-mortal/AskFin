@@ -12,15 +12,9 @@
       ]
     },
     {
-      "name": "Sunrise Festival",
+      "name": "Shedding Festival",
       "season": 1,
       "day": 9,
-      "shopItems": []
-    },
-    {
-      "name": "Shedding Festival",
-      "season": 2,
-      "day": 19,
       "shopItems": [
         { "name": "Lily Pads Wallpaper",  "qty": 4  },
         { "name": "Pinwheel",             "qty": 20 },
@@ -30,14 +24,20 @@
     },
     {
       "name": "Harvest Festival",
-      "season": 3,
-      "day": 28,
+      "season": 2,
+      "day": 19,
       "shopItems": [
         { "name": "Wicker Alpheep",          "qty": 10 },
         { "name": "Wicker Bluggy",           "qty": 10 },
         { "name": "Haybale",                 "qty": 10 },
         { "name": "Harvest Sunflower Decor", "qty": 10 }
       ]
+    },
+    {
+      "name": "Sunrise Festival",
+      "season": 3,
+      "day": 28,
+      "shopItems": []
     }
   ],
   "storyEvents": [
