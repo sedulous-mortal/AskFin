@@ -260,7 +260,7 @@ function AppTooltip({ children, content, width = 'w-44' }: {
 
 function ItemIcon({ name, amount, donated = 0, storageCount, processorCount, contributedCount }: { name: string; amount: number; donated?: number; storageCount?: number; processorCount?: number; contributedCount?: number }) {
   const safeName = name.replace(/ /g, '_');
-  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/fish/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isDone = donated >= amount;
@@ -730,7 +730,7 @@ function QuestItemIcon({ name, stillNeed, have, amount, questName, invCount, sto
   processorCount?: number;
 }) {
   const safeName = name.replace(/ /g, '_');
-  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/fish/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
 
@@ -800,7 +800,7 @@ function RewardIcon({ name, amount, type, storageCount, description }: {
 }) {
   const safeName = name.replace(/ /g, '_');
   const paths = type === 'item'
-    ? [`/items/${safeName}.png`, `/edibles/${safeName}.png`]
+    ? [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/fish/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`]
     : [`/villagers/${safeName}.png`, `/characters/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
@@ -945,7 +945,7 @@ const villagerGifts: Record<string, VillagerGifts> = villagerGiftsData as Record
 
 function GiftItemIcon({ name, sentiment, storageCount, processorCount, size = 'default' }: { name: string; sentiment: 'favorite' | 'dislike'; storageCount?: number; processorCount?: number; size?: 'sm' | 'default' }) {
   const safeName = name.replace(/ /g, '_');
-  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
+  const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/fish/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
   const isFav = sentiment === 'favorite';
@@ -1364,6 +1364,8 @@ const TOOL_DISPLAY_NAMES: Record<string, string> = {
   scythe: 'Scythe',
   rod: 'Fishing Rod',
 };
+
+const GRUFF_TOOLS = new Set(['watercan', 'hoe', 'pick', 'axe', 'scythe']);
 
 // Material amounts extracted from EquippableTool ScriptableObject assets (resources.assets).
 // Coin cost of 500 is confirmed from GetToolUpgradeTierCost() in ToolWheel.cs.
@@ -1844,7 +1846,7 @@ function DonatedSpecimensCard({
 
 // ── Daily To-Do Checklist ────────────────────────────────────────────────────
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research' | 'hold-warning'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }> };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research' | 'hold-warning'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[] };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -2018,12 +2020,116 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
     });
   }
 
+  function getGroupCheckableIds(group: ChecklistGroup): {
+    regularIds: string[];
+    rejectIds: string[];
+    researchItems: Array<{ museumItemId: number }>;
+    extraIds: string[];
+  } {
+    const isCrops = group.location === 'On Your Farm (Crops)';
+    const isForest = group.location === 'In the Forest';
+    const isMines = group.location === 'In the Mines';
+    const regularIds: string[] = [];
+    const rejectIds: string[] = [];
+    const researchItems: Array<{ museumItemId: number }> = [];
+    const extraIds: string[] = [];
+    for (const item of group.items) {
+      if (item.kind === 'callout' || item.kind === 'hold-warning') continue;
+      if (item.kind === 'research' && item.museumItemId !== undefined) {
+        researchItems.push({ museumItemId: item.museumItemId });
+        continue;
+      }
+      if (isMines && item.subtaskIds && item.id === 'mining-upgrade') {
+        for (const sid of item.subtaskIds) {
+          if (sid !== 'mining-upgrade-gruff') extraIds.push(sid);
+        }
+        continue;
+      }
+      if (isCrops && item.rejectCheckbox) {
+        rejectIds.push(item.id);
+      } else {
+        regularIds.push(item.id);
+      }
+    }
+    if (isForest && gruffQuestVisible) {
+      extraIds.push('mining-upgrade-gruff');
+      extraIds.push('mining-upgrade');
+    }
+    return { regularIds, rejectIds, researchItems, extraIds };
+  }
+
+  function isGroupFullyDone(group: ChecklistGroup): boolean {
+    const { regularIds, rejectIds, researchItems, extraIds } = getGroupCheckableIds(group);
+    const total = regularIds.length + rejectIds.length + researchItems.length + extraIds.length;
+    if (total === 0) return false;
+    return (
+      regularIds.every(id => checked.has(id)) &&
+      rejectIds.every(id => rejected.has(id)) &&
+      researchItems.every(({ museumItemId }) => researchDone.has(museumItemId)) &&
+      extraIds.every(id => checked.has(id))
+    );
+  }
+
+  function toggleGroupAll(group: ChecklistGroup) {
+    const { regularIds, rejectIds, researchItems, extraIds } = getGroupCheckableIds(group);
+    const allCheckIds = [...regularIds, ...extraIds];
+    const fullyDone = isGroupFullyDone(group);
+    setChecked(prev => {
+      const next = new Set(prev);
+      for (const id of allCheckIds) fullyDone ? next.delete(id) : next.add(id);
+      try { sessionStorage.setItem(CHECKLIST_KEY, JSON.stringify([...next])); } catch { /* storage full */ }
+      return next;
+    });
+    setRejected(prev => {
+      const next = new Set(prev);
+      for (const id of rejectIds) fullyDone ? next.delete(id) : next.add(id);
+      try { sessionStorage.setItem(REJECTED_KEY, JSON.stringify([...next])); } catch { /* storage full */ }
+      return next;
+    });
+    setResearchDone(prev => {
+      const next = new Map(prev);
+      for (const { museumItemId } of researchItems) {
+        fullyDone ? next.delete(museumItemId) : next.set(museumItemId, group.location);
+      }
+      try { sessionStorage.setItem(RESEARCH_DONE_KEY, JSON.stringify([...next])); } catch { /* storage full */ }
+      return next;
+    });
+  }
+
   function renderGroupColumn(group: ChecklistGroup) {
+    const { regularIds, rejectIds, researchItems, extraIds } = getGroupCheckableIds(group);
+    const canCheckAll = regularIds.length + rejectIds.length + researchItems.length + extraIds.length > 0;
+    const columnFullyDone = isGroupFullyDone(group);
     return (
       <div key={group.location}>
-        <p className={`mb-2 text-sm font-semibold uppercase tracking-wide ${group.colorClass}`}>
-          {group.location}
-        </p>
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <p className={`text-sm font-semibold uppercase tracking-wide ${group.colorClass}`}>
+            {group.location}
+          </p>
+          {canCheckAll && (
+            <button
+              type="button"
+              onClick={() => toggleGroupAll(group)}
+              className="flex shrink-0 items-center gap-1 rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-medium text-slate-500 transition-colors hover:border-slate-300 hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-400 dark:hover:bg-slate-700"
+            >
+              {columnFullyDone ? (
+                <>
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="h-3 w-3 flex-none" aria-hidden>
+                    <path fillRule="evenodd" d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z" clipRule="evenodd" />
+                  </svg>
+                  Uncheck all
+                </>
+              ) : (
+                <>
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="h-3 w-3 flex-none" aria-hidden>
+                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                  </svg>
+                  Check all
+                </>
+              )}
+            </button>
+          )}
+        </div>
         <ul className="space-y-2">
           {group.items.map((item) => {
             if (item.kind === 'callout') {
@@ -2184,6 +2290,14 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                   <div className="ml-6 mt-1.5 flex flex-wrap gap-1.5">
                     {item.birthdayFavorites.map((gift) => (
                       <GiftItemIcon key={gift.name} name={gift.name} sentiment="favorite" storageCount={gift.storageCount} size="sm" />
+                    ))}
+                  </div>
+                )}
+                {item.pickupSuggestions && item.pickupSuggestions.length > 0 && (
+                  <div className="ml-6 mt-1.5 space-y-0.5">
+                    <p className="text-xs text-slate-400 dark:text-slate-500">You have enough bars to start another upgrade:</p>
+                    {item.pickupSuggestions.map((s) => (
+                      <p key={s} className="text-xs text-emerald-600 dark:text-emerald-400">• {s}</p>
                     ))}
                   </div>
                 )}
@@ -3318,10 +3432,10 @@ export default function Tips() {
 
   const questChecklistItems: ChecklistItem[] = (() => {
     if (!selectedCharacter) {
-      return [{ id: 'town-board', label: 'Check the Town Board for new quests' }];
+      return [];
     }
     if (activeQuests.length === 0) {
-      return [{ id: 'town-board', label: 'No active quests — check the Town Board for new ones' }];
+      return [];
     }
 
     // Index pending reqs by quest name for O(1) lookup
@@ -3335,7 +3449,7 @@ export default function Tips() {
     // dedicated root-cellar line in the same column, so skip them here.
     const checklistQuests = activeQuests.filter((q) => !q.is_rootcellar_quest);
     if (checklistQuests.length === 0) {
-      return [{ id: 'town-board', label: 'No active quests — check the Town Board for new ones' }];
+      return [];
     }
 
     const items: ChecklistItem[] = [];
@@ -3464,6 +3578,62 @@ export default function Tips() {
       orePerLoc: oreName ? buildOresByLocation(selectedCharacter?.chest_data ?? [], oreName) : [],
     };
   })() : undefined;
+
+  // ── Tool pickup tasks (upgrading complete, 0 days remaining) ────────────────
+  const readyToPickupTools = (selectedCharacter?.tool_data ?? []).filter(
+    (t) => t.upgrading && t.upgradeDaysRemaining === 0
+  );
+
+  function computePickupSuggestions(excludeToolName: string): string[] {
+    if (!selectedCharacter) return [];
+    const suggestions: string[] = [];
+    for (const t of selectedCharacter.tool_data ?? []) {
+      if (t.toolName === excludeToolName) {
+        // This tool is being picked up. After collection its tier advances by 1.
+        // Check if it can be immediately re-submitted for another upgrade.
+        const tierAfterPickup = t.tier + 1;
+        if (tierAfterPickup < t.maxTier) {
+          const isRodTool = t.toolName === 'rod';
+          const req = (isRodTool ? ROD_UPGRADE_REQ : TOOL_UPGRADE_REQ)[tierAfterPickup];
+          if (req) {
+            const have = (storageNameMap.get(req.material) ?? 0) + (inventoryNameMap.get(req.material) ?? 0);
+            if (have >= req.amount) {
+              const dn = TOOL_DISPLAY_NAMES[t.toolName] ?? t.toolName;
+              suggestions.push(`${dn} — bring it straight back for Tier ${tierAfterPickup + 1}! (${have}/${req.amount}× ${req.material})`);
+            }
+          }
+        }
+        continue;
+      }
+      if (t.upgrading) continue;
+      if (t.tier >= t.maxTier) continue;
+      const isRodTool = t.toolName === 'rod';
+      const req = (isRodTool ? ROD_UPGRADE_REQ : TOOL_UPGRADE_REQ)[t.tier];
+      if (!req) continue;
+      const have = (storageNameMap.get(req.material) ?? 0) + (inventoryNameMap.get(req.material) ?? 0);
+      if (have >= req.amount) {
+        const dn = TOOL_DISPLAY_NAMES[t.toolName] ?? t.toolName;
+        suggestions.push(`${dn} (${have}/${req.amount}× ${req.material})`);
+      }
+    }
+    return suggestions;
+  }
+
+  const gruffPickupItems: ChecklistItem[] = readyToPickupTools
+    .filter((t) => GRUFF_TOOLS.has(t.toolName))
+    .map((t) => ({
+      id: `pickup-${t.toolName}`,
+      label: `Pick up your upgraded ${TOOL_DISPLAY_NAMES[t.toolName] ?? t.toolName} from Gruff`,
+      pickupSuggestions: computePickupSuggestions(t.toolName),
+    }));
+
+  const wilfredPickupItems: ChecklistItem[] = readyToPickupTools
+    .filter((t) => t.toolName === 'rod')
+    .map((t) => ({
+      id: `pickup-${t.toolName}`,
+      label: 'Pick up your upgraded Fishing Rod from Wilfred',
+      pickupSuggestions: computePickupSuggestions(t.toolName),
+    }));
 
   // ── Root Cellar ────────────────────────────────────────────────────────────
   let rootCellarLabel: string;
@@ -3615,6 +3785,7 @@ export default function Tips() {
       items: [
         ...buildResearchChecklistItems(forestResearchItems, true),
         ...(birthdayItemsByLoc.get('forest') ?? []),
+        ...gruffPickupItems,
       ],
     },
     {
@@ -3632,6 +3803,7 @@ export default function Tips() {
         ...buildResearchChecklistItems(townResearchItems, true),
         ...questChecklistItems,
         ...(birthdayItemsByLoc.get('town') ?? (birthdayItemsByLoc.size === 0 ? [{ id: 'villagers', label: 'Talk to villagers to build relationships' }] : [])),
+        ...wilfredPickupItems,
         { id: 'root-cellar', label: rootCellarLabel, detail: rootCellarDetail },
       ],
     },

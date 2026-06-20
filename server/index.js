@@ -158,7 +158,6 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
   realtime: { transport: ws },
 });
 
-console.log('Supabase client initialized with URL:', supabaseUrl);
 
 const DEFAULT_PREFERENCES = {
   timezone: 'America/New_York',
@@ -201,13 +200,6 @@ function parseRateHeaders(headers) {
     headers.has('x-ratelimit-reset') ||
     headers.has('retry-after');
 
-  // Log all headers for debugging
-  console.log('Supabase response headers:', {
-    'x-ratelimit-limit': headers.get('x-ratelimit-limit'),
-    'x-ratelimit-remaining': headers.get('x-ratelimit-remaining'),
-    'x-ratelimit-reset': headers.get('x-ratelimit-reset'),
-    'retry-after': headers.get('retry-after'),
-  });
 
   if (!hasRateHeaders) {
     console.warn('No rate limit headers found from Supabase');
@@ -252,7 +244,6 @@ async function getInviteRateInfo() {
   const cutoffDate = new Date(now - EMAIL_RATE_LIMIT_WINDOW * 1000).toISOString();
 
   try {
-    console.log('Querying email_invites from Supabase...');
     const { data, count, error } = await supabase
       .from('email_invites')
       .select('created_at', { count: 'exact' })
@@ -265,7 +256,6 @@ async function getInviteRateInfo() {
       throw error;
     }
 
-    console.log('Supabase query successful. Count:', count, 'Data length:', data?.length);
 
     const { data: markerData, error: markerError } = await supabase
       .from('email_invites')
@@ -359,7 +349,6 @@ app.get('/api/health', (req, res) => {
 // Test Supabase connectivity
 app.get('/api/test-supabase', async (req, res) => {
   try {
-    console.log('Testing Supabase connection...');
     const { data, error } = await supabase.from('email_invites').select('count', { count: 'exact' }).limit(1);
     
     if (error) {
@@ -367,7 +356,6 @@ app.get('/api/test-supabase', async (req, res) => {
       return res.status(500).json({ status: 'failed', error: error.message || error });
     }
     
-    console.log('Supabase connection successful');
     res.json({ status: 'ok', message: 'Supabase connection working' });
   } catch (err) {
     console.error('Supabase test error:', err);
@@ -532,8 +520,6 @@ app.post('/api/forgot-password', async (req, res) => {
     return res.status(400).json({ error: 'Email is required.' });
   }
 
-  console.log('Processing forgot-password request for:', email);
-  console.log('Using frontend URL:', frontendUrl);
 
   const recoverUrl = `${supabaseUrl.replace(/\/$/, '')}/auth/v1/recover`;
   try {
@@ -549,10 +535,8 @@ app.post('/api/forgot-password', async (req, res) => {
 
     const responseBody = await response.json().catch(() => ({}));
     const rateInfo = parseRateHeaders(response.headers);
-    console.log('Forgot-password response rate info:', rateInfo);
     if (rateInfo) {
       latestSupabaseRateInfo = rateInfo;
-      console.log('Updated latestSupabaseRateInfo');
       try {
         const { error: infoError } = await supabase.from('email_invites').insert({
           email: `${RATE_LIMIT_INFO_PREFIX}${JSON.stringify({
@@ -941,8 +925,7 @@ app.post('/api/save/parse', async (req, res) => {
         characterId = inserted?.id;
       }
 
-      console.log('[parse] project_mat_pile_data saved:', JSON.stringify(payload.project_mat_pile_data, null, 2));
-      return res.json({ character, saved: true, characterId, _debug_matPile: payload.project_mat_pile_data });
+      return res.json({ character, saved: true, characterId });
     } catch (err) {
       console.error('Failed to save character to Supabase:', err);
       return res.json({ character, saved: false, error: 'Parsed OK but failed to save to database.' });
