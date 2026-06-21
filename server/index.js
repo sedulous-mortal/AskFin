@@ -48,9 +48,15 @@ const forageablesList = [
 // Full plant list for museum tooltip lookup — includes all farmables (not just 'both')
 // with original planting window dates preserved.  Served separately from /api/forageables/all
 // so the Forageables page is not affected.
+const cropMaturityByName = new Map(
+  Object.values(cropMaturityFile).map(m => [m.name.toLowerCase(), m.daysToMaturity])
+);
 const allPlantsForTooltip = [
   ...(forageablesFile.forageables || []),
-  ...(farmablesFile.farmables || []),
+  ...(farmablesFile.farmables || []).map(f => ({
+    ...f,
+    daysToMaturity: cropMaturityByName.get(f.name.toLowerCase()) ?? null,
+  })),
 ];
 const fishScheduleList = fishScheduleFile.fish || [];
 const mineralDataList = mineralDataFile.minerals || [];
@@ -996,6 +1002,7 @@ app.get('/api/characters/:id', async (req, res) => {
           image: meta.image,
           daysToMaturity: meta.daysToMaturity,
           goneToSeedDays: meta.goneToSeedDays ?? null,
+          canGoToSeed: meta.canGoToSeed ?? (meta.goneToSeedDays !== null),
           isMultiHarvest: meta.isMultiHarvest,
           requiresWatering: meta.requiresWatering ?? true,
           daysWatered: entry.daysWatered,

@@ -106,7 +106,10 @@ export default function LoadSaveFile() {
             <code className="mt-1 block break-all rounded bg-slate-900 px-2 py-1.5 text-slate-300">
               C:\Users\&lt;YourUsername&gt;\AppData\LocalLow\AcuteOwlStudio\GrimshireSaves
             </code>
-            <p className="mt-2 text-slate-500 italic">Click this icon to copy the path to your clipboard.</p>
+            <p className="mt-2 text-slate-400">
+              <strong>Can't see AppData in Explorer?</strong> It's a hidden folder. Either paste the path above directly into Explorer's address bar and press Enter, or go to <strong>View → Show → Hidden items</strong> in Explorer to make it visible.
+            </p>
+            <p className="mt-2 text-white italic">Click this icon to copy the path to your clipboard.</p>
           </div>
         </div>
       </div>

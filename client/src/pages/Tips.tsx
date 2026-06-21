@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, type ReactNode } from 'react';
+﻿import { useEffect, useState, useContext, createContext, type ReactNode } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useDate } from '../context/DateContext';
 import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, type CropEntry, type ChestEntry, buildStorageMap, buildStorageMapByName, buildProcessorMapByName, buildContributedMapByName, buildInventoryMapByName } from '../context/AuthContext';
@@ -90,6 +90,7 @@ type ForageableEntry = {
   forage_start_day?: number;
   forage_end_season?: number;
   forage_end_day?: number;
+  daysToMaturity?: number | null;
 };
 
 function toAbsDay(yearOffset: number, season: number, day: number): number {
@@ -358,9 +359,9 @@ const RARITY_COLOR: Record<string, string> = {
 const LOCATION_COLOR: Record<string, string> = {
   'Deep Woods':     'text-green-400',
   Farm:             'text-amber-400',
+  'Farm Coast':     'text-amber-400',
   'Farm River':     'text-amber-400',
   Forest:           'text-emerald-400',
-  'Forest Coast':   'text-emerald-400',
   'Forest Lake':    'text-emerald-400',
   'Forest River':   'text-emerald-400',
   Marsh:            'text-teal-300',
@@ -371,13 +372,137 @@ const LOCATION_COLOR: Record<string, string> = {
   'Mountain Lake':  'text-cyan-400',
   'Mountain River': 'text-cyan-400',
   Town:             'text-violet-400',
+  'Town Coast':     'text-violet-400',
   Village:          'text-violet-400',
-  'Village Coast':  'text-violet-400',
   'Village Lake':   'text-violet-400',
 };
 
+type MapBox = { left: number; top: number; width: number; height: number };
+type MapEntry = { boxes: MapBox[]; note?: string };
+
+// Percentage-based highlight boxes (left/top/width/height as % of the map image).
+// These correspond to the circled areas on the Grimshire world map screenshot.
+const MAP_HIGHLIGHTS: Record<string, MapEntry> = {
+  'Forest River': { boxes: [
+    { left: 18.5, top: 30.3, width: 8.2,  height: 14.2 },
+    { left: 36.2, top: 45.6, width: 7.8,  height: 12.7 },
+  ]},
+  'Forest Lake': { boxes: [
+    { left: 25.5, top: 35.7, width: 13.8, height: 15.5 },
+  ]},
+  'Farm River': { boxes: [
+    { left: 49.2, top: 68.7, width: 5.7,  height: 11.5 },
+  ]},
+  'Mountain River': { boxes: [
+    { left: 69.0, top: 11.4, width: 6.3,  height: 12.1 },
+    { left: 70.7, top: 25.6, width: 5.8,  height:  8.8 },
+  ]},
+  'Mountain Lake': { boxes: [
+    { left: 77.2, top:  4.7, width: 17.7, height: 16.2 },
+  ]},
+  'Marsh': { boxes: [
+    { left:  1.3, top: 67.4, width: 26.0, height: 31.0 },
+  ]},
+  'Marsh Coast': { boxes: [
+    { left: 11.6, top: 87.3, width: 18.6, height: 10.8 },
+  ]},
+  'Farm Coast': { boxes: [
+    { left: 31.1, top: 78.8, width: 25.5, height: 19.5 },
+  ]},
+  'Town Coast': { boxes: [
+    { left: 63.2, top: 82.2, width: 34.9, height: 16.2 },
+  ]},
+  'Village Lake': { boxes: [
+    { left: 72.5, top: 48.5, width:  9.1, height: 11.5 },
+    { left: 72.5, top: 61.3, width:  9.9, height: 10.8 },
+    { left: 72.9, top: 73.4, width: 10.8, height: 11.5 },
+  ]},
+  'Deep Woods': {
+    boxes: [
+      { left: 16.5, top: 68.0, width: 3.5, height: 5.0 },
+    ],
+    note: 'Once inside the Deep Woods, head all the way west to reach the fishable water.',
+  },
+};
+
+const MapLocationContext = createContext<((loc: string) => void) | null>(null);
+
 function LocationText({ loc }: { loc: string }) {
-  return <span className={LOCATION_COLOR[loc] ?? 'text-white'}>{loc}</span>;
+  const openMap = useContext(MapLocationContext);
+  const color = LOCATION_COLOR[loc] ?? 'text-white';
+  if (openMap && MAP_HIGHLIGHTS[loc]) {
+    return (
+      <button
+        className={`${color} underline decoration-dotted underline-offset-2 hover:opacity-75`}
+        onClick={() => openMap(loc)}
+      >
+        {loc}
+      </button>
+    );
+  }
+  return <span className={color}>{loc}</span>;
+}
+
+function MapModal({ location, onClose }: { location: string; onClose: () => void }) {
+  const entry = MAP_HIGHLIGHTS[location];
+  const boxes = entry?.boxes ?? [];
+  const note = entry?.note;
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="relative overflow-hidden rounded-xl shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative">
+          <img
+            src="/map-grimshire.png"
+            alt="Grimshire world map"
+            className="block max-h-[85vh] max-w-[90vw] w-auto"
+          />
+          {boxes.map((h, i) => (
+            <div
+              key={i}
+              className="absolute pointer-events-none"
+              style={{
+                left:   `${h.left}%`,
+                top:    `${h.top}%`,
+                width:  `${h.width}%`,
+                height: `${h.height}%`,
+                border: '2px solid #facc15',
+                borderRadius: '3px',
+                backgroundColor: 'rgba(250,204,21,0.15)',
+                boxShadow: '0 0 0 3px rgba(250,204,21,0.3)',
+              }}
+            />
+          ))}
+        </div>
+        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-900/95 to-transparent px-4 pt-6 pb-3">
+          {note && (
+            <div className="mb-2 flex items-start gap-2 rounded-lg bg-amber-500/20 border border-amber-400/40 px-3 py-2">
+              <svg className="mt-0.5 shrink-0 w-4 h-4 text-amber-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                <circle cx="10" cy="6.5" r="1" fill="currentColor"/>
+                <rect x="9.1" y="9" width="1.8" height="5.5" rx="0.9" fill="currentColor"/>
+              </svg>
+              <span className="text-amber-100 text-xs leading-snug">{note}</span>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <span className="text-white font-semibold text-sm">{location} — highlighted on map</span>
+            <button
+              onClick={onClose}
+              className="ml-4 rounded-full bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const SOURCE_LABEL: Record<string, string> = {
@@ -786,6 +911,70 @@ function QuestItemIcon({ name, stillNeed, have, amount, questName, invCount, sto
             {initials}
           </span>
         )}
+      </div>
+    </AppTooltip>
+  );
+}
+
+function CropHarvestIcon({ image, name, plantEntry, canGoToSeed, isMultiHarvest, goneToSeed = false, invCount, storCount }: {
+  image: string;
+  name: string;
+  plantEntry?: ForageableEntry;
+  canGoToSeed: boolean;
+  isMultiHarvest: boolean;
+  goneToSeed?: boolean;
+  invCount?: number;
+  storCount?: number;
+}) {
+  const tooltipContent = (
+    <>
+      <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{name}</div>
+      <div className="space-y-1">
+        {plantEntry && (
+          <>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-slate-400 text-sm">Plant Starting On</span>
+              <span className="text-white text-sm">{TOOLTIP_SEASON_NAMES[plantEntry.start_season]} {plantEntry.start_day}</span>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-slate-400 text-sm">Cannot Plant After</span>
+              <span className="text-white text-sm">{TOOLTIP_SEASON_NAMES[plantEntry.end_season]} {plantEntry.end_day}</span>
+            </div>
+          </>
+        )}
+        {invCount !== undefined && (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400 text-sm">Inventory</span>
+            <span className="font-semibold text-emerald-400 text-sm">{invCount}</span>
+          </div>
+        )}
+        {storCount !== undefined && (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400 text-sm">Storage</span>
+            <span className="font-semibold text-amber-300 text-sm">{storCount}</span>
+          </div>
+        )}
+        {isMultiHarvest && (
+          <div className="text-[11px] text-slate-400 italic leading-tight pt-0.5">Regrows after harvest</div>
+        )}
+        {canGoToSeed && !isMultiHarvest && (
+          <div className="text-[11px] text-slate-400 italic leading-tight pt-0.5">Can go to seed</div>
+        )}
+      </div>
+    </>
+  );
+
+  const borderColor = goneToSeed
+    ? 'border-amber-400 dark:border-amber-600'
+    : 'border-emerald-400 dark:border-emerald-600';
+  const bgColor = goneToSeed
+    ? 'bg-amber-50 dark:bg-amber-950/30'
+    : 'bg-emerald-50 dark:bg-emerald-950/30';
+
+  return (
+    <AppTooltip content={tooltipContent} width="w-52">
+      <div className={`h-[37px] w-[37px] flex-none overflow-hidden rounded border ${borderColor} ${bgColor}`}>
+        <img src={image} alt={name} className="h-full w-full object-contain p-0.5" />
       </div>
     </AppTooltip>
   );
@@ -1846,7 +2035,7 @@ function DonatedSpecimensCard({
 
 // ── Daily To-Do Checklist ────────────────────────────────────────────────────
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research' | 'hold-warning'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[] };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research' | 'hold-warning' | 'info'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; questAcceptItems?: Array<{name: string; amount: number; invCount: number; storCount: number; questName: string}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[] };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -2034,7 +2223,7 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
     const researchItems: Array<{ museumItemId: number }> = [];
     const extraIds: string[] = [];
     for (const item of group.items) {
-      if (item.kind === 'callout' || item.kind === 'hold-warning') continue;
+      if (item.kind === 'callout' || item.kind === 'hold-warning' || item.kind === 'info') continue;
       if (item.kind === 'research' && item.museumItemId !== undefined) {
         researchItems.push({ museumItemId: item.museumItemId });
         continue;
@@ -2102,7 +2291,7 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
     const columnFullyDone = isGroupFullyDone(group);
     return (
       <div key={group.location}>
-        <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
           <p className={`text-sm font-semibold uppercase tracking-wide ${group.colorClass}`}>
             {group.location}
           </p>
@@ -2142,6 +2331,18 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                         {line}
                       </p>
                     ))}
+                  </div>
+                </li>
+              );
+            }
+            if (item.kind === 'info') {
+              return (
+                <li key={item.id}>
+                  <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2.5 dark:border-amber-600/50 dark:bg-amber-900/20">
+                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">{item.label}</p>
+                    {item.detail && (
+                      <p className="text-sm text-amber-700 dark:text-amber-400 leading-snug">{item.detail}</p>
+                    )}
                   </div>
                 </li>
               );
@@ -2290,6 +2491,22 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
                   <div className="ml-6 mt-1.5 flex flex-wrap gap-1.5">
                     {item.birthdayFavorites.map((gift) => (
                       <GiftItemIcon key={gift.name} name={gift.name} sentiment="favorite" storageCount={gift.storageCount} size="sm" />
+                    ))}
+                  </div>
+                )}
+                {item.questAcceptItems && item.questAcceptItems.length > 0 && (
+                  <div className="ml-6 mt-1.5 flex flex-wrap gap-1.5">
+                    {item.questAcceptItems.map((qi) => (
+                      <QuestItemIcon
+                        key={qi.name}
+                        name={qi.name}
+                        stillNeed={Math.max(0, qi.amount - qi.invCount - qi.storCount)}
+                        have={qi.invCount + qi.storCount}
+                        amount={qi.amount}
+                        questName={qi.questName}
+                        invCount={qi.invCount}
+                        storCount={qi.storCount}
+                      />
                     ))}
                   </div>
                 )}
@@ -2936,6 +3153,7 @@ export default function Tips() {
   const [forageableScheduleMap, setForageableScheduleMap] = useState<Record<number, ForageableEntry>>({});
   const [forageableByName, setForageableByName] = useState<Map<string, ForageableEntry>>(new Map());
   const [activeTab, setActiveTab] = useState<TipsTab>(() => (sessionStorage.getItem(TIPS_TAB_KEY) as TipsTab) ?? 'quests');
+  const [mapLocation, setMapLocation] = useState<string | null>(null);
   const [critters, setCritters] = useState<Critter[]>([]);
   const [crittersLoading, setCrittersLoading] = useState(true);
 
@@ -3033,6 +3251,10 @@ export default function Tips() {
     (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 1).map((q) => q.id),
   );
 
+  const completedOrFailedQuestIds = new Set(
+    (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 2 || q.status === 3).map((q) => q.id),
+  );
+
   const matPileByQuest = new Map<number, Map<string, number>>();
   for (const pile of (selectedCharacter?.project_mat_pile_data ?? []) as MatPileEntry[]) {
     const itemMap = new Map<string, number>();
@@ -3059,6 +3281,10 @@ export default function Tips() {
   const processorNameMap = buildProcessorMapByName(selectedCharacter?.chest_data ?? []);
   const contributedNameMap = buildContributedMapByName(selectedCharacter?.project_mat_pile_data ?? []);
   const inventoryNameMap = buildInventoryMapByName(selectedCharacter?.player_inventory ?? []);
+
+  const notDonatedNotDiscovered = (selectedCharacter && museumItemsLoaded)
+    ? museumItems.filter((item) => !donatedSet.has(item.id) && !discoveredItemIds.has(item.id))
+    : [];
 
   const toDonateSections = (['fish', 'mineral', 'plant'] as const).map((cat) => {
     const label = cat === 'fish' ? 'Fish' : cat === 'mineral' ? 'Minerals' : 'Plants';
@@ -3227,10 +3453,10 @@ export default function Tips() {
   });
 
   // Location sets
-  const FOREST_LOCS = new Set(['Forest', 'Forest Lake', 'Forest River', 'Forest Coast', 'Deep Woods']);
+  const FOREST_LOCS = new Set(['Forest', 'Forest Lake', 'Forest River', 'Deep Woods']);
   const MOUNTAIN_LOCS = new Set(['Mountain', 'Mountains', 'Mountain Lake', 'Mountain River']);
   const MARSH_LOCS = new Set(['Marsh', 'Marsh Coast', 'The Marsh']);
-  const TOWN_LOCS = new Set(['Town', 'Village', 'Village Coast', 'Village Lake']);
+  const TOWN_LOCS = new Set(['Town', 'Town Coast', 'Village', 'Village Lake']);
 
 
   // Upcoming birthdays today or tomorrow
@@ -3289,6 +3515,84 @@ export default function Tips() {
     farmCropItems.push({ id: 'water-crops', label: waterLabel, detail: waterDetail });
   }
 
+  // Planting-window-opens notification
+  {
+    const curAbsDay = effectiveSeasonIdx * 28 + (effectiveDay - 1);
+    const openingToday: string[] = [];
+    const openingTomorrow: string[] = [];
+    for (const entry of forageableByName.values()) {
+      if (entry.source !== 'farmable' && entry.source !== 'both') continue;
+      const startAbs = entry.start_season * 28 + (entry.start_day - 1);
+      const name = entry.name ?? '';
+      if (!name) continue;
+      if (startAbs === curAbsDay) openingToday.push(name);
+      else if (startAbs === curAbsDay + 1) openingTomorrow.push(name);
+    }
+    const formatList = (names: string[]) =>
+      names.length === 1
+        ? names[0]
+        : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
+    if (openingToday.length > 0 || openingTomorrow.length > 0) {
+      const lines: string[] = [];
+      if (openingToday.length > 0)
+        lines.push(`${formatList(openingToday)} can be planted starting today.`);
+      if (openingTomorrow.length > 0)
+        lines.push(`${formatList(openingTomorrow)} can be planted starting tomorrow.`);
+      farmCropItems.push({
+        id: 'planting-window-opens',
+        kind: 'info',
+        label: 'Planting season opening!',
+        detail: lines.join(' ') + ' Check your storage for seeds.',
+      });
+    }
+  }
+
+  // Donation plant deadline warnings
+  if (selectedCharacter && museumItemsLoaded) {
+    const curAbsDay = effectiveSeasonIdx * 28 + (effectiveDay - 1);
+    for (const item of notDonatedNotDiscovered) {
+      if (item.category !== 'plant') continue;
+      const sched = forageableScheduleMap[item.id];
+      if (!sched) continue;
+
+      const hasForageWindow = sched.forage_end_season != null && sched.forage_end_day != null;
+      const isFarmableOnly = sched.source === 'farmable';
+
+      let daysLeft: number;
+      let threshold: number;
+      let riskReason: string;
+
+      if (hasForageWindow) {
+        const endAbs = sched.forage_end_season! * 28 + (sched.forage_end_day! - 1);
+        daysLeft = endAbs - curAbsDay;
+        threshold = 5;
+        riskReason = 'forage season ends';
+      } else if (isFarmableOnly) {
+        const endAbs = sched.end_season * 28 + (sched.end_day - 1);
+        daysLeft = endAbs - curAbsDay;
+        threshold = (sched.daysToMaturity ?? 0) + 1;
+        riskReason = 'planting window closes';
+      } else {
+        continue;
+      }
+
+      if (daysLeft < 0 || daysLeft > threshold) continue;
+
+      const name = item.name ?? `Item #${item.id}`;
+      const daysStr = daysLeft === 0
+        ? 'today is the last day'
+        : daysLeft === 1
+          ? 'only 1 day left'
+          : `only ${daysLeft} days left`;
+      farmCropItems.push({
+        id: `donation-plant-risk-${item.id}`,
+        kind: 'info',
+        label: `Donation plant at risk: ${name}`,
+        detail: `${daysStr.charAt(0).toUpperCase() + daysStr.slice(1)} before the ${riskReason} — you won't be able to obtain this for the museum until next year.`,
+      });
+    }
+  }
+
   // Per-crop-type harvest tasks
   let isFirstHarvestItem = true;
   const windowClosingNotices: string[] = [];
@@ -3296,6 +3600,7 @@ export default function Tips() {
   for (const [cropName, crops] of readyByCropName) {
     const count = crops.length;
     const isMulti = crops[0].isMultiHarvest;
+    const canGoToSeed = crops[0].canGoToSeed;
 
     // How many does an active quest still need?
     const questNeed = farmQuestItems.find((r) => r.name.toLowerCase() === cropName.toLowerCase());
@@ -3324,30 +3629,35 @@ export default function Tips() {
       // Quest needs all (or more than available) — harvest everything for the quest
       label = `Harvest all ${count} ${cropName}`;
       detail = `Need ${questCount}× for "${questNeed!.questName}"`;
-    } else if (questCount > 0 && windowClosingSoon) {
-      // Quest needs some AND window is closing — harvest quest amount, let rest seed for coins
+    } else if (questCount > 0 && windowClosingSoon && canGoToSeed) {
+      // Quest needs some AND window is closing AND crop can seed — harvest quest amount, let rest seed for coins
       const leave = count - questCount;
       label = `Harvest ${questCount} of ${count} ${cropName}`;
       detail = `Need ${questCount}× for "${questNeed!.questName}"`;
       asterisk = true;
       windowClosingNotices.push(`${cropName}: let the other ${leave} go to seed and harvest tomorrow for extra coins — planting window closes ${plantEndStr}`);
     } else if (questCount > 0) {
-      // Quest needs some — harvest that amount, leave rest to seed normally
+      // Quest needs some — harvest that amount; leave rest to seed only if the crop can go to seed
       const leave = count - questCount;
       label = `Harvest ${questCount} of ${count} ${cropName}`;
-      detail = `Need ${questCount}× for "${questNeed!.questName}" — leave the other ${leave} to seed`;
-    } else if (windowClosingSoon) {
-      // No quest, planting window closes today/tomorrow — let go to seed for money
+      detail = canGoToSeed
+        ? `Need ${questCount}× for "${questNeed!.questName}" — leave the other ${leave} to seed`
+        : `Need ${questCount}× for "${questNeed!.questName}"`;
+    } else if (windowClosingSoon && canGoToSeed) {
+      // No quest, planting window closes today/tomorrow, crop can seed — let go to seed for money
       label = `Let ${count} ${cropName} go to seed`;
       asterisk = true;
       windowClosingNotices.push(`${cropName}: planting window closes ${plantEndStr} — let them seed now and harvest tomorrow; seeds sell for more than the raw crop`);
     } else if (isMulti) {
       label = `Harvest ${cropName} (${count} ready, regrows after picking)`;
-    } else {
-      // Default: leaving to seed is optimal
+    } else if (canGoToSeed) {
+      // Default for seed-capable crops: leaving to seed is optimal
       label = `${count} ${cropName} ready`;
       detail = `Leave to seed for seed sale or future planting`;
       rejectCheckbox = true;
+    } else {
+      // Crop cannot go to seed — just harvest it
+      label = `Harvest ${cropName} (${count} ready)`;
     }
 
     farmCropItems.push({
@@ -3357,6 +3667,7 @@ export default function Tips() {
       asterisk: asterisk || undefined,
       rejectCheckbox: rejectCheckbox || undefined,
       dividerLabel: isFirstHarvestItem ? 'Harvest:' : undefined,
+      iconNode: <CropHarvestIcon image={crops[0].image} name={cropName} plantEntry={plantEntry ?? undefined} canGoToSeed={canGoToSeed} isMultiHarvest={isMulti} invCount={inventoryNameMap.get(cropName) ?? 0} storCount={storageNameMap.get(cropName) ?? 0} />,
     });
     isFirstHarvestItem = false;
   }
@@ -3377,6 +3688,7 @@ export default function Tips() {
       id: `gts-harvest-${cropName.toLowerCase().replace(/\s+/g, '-')}`,
       label: `Harvest ${count} ${cropName} (gone to seed)`,
       dividerLabel: isFirstHarvestItem ? 'Harvest:' : undefined,
+      iconNode: <CropHarvestIcon image={crops[0].image} name={cropName} plantEntry={forageableByName.get(cropName.toLowerCase())} canGoToSeed={crops[0].canGoToSeed} isMultiHarvest={crops[0].isMultiHarvest} goneToSeed invCount={inventoryNameMap.get(cropName) ?? 0} storCount={storageNameMap.get(cropName) ?? 0} />,
     });
     isFirstHarvestItem = false;
   }
@@ -3548,6 +3860,40 @@ export default function Tips() {
     );
   }
 
+  // ── Available (not yet accepted) quests → location routing ────────────────
+  const availableNotStartedQuests = allQuests.filter((q) => {
+    if (!q.quest_giver) return false;
+    if (inProgressQuestIds.has(q.id)) return false;
+    if (completedOrFailedQuestIds.has(q.id)) return false;
+    if (q.is_donation_quest || q.is_rootcellar_quest) return false;
+    if ((q.requirements ?? []).length === 0) return false;
+    return daysUntilActive(q, currentAbs) === 0;
+  });
+
+  const availableQuestsByLoc = new Map<string, ChecklistItem[]>();
+  for (const quest of availableNotStartedQuests) {
+    const giver = quest.quest_giver!;
+    const loc = VILLAGER_LOCATION[giver] ?? 'town';
+    if (!availableQuestsByLoc.has(loc)) availableQuestsByLoc.set(loc, []);
+    const questName = quest.display_title || quest.name;
+    const reqs = quest.requirements ?? [];
+    const detail = reqs.length === 1
+      ? `Bring along ${reqs[0].amount}× ${reqs[0].name}`
+      : `Bring: ${reqs.map((r) => `${r.amount}× ${r.name}`).join(', ')}`;
+    availableQuestsByLoc.get(loc)!.push({
+      id: `available-quest-${quest.id}`,
+      label: `Talk to ${giver} to accept "${questName}"`,
+      detail,
+      questAcceptItems: reqs.map((r) => ({
+        name: r.name,
+        amount: r.amount,
+        invCount: selectedCharacter ? (inventoryNameMap.get(r.name) ?? 0) : 0,
+        storCount: selectedCharacter ? (storageNameMap.get(r.name) ?? 0) : 0,
+        questName,
+      })),
+    });
+  }
+
   // ── Mine ───────────────────────────────────────────────────────────────────
   const mineAccess = pickaxeTier >= 3
     ? 'Forest, Marsh & Mountain Mine all accessible'
@@ -3651,9 +3997,6 @@ export default function Tips() {
   }
 
   // ── Research icons: undiscovered, not-donated, in-season items per location ─
-  const notDonatedNotDiscovered = (selectedCharacter && museumItemsLoaded)
-    ? museumItems.filter((item) => !donatedSet.has(item.id) && !discoveredItemIds.has(item.id))
-    : [];
 
   const buildResearchChecklistItems = (items: MuseumItem[], withDivider = false): ChecklistItem[] =>
     items.map((item, idx) => {
@@ -3784,6 +4127,7 @@ export default function Tips() {
       colorClass: 'text-emerald-600 dark:text-emerald-400',
       items: [
         ...buildResearchChecklistItems(forestResearchItems, true),
+        ...(availableQuestsByLoc.get('forest') ?? []),
         ...(birthdayItemsByLoc.get('forest') ?? []),
         ...gruffPickupItems,
       ],
@@ -3793,6 +4137,7 @@ export default function Tips() {
       colorClass: 'text-cyan-600 dark:text-cyan-400',
       items: [
         ...buildResearchChecklistItems(mountainResearchItems, true),
+        ...(availableQuestsByLoc.get('mountain') ?? []),
         ...(birthdayItemsByLoc.get('mountain') ?? []),
       ],
     },
@@ -3801,6 +4146,7 @@ export default function Tips() {
       colorClass: 'text-violet-600 dark:text-violet-400',
       items: [
         ...buildResearchChecklistItems(townResearchItems, true),
+        ...(availableQuestsByLoc.get('town') ?? []),
         ...questChecklistItems,
         ...(birthdayItemsByLoc.get('town') ?? (birthdayItemsByLoc.size === 0 ? [{ id: 'villagers', label: 'Talk to villagers to build relationships' }] : [])),
         ...wilfredPickupItems,
@@ -3812,6 +4158,7 @@ export default function Tips() {
       colorClass: 'text-teal-600 dark:text-teal-400',
       items: [
         ...buildResearchChecklistItems(marshResearchItems, true),
+        ...(availableQuestsByLoc.get('marsh') ?? []),
         ...(birthdayItemsByLoc.get('marsh') ?? []),
       ],
     },
@@ -3838,6 +4185,8 @@ export default function Tips() {
   ];
 
   return (
+    <MapLocationContext.Provider value={setMapLocation}>
+      {mapLocation && <MapModal location={mapLocation} onClose={() => setMapLocation(null)} />}
     <div className="space-y-10">
       <header className="grid grid-cols-5 items-center gap-4">
         <div>
@@ -4497,5 +4846,6 @@ export default function Tips() {
         </section>
       )}
     </div>
+    </MapLocationContext.Provider>
   );
 }
