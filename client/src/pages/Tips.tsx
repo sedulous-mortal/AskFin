@@ -516,6 +516,9 @@ const TOOLTIP_SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'];
 
 function FishTooltipContent({ fish }: { fish: FishScheduleEntry }) {
   if (!fish.locations) return null;
+  const appearsOn = fish.start_season !== null && fish.start_day !== null
+    ? `${TOOLTIP_SEASON_NAMES[fish.start_season]} ${fish.start_day}`
+    : null;
   const disappearsOn = fish.end_season !== null && fish.end_day !== null
     ? `${TOOLTIP_SEASON_NAMES[fish.end_season]} ${fish.end_day}`
     : null;
@@ -531,6 +534,12 @@ function FishTooltipContent({ fish }: { fish: FishScheduleEntry }) {
           {fish.rarity ?? '—'}
         </span>
       </div>
+      {appearsOn && (
+        <div>
+          <div className="text-slate-400 text-sm mb-0.5">Appears on</div>
+          <div className="text-white text-sm">{appearsOn}</div>
+        </div>
+      )}
       {disappearsOn && (
         <div>
           <div className="text-slate-400 text-sm mb-0.5">Disappears on</div>
@@ -2079,12 +2088,123 @@ type MinesUpgradeDetails = {
 const CHECKLIST_KEY = 'grimshire-daily-checklist';
 const RESEARCH_DONE_KEY = 'grimshire-research-done';
 const REJECTED_KEY = 'grimshire-daily-rejected';
+const FISH_AUDIT_KEY = 'grimshire-fish-audit-debug';
+
+const FISH_AUDIT_LIST = [
+  { id: 184, name: 'Ide',           habitat: 'River', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 187, name: 'Zander',        habitat: 'Lake',  locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 190, name: 'Smelt',         habitat: 'Marsh', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 191, name: 'Silver Bream',  habitat: 'River', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 197, name: 'Eel',           habitat: 'Marsh', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 198, name: 'Bleak',         habitat: 'River', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 205, name: 'Whitefish',     habitat: 'Lake',  locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 209, name: 'Danube Salmon', habitat: 'River', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 216, name: 'Rock Bass',     habitat: 'Lake',  locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 222, name: 'Arctic Char',   habitat: 'Lake',  locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 394, name: 'Vendace',       habitat: 'Lake',    locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+  { id: 670, name: 'Shrimp',        habitat: 'Coastal', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
+] as const;
+
+type AuditAnswer = 'yes' | 'no' | null;
+type AuditState = Record<string, AuditAnswer>;
+
+function FishAuditColumn({ fishScheduleMap }: { fishScheduleMap: Record<number, FishScheduleEntry> }) {
+  const [answers, setAnswers] = useState<AuditState>(() => {
+    try {
+      const raw = localStorage.getItem(FISH_AUDIT_KEY);
+      return raw ? (JSON.parse(raw) as AuditState) : {};
+    } catch { return {}; }
+  });
+
+  function pick(fishId: number, loc: string, val: AuditAnswer) {
+    setAnswers(prev => {
+      const next = { ...prev, [`${fishId}:${loc}`]: val };
+      try { localStorage.setItem(FISH_AUDIT_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
+  const total = FISH_AUDIT_LIST.length * 3;
+  const done = Object.values(answers).filter(Boolean).length;
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center gap-2">
+        <p className="text-sm font-semibold uppercase tracking-wide text-rose-400">
+          Debug: Fish Audit
+        </p>
+        <span className="text-xs text-slate-400">{done}/{total}</span>
+      </div>
+      <ul className="space-y-2">
+        {FISH_AUDIT_LIST.map((fish) => {
+          const entry = fishScheduleMap[fish.id];
+          const safeName = fish.name.replace(/ /g, '_');
+          const iconTooltip = entry ? <FishTooltipContent fish={entry} /> : null;
+          return (
+            <li key={fish.id} className="rounded border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/40 px-2.5 py-2">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <AppTooltip content={iconTooltip} width="w-52">
+                  <div className="h-6 w-6 shrink-0 cursor-default overflow-hidden rounded">
+                    <img
+                      src={`/fish/${safeName}.png`}
+                      alt={fish.name}
+                      className="h-full w-full object-contain"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = `/items/${safeName}.png`;
+                      }}
+                    />
+                  </div>
+                </AppTooltip>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 leading-none">
+                  {fish.name}
+                  <span className="ml-1.5 text-xs font-normal text-slate-400">({fish.habitat})</span>
+                </p>
+              </div>
+              <div className="space-y-1">
+                {fish.locs.map((loc) => {
+                  const key = `${fish.id}:${loc}`;
+                  const ans = answers[key] ?? null;
+                  return (
+                    <div key={loc} className="flex items-center gap-1.5 text-xs">
+                      <span className="min-w-0 flex-1 truncate text-slate-500 dark:text-slate-400">{loc}</span>
+                      <span className="shrink-0 text-slate-400">here?</span>
+                      <label className="flex cursor-pointer items-center gap-0.5">
+                        <input
+                          type="radio"
+                          name={key}
+                          checked={ans === 'yes'}
+                          onChange={() => pick(fish.id, loc, 'yes')}
+                          className="accent-emerald-500"
+                        />
+                        <span className="text-slate-600 dark:text-slate-300">Y</span>
+                      </label>
+                      <label className="flex cursor-pointer items-center gap-0.5">
+                        <input
+                          type="radio"
+                          name={key}
+                          checked={ans === 'no'}
+                          onChange={() => pick(fish.id, loc, 'no')}
+                          className="accent-rose-500"
+                        />
+                        <span className="text-slate-600 dark:text-slate-300">N</span>
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
 const NATURE_LOCS = new Set(['In the Forest', 'On the Mountain', 'In the Marsh', 'In the Deep Woods']);
 const BARN_PRODUCT: Record<number, string> = { 0: 'wool', 1: 'eggs', 2: 'milk', 3: 'products' };
 const BARN_ANIMAL: Record<number, string> = { 0: 'Alpheep', 1: 'Chikree', 2: 'Girtle', 3: 'Bluggy' };
 const BARN_INTERACT: Record<number, string> = { 0: 'Pet, Shear, Milk: Alpheep', 1: 'Pet: Chikree', 2: 'Pet, Shear: Girtle', 3: 'Pet: Bluggy' };
 
-function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
+function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; debugColumn?: ReactNode }) {
   const [checked, setChecked] = useState<Set<string>>(() => {
     try {
       const raw = sessionStorage.getItem(CHECKLIST_KEY);
@@ -2678,20 +2798,29 @@ function DailyChecklist({ groups }: { groups: ChecklistGroup[] }) {
       </div>
 
       {!collapsed && (
-        useDoubleRow ? (
-          <div className="space-y-5 px-5 pb-5 pt-4">
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {groups.filter((g) => !NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {groups.filter((g) => NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
-            </div>
+        <div className="flex gap-5 px-5 pb-5 pt-4">
+          <div className="min-w-0 flex-1">
+            {useDoubleRow ? (
+              <div className="space-y-5">
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                  {groups.filter((g) => !NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
+                </div>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                  {groups.filter((g) => NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
+                </div>
+              </div>
+            ) : (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                {groups.map(renderGroupColumn)}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="grid gap-5 px-5 pb-5 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {groups.map(renderGroupColumn)}
-          </div>
-        )
+          {debugColumn && (
+            <div className="w-52 shrink-0 border-l border-slate-200 pl-5 dark:border-slate-700">
+              {debugColumn}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
@@ -4032,6 +4161,37 @@ export default function Tips() {
       };
     });
 
+  // ── Per-mine tasks: all not-donated minerals accessible regardless of spoilergate ─
+  const accessibleNotDonatedMinerals = (selectedCharacter && museumItemsLoaded)
+    ? museumItems.filter((item) => item.category === 'mineral' && !donatedSet.has(item.id))
+    : [];
+
+  function buildMineTasks(mineName: string): ChecklistItem[] {
+    const items = accessibleNotDonatedMinerals.filter((item) =>
+      mineralDataMap[item.id]?.entries.some((e) => e.mine === mineName)
+    );
+    return items.map((item, idx) => ({
+      id: `research-${item.id}`,
+      label: item.name ?? `Item #${item.id}`,
+      kind: 'research' as const,
+      museumItemId: item.id,
+      dividerLabel: idx === 0 ? `${mineName} Mine` : undefined,
+      iconNode: (
+        <ResearchIconSmall
+          item={item}
+          mineralInfo={mineralDataMap[item.id]}
+          inSeason={true}
+        />
+      ),
+    }));
+  }
+
+  const perMineChecklistItems: ChecklistItem[] = [
+    ...buildMineTasks('Forest'),
+    ...(pickaxeTier >= 1 ? buildMineTasks('Marsh') : []),
+    ...(pickaxeTier >= 3 ? buildMineTasks('Mountain') : []),
+  ];
+
   const forestResearchItems = notDonatedNotDiscovered.filter((item) => {
     if (item.category === 'fish') {
       const locs = fishScheduleMap[item.id]?.locations;
@@ -4165,16 +4325,17 @@ export default function Tips() {
     {
       location: 'In the Mines',
       colorClass: 'text-cyan-600 dark:text-cyan-400',
-      items: pickaxeNeedsUpgrade ? [
-        {
+      items: [
+        ...(pickaxeNeedsUpgrade ? [{
           id: 'mining-upgrade',
           label: 'You need to upgrade your pickaxe to access new ores/minerals.',
           detail: 'Do you want to accept this quest today?',
           upgradeDetails: minesUpgradeDetails,
           subtaskIds: ['mining-upgrade-req-bar', 'mining-upgrade-req-coins', 'mining-upgrade-gruff'],
-        },
-      ] : [
-        { id: 'mining', label: 'Mine ores, gems & crafting materials', detail: mineDetail },
+        }] : []),
+        ...(perMineChecklistItems.length > 0
+          ? perMineChecklistItems
+          : [{ id: 'mining', label: 'Mine ores, gems & crafting materials', detail: mineDetail }]),
       ],
     },
     ...(deepWoodsUnlocked ? [{
@@ -4211,7 +4372,7 @@ export default function Tips() {
         </div>
       </header>
 
-      <DailyChecklist groups={dailyGroups} />
+      <DailyChecklist groups={dailyGroups} debugColumn={<FishAuditColumn fishScheduleMap={fishScheduleMap} />} />
 
       {/* Tab Bar */}
       <div className="flex flex-wrap gap-1.5 items-end border-b-2 border-slate-300 dark:border-slate-600">
