@@ -4372,7 +4372,7 @@ export default function Tips() {
         </div>
       </header>
 
-      <DailyChecklist groups={dailyGroups} debugColumn={<FishAuditColumn fishScheduleMap={fishScheduleMap} />} />
+      <DailyChecklist groups={dailyGroups} />
 
       {/* Tab Bar */}
       <div className="flex flex-wrap gap-1.5 items-end border-b-2 border-slate-300 dark:border-slate-600">
