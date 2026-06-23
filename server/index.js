@@ -911,6 +911,7 @@ app.post('/api/save/parse', async (req, res) => {
           })),
         })),
         current_weather_pattern_id: character.currentWeatherPatternId ?? null,
+        unlocked_skills: character.unlockedSkills ?? [],
       };
 
       let characterId;
@@ -1012,6 +1013,7 @@ app.get('/api/characters/:id', async (req, res) => {
       }).filter(Boolean),
       project_mat_pile_data: data.project_mat_pile_data || [],
       chest_data: data.chest_data || [],
+      unlocked_skills: data.unlocked_skills || [],
       is_rainy_or_stormy: isRainyOrStormy(data.current_weather_pattern_id),
     });
   } catch (err) {

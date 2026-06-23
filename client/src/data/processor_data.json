@@ -1,0 +1,91 @@
+{
+  "_note": "Curated processor recipes for quest-required processed goods. processingDays derived from C# ProcTime (1 day = 1440 game-minutes, processors run continuously including during sleep). shelfLifeDays: 0 = shelf-stable. Expand this file as more items are confirmed.",
+  "processorLabels": {
+    "smoker":            "Smoking Hut",
+    "dryRack":           "Drying Rack",
+    "press":             "Press",
+    "fermenterSalt":     "Fermentation Barrel (Salt)",
+    "fermenterOil":      "Fermentation Barrel (Oil)",
+    "fermenterHoney":    "Fermentation Barrel (Honey)",
+    "fermenterVinegar":  "Fermentation Barrel (Vinegar)",
+    "kiln":              "Kiln",
+    "smelter":           "Smelter"
+  },
+  "processorDaysMin": {
+    "smoker":            0.25,
+    "dryRack":           1,
+    "press":             0.04,
+    "fermenterSalt":     0.5,
+    "fermenterOil":      0.5,
+    "fermenterHoney":    0.5,
+    "fermenterVinegar":  0.5,
+    "kiln":              2,
+    "smelter":           0.125
+  },
+  "recipes": {
+    "Cheese": {
+      "processor":      "fermenterSalt",
+      "processorLabel": "Fermentation Barrel (Salt)",
+      "ingredients":    "Milk ×3 + Salt ×1",
+      "shelfLifeDays":  19,
+      "perishable":     true
+    },
+    "Fruit Wine": {
+      "processor":      "fermenterHoney",
+      "processorLabel": "Fermentation Barrel (Honey)",
+      "ingredients":    "Fruit ×3 + Honey ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false
+    },
+    "Rosehip Juice": {
+      "processor":      "press",
+      "processorLabel": "Press",
+      "ingredients":    "Rosehip ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false,
+      "_note":          "Processor and shelf life assumed — correct if wrong"
+    },
+    "Small Smoked Fish": {
+      "processor":      "smoker",
+      "processorLabel": "Smoking Hut",
+      "ingredients":    "Small-sized fish ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false
+    },
+    "Smoked Maple Seeds": {
+      "processor":      "smoker",
+      "processorLabel": "Smoking Hut",
+      "ingredients":    "Maple Seeds ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false
+    },
+    "Iron Bar": {
+      "processor":      "smelter",
+      "processorLabel": "Smelter",
+      "ingredients":    "Iron Ore ×1 + Coal ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false
+    },
+    "Nickel Bar": {
+      "processor":      "smelter",
+      "processorLabel": "Smelter",
+      "ingredients":    "Nickel Ore ×1 + Coal ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false
+    },
+    "Gold Bar": {
+      "processor":      "smelter",
+      "processorLabel": "Smelter",
+      "ingredients":    "Gold Ore ×1 + Coal ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false
+    },
+    "Titanium Bar": {
+      "processor":      "smelter",
+      "processorLabel": "Smelter",
+      "ingredients":    "Titanium Ore ×1 + Coal ×1",
+      "shelfLifeDays":  0,
+      "perishable":     false
+    }
+  }
+}

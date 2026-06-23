@@ -49,7 +49,8 @@ alter table public.characters
   add column if not exists chest_data                 jsonb       default '[]'::jsonb,
   add column if not exists money                      integer,
   add column if not exists crops_data                 jsonb       default '[]'::jsonb,
-  add column if not exists current_weather_pattern_id integer;
+  add column if not exists current_weather_pattern_id integer,
+  add column if not exists unlocked_skills            integer[]   default '{}';
 
 -- Unique save file per user (nulls excluded so rows without a name don't conflict).
 create unique index if not exists characters_user_save_file_unique

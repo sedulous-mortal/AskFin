@@ -157,6 +157,7 @@ export type CharacterDetail = {
   crops_data: CropEntry[];
   project_mat_pile_data: MatPileEntry[];
   chest_data: ChestEntry[];
+  unlocked_skills: number[];
   is_rainy_or_stormy: boolean;
 };
 
@@ -269,6 +270,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ],
     project_mat_pile_data: [],
     chest_data: [],
+    unlocked_skills: [],
     is_rainy_or_stormy: false,
   };
 

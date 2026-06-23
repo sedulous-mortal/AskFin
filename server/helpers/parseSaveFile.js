@@ -330,6 +330,7 @@ export function parseSaveFile(buffer) {
     questData: extractQuestData(text),
     toolData: extractToolData(text),
     donatedMuseumItemsList: extractArray(text, "donatedMuseumItemsList"),
+    unlockedSkills: extractArray(text, "unlockedSkills"),
     playerInventory: extractInventory(text),
     currentDateDay: extractNestedNumber(text, "currentDate", "Day"),
     currentDateSeason: extractNestedNumber(text, "currentDate", "Season"),

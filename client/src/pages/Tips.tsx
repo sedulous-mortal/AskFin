@@ -11,6 +11,7 @@ import researchRewardsData from '../data/research_rewards.json';
 import { fetchCritters, type Critter, type CritterFood } from '../api/critters';
 import { CUSTOM_CRITTER_FOODS } from '../data/critterCustomFoods';
 import { daysRemainingInRange } from '../utils/seasonalRange';
+import processorDataJson from '../data/processor_data.json';
 
 const SEASON_IDX: Record<string, number> = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
 const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
@@ -853,7 +854,7 @@ function ResearchIconSmall({ item, fishInfo, mineralInfo, plantInfo, storageCoun
   );
 }
 
-function QuestItemIcon({ name, stillNeed, have, amount, questName, invCount, storCount, processorCount }: {
+function QuestItemIcon({ name, stillNeed, have, amount, questName, invCount, storCount, processorCount, forageableInfo, processorRecipe, isTownQuestItem = false, size = 'md' }: {
   name: string;
   stillNeed: number;
   have: number;
@@ -862,20 +863,39 @@ function QuestItemIcon({ name, stillNeed, have, amount, questName, invCount, sto
   invCount?: number;
   storCount?: number;
   processorCount?: number;
+  forageableInfo?: ForageableEntry;
+  processorRecipe?: ProcessorRecipe;
+  isTownQuestItem?: boolean;
+  size?: 'sm' | 'md';
 }) {
   const safeName = name.replace(/ /g, '_');
   const paths = [`/dishes/${safeName}.png`, `/processed_foods/${safeName}.png`, `/fish/${safeName}.png`, `/items/${safeName}.png`, `/edibles/${safeName}.png`];
   const [pathIdx, setPathIdx] = useState(0);
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('');
 
+  const forageSeason = forageableInfo ? (() => {
+    const sn = TOOLTIP_SEASON_NAMES;
+    const start = `${sn[forageableInfo.forage_start_season ?? forageableInfo.start_season]} ${forageableInfo.forage_start_day ?? forageableInfo.start_day}`;
+    const end   = `${sn[forageableInfo.forage_end_season   ?? forageableInfo.end_season]}   ${forageableInfo.forage_end_day   ?? forageableInfo.end_day}`;
+    return `${start} – ${end}`;
+  })() : null;
+
   const tooltipContent = (
     <>
       <div className="text-slate-200 text-sm font-semibold mb-1.5 leading-tight">{name}</div>
       <div className="space-y-1">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-slate-400 text-sm">Still need</span>
-          <span className="font-semibold text-amber-300 text-sm">{stillNeed} of {amount}</span>
-        </div>
+        {isTownQuestItem && stillNeed === 0 ? (
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-emerald-400 text-sm">
+              ✓ {invCount !== undefined && invCount >= amount ? 'In hand' : 'In storage'} — bring to donation box
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400 text-sm">Still need</span>
+            <span className="font-semibold text-amber-300 text-sm">{stillNeed} of {amount}</span>
+          </div>
+        )}
         {invCount !== undefined && invCount > 0 && (
           <div className="flex items-center justify-between gap-3">
             <span className="text-slate-400 text-sm">Inventory</span>
@@ -900,14 +920,49 @@ function QuestItemIcon({ name, stillNeed, have, amount, questName, invCount, sto
             <span className="font-semibold text-sky-300 text-sm">{processorCount}</span>
           </div>
         )}
+        {processorRecipe && (
+          <div className="mt-1 pt-1.5 border-t border-slate-700 space-y-1">
+            <div className="flex items-start gap-1.5">
+              <span className="text-slate-400 text-sm shrink-0">Recipe</span>
+              <span className="text-slate-200 text-sm leading-snug">{processorRecipe.ingredients}</span>
+            </div>
+            <div className="flex items-start gap-1.5">
+              <span className="text-slate-400 text-sm shrink-0">Machine</span>
+              <span className="text-slate-200 text-sm leading-snug">{processorRecipe.processorLabel.replace(/\s*\([^)]+\)$/, '')}</span>
+            </div>
+            {processorRecipe.shelfLifeDays > 0 && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400 text-sm shrink-0">Shelf life</span>
+                <span className="text-amber-300 text-sm">{processorRecipe.shelfLifeDays} days</span>
+              </div>
+            )}
+          </div>
+        )}
+        {forageableInfo && (
+          <div className="mt-1 pt-1.5 border-t border-slate-700 space-y-1">
+            {forageSeason && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400 text-sm shrink-0">In season</span>
+                <span className="text-slate-200 text-sm">{forageSeason}</span>
+              </div>
+            )}
+            {forageableInfo.locations && forageableInfo.locations.length > 0 && (
+              <div className="flex items-start gap-1.5">
+                <span className="text-slate-400 text-sm shrink-0">Found in</span>
+                <span className="text-slate-200 text-sm leading-snug">{forageableInfo.locations.join(', ')}</span>
+              </div>
+            )}
+          </div>
+        )}
         <div className="mt-1 pt-1.5 border-t border-slate-700 text-[11px] text-slate-500 leading-tight">For: {questName}</div>
       </div>
     </>
   );
 
+  const sizeClass = size === 'sm' ? 'h-6 w-6' : 'h-[37px] w-[37px]';
   return (
     <AppTooltip content={tooltipContent} width="w-56">
-      <div className="h-[37px] w-[37px] flex-none overflow-hidden rounded border border-sky-300 bg-sky-50 dark:border-sky-600/70 dark:bg-sky-950/30">
+      <div className={`${sizeClass} flex-none overflow-hidden rounded border border-sky-300 bg-sky-50 dark:border-sky-600/70 dark:bg-sky-950/30`}>
         {safeName && pathIdx < paths.length ? (
           <img
             src={paths[pathIdx]}
@@ -1053,41 +1108,75 @@ function RewardIcon({ name, amount, type, storageCount, description }: {
   return card;
 }
 
+const EFFICIENT_CRAFTER_SKILL_ID = 895;
+
 const BLUEPRINT_BUILD_REQS: Record<string, { material: string; qty: number }[]> = {
   Press: [
-    { material: 'Iron Bar',   qty: 5  },
-    { material: 'Plank',      qty: 20 },
-    { material: 'Hard Wood',  qty: 20 },
+    { material: 'Iron Bar',  qty: 5  },
+    { material: 'Plank',     qty: 20 },
+    { material: 'Hard Wood', qty: 20 },
+  ],
+  Icebox: [
+    { material: 'Ice Chunk', qty: 100 },
+    { material: 'Hard Wood', qty: 50  },
+    { material: 'Tin Bar',   qty: 25  },
+    { material: 'Ice Gem',   qty: 5   },
   ],
 };
 
-function BlueprintRewardIcon({ name, amount }: { name: string; amount: number }) {
+function BlueprintIngredientIcon({ name }: { name: string }) {
+  const safeName = name.replace(/ /g, '_');
+  const paths = [`/items/${safeName}.png`, `/edibles/${safeName}.png`, `/processed_foods/${safeName}.png`];
+  const [pathIdx, setPathIdx] = useState(0);
+  if (pathIdx >= paths.length) {
+    return <span className="inline-flex h-5 w-5 items-center justify-center text-[10px] font-semibold text-slate-400">{name[0]}</span>;
+  }
+  return (
+    <img
+      src={paths[pathIdx]}
+      alt={name}
+      className="h-5 w-5 object-contain"
+      style={{ imageRendering: 'pixelated' }}
+      onError={() => setPathIdx((i) => i + 1)}
+    />
+  );
+}
+
+function BlueprintRewardIcon({ name, amount, unlockedSkills = [] }: { name: string; amount: number; unlockedSkills?: number[] }) {
   const baseName = name.replace(' Blueprint', '');
   const reqs = BLUEPRINT_BUILD_REQS[baseName];
+  const hasEfficientCrafter = unlockedSkills.includes(EFFICIENT_CRAFTER_SKILL_ID);
   return (
     <AppTooltip
       content={
         <div>
           <p className="text-sm font-semibold text-slate-100">{name}</p>
           <p className="mt-1 text-sm text-slate-300">
-            Allows you to craft more {baseName} at a Crafting Table.
+            Allows you to craft {baseName} at a Crafting Table.
           </p>
           {reqs && (
             <div className="mt-2 border-t border-slate-700 pt-2">
-              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">Build requires</p>
-              <div className="space-y-0.5">
-                {reqs.map((r) => (
-                  <div key={r.material} className="flex items-center gap-1.5">
-                    <span className="text-amber-300 text-sm font-semibold">{r.qty}×</span>
-                    <span className="text-slate-200 text-sm">{r.material}</span>
-                  </div>
-                ))}
+              <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-slate-400">Craft requires</p>
+              {hasEfficientCrafter && (
+                <p className="mb-1.5 text-xs font-medium text-emerald-400">Efficient Crafter: −20%</p>
+              )}
+              <div className="space-y-1">
+                {reqs.map((r) => {
+                  const qty = hasEfficientCrafter ? Math.floor(r.qty * 0.8) : r.qty;
+                  return (
+                    <div key={r.material} className="flex items-center gap-1.5">
+                      <BlueprintIngredientIcon name={r.material} />
+                      <span className="text-amber-300 text-sm font-semibold">{qty}×</span>
+                      <span className="text-slate-200 text-sm">{r.material}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
         </div>
       }
-      width="w-52"
+      width="w-56"
     >
       <div className="relative h-[84px] w-16 overflow-hidden rounded-lg border border-sky-200 bg-sky-50 dark:border-sky-700/50 dark:bg-sky-900/20">
         <svg viewBox="0 0 48 56" className="w-full px-2 pt-2 pb-5" aria-hidden>
@@ -2044,7 +2133,14 @@ function DonatedSpecimensCard({
 
 // ── Daily To-Do Checklist ────────────────────────────────────────────────────
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; kind?: 'callout' | 'research' | 'hold-warning' | 'info'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; questAcceptItems?: Array<{name: string; amount: number; invCount: number; storCount: number; questName: string}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[] };
+type ProcessorRecipe = {
+  processorLabel: string;
+  ingredients: string;
+  shelfLifeDays: number;
+  perishable: boolean;
+};
+
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; townQuestReadyLabel?: string; kind?: 'callout' | 'research' | 'hold-warning' | 'info'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; questAcceptItems?: Array<{name: string; amount: number; invCount: number; storCount: number; questName: string; forageableInfo?: ForageableEntry; processorRecipe?: ProcessorRecipe}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[] };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -2458,6 +2554,11 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
             if (item.kind === 'info') {
               return (
                 <li key={item.id}>
+                  {item.dividerLabel && (
+                    <p className="mb-1 mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 first:mt-0">
+                      {item.dividerLabel}
+                    </p>
+                  )}
                   <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2.5 dark:border-amber-600/50 dark:bg-amber-900/20">
                     <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">{item.label}</p>
                     {item.detail && (
@@ -2578,31 +2679,54 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
                     {item.asterisk && (
                       <span className="ml-0.5 font-bold text-pink-500 dark:text-pink-400"> *</span>
                     )}
+                    {item.townQuestReadyLabel && (
+                      <span className="ml-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">✓ {item.townQuestReadyLabel}</span>
+                    )}
                     {item.detail && (
-                      <span className="mt-0.5 block text-base text-slate-400 dark:text-slate-500">
-                        {item.detail}
-                        {item.upgradeDetails && (
-                          <span onClick={(e) => e.stopPropagation()}>
-                            {' '}
-                            <input
-                              type="checkbox"
-                              checked={showUpgradeReqs}
-                              onChange={() => toggle(item.id + '-show')}
-                              className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-emerald-500 align-middle"
-                            />
+                      <span className="mt-0.5 flex items-center gap-1.5 text-base text-slate-400 dark:text-slate-500 flex-wrap">
+                        {item.questAcceptItems && item.questAcceptItems.length > 0 && (
+                          <span className="flex flex-none items-center gap-1">
+                            {item.questAcceptItems.map((qi) => (
+                              <QuestItemIcon
+                                key={qi.name}
+                                name={qi.name}
+                                stillNeed={Math.max(0, qi.amount - qi.invCount - qi.storCount)}
+                                have={qi.invCount + qi.storCount}
+                                amount={qi.amount}
+                                questName={qi.questName}
+                                invCount={qi.invCount}
+                                storCount={qi.storCount}
+                                forageableInfo={qi.forageableInfo}
+                                processorRecipe={qi.processorRecipe}
+                              />
+                            ))}
                           </span>
                         )}
-                        {item.rejectCheckbox && (
-                          <span onClick={(e) => e.stopPropagation()}>
-                            {' '}?{' '}
-                            <input
-                              type="checkbox"
-                              checked={isRejected}
-                              onChange={() => toggleReject(item.id)}
-                              className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-slate-400 align-middle"
-                            />
-                          </span>
-                        )}
+                        <span>
+                          {item.detail}
+                          {item.upgradeDetails && (
+                            <span onClick={(e) => e.stopPropagation()}>
+                              {' '}
+                              <input
+                                type="checkbox"
+                                checked={showUpgradeReqs}
+                                onChange={() => toggle(item.id + '-show')}
+                                className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-emerald-500 align-middle"
+                              />
+                            </span>
+                          )}
+                          {item.rejectCheckbox && (
+                            <span onClick={(e) => e.stopPropagation()}>
+                              {' '}?{' '}
+                              <input
+                                type="checkbox"
+                                checked={isRejected}
+                                onChange={() => toggleReject(item.id)}
+                                className="h-4 w-4 cursor-pointer rounded border-slate-300 accent-slate-400 align-middle"
+                              />
+                            </span>
+                          )}
+                        </span>
                       </span>
                     )}
                   </span>
@@ -2611,22 +2735,6 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
                   <div className="ml-6 mt-1.5 flex flex-wrap gap-1.5">
                     {item.birthdayFavorites.map((gift) => (
                       <GiftItemIcon key={gift.name} name={gift.name} sentiment="favorite" storageCount={gift.storageCount} size="sm" />
-                    ))}
-                  </div>
-                )}
-                {item.questAcceptItems && item.questAcceptItems.length > 0 && (
-                  <div className="ml-6 mt-1.5 flex flex-wrap gap-1.5">
-                    {item.questAcceptItems.map((qi) => (
-                      <QuestItemIcon
-                        key={qi.name}
-                        name={qi.name}
-                        stillNeed={Math.max(0, qi.amount - qi.invCount - qi.storCount)}
-                        have={qi.invCount + qi.storCount}
-                        amount={qi.amount}
-                        questName={qi.questName}
-                        invCount={qi.invCount}
-                        storCount={qi.storCount}
-                      />
                     ))}
                   </div>
                 )}
@@ -3384,6 +3492,31 @@ export default function Tips() {
     (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 2 || q.status === 3).map((q) => q.id),
   );
 
+  // Town crisis quests come in mutually exclusive A/B pairs sharing the same start date.
+  // If the player has accepted or completed one option, the other is permanently locked out
+  // and will never appear in their quest_data — so we must exclude it explicitly.
+  const excludedByMutexIds = new Set<number>();
+  (() => {
+    const byStart = new Map<string, Quest[]>();
+    for (const q of allQuests) {
+      if (!q.is_town_quest) continue;
+      if (q.available_start_season === null || q.available_first_day === null) continue;
+      const key = `${q.available_start_season}_${q.available_first_day}`;
+      if (!byStart.has(key)) byStart.set(key, []);
+      byStart.get(key)!.push(q);
+    }
+    for (const [, group] of byStart) {
+      if (group.length < 2) continue;
+      for (const q of group) {
+        if (inProgressQuestIds.has(q.id) || completedOrFailedQuestIds.has(q.id)) {
+          for (const other of group) {
+            if (other.id !== q.id) excludedByMutexIds.add(other.id);
+          }
+        }
+      }
+    }
+  })();
+
   const matPileByQuest = new Map<number, Map<string, number>>();
   for (const pile of (selectedCharacter?.project_mat_pile_data ?? []) as MatPileEntry[]) {
     const itemMap = new Map<string, number>();
@@ -3392,6 +3525,65 @@ export default function Tips() {
   }
 
   const activeQuests = allQuests.filter((q) => inProgressQuestIds.has(q.id) && q.id !== 1331);
+
+  // ── Upcoming quest processor-prep alerts ────────────────────────────────────
+  // For each not-yet-started quest opening within 7 days, flag any requirement
+  // that needs a processor (Smoker, Barrel, Press, Smelter, etc.) so the player
+  // knows to start producing it ahead of time.
+  const PROCESSOR_RECIPES = processorDataJson.recipes as Record<string, ProcessorRecipe>;
+  const PREP_ALERT_DAYS = 7;
+
+  const upcomingQuestPrepItems: ChecklistItem[] = (() => {
+    if (!selectedCharacter) return [];
+    const items: ChecklistItem[] = [];
+
+    for (const quest of allQuests) {
+      if (inProgressQuestIds.has(quest.id)) continue; // already active — shown elsewhere
+      if (completedOrFailedQuestIds.has(quest.id)) continue;
+      if (excludedByMutexIds.has(quest.id)) continue; // other option of a town crisis pair was chosen
+      if (!quest.available_start_season || !quest.available_first_day) continue;
+      if (!(quest.requirements ?? []).some((r) => PROCESSOR_RECIPES[r.name])) continue;
+
+      // Try current year and next year so the alert works correctly in year 2+
+      let daysUntilStart: number | null = null;
+      for (const yearOff of [currentYearOffset, currentYearOffset + 1]) {
+        const startAbs = toAbsDay(yearOff, quest.available_start_season, quest.available_first_day);
+        const delta = startAbs - currentAbs;
+        if (delta >= 1 && delta <= PREP_ALERT_DAYS) {
+          daysUntilStart = delta;
+          break;
+        }
+      }
+      if (daysUntilStart === null) continue;
+
+      const questTitle = quest.display_title || quest.name;
+      const opensLabel = `${SEASON_NAMES[quest.available_start_season]} ${quest.available_first_day}`;
+
+      for (const req of (quest.requirements ?? [])) {
+        const recipe = PROCESSOR_RECIPES[req.name];
+        if (!recipe) continue;
+
+        const amtPrefix = req.amount > 1 ? `${req.amount}× ` : '';
+        const label = `Prep for "${questTitle}": make ${amtPrefix}${req.name} now (quest opens in ${daysUntilStart} day${daysUntilStart !== 1 ? 's' : ''})`;
+
+        let detail = `"${questTitle}" opens on ${opensLabel} and requires ${amtPrefix}${req.name}.`;
+        detail += ` Use a ${recipe.processorLabel}`;
+        if (recipe.ingredients) detail += ` — ${recipe.ingredients}`;
+        detail += '.';
+        if (recipe.perishable && recipe.shelfLifeDays > 0) {
+          detail += ` Lasts ${recipe.shelfLifeDays} days once made, so don't produce it more than ${recipe.shelfLifeDays} days before you plan to turn in the quest.`;
+        }
+
+        items.push({
+          id: `prep-${quest.id}-${req.name.replace(/\s+/g, '-').toLowerCase()}`,
+          label,
+          detail,
+        });
+      }
+    }
+
+    return items;
+  })();
 
   const donatedCount = selectedCharacter?.donated_specimen_count ?? 0;
 
@@ -3410,6 +3602,134 @@ export default function Tips() {
   const processorNameMap = buildProcessorMapByName(selectedCharacter?.chest_data ?? []);
   const contributedNameMap = buildContributedMapByName(selectedCharacter?.project_mat_pile_data ?? []);
   const inventoryNameMap = buildInventoryMapByName(selectedCharacter?.player_inventory ?? []);
+
+  // ── Year-round non-urgent quest goals ──────────────────────────────────────
+  // Lists every non-perishable item needed for future (not-yet-open) quests,
+  // sorted chronologically.  Items already in inventory/storage show as amber
+  // info boxes instead of checkboxes.  Quests open today are excluded here and
+  // handled in the Town column instead.
+  const currentAbsNorm = effectiveSeasonIdx * 28 + (effectiveDay - 1); // 0–111, year-normalised
+
+  // Helper: where does the player have `name`?
+  function itemLocation(name: string, need: number): { haveEnough: boolean; invCount: number; storCount: number; whereLabel: string } {
+    const inv = inventoryNameMap.get(name) ?? 0;
+    const stor = storageNameMap.get(name) ?? 0;
+    const haveEnough = inv + stor >= need;
+    let whereLabel = '';
+    if (inv >= need) whereLabel = 'inventory';
+    else if (stor >= need) whereLabel = 'storage';
+    else {
+      const parts: string[] = [];
+      if (inv > 0) parts.push(`${inv} in inventory`);
+      if (stor > 0) parts.push(`${stor} in storage`);
+      whereLabel = parts.length ? parts.join(' + ') : '';
+    }
+    return { haveEnough, invCount: inv, storCount: stor, whereLabel };
+  }
+
+  // Quests available today but not yet accepted by the player (goes to town column).
+  // Quests with a quest_giver are already shown by availableNotStartedQuests ("Talk to X to accept"),
+  // so exclude them here to avoid showing the same quest twice.
+  const openTodayNotAccepted: Quest[] = allQuests.filter((q) => {
+    if (inProgressQuestIds.has(q.id) || completedOrFailedQuestIds.has(q.id)) return false;
+    if (excludedByMutexIds.has(q.id)) return false;
+    if (q.quest_giver) return false; // handled by availableNotStartedQuests
+    if (!q.available_start_season === null || q.available_first_day === null) return false;
+    const [startAbs, endAbs] = questAbsDays(q);
+    return currentAbsNorm >= startAbs && currentAbsNorm <= endAbs;
+  });
+
+  const openTodayItems: ChecklistItem[] = openTodayNotAccepted.flatMap((quest) => {
+    const questTitle = quest.display_title || quest.name;
+    const nonPerishReqs = (quest.requirements ?? []).filter((r) => !PROCESSOR_RECIPES[r.name]?.perishable);
+    if (nonPerishReqs.length === 0) return [];
+    return nonPerishReqs.map((req, i) => {
+      const { haveEnough, invCount, storCount, whereLabel } = itemLocation(req.name, req.amount);
+      const giverNote = quest.quest_giver ? ` (from ${quest.quest_giver})` : '';
+      if (haveEnough) {
+        return {
+          id: `open-today-${quest.id}-${req.name.replace(/\s+/g, '-').toLowerCase()}`,
+          kind: 'info' as const,
+          label: `${req.amount > 1 ? `${req.amount}× ` : ''}${req.name} — in ${whereLabel}`,
+          detail: `Bring to accept "${questTitle}"${giverNote} — available today.`,
+          dividerLabel: i === 0 ? `${questTitle} (available today)` : undefined,
+          groupKey: `open-today-${quest.id}`,
+        };
+      }
+      const have = invCount + storCount;
+      const stillNeed = req.amount - have;
+      return {
+        id: `open-today-${quest.id}-${req.name.replace(/\s+/g, '-').toLowerCase()}`,
+        label: `${req.amount}× ${req.name}${have > 0 ? ` (have ${have})` : ''}`,
+        detail: `Accept "${questTitle}"${giverNote} today — still need ${stillNeed}× ${req.name}.`,
+        dividerLabel: i === 0 ? `${questTitle} (available today)` : undefined,
+        groupKey: `open-today-${quest.id}`,
+      };
+    });
+  });
+
+  // Non-urgent year goals: future quests sorted chronologically
+  const yearGoalItems: ChecklistItem[] = (() => {
+    if (!selectedCharacter) return [];
+
+    const sortedQuests = allQuests
+      .filter((q) => {
+        if (inProgressQuestIds.has(q.id) || completedOrFailedQuestIds.has(q.id)) return false;
+        if (excludedByMutexIds.has(q.id)) return false;
+        if (openTodayNotAccepted.includes(q)) return false; // open today → town column
+        if (q.available_start_season === null || q.available_first_day === null) return false;
+        const hasNonPerish = (q.requirements ?? []).some((r) => !PROCESSOR_RECIPES[r.name]?.perishable);
+        return hasNonPerish;
+      })
+      .sort((a, b) => {
+        const [aStart] = questAbsDays(a);
+        const [bStart] = questAbsDays(b);
+        return aStart - bStart;
+      });
+
+    const items: ChecklistItem[] = [];
+
+    for (const quest of sortedQuests) {
+      const [startAbs] = questAbsDays(quest);
+      if (startAbs <= currentAbsNorm) continue; // already open or past — skip
+
+      const questTitle = quest.display_title || quest.name;
+      const opensLabel = `${SEASON_NAMES[quest.available_start_season!]} ${quest.available_first_day}`;
+      const nonPerishReqs = (quest.requirements ?? []).filter((r) => !PROCESSOR_RECIPES[r.name]?.perishable);
+
+      nonPerishReqs.forEach((req, i) => {
+        const { haveEnough, invCount, storCount, whereLabel } = itemLocation(req.name, req.amount);
+        const itemId = `ygq-${quest.id}-${req.name.replace(/\s+/g, '-').toLowerCase()}`;
+        const dividerLabel = i === 0 ? `${questTitle} — opens ${opensLabel}` : undefined;
+        const groupKey = `ygq-${quest.id}`;
+
+        if (haveEnough) {
+          items.push({
+            id: itemId,
+            kind: 'info' as const,
+            label: `${req.amount}× ${req.name} — in ${whereLabel}`,
+            detail: `Ready for "${questTitle}" (opens ${opensLabel}). Don't sell or use these!`,
+            dividerLabel,
+            groupKey,
+          });
+        } else {
+          const have = invCount + storCount;
+          const haveStr = have > 0
+            ? ` (have ${have}${invCount > 0 && storCount > 0 ? `: ${invCount} inv + ${storCount} storage` : invCount > 0 ? ' in inventory' : ' in storage'})`
+            : '';
+          items.push({
+            id: itemId,
+            label: `${req.amount}× ${req.name}${haveStr}`,
+            detail: `For "${questTitle}" — opens ${opensLabel}`,
+            dividerLabel,
+            groupKey,
+          });
+        }
+      });
+    }
+
+    return items;
+  })();
 
   const notDonatedNotDiscovered = (selectedCharacter && museumItemsLoaded)
     ? museumItems.filter((item) => !donatedSet.has(item.id) && !discoveredItemIds.has(item.id))
@@ -3555,9 +3875,12 @@ export default function Tips() {
   const deadCrops = cropsData.filter((c) => c.isDead);
 
   // Active quest item requirements vs what player has (inventory + storage combined).
-  // For town quests, subtract already-donated (player + NPC) before computing what still needs gathering.
+  // For town quests: subtract already-donated amounts, then always show every item still
+  // needed from the donation box's perspective — even if the player already has it on hand
+  // (they still need to carry it to the box). stillNeed===0 items get a green "in hand" badge.
   const allPendingReqs = activeQuests.flatMap((q) => {
-    const donationMap = q.is_town_quest ? matPileByQuest.get(q.id) : undefined;
+    const isTownQuest = !!q.is_town_quest;
+    const donationMap = isTownQuest ? matPileByQuest.get(q.id) : undefined;
     return (q.requirements ?? []).flatMap((req) => {
       const alreadyDonated = donationMap?.get(req.name) ?? 0;
       const trueRemaining = Math.max(0, req.amount - alreadyDonated);
@@ -3567,16 +3890,21 @@ export default function Tips() {
       const processorCount = processorNameMap.get(req.name) ?? 0;
       const have = invCount + storCount;
       const stillNeed = Math.max(0, trueRemaining - have);
-      return [{ name: req.name, amount: trueRemaining, have, stillNeed, questName: q.display_title || q.name, invCount, storCount, processorCount }];
-    }).filter((r) => r.stillNeed > 0);
+      // Non-town quests: skip items the player already has (nothing left to gather)
+      if (!isTownQuest && stillNeed === 0) return [];
+      return [{ name: req.name, amount: trueRemaining, have, stillNeed, isTownQuest, questName: q.display_title || q.name, invCount, storCount, processorCount }];
+    });
   });
 
-  // Classify quest items by how they're obtained (farmable plant / wild forageable / other)
+  // Classify quest items by how they're obtained (farmable plant / wild forageable / other).
+  // Only items the player still needs to gather (stillNeed > 0) inform farm/forage hints.
   const farmQuestItems = allPendingReqs.filter((r) => {
+    if (r.stillNeed === 0) return false;
     const f = forageableByName.get(r.name.toLowerCase());
     return f && (f.source === 'farmable' || f.source === 'both');
   });
   const forageQuestItems = allPendingReqs.filter((r) => {
+    if (r.stillNeed === 0) return false;
     const f = forageableByName.get(r.name.toLowerCase());
     return f && f.source === 'forageable';
   });
@@ -3933,6 +4261,9 @@ export default function Tips() {
             label: `${r.amount}× ${r.name}`,
             dividerLabel: i === 0 ? questName : undefined,
             groupKey: `quest-${questName}`,
+            townQuestReadyLabel: (r.isTownQuest && r.stillNeed === 0)
+              ? (r.invCount >= r.amount ? 'in hand' : 'in storage')
+              : undefined,
             iconNode: (
               <QuestItemIcon
                 name={r.name}
@@ -3943,6 +4274,7 @@ export default function Tips() {
                 invCount={r.invCount}
                 storCount={r.storCount}
                 processorCount={r.processorCount}
+                isTownQuestItem={r.isTownQuest}
               />
             ),
           });
@@ -3994,6 +4326,7 @@ export default function Tips() {
     if (!q.quest_giver) return false;
     if (inProgressQuestIds.has(q.id)) return false;
     if (completedOrFailedQuestIds.has(q.id)) return false;
+    if (excludedByMutexIds.has(q.id)) return false; // other option of a town crisis pair was chosen
     if (q.is_donation_quest || q.is_rootcellar_quest) return false;
     if ((q.requirements ?? []).length === 0) return false;
     return daysUntilActive(q, currentAbs) === 0;
@@ -4019,6 +4352,8 @@ export default function Tips() {
         invCount: selectedCharacter ? (inventoryNameMap.get(r.name) ?? 0) : 0,
         storCount: selectedCharacter ? (storageNameMap.get(r.name) ?? 0) : 0,
         questName,
+        forageableInfo: forageableByName.get(r.name.toLowerCase()),
+        processorRecipe: PROCESSOR_RECIPES[r.name],
       })),
     });
   }
@@ -4271,6 +4606,32 @@ export default function Tips() {
     return false;
   }) : [];
 
+  const isSaturday = dayOfWeekNow === 6;
+
+  const saturdayDocksItems: ChecklistItem[] = isSaturday ? [
+    {
+      id: 'fin-saturday-visit',
+      label: 'Visit Fin at the docks — he only appears on Saturdays!',
+      detail: 'Pick up Bottled Surprises and Critter Treat from Fin while he\'s here. He packs up and leaves after today.',
+    },
+  ] : [];
+
+  const saturdayGruffShopItems: ChecklistItem[] = isSaturday ? [
+    {
+      id: 'saturday-gruff-shop-restock',
+      label: "Buy any remaining metal bars, coal, or smelters from Gruff's shop — restocks tomorrow",
+      detail: "Gruff's shop inventory resets on Sunday. If you need bars, coal, or smelters, today is your last chance at this week's stock.",
+    },
+  ] : [];
+
+  const saturdayGeneralStoreItems: ChecklistItem[] = isSaturday ? [
+    {
+      id: 'saturday-general-store-restock',
+      label: 'Stock up on any supplies from the General Store — restocks tomorrow (Sunday)',
+      detail: "The General Store's inventory resets on Sunday. Today is your last chance to buy anything from this week's stock.",
+    },
+  ] : [];
+
   const dailyGroups: ChecklistGroup[] = [
     {
       location: 'On Your Farm (Crops)',
@@ -4290,6 +4651,7 @@ export default function Tips() {
         ...(availableQuestsByLoc.get('forest') ?? []),
         ...(birthdayItemsByLoc.get('forest') ?? []),
         ...gruffPickupItems,
+        ...saturdayGruffShopItems,
       ],
     },
     {
@@ -4308,11 +4670,28 @@ export default function Tips() {
         ...buildResearchChecklistItems(townResearchItems, true),
         ...(availableQuestsByLoc.get('town') ?? []),
         ...questChecklistItems,
+        ...openTodayItems,
         ...(birthdayItemsByLoc.get('town') ?? (birthdayItemsByLoc.size === 0 ? [{ id: 'villagers', label: 'Talk to villagers to build relationships' }] : [])),
         ...wilfredPickupItems,
         { id: 'root-cellar', label: rootCellarLabel, detail: rootCellarDetail },
+        ...saturdayGeneralStoreItems,
       ],
     },
+    ...(isSaturday ? [{
+      location: 'At the Docks',
+      colorClass: 'text-blue-600 dark:text-blue-400',
+      items: saturdayDocksItems,
+    }] : []),
+    ...(upcomingQuestPrepItems.length > 0 ? [{
+      location: 'Upcoming Quest Prep',
+      colorClass: 'text-orange-600 dark:text-orange-400',
+      items: upcomingQuestPrepItems,
+    }] : []),
+    ...(yearGoalItems.length > 0 ? [{
+      location: 'Year Goals (Non-Urgent)',
+      colorClass: 'text-sky-600 dark:text-sky-400',
+      items: yearGoalItems,
+    }] : []),
     {
       location: 'In the Marsh',
       colorClass: 'text-teal-600 dark:text-teal-400',
@@ -4642,7 +5021,7 @@ export default function Tips() {
                           return (
                             <div key={r.name} className="flex flex-col items-center gap-1">
                               {isBlueprint
-                                ? <BlueprintRewardIcon name={r.name} amount={r.amount} />
+                                ? <BlueprintRewardIcon name={r.name} amount={r.amount} unlockedSkills={selectedCharacter?.unlocked_skills ?? []} />
                                 : <RewardIcon name={r.name} amount={r.amount} type="item" description={info?.description} />
                               }
                               <span className="text-center text-xs leading-tight text-slate-500 dark:text-slate-400 max-w-[64px]">{r.name}</span>
