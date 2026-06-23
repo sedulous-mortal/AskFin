@@ -1,0 +1,2367 @@
+{
+  "Baker": {
+    "shop_type_id": 7,
+    "basicItemCredits": 10,
+    "goodItemCredits": 3,
+    "rareItemCredits": 5,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 431,
+        "name": "Flowerpot",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25508
+      },
+      {
+        "game_id": 1172,
+        "name": "Drying Herbs",
+        "min_amount": 1,
+        "max_amount": 2,
+        "tier": "Rare",
+        "_path_id": 25522
+      },
+      {
+        "game_id": 941,
+        "name": "Cheesy Flatbread",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25463
+      },
+      {
+        "game_id": 923,
+        "name": "Mushroom Loaf",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25485
+      },
+      {
+        "game_id": 934,
+        "name": "Cheese Loaf",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25462
+      },
+      {
+        "game_id": 930,
+        "name": "Nutty Cheese Wedges",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25488
+      },
+      {
+        "game_id": 938,
+        "name": "Honey Nut Tart",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25483
+      },
+      {
+        "game_id": 926,
+        "name": "Vegetable Tart",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25504
+      },
+      {
+        "game_id": 924,
+        "name": "Spiced Berry Pie",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25495
+      },
+      {
+        "game_id": 706,
+        "name": "Dried Chamomile",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25243
+      },
+      {
+        "game_id": 711,
+        "name": "Dried Dandelions",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25261
+      },
+      {
+        "game_id": 828,
+        "name": "Dried Pepperwort",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25324
+      },
+      {
+        "game_id": 704,
+        "name": "Dried Red Clover",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25340
+      },
+      {
+        "game_id": 709,
+        "name": "Dried Sunflower",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25360
+      },
+      {
+        "game_id": 708,
+        "name": "Dried Yarrow",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25377
+      },
+      {
+        "game_id": 1038,
+        "name": "Bush Planter",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25570
+      },
+      {
+        "game_id": 1039,
+        "name": "Flower Planter A",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25571
+      },
+      {
+        "game_id": 1040,
+        "name": "Flower Planter B",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25572
+      },
+      {
+        "game_id": 1041,
+        "name": "Flower Planter C",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25573
+      },
+      {
+        "game_id": 311,
+        "name": "Chamomile Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25686
+      },
+      {
+        "game_id": 320,
+        "name": "Chicory Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25688
+      },
+      {
+        "game_id": 70,
+        "name": "Dandelion Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25691
+      },
+      {
+        "game_id": 176,
+        "name": "Daylily Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25692
+      },
+      {
+        "game_id": 232,
+        "name": "Lavender Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25697
+      },
+      {
+        "game_id": 337,
+        "name": "Pepperwort Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25705
+      },
+      {
+        "game_id": 330,
+        "name": "Red Clover Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25711
+      },
+      {
+        "game_id": 242,
+        "name": "Sunflower Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25714
+      },
+      {
+        "game_id": 332,
+        "name": "Yarrow Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25717
+      }
+    ]
+  },
+  "Blacksmith": {
+    "shop_type_id": 2,
+    "basicItemCredits": 40,
+    "goodItemCredits": 5,
+    "rareItemCredits": 3,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 64,
+        "name": "Lantern",
+        "min_amount": 1,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25632
+      },
+      {
+        "game_id": 246,
+        "name": "Copper Bar",
+        "min_amount": 3,
+        "max_amount": 10,
+        "tier": "Good",
+        "_path_id": 25411
+      },
+      {
+        "game_id": 247,
+        "name": "Gold Bar",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Rare",
+        "_path_id": 25412
+      },
+      {
+        "game_id": 248,
+        "name": "Iron Bar",
+        "min_amount": 3,
+        "max_amount": 10,
+        "tier": "Good",
+        "_path_id": 25413
+      },
+      {
+        "game_id": 371,
+        "name": "Mithril Bar",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Rare",
+        "_path_id": 25414
+      },
+      {
+        "game_id": 372,
+        "name": "Nickel Bar",
+        "min_amount": 3,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25415
+      },
+      {
+        "game_id": 373,
+        "name": "Silver Bar",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25416
+      },
+      {
+        "game_id": 374,
+        "name": "Tin Bar",
+        "min_amount": 3,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25417
+      },
+      {
+        "game_id": 375,
+        "name": "Titanium Bar",
+        "min_amount": 3,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25418
+      },
+      {
+        "game_id": 276,
+        "name": "Coal",
+        "min_amount": 20,
+        "max_amount": 30,
+        "tier": "Basic",
+        "_path_id": 25419
+      },
+      {
+        "game_id": 358,
+        "name": "Cobblestone Path",
+        "min_amount": 10,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25640
+      },
+      {
+        "game_id": 359,
+        "name": "Plank Path",
+        "min_amount": 10,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25641
+      },
+      {
+        "game_id": 360,
+        "name": "Stone Path",
+        "min_amount": 10,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25642
+      },
+      {
+        "game_id": 361,
+        "name": "Wooden Path",
+        "min_amount": 10,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25643
+      },
+      {
+        "game_id": 63,
+        "name": "Smelter",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25656
+      },
+      {
+        "game_id": 1203,
+        "name": "Directional Sign Post",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25635
+      },
+      {
+        "game_id": 1451,
+        "name": "Bomb",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25455
+      }
+    ]
+  },
+  "Carpenter": {
+    "shop_type_id": 9,
+    "basicItemCredits": 20,
+    "goodItemCredits": 10,
+    "rareItemCredits": 3,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 515,
+        "name": "Alpheep Painting",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25505
+      },
+      {
+        "game_id": 1049,
+        "name": "Eastern Small Mat",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25509
+      },
+      {
+        "game_id": 989,
+        "name": "Hunter's Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25510
+      },
+      {
+        "game_id": 1048,
+        "name": "Eastern Vertical Mat",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25511
+      },
+      {
+        "game_id": 1047,
+        "name": "Eastern Horizontal Mat",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25512
+      },
+      {
+        "game_id": 491,
+        "name": "Basic Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25513
+      },
+      {
+        "game_id": 493,
+        "name": "Nature Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25514
+      },
+      {
+        "game_id": 983,
+        "name": "Herbalist Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25516
+      },
+      {
+        "game_id": 494,
+        "name": "Nature Large Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25517
+      },
+      {
+        "game_id": 495,
+        "name": "Noble Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25515
+      },
+      {
+        "game_id": 504,
+        "name": "Cast Iron Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25518
+      },
+      {
+        "game_id": 492,
+        "name": "Basic Large Rug",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25519
+      },
+      {
+        "game_id": 1065,
+        "name": "Citrus Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25659
+      },
+      {
+        "game_id": 511,
+        "name": "Grey Wood Plank Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25660
+      },
+      {
+        "game_id": 1016,
+        "name": "Fancy Wood Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25661
+      },
+      {
+        "game_id": 527,
+        "name": "Gothic Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25662
+      },
+      {
+        "game_id": 529,
+        "name": "Greenhouse Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25663
+      },
+      {
+        "game_id": 1026,
+        "name": "Herringbone Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25664
+      },
+      {
+        "game_id": 1022,
+        "name": "Library Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25665
+      },
+      {
+        "game_id": 1021,
+        "name": "Log Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25666
+      },
+      {
+        "game_id": 1067,
+        "name": "Pink Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25667
+      },
+      {
+        "game_id": 1019,
+        "name": "Warm Plaster Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25668
+      },
+      {
+        "game_id": 1020,
+        "name": "White Plaster Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25669
+      },
+      {
+        "game_id": 1024,
+        "name": "Shoji Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25670
+      },
+      {
+        "game_id": 514,
+        "name": "Stone Brick Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25671
+      },
+      {
+        "game_id": 1066,
+        "name": "Strawberry Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25672
+      },
+      {
+        "game_id": 1018,
+        "name": "Trellis Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25673
+      },
+      {
+        "game_id": 1023,
+        "name": "Ivy Trellis Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25674
+      },
+      {
+        "game_id": 512,
+        "name": "Wood Plank Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25675
+      },
+      {
+        "game_id": 1025,
+        "name": "Wood Slat Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25676
+      },
+      {
+        "game_id": 1017,
+        "name": "Stone Plaster Wallpaper",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25677
+      },
+      {
+        "game_id": 1068,
+        "name": "Citrus Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25534
+      },
+      {
+        "game_id": 510,
+        "name": "Dark Wood Plank Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25535
+      },
+      {
+        "game_id": 530,
+        "name": "Fancy Stone Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25536
+      },
+      {
+        "game_id": 1010,
+        "name": "Fancy Wood Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25537
+      },
+      {
+        "game_id": 1007,
+        "name": "Four Panel Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25538
+      },
+      {
+        "game_id": 528,
+        "name": "Gothic Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25539
+      },
+      {
+        "game_id": 1015,
+        "name": "Grass Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25540
+      },
+      {
+        "game_id": 1014,
+        "name": "Herringbone flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25541
+      },
+      {
+        "game_id": 1009,
+        "name": "Mosaic Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25542
+      },
+      {
+        "game_id": 513,
+        "name": "Cobblestone Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25544
+      },
+      {
+        "game_id": 1008,
+        "name": "Stone Brick Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25543
+      },
+      {
+        "game_id": 1013,
+        "name": "Stone Tile Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25545
+      },
+      {
+        "game_id": 1012,
+        "name": "Wood Inlaid Stone Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25546
+      },
+      {
+        "game_id": 1069,
+        "name": "Vine Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25547
+      },
+      {
+        "game_id": 1069,
+        "name": "Vine Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25547
+      },
+      {
+        "game_id": 1011,
+        "name": "Woven Wood Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25548
+      },
+      {
+        "game_id": 1006,
+        "name": "Cubic Wood Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25549
+      },
+      {
+        "game_id": 509,
+        "name": "Wood Plank Flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25550
+      },
+      {
+        "game_id": 531,
+        "name": "Worn Wood flooring",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25551
+      },
+      {
+        "game_id": 1167,
+        "name": "Cast Iron Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25525
+      },
+      {
+        "game_id": 1169,
+        "name": "Large Eastern Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25526
+      },
+      {
+        "game_id": 1166,
+        "name": "Fruity Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25527
+      },
+      {
+        "game_id": 1165,
+        "name": "Gilded Stone Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25528
+      },
+      {
+        "game_id": 1163,
+        "name": "Large Tree Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25529
+      },
+      {
+        "game_id": 1162,
+        "name": "Nature Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25530
+      },
+      {
+        "game_id": 1161,
+        "name": "Noble Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25531
+      },
+      {
+        "game_id": 1168,
+        "name": "Pastel Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25532
+      },
+      {
+        "game_id": 1160,
+        "name": "Wooden Window",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25533
+      },
+      {
+        "game_id": 658,
+        "name": "Plank",
+        "min_amount": 10,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25406
+      },
+      {
+        "game_id": 656,
+        "name": "Hard Wood",
+        "min_amount": 20,
+        "max_amount": 40,
+        "tier": "Basic",
+        "_path_id": 25446
+      },
+      {
+        "game_id": 655,
+        "name": "Soft Wood",
+        "min_amount": 10,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25448
+      },
+      {
+        "game_id": 39,
+        "name": "Medium Wood",
+        "min_amount": 20,
+        "max_amount": 40,
+        "tier": "Basic",
+        "_path_id": 25447
+      },
+      {
+        "game_id": 676,
+        "name": "Saw",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25653
+      }
+    ]
+  },
+  "Fisher": {
+    "shop_type_id": 8,
+    "basicItemCredits": 20,
+    "goodItemCredits": 5,
+    "rareItemCredits": 3,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 1002,
+        "name": "Fish Chum Abundant",
+        "min_amount": 0,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25621
+      },
+      {
+        "game_id": 1003,
+        "name": "Fish Chum Common",
+        "min_amount": 0,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25622
+      },
+      {
+        "game_id": 1004,
+        "name": "Fish Chum Uncommon",
+        "min_amount": 0,
+        "max_amount": 10,
+        "tier": "Good",
+        "_path_id": 25624
+      },
+      {
+        "game_id": 1005,
+        "name": "Fish Chum Rare",
+        "min_amount": 0,
+        "max_amount": 10,
+        "tier": "Rare",
+        "_path_id": 25623
+      },
+      {
+        "game_id": 516,
+        "name": "Mounted Fish",
+        "min_amount": 0,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25507
+      },
+      {
+        "game_id": 946,
+        "name": "Fried Fish",
+        "min_amount": 0,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25472
+      },
+      {
+        "game_id": 951,
+        "name": "Fish Root Chowder",
+        "min_amount": 0,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25470
+      },
+      {
+        "game_id": 790,
+        "name": "Small Dried Fish",
+        "min_amount": 0,
+        "max_amount": 3,
+        "tier": "Basic",
+        "_path_id": 25277
+      },
+      {
+        "game_id": 792,
+        "name": "Small Fish in Oil",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 26347
+      },
+      {
+        "game_id": 791,
+        "name": "Small Salted Fish",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25278
+      },
+      {
+        "game_id": 789,
+        "name": "Small Smoked Fish",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25279
+      },
+      {
+        "game_id": 793,
+        "name": "Small Pickled Fish",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25280
+      },
+      {
+        "game_id": 1112,
+        "name": "Fish Trap",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25649
+      }
+    ]
+  },
+  "FlowerFestival": {
+    "shop_type_id": 12,
+    "basicItemCredits": 100,
+    "goodItemCredits": 0,
+    "rareItemCredits": 0,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 1212,
+        "name": "Cherry Tree Wallpaper",
+        "min_amount": 6,
+        "max_amount": 6,
+        "tier": "Basic",
+        "_path_id": 25400
+      },
+      {
+        "game_id": 1202,
+        "name": "Cherry Flower Painting",
+        "min_amount": 6,
+        "max_amount": 6,
+        "tier": "Basic",
+        "_path_id": 25391
+      },
+      {
+        "game_id": 1191,
+        "name": "Cherry Bonsai",
+        "min_amount": 6,
+        "max_amount": 6,
+        "tier": "Basic",
+        "_path_id": 25394
+      },
+      {
+        "game_id": 1201,
+        "name": "Spring Flower Pot",
+        "min_amount": 6,
+        "max_amount": 6,
+        "tier": "Basic",
+        "_path_id": 25395
+      }
+    ]
+  },
+  "Furniture": {
+    "shop_type_id": 3,
+    "basicItemCredits": 10,
+    "goodItemCredits": 0,
+    "rareItemCredits": 0,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 503,
+        "name": "Cast Iron bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25555
+      },
+      {
+        "game_id": 1042,
+        "name": "Eastern Bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25556
+      },
+      {
+        "game_id": 979,
+        "name": "Herbalist's Bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25557
+      },
+      {
+        "game_id": 984,
+        "name": "Hunter's bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25558
+      },
+      {
+        "game_id": 486,
+        "name": "Nature bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25559
+      },
+      {
+        "game_id": 487,
+        "name": "Noble Bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25553
+      },
+      {
+        "game_id": 425,
+        "name": "Simple Double Bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25560
+      },
+      {
+        "game_id": 508,
+        "name": "Cast Iron Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25564
+      },
+      {
+        "game_id": 1043,
+        "name": "Eastern Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25565
+      },
+      {
+        "game_id": 978,
+        "name": "Herbalist Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25566
+      },
+      {
+        "game_id": 985,
+        "name": "Hunter's Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25567
+      },
+      {
+        "game_id": 489,
+        "name": "Nature Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25607
+      },
+      {
+        "game_id": 490,
+        "name": "Noble Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25608
+      },
+      {
+        "game_id": 488,
+        "name": "Wooden Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25568
+      },
+      {
+        "game_id": 507,
+        "name": "Cast Iron End Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25589
+      },
+      {
+        "game_id": 1045,
+        "name": "Eastern Small Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25590
+      },
+      {
+        "game_id": 982,
+        "name": "Herbalist End Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25592
+      },
+      {
+        "game_id": 987,
+        "name": "Hunter's End Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25593
+      },
+      {
+        "game_id": 500,
+        "name": "Nature End Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25594
+      },
+      {
+        "game_id": 501,
+        "name": "Noble End Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25587
+      },
+      {
+        "game_id": 502,
+        "name": "Wooden End Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25588
+      },
+      {
+        "game_id": 506,
+        "name": "Cast Iron Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25598
+      },
+      {
+        "game_id": 1046,
+        "name": "Eastern Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25599
+      },
+      {
+        "game_id": 981,
+        "name": "Herbalist Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25601
+      },
+      {
+        "game_id": 988,
+        "name": "Hunter's Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25602
+      },
+      {
+        "game_id": 484,
+        "name": "Nature Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25603
+      },
+      {
+        "game_id": 485,
+        "name": "Noble Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25597
+      },
+      {
+        "game_id": 432,
+        "name": "Simple Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25605
+      },
+      {
+        "game_id": 505,
+        "name": "Cast Iron Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25578
+      },
+      {
+        "game_id": 1044,
+        "name": "Eastern Seat",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25579
+      },
+      {
+        "game_id": 980,
+        "name": "Herbalist Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25581
+      },
+      {
+        "game_id": 986,
+        "name": "Hunter's Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25582
+      },
+      {
+        "game_id": 497,
+        "name": "Log Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25575
+      },
+      {
+        "game_id": 498,
+        "name": "Mushroom Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25576
+      },
+      {
+        "game_id": 499,
+        "name": "Noble Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25577
+      },
+      {
+        "game_id": 496,
+        "name": "Wooden Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25584
+      },
+      {
+        "game_id": 57,
+        "name": "Chest",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25619
+      },
+      {
+        "game_id": 58,
+        "name": "Crafting Table",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25646
+      },
+      {
+        "game_id": 1170,
+        "name": "Candelabra",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25506
+      },
+      {
+        "game_id": 1171,
+        "name": "Stone Fireplace",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25569
+      }
+    ]
+  },
+  "GeneralStore": {
+    "shop_type_id": 0,
+    "basicItemCredits": 30,
+    "goodItemCredits": 10,
+    "rareItemCredits": 10,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 414,
+        "name": "Hay Seeds",
+        "min_amount": 20,
+        "max_amount": 20,
+        "tier": "Good",
+        "_path_id": 25695
+      },
+      {
+        "game_id": 73,
+        "name": "Cabbage Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25683
+      },
+      {
+        "game_id": 81,
+        "name": "Strawberry Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25713
+      },
+      {
+        "game_id": 68,
+        "name": "Carrot Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25685
+      },
+      {
+        "game_id": 69,
+        "name": "Corn Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25689
+      },
+      {
+        "game_id": 239,
+        "name": "Cucumber Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25690
+      },
+      {
+        "game_id": 173,
+        "name": "Bellpepper Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25681
+      },
+      {
+        "game_id": 236,
+        "name": "Cantaloupe Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25684
+      },
+      {
+        "game_id": 231,
+        "name": "Bean Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25680
+      },
+      {
+        "game_id": 77,
+        "name": "Potato Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25708
+      },
+      {
+        "game_id": 308,
+        "name": "Onion Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25702
+      },
+      {
+        "game_id": 326,
+        "name": "Oat Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25701
+      },
+      {
+        "game_id": 78,
+        "name": "Pumpkin Seeds",
+        "min_amount": 5,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25709
+      },
+      {
+        "game_id": 450,
+        "name": "Cooking Oil",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Rare",
+        "_path_id": 25164
+      },
+      {
+        "game_id": 378,
+        "name": "Salt",
+        "min_amount": 5,
+        "max_amount": 5,
+        "tier": "Rare",
+        "_path_id": 25440
+      },
+      {
+        "game_id": 451,
+        "name": "Vinegar",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Rare",
+        "_path_id": 25387
+      },
+      {
+        "game_id": 449,
+        "name": "Honey",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Rare",
+        "_path_id": 25217
+      },
+      {
+        "game_id": 52,
+        "name": "Compost",
+        "min_amount": 10,
+        "max_amount": 30,
+        "tier": "Good",
+        "_path_id": 25408
+      },
+      {
+        "game_id": 823,
+        "name": "Oat Flour",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Good",
+        "_path_id": 25310
+      }
+    ]
+  },
+  "HarvestFestival": {
+    "shop_type_id": 14,
+    "basicItemCredits": 0,
+    "goodItemCredits": 0,
+    "rareItemCredits": 0,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 1207,
+        "name": "Wicker Alpheep Effigy",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25404
+      },
+      {
+        "game_id": 1208,
+        "name": "Wicker Bluggy Effigy",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25405
+      },
+      {
+        "game_id": 1210,
+        "name": "Hay bale",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25390
+      },
+      {
+        "game_id": 1209,
+        "name": "Harvest Wreath",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25397
+      }
+    ]
+  },
+  "NewYearsFestival": {
+    "shop_type_id": 15,
+    "basicItemCredits": 0,
+    "goodItemCredits": 0,
+    "rareItemCredits": 0,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 1214,
+        "name": "Log Cabin Wallpaper",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25401
+      },
+      {
+        "game_id": 1211,
+        "name": "Starry Sky Wallpaper",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25402
+      },
+      {
+        "game_id": 1215,
+        "name": "Mountain Sunrise Painting",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25392
+      },
+      {
+        "game_id": 1218,
+        "name": "Bonfire",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25389
+      }
+    ]
+  },
+  "Ranch": {
+    "shop_type_id": 5,
+    "basicItemCredits": 30,
+    "goodItemCredits": 10,
+    "rareItemCredits": 3,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 1029,
+        "name": "Milk Bucket",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25454
+      },
+      {
+        "game_id": 1028,
+        "name": "Shears",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25457
+      },
+      {
+        "game_id": 62,
+        "name": "Butcher Table",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25655
+      },
+      {
+        "game_id": 1033,
+        "name": "Breeder's Kibble",
+        "min_amount": 8,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25626
+      },
+      {
+        "game_id": 1034,
+        "name": "Happy Kibble",
+        "min_amount": 8,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25627
+      },
+      {
+        "game_id": 1032,
+        "name": "Medicated Kibble",
+        "min_amount": 8,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25628
+      },
+      {
+        "game_id": 158,
+        "name": "Kibble Nibbles",
+        "min_amount": 15,
+        "max_amount": 30,
+        "tier": "Basic",
+        "_path_id": 25629
+      },
+      {
+        "game_id": 1030,
+        "name": "Bulk Bites",
+        "min_amount": 8,
+        "max_amount": 16,
+        "tier": "Basic",
+        "_path_id": 25630
+      },
+      {
+        "game_id": 1031,
+        "name": "Chonker Chow",
+        "min_amount": 8,
+        "max_amount": 16,
+        "tier": "Basic",
+        "_path_id": 25631
+      },
+      {
+        "game_id": 9,
+        "name": "Alpheep Wool",
+        "min_amount": 3,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25449
+      },
+      {
+        "game_id": 929,
+        "name": "Sweet Milk Pudding",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Rare",
+        "_path_id": 25500
+      },
+      {
+        "game_id": 808,
+        "name": "Smoked Rich meat",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Good",
+        "_path_id": 25347
+      },
+      {
+        "game_id": 810,
+        "name": "Salted Rich meat",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Good",
+        "_path_id": 25346
+      },
+      {
+        "game_id": 809,
+        "name": "Dried Rich meat",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Good",
+        "_path_id": 25345
+      },
+      {
+        "game_id": 61,
+        "name": "Gate",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Good",
+        "_path_id": 25614
+      },
+      {
+        "game_id": 369,
+        "name": "Stone Gate",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Good",
+        "_path_id": 25615
+      },
+      {
+        "game_id": 368,
+        "name": "Wattle Gate",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Good",
+        "_path_id": 25616
+      },
+      {
+        "game_id": 422,
+        "name": "White Gate",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Good",
+        "_path_id": 25617
+      },
+      {
+        "game_id": 60,
+        "name": "Fence",
+        "min_amount": 10,
+        "max_amount": 15,
+        "tier": "Basic",
+        "_path_id": 25610
+      },
+      {
+        "game_id": 367,
+        "name": "Stone Wall",
+        "min_amount": 10,
+        "max_amount": 15,
+        "tier": "Basic",
+        "_path_id": 25611
+      },
+      {
+        "game_id": 366,
+        "name": "Wattle Fence",
+        "min_amount": 10,
+        "max_amount": 15,
+        "tier": "Basic",
+        "_path_id": 25612
+      },
+      {
+        "game_id": 421,
+        "name": "White Fence",
+        "min_amount": 10,
+        "max_amount": 15,
+        "tier": "Basic",
+        "_path_id": 25613
+      },
+      {
+        "game_id": 414,
+        "name": "Hay Seeds",
+        "min_amount": 20,
+        "max_amount": 30,
+        "tier": "Basic",
+        "_path_id": 25695
+      },
+      {
+        "game_id": 652,
+        "name": "Hide",
+        "min_amount": 3,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25410
+      }
+    ]
+  },
+  "SheddingFestival": {
+    "shop_type_id": 13,
+    "basicItemCredits": 0,
+    "goodItemCredits": 0,
+    "rareItemCredits": 0,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 1213,
+        "name": "Lilypad Wallpaper",
+        "min_amount": 4,
+        "max_amount": 4,
+        "tier": "Basic",
+        "_path_id": 25403
+      },
+      {
+        "game_id": 1216,
+        "name": "Pinwheel",
+        "min_amount": 20,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25393
+      },
+      {
+        "game_id": 1219,
+        "name": "Firefly Lights",
+        "min_amount": 20,
+        "max_amount": 20,
+        "tier": "Basic",
+        "_path_id": 25399
+      },
+      {
+        "game_id": 1217,
+        "name": "Floral Wreath",
+        "min_amount": 10,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25398
+      }
+    ]
+  },
+  "Tavern": {
+    "shop_type_id": 11,
+    "basicItemCredits": 5,
+    "goodItemCredits": 3,
+    "rareItemCredits": 0,
+    "offsetStockByAWeek": false,
+    "items": [
+      {
+        "game_id": 956,
+        "name": "Blood Soup",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25460
+      },
+      {
+        "game_id": 928,
+        "name": "Sweet Herb Tea",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25499
+      },
+      {
+        "game_id": 775,
+        "name": "Apple Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25223
+      },
+      {
+        "game_id": 782,
+        "name": "Blackberry Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25231
+      },
+      {
+        "game_id": 783,
+        "name": "Cantaloupe Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25237
+      },
+      {
+        "game_id": 756,
+        "name": "Carrot Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25239
+      },
+      {
+        "game_id": 774,
+        "name": "Cherry Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25251
+      },
+      {
+        "game_id": 779,
+        "name": "Cranberry Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25258
+      },
+      {
+        "game_id": 781,
+        "name": "Hawthorn Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25291
+      },
+      {
+        "game_id": 777,
+        "name": "Elderberry Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25270
+      },
+      {
+        "game_id": 780,
+        "name": "Juniper Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25294
+      },
+      {
+        "game_id": 778,
+        "name": "Pear Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25320
+      },
+      {
+        "game_id": 773,
+        "name": "Plum Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25329
+      },
+      {
+        "game_id": 772,
+        "name": "Raspberry Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25339
+      },
+      {
+        "game_id": 771,
+        "name": "Rhubarb Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25344
+      },
+      {
+        "game_id": 776,
+        "name": "Rosehip Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25351
+      },
+      {
+        "game_id": 770,
+        "name": "Strawberry Juice",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25359
+      },
+      {
+        "game_id": 915,
+        "name": "Grilled Vegetables",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25481
+      },
+      {
+        "game_id": 935,
+        "name": "Fruit Porridge",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25475
+      },
+      {
+        "game_id": 914,
+        "name": "Fried Mushrooms",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25473
+      },
+      {
+        "game_id": 947,
+        "name": "Sausage",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25492
+      },
+      {
+        "game_id": 948,
+        "name": "Black Pudding",
+        "min_amount": 0,
+        "max_amount": 5,
+        "tier": "Good",
+        "_path_id": 25459
+      },
+      {
+        "game_id": 1079,
+        "name": "Mead",
+        "min_amount": 1,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25303
+      },
+      {
+        "game_id": 1078,
+        "name": "Fruit Wine",
+        "min_amount": 1,
+        "max_amount": 5,
+        "tier": "Basic",
+        "_path_id": 25375
+      }
+    ]
+  },
+  "Trader": {
+    "shop_type_id": 1,
+    "basicItemCredits": 30,
+    "goodItemCredits": 10,
+    "rareItemCredits": 15,
+    "offsetStockByAWeek": true,
+    "items": [
+      {
+        "game_id": 827,
+        "name": "Bottled Surprise",
+        "min_amount": 3,
+        "max_amount": 5,
+        "tier": "Rare",
+        "_path_id": 25095
+      },
+      {
+        "game_id": 284,
+        "name": "Apple Seed",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25678
+      },
+      {
+        "game_id": 256,
+        "name": "Cherry Seed",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25687
+      },
+      {
+        "game_id": 295,
+        "name": "Hawthorn Seeds",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25694
+      },
+      {
+        "game_id": 292,
+        "name": "Juniper Seeds",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25696
+      },
+      {
+        "game_id": 289,
+        "name": "Plum Seeds",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25707
+      },
+      {
+        "game_id": 258,
+        "name": "Pear Seed",
+        "min_amount": 1,
+        "max_amount": 3,
+        "tier": "Rare",
+        "_path_id": 25704
+      },
+      {
+        "game_id": 1060,
+        "name": "Pineapple Bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25606
+      },
+      {
+        "game_id": 1061,
+        "name": "Pear Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25609
+      },
+      {
+        "game_id": 1062,
+        "name": "Fruity Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25580
+      },
+      {
+        "game_id": 1063,
+        "name": "Orange Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25591
+      },
+      {
+        "game_id": 1064,
+        "name": "Watermelon Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25600
+      },
+      {
+        "game_id": 1055,
+        "name": "Gilded Stone Bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25552
+      },
+      {
+        "game_id": 1056,
+        "name": "Gilded Stone Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25562
+      },
+      {
+        "game_id": 1057,
+        "name": "Gilded Stone Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25574
+      },
+      {
+        "game_id": 1058,
+        "name": "Gilded Stone Small Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25586
+      },
+      {
+        "game_id": 1059,
+        "name": "Gilded Stone Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25596
+      },
+      {
+        "game_id": 1050,
+        "name": "Pastel Bed",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25554
+      },
+      {
+        "game_id": 1051,
+        "name": "Pastel Bookcase",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25563
+      },
+      {
+        "game_id": 1052,
+        "name": "Pastel Stool",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25583
+      },
+      {
+        "game_id": 1053,
+        "name": "Pastel End Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25595
+      },
+      {
+        "game_id": 1054,
+        "name": "Pastel Table",
+        "min_amount": 0,
+        "max_amount": 1,
+        "tier": "Good",
+        "_path_id": 25604
+      },
+      {
+        "game_id": 176,
+        "name": "Daylily Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25692
+      },
+      {
+        "game_id": 67,
+        "name": "Asparagus Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25679
+      },
+      {
+        "game_id": 70,
+        "name": "Dandelion Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25691
+      },
+      {
+        "game_id": 178,
+        "name": "Mint Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25699
+      },
+      {
+        "game_id": 337,
+        "name": "Pepperwort Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25705
+      },
+      {
+        "game_id": 161,
+        "name": "Rhubarb Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25712
+      },
+      {
+        "game_id": 232,
+        "name": "Lavender Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25697
+      },
+      {
+        "game_id": 330,
+        "name": "Red Clover Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25711
+      },
+      {
+        "game_id": 76,
+        "name": "Peanut Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25703
+      },
+      {
+        "game_id": 332,
+        "name": "Yarrow Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25717
+      },
+      {
+        "game_id": 242,
+        "name": "Sunflower Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25714
+      },
+      {
+        "game_id": 311,
+        "name": "Chamomile Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25686
+      },
+      {
+        "game_id": 322,
+        "name": "Sunroot Seeds",
+        "min_amount": 5,
+        "max_amount": 10,
+        "tier": "Basic",
+        "_path_id": 25715
+      },
+      {
+        "game_id": 1225,
+        "name": "Critters Delight",
+        "min_amount": 1,
+        "max_amount": 1,
+        "tier": "Basic",
+        "_path_id": 25452
+      }
+    ]
+  }
+}

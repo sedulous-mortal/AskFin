@@ -3355,7 +3355,7 @@ function FarmTab({ cropsData, hasCharacter }: { cropsData: CropEntry[] | null; h
                   )}
                   {g.deadCount > 0 && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-3.5 py-1 text-base font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-400">
-                      {g.deadCount} dead — replant
+                      {g.deadCount} dead
                     </span>
                   )}
                 </div>
