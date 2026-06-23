@@ -2392,7 +2392,16 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
     });
   }
 
-  const useDoubleRow = groups.length > 5;
+  const FIXED_TOP_LOCS = ['On Your Farm (Crops)', 'On Your Farm (Critters)', 'In the Town', 'In the Mines'];
+  const FIXED_BOTTOM_LOCS = ['In the Forest', 'On the Mountain', 'In the Marsh', 'In the Deep Woods'];
+  const topRowGroups = FIXED_TOP_LOCS.map(loc => groups.find(g => g.location === loc)).filter((g): g is ChecklistGroup => g !== undefined);
+  const bottomRowGroups = FIXED_BOTTOM_LOCS.map(loc => groups.find(g => g.location === loc)).filter((g): g is ChecklistGroup => g !== undefined);
+  const docksGroup = groups.find(g => g.location === 'At the Docks');
+  const extraGroups = groups.filter(g =>
+    !FIXED_TOP_LOCS.includes(g.location) &&
+    !FIXED_BOTTOM_LOCS.includes(g.location) &&
+    g.location !== 'At the Docks'
+  );
 
   const hasMinesUpgradeItem = groups.some((g) => g.items.some((i) => i.id === 'mining-upgrade' && i.upgradeDetails));
   const gruffQuestVisible = hasMinesUpgradeItem && checked.has('mining-upgrade-show');
@@ -2908,20 +2917,26 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
       {!collapsed && (
         <div className="flex gap-5 px-5 pb-5 pt-4">
           <div className="min-w-0 flex-1">
-            {useDoubleRow ? (
-              <div className="space-y-5">
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                  {groups.filter((g) => !NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
-                </div>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                  {groups.filter((g) => NATURE_LOCS.has(g.location)).map(renderGroupColumn)}
-                </div>
+            <div className="space-y-5">
+              <div className="grid gap-5 items-start sm:grid-cols-2 lg:grid-cols-4">
+                {topRowGroups.map(renderGroupColumn)}
               </div>
-            ) : (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                {groups.map(renderGroupColumn)}
-              </div>
-            )}
+              {bottomRowGroups.length > 0 && (
+                <div className="grid gap-5 items-start sm:grid-cols-2 lg:grid-cols-4">
+                  {bottomRowGroups.map(renderGroupColumn)}
+                </div>
+              )}
+              {docksGroup && (
+                <div className="grid gap-5 items-start sm:grid-cols-2 lg:grid-cols-4">
+                  {renderGroupColumn(docksGroup)}
+                </div>
+              )}
+              {extraGroups.length > 0 && (
+                <div className={`grid gap-5 items-start sm:grid-cols-2 ${extraGroups.length === 1 ? 'lg:grid-cols-2' : 'lg:grid-cols-2'}`}>
+                  {extraGroups.map(renderGroupColumn)}
+                </div>
+              )}
+            </div>
           </div>
           {debugColumn && (
             <div className="w-52 shrink-0 border-l border-slate-200 pl-5 dark:border-slate-700">
@@ -4633,6 +4648,7 @@ export default function Tips() {
   ] : [];
 
   const dailyGroups: ChecklistGroup[] = [
+    // — top row (always 4) —
     {
       location: 'On Your Farm (Crops)',
       colorClass: 'text-amber-600 dark:text-amber-400',
@@ -4643,6 +4659,37 @@ export default function Tips() {
       colorClass: 'text-red-600 dark:text-red-400',
       items: [...barnItems],
     },
+    {
+      location: 'In the Town',
+      colorClass: 'text-violet-600 dark:text-violet-400',
+      items: [
+        ...buildResearchChecklistItems(townResearchItems, true),
+        ...(availableQuestsByLoc.get('town') ?? []),
+        ...questChecklistItems,
+        ...openTodayItems,
+        ...(birthdayItemsByLoc.get('town') ?? (birthdayItemsByLoc.size === 0 ? [{ id: 'villagers', label: 'Talk to villagers to build relationships' }] : [])),
+        ...wilfredPickupItems,
+        { id: 'root-cellar', label: rootCellarLabel, detail: rootCellarDetail },
+        ...saturdayGeneralStoreItems,
+      ],
+    },
+    {
+      location: 'In the Mines',
+      colorClass: 'text-cyan-600 dark:text-cyan-400',
+      items: [
+        ...(pickaxeNeedsUpgrade ? [{
+          id: 'mining-upgrade',
+          label: 'You need to upgrade your pickaxe to access new ores/minerals.',
+          detail: 'Do you want to accept this quest today?',
+          upgradeDetails: minesUpgradeDetails,
+          subtaskIds: ['mining-upgrade-req-bar', 'mining-upgrade-req-coins', 'mining-upgrade-gruff'],
+        }] : []),
+        ...(perMineChecklistItems.length > 0
+          ? perMineChecklistItems
+          : [{ id: 'mining', label: 'Mine ores, gems & crafting materials', detail: mineDetail }]),
+      ],
+    },
+    // — bottom row (up to 4) —
     {
       location: 'In the Forest',
       colorClass: 'text-emerald-600 dark:text-emerald-400',
@@ -4664,19 +4711,20 @@ export default function Tips() {
       ],
     },
     {
-      location: 'In the Town',
-      colorClass: 'text-violet-600 dark:text-violet-400',
+      location: 'In the Marsh',
+      colorClass: 'text-teal-600 dark:text-teal-400',
       items: [
-        ...buildResearchChecklistItems(townResearchItems, true),
-        ...(availableQuestsByLoc.get('town') ?? []),
-        ...questChecklistItems,
-        ...openTodayItems,
-        ...(birthdayItemsByLoc.get('town') ?? (birthdayItemsByLoc.size === 0 ? [{ id: 'villagers', label: 'Talk to villagers to build relationships' }] : [])),
-        ...wilfredPickupItems,
-        { id: 'root-cellar', label: rootCellarLabel, detail: rootCellarDetail },
-        ...saturdayGeneralStoreItems,
+        ...buildResearchChecklistItems(marshResearchItems, true),
+        ...(availableQuestsByLoc.get('marsh') ?? []),
+        ...(birthdayItemsByLoc.get('marsh') ?? []),
       ],
     },
+    ...(deepWoodsUnlocked ? [{
+      location: 'In the Deep Woods',
+      colorClass: 'text-green-700 dark:text-green-400',
+      items: buildResearchChecklistItems(deepWoodsResearchItems),
+    }] : []),
+    // — extra: Saturday docks then non-urgent conditional groups —
     ...(isSaturday ? [{
       location: 'At the Docks',
       colorClass: 'text-blue-600 dark:text-blue-400',
@@ -4691,36 +4739,6 @@ export default function Tips() {
       location: 'Year Goals (Non-Urgent)',
       colorClass: 'text-sky-600 dark:text-sky-400',
       items: yearGoalItems,
-    }] : []),
-    {
-      location: 'In the Marsh',
-      colorClass: 'text-teal-600 dark:text-teal-400',
-      items: [
-        ...buildResearchChecklistItems(marshResearchItems, true),
-        ...(availableQuestsByLoc.get('marsh') ?? []),
-        ...(birthdayItemsByLoc.get('marsh') ?? []),
-      ],
-    },
-    {
-      location: 'In the Mines',
-      colorClass: 'text-cyan-600 dark:text-cyan-400',
-      items: [
-        ...(pickaxeNeedsUpgrade ? [{
-          id: 'mining-upgrade',
-          label: 'You need to upgrade your pickaxe to access new ores/minerals.',
-          detail: 'Do you want to accept this quest today?',
-          upgradeDetails: minesUpgradeDetails,
-          subtaskIds: ['mining-upgrade-req-bar', 'mining-upgrade-req-coins', 'mining-upgrade-gruff'],
-        }] : []),
-        ...(perMineChecklistItems.length > 0
-          ? perMineChecklistItems
-          : [{ id: 'mining', label: 'Mine ores, gems & crafting materials', detail: mineDetail }]),
-      ],
-    },
-    ...(deepWoodsUnlocked ? [{
-      location: 'In the Deep Woods',
-      colorClass: 'text-green-700 dark:text-green-400',
-      items: buildResearchChecklistItems(deepWoodsResearchItems),
     }] : []),
   ];
 
