@@ -34,17 +34,23 @@ export type ChestEntry = {
 
 // Item IDs that correspond to crafting/processing stations (not storage containers).
 // Based on game_id_maps.json: Smelter (63, 550), Smoker (551), Kiln (1316, 1320),
-// Press (675), Spinning Wheel (264), Compost Bin (175).
-const PROCESSOR_ITEM_IDS = new Set([63, 175, 264, 550, 551, 675, 1316, 1320]);
+// Press (675), Spinning Wheel (264), Compost Bin (175), Saw (676).
+const PROCESSOR_ITEM_IDS = new Set([63, 175, 264, 550, 551, 675, 676, 1316, 1320]);
 
 function isProcessor(chest: ChestEntry): boolean {
   return chest.itemId !== null && PROCESSOR_ITEM_IDS.has(chest.itemId);
 }
 
+// Mine scenes contain world-spawned treasure chests that are not player storage.
+// Exclude them so mine loot doesn't inflate the player's "in storage" counts.
+function isMineLoot(chest: ChestEntry): boolean {
+  return chest.scene != null && chest.scene.startsWith('Mine_');
+}
+
 export function buildStorageMap(chestData: ChestEntry[]): Map<number, number> {
   const map = new Map<number, number>();
   for (const chest of chestData) {
-    if (isProcessor(chest)) continue;
+    if (isProcessor(chest) || isMineLoot(chest)) continue;
     for (const { id, amount } of chest.items) {
       map.set(id, (map.get(id) ?? 0) + amount);
     }
@@ -55,7 +61,7 @@ export function buildStorageMap(chestData: ChestEntry[]): Map<number, number> {
 export function buildStorageMapByName(chestData: ChestEntry[]): Map<string, number> {
   const map = new Map<string, number>();
   for (const chest of chestData) {
-    if (isProcessor(chest)) continue;
+    if (isProcessor(chest) || isMineLoot(chest)) continue;
     for (const { name, amount } of chest.items) {
       if (name) map.set(name, (map.get(name) ?? 0) + amount);
     }
