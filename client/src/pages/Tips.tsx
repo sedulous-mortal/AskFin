@@ -2140,7 +2140,7 @@ type ProcessorRecipe = {
   perishable: boolean;
 };
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; townQuestReadyLabel?: string; kind?: 'callout' | 'research' | 'hold-warning' | 'info'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; questAcceptItems?: Array<{name: string; amount: number; invCount: number; storCount: number; questName: string; forageableInfo?: ForageableEntry; processorRecipe?: ProcessorRecipe}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[] };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; townQuestReadyLabel?: string; kind?: 'callout' | 'research' | 'hold-warning' | 'info'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; questAcceptItems?: Array<{name: string; amount: number; invCount: number; storCount: number; questName: string; forageableInfo?: ForageableEntry; processorRecipe?: ProcessorRecipe}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[]; perishableWarning?: string };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -2185,6 +2185,7 @@ const CHECKLIST_KEY = 'grimshire-daily-checklist';
 const RESEARCH_DONE_KEY = 'grimshire-research-done';
 const REJECTED_KEY = 'grimshire-daily-rejected';
 const FISH_AUDIT_KEY = 'grimshire-fish-audit-debug';
+const YEAR_GOALS_CHECKED_KEY = 'grimshire-year-goals-checked';
 
 const FISH_AUDIT_LIST = [
   { id: 184, name: 'Ide',           habitat: 'River', locs: ['Farm Coast', 'Marsh Coast', 'Town Coast'] },
@@ -2970,6 +2971,150 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
   );
 }
 
+function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
+  const [collapsed, setCollapsed] = useState(true);
+  const [checked, setChecked] = useState<Set<string>>(() => {
+    try {
+      const raw = sessionStorage.getItem(YEAR_GOALS_CHECKED_KEY);
+      return raw ? new Set<string>(JSON.parse(raw) as string[]) : new Set<string>();
+    } catch {
+      return new Set<string>();
+    }
+  });
+
+  // Group items by groupKey, preserving insertion order (already chronologically sorted)
+  const questGroups: Array<{ key: string; title: string; opensStr: string; items: ChecklistItem[] }> = [];
+  const seenKeys = new Map<string, number>();
+  for (const item of items) {
+    const key = item.groupKey ?? item.id;
+    if (!seenKeys.has(key)) {
+      const rawTitle = item.dividerLabel ?? key;
+      const dashIdx = rawTitle.indexOf(' — ');
+      const title = dashIdx >= 0 ? rawTitle.slice(0, dashIdx) : rawTitle;
+      const opensStr = dashIdx >= 0 ? rawTitle.slice(dashIdx + 3) : '';
+      seenKeys.set(key, questGroups.length);
+      questGroups.push({ key, title, opensStr, items: [] });
+    }
+    questGroups[seenKeys.get(key)!].items.push(item);
+  }
+
+  function toggle(id: string) {
+    setChecked((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      try { sessionStorage.setItem(YEAR_GOALS_CHECKED_KEY, JSON.stringify([...next])); } catch { /* storage full */ }
+      return next;
+    });
+  }
+
+  const checkableItems = items.filter((i) => i.kind !== 'info' && i.kind !== 'callout');
+  const doneCount = checkableItems.filter((i) => checked.has(i.id)).length;
+  const totalCheckable = checkableItems.length;
+  const allDone = totalCheckable > 0 && doneCount === totalCheckable;
+
+  const n = questGroups.length;
+  const gridCols =
+    n <= 1 ? 'grid-cols-1' :
+    n === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+    n === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+    'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+
+  function renderQuestGroup(group: { key: string; title: string; opensStr: string; items: ChecklistItem[] }) {
+    return (
+      <div key={group.key} className="min-w-0">
+        <div className="mb-2">
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-600 dark:text-sky-400 leading-tight">
+            {group.title}
+          </p>
+          {group.opensStr && (
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{group.opensStr}</p>
+          )}
+        </div>
+        <ul className="space-y-2">
+          {group.items.map((item) => {
+            if (item.kind === 'info') {
+              return (
+                <li key={item.id}>
+                  <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2.5 dark:border-amber-600/50 dark:bg-amber-900/20">
+                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">{item.label}</p>
+                    {item.detail && (
+                      <p className="text-sm text-amber-700 dark:text-amber-400 leading-snug">{item.detail}</p>
+                    )}
+                  </div>
+                </li>
+              );
+            }
+            const done = checked.has(item.id);
+            return (
+              <li key={item.id}>
+                <label className="flex cursor-pointer select-none items-start gap-2.5">
+                  <input
+                    type="checkbox"
+                    checked={done}
+                    onChange={() => toggle(item.id)}
+                    className="h-4 w-4 flex-none mt-0.5 rounded border-slate-300 accent-emerald-500 cursor-pointer"
+                  />
+                  <span className={`text-base leading-snug ${done ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                    {item.label}
+                    {item.detail && (
+                      <span className="mt-0.5 block text-sm text-slate-400 dark:text-slate-500">
+                        {item.detail}
+                      </span>
+                    )}
+                    {item.perishableWarning && !done && (
+                      <span className="mt-1.5 flex items-start gap-1.5 rounded border border-orange-300 bg-orange-50 px-2.5 py-1.5 text-sm text-orange-700 dark:border-orange-600/50 dark:bg-orange-900/20 dark:text-orange-300 leading-snug not-italic">
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 flex-none mt-0.5 shrink-0" aria-hidden>
+                          <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                        </svg>
+                        {item.perishableWarning}
+                      </span>
+                    )}
+                  </span>
+                </label>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      <button
+        onClick={() => setCollapsed((c) => !c)}
+        className="flex w-full items-center justify-between px-5 py-4 text-left"
+        aria-expanded={!collapsed}
+      >
+        <div className="flex flex-1 min-w-0 items-center gap-3 flex-wrap">
+          <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            Year Goals
+          </span>
+          <span className="rounded-full bg-sky-100 px-2.5 py-0.5 text-base font-medium text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">
+            {questGroups.length} quest{questGroups.length !== 1 ? 's' : ''}
+          </span>
+          {totalCheckable > 0 && (
+            <span className={`rounded-full px-2.5 py-0.5 text-base font-medium ${allDone ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}`}>
+              {doneCount}/{totalCheckable} noted
+            </span>
+          )}
+        </div>
+        <svg viewBox="0 0 20 20" fill="currentColor" className={`h-5 w-5 flex-none text-slate-400 transition-transform ${collapsed ? '' : 'rotate-180'}`} aria-hidden>
+          <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+        </svg>
+      </button>
+
+      {!collapsed && (
+        <div className="px-5 pb-5 pt-2">
+          <div className={`grid gap-5 items-start ${gridCols}`}>
+            {questGroups.map(renderQuestGroup)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 type TipsTab = 'events' | 'quests' | 'research' | 'upgrades' | 'critters' | 'farm';
 const TIPS_TAB_KEY = 'tips-active-tab';
 
@@ -3567,6 +3712,7 @@ export default function Tips() {
   // that needs a processor (Smoker, Barrel, Press, Smelter, etc.) so the player
   // knows to start producing it ahead of time.
   const PROCESSOR_RECIPES = processorDataJson.recipes as Record<string, ProcessorRecipe>;
+  const RAW_SHELF_LIVES = (processorDataJson as unknown as { shelfLives: Record<string, number> }).shelfLives;
   const PREP_ALERT_DAYS = 7;
 
   const upcomingQuestPrepItems: ChecklistItem[] = (() => {
@@ -3714,8 +3860,7 @@ export default function Tips() {
         if (excludedByMutexIds.has(q.id)) return false;
         if (openTodayNotAccepted.includes(q)) return false; // open today → town column
         if (q.available_start_season === null || q.available_first_day === null) return false;
-        const hasNonPerish = (q.requirements ?? []).some((r) => !PROCESSOR_RECIPES[r.name]?.perishable);
-        return hasNonPerish;
+        return (q.requirements ?? []).length > 0;
       })
       .sort((a, b) => {
         const [aStart] = questAbsDays(a);
@@ -3731,34 +3876,74 @@ export default function Tips() {
 
       const questTitle = quest.display_title || quest.name;
       const opensLabel = `${SEASON_NAMES[quest.available_start_season!]} ${quest.available_first_day}`;
-      const nonPerishReqs = (quest.requirements ?? []).filter((r) => !PROCESSOR_RECIPES[r.name]?.perishable);
-
-      nonPerishReqs.forEach((req, i) => {
+      const daysUntilOpen = startAbs - currentAbsNorm;
+      (quest.requirements ?? []).forEach((req, i) => {
         const { haveEnough, invCount, storCount, whereLabel } = itemLocation(req.name, req.amount);
         const itemId = `ygq-${quest.id}-${req.name.replace(/\s+/g, '-').toLowerCase()}`;
         const dividerLabel = i === 0 ? `${questTitle} — opens ${opensLabel}` : undefined;
         const groupKey = `ygq-${quest.id}`;
 
+        const recipe = PROCESSOR_RECIPES[req.name];
+        let shelfLife: number | null = null;
+        if (recipe) {
+          shelfLife = recipe.perishable ? (recipe.shelfLifeDays ?? null) : null;
+        } else {
+          const raw = RAW_SHELF_LIVES[req.name];
+          shelfLife = (raw != null && raw > 0) ? raw : null;
+        }
+        const isPerishable = shelfLife !== null;
+        const tooSoon = shelfLife !== null && daysUntilOpen > shelfLife;
+
+        let safeStartLabel = '';
+        if (tooSoon && shelfLife !== null) {
+          const safeStartAbs = startAbs - shelfLife;
+          if (safeStartAbs >= 0) {
+            const safeSeason = Math.min(3, Math.floor(safeStartAbs / 28));
+            const safeDay = (safeStartAbs % 28) + 1;
+            safeStartLabel = `${SEASON_NAMES[safeSeason]} ${safeDay}`;
+          } else {
+            safeStartLabel = 'Day 1';
+          }
+        }
+
         if (haveEnough) {
-          items.push({
-            id: itemId,
-            kind: 'info' as const,
-            label: `${req.amount}× ${req.name} — in ${whereLabel}`,
-            detail: `Ready for "${questTitle}" (opens ${opensLabel}). Don't sell or use these!`,
-            dividerLabel,
-            groupKey,
-          });
+          if (tooSoon) {
+            // Current stock may expire before the quest opens — flip to a warning instead of "ready"
+            items.push({
+              id: itemId,
+              label: `${req.amount}× ${req.name} — in ${whereLabel}`,
+              detail: `For "${questTitle}" (opens ${opensLabel}). Current stock may expire before then.`,
+              dividerLabel,
+              groupKey,
+              perishableWarning: `${shelfLife}-day shelf life — don't rely on current stock. Make a fresh batch on or after ${safeStartLabel}.`,
+            });
+          } else {
+            items.push({
+              id: itemId,
+              kind: 'info' as const,
+              label: `${req.amount}× ${req.name} — in ${whereLabel}`,
+              detail: `Ready for "${questTitle}" (opens ${opensLabel}). Don't sell or use these!${isPerishable && shelfLife ? ` (${shelfLife}-day shelf life — still fresh at quest open)` : ''}`,
+              dividerLabel,
+              groupKey,
+            });
+          }
         } else {
           const have = invCount + storCount;
           const haveStr = have > 0
             ? ` (have ${have}${invCount > 0 && storCount > 0 ? `: ${invCount} inv + ${storCount} storage` : invCount > 0 ? ' in inventory' : ' in storage'})`
             : '';
+          const perishableWarning = tooSoon
+            ? `${shelfLife}-day shelf life — don't stock up yet. Start making on or after ${safeStartLabel}.`
+            : isPerishable && shelfLife !== null
+              ? `Perishable (${shelfLife}-day shelf life) — safe to start making now.`
+              : undefined;
           items.push({
             id: itemId,
             label: `${req.amount}× ${req.name}${haveStr}`,
             detail: `For "${questTitle}" — opens ${opensLabel}`,
             dividerLabel,
             groupKey,
+            perishableWarning,
           });
         }
       });
@@ -4756,11 +4941,6 @@ export default function Tips() {
       colorClass: 'text-orange-600 dark:text-orange-400',
       items: upcomingQuestPrepItems,
     }] : []),
-    ...(yearGoalItems.length > 0 ? [{
-      location: 'Year Goals (Non-Urgent)',
-      colorClass: 'text-sky-600 dark:text-sky-400',
-      items: yearGoalItems,
-    }] : []),
   ];
 
   return (
@@ -4791,6 +4971,8 @@ export default function Tips() {
       </header>
 
       <DailyChecklist groups={dailyGroups} />
+
+      {yearGoalItems.length > 0 && <YearGoalsCard items={yearGoalItems} />}
 
       {/* Tab Bar */}
       <div className="flex flex-wrap gap-1.5 items-end border-b-2 border-slate-300 dark:border-slate-600">
@@ -4882,7 +5064,7 @@ export default function Tips() {
               </div>
               {showGifts && (
                 <div className="border-t border-stone-200/60 px-4 pb-3 pt-2.5 dark:border-rose-700/30">
-                  <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
+                  <div className="flex flex-col items-center gap-y-3">
                   {hasFavs && (
                     <div className="flex flex-col items-center">
                       <p className="mb-1.5 text-sm font-semibold uppercase tracking-wide text-[#5c9a30] dark:text-[#6aae36]">
@@ -4893,11 +5075,6 @@ export default function Tips() {
                           <GiftItemIcon key={item} name={item} sentiment="favorite" storageCount={selectedCharacter ? storageNameMap.get(item) ?? 0 : undefined} processorCount={selectedCharacter ? processorNameMap.get(item) ?? 0 : undefined} />
                         ))}
                       </div>
-                    </div>
-                  )}
-                  {hasFavs && hasDislikes && (
-                    <div className="hidden self-stretch sm:block">
-                      <div className="h-full w-px bg-stone-200/80 dark:bg-slate-600/40 mb-2" />
                     </div>
                   )}
                   {hasDislikes && (
