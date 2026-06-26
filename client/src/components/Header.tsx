@@ -7,6 +7,7 @@ import CharacterSelector from './CharacterSelector';
 import LoadSaveFile from './LoadSaveFile';
 import DatePicker from './DatePicker';
 import finQuotes from '../data/finQuotes.json';
+import { correctLastStandDate } from '../utils/lastStandDate';
 
 const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
 
@@ -72,10 +73,15 @@ export default function Header() {
       selectedCharacter?.current_season != null &&
       selectedCharacter?.current_day != null
     ) {
-      const seasonName = SEASON_NAMES[selectedCharacter.current_season];
+      const { day, season } = correctLastStandDate(
+        selectedCharacter.current_day,
+        selectedCharacter.current_season,
+        selectedCharacter.current_year ?? 1,
+      );
+      const seasonName = SEASON_NAMES[season];
       if (seasonName) {
         setSeason(seasonName);
-        setDay(selectedCharacter.current_day);
+        setDay(day);
       }
     }
   }, [selectedCharacter?.id]);

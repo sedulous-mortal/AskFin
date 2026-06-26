@@ -67,12 +67,17 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const { user, isGuestSession } = useAuth();
 
   // Seed dark_mode from localStorage immediately so there's no flash on load.
+  // onboarded defaults to true so the enrollment modal never flashes before the
+  // server response arrives; the fetch will set it to false for users who haven't
+  // completed enrollment yet.
   const [preferences, setPreferences] = useState<UserPreferences>(() => ({
     ...DEFAULT_PREFERENCES,
     dark_mode: localStorage.getItem(LS_DARK_KEY) === 'true',
-    onboarded: localStorage.getItem(LS_ONBOARDED_KEY) === 'true',
+    onboarded: true,
   }));
-  const [loading, setLoading] = useState(false);
+  // Start as true so EnrollmentGate waits for the first fetch before deciding
+  // whether to show the modal.
+  const [loading, setLoading] = useState(true);
 
   // Apply / remove `dark` class on <html> and keep localStorage in sync.
   useEffect(() => {
@@ -83,6 +88,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user || isGuestSession) {
       setPreferences((prev) => ({ ...DEFAULT_PREFERENCES, dark_mode: prev.dark_mode }));
+      setLoading(false);
       return;
     }
     setLoading(true);
@@ -97,15 +103,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setPreferences((prev) => ({
           ...DEFAULT_PREFERENCES,
           ...data,
-          // localStorage is authoritative for dark_mode and onboarded — server may have stale/missing data.
           dark_mode: data.dark_mode ?? prev.dark_mode,
-          onboarded: data.onboarded || localStorage.getItem(LS_ONBOARDED_KEY) === 'true',
+          // Server is authoritative for onboarded. Default false if the key is missing
+          // (new account that hasn't been through the PATCH endpoint yet).
+          onboarded: data.onboarded ?? false,
           spoilers: { ...DEFAULT_PREFERENCES.spoilers, ...(data.spoilers || {}) },
         }));
       })
       .catch(() => setPreferences((prev) => ({
         ...DEFAULT_PREFERENCES,
         dark_mode: prev.dark_mode,
+        // Fall back to localStorage when the server is unreachable so an enrolled
+        // user doesn't see the modal just because the network is down.
         onboarded: localStorage.getItem(LS_ONBOARDED_KEY) === 'true',
       })))
       .finally(() => setLoading(false));

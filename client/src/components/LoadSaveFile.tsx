@@ -2,6 +2,7 @@ import { useRef, useState, ChangeEvent } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useDate } from '../context/DateContext';
 import { uploadSaveFile } from '../api/characters';
+import { correctLastStandDate } from '../utils/lastStandDate';
 
 const SEASON_NAMES = ['Spring', 'Summer', 'Fall', 'Winter'] as const;
 
@@ -41,10 +42,14 @@ export default function LoadSaveFile() {
       const targetId = result.characterId ?? selectedCharacterId;
       const character = targetId ? await refreshCharacterById(targetId) : null;
       if (character) {
-        const seasonIndex = character.current_season ?? 0;
-        const seasonName = SEASON_NAMES[seasonIndex] ?? 'Spring';
+        const { day, season } = correctLastStandDate(
+          character.current_day ?? 1,
+          character.current_season ?? 0,
+          character.current_year ?? 1,
+        );
+        const seasonName = SEASON_NAMES[season] ?? 'Spring';
         setSeason(seasonName);
-        setDay(character.current_day ?? 1);
+        setDay(day);
       }
       setStatus({ type: 'success' });
     } catch (err) {

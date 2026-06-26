@@ -2301,6 +2301,14 @@ const BARN_ANIMAL: Record<number, string> = { 0: 'Alpheep', 1: 'Chikree', 2: 'Gi
 const BARN_INTERACT: Record<number, string> = { 0: 'Pet, Shear, Milk: Alpheep', 1: 'Pet: Chikree', 2: 'Pet, Shear: Girtle', 3: 'Pet: Bluggy' };
 
 function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; debugColumn?: ReactNode }) {
+  const { selectedCharacter } = useAuth();
+
+  const isLastStandDate =
+    selectedCharacter?.current_year === 1 &&
+    selectedCharacter?.current_season === 3 &&
+    (selectedCharacter?.current_day ?? 0) >= 14 &&
+    (selectedCharacter?.current_day ?? 0) <= 25;
+
   const [checked, setChecked] = useState<Set<string>>(() => {
     try {
       const raw = sessionStorage.getItem(CHECKLIST_KEY);
@@ -2865,7 +2873,7 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
         className="flex w-full items-center justify-between px-5 py-4 text-left"
         aria-expanded={!collapsed}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex flex-1 min-w-0 items-center gap-3">
           <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
             Today's To-Do
           </span>
@@ -2898,6 +2906,19 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
               RESET
             </button>
           </AppTooltip>
+          {isLastStandDate && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="flex flex-1 min-w-0 items-center gap-2 rounded-lg border border-yellow-200 bg-yellow-50 mx-[2em] px-3 py-2 text-base leading-relaxed text-yellow-900 dark:border-yellow-600/30 dark:bg-yellow-900/20 dark:text-yellow-200"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 flex-none text-red-500" aria-hidden="true">
+                <polygon points="12,1 22,6.5 22,17.5 12,23 2,17.5 2,6.5" fill="currentColor" />
+                <rect x="10.75" y="5.5" width="2.5" height="8.5" rx="1.25" fill="white" />
+                <circle cx="12" cy="17.5" r="1.5" fill="white" />
+              </svg>
+              <span>Year 1 concludes the currently released version of this game, at sleep time on Winter 28. The event that night will end your ability to play as {selectedCharacter?.character_name ?? 'your character'} (until the new game content is released).</span>
+            </div>
+          )}
           {allDone && (
             <span className="text-base font-medium text-emerald-600 dark:text-emerald-400">All done!</span>
           )}

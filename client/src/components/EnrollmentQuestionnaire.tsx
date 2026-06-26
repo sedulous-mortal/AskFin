@@ -42,7 +42,7 @@ const SETTING_GROUPS: SettingGroup[] = [
       {
         key: 'show_undiscovered_fish',
         label: 'I want to see undiscovered fish in my dashboard',
-        description: 'Shows fish you haven\'t caught yet alongside ones you have.',
+        description: 'Shows fish you haven\'t caught yet and ones you have.',
       },
       {
         key: 'show_undiscovered_items',
