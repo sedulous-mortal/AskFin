@@ -1111,16 +1111,55 @@ function RewardIcon({ name, amount, type, storageCount, description }: {
 const EFFICIENT_CRAFTER_SKILL_ID = 895;
 
 const BLUEPRINT_BUILD_REQS: Record<string, { material: string; qty: number }[]> = {
-  Press: [
+  'Smoking Hut': [
+    { material: 'Plank', qty: 20 },
+    { material: 'Stone', qty: 100 },
+  ],
+  'Copper Water Pump': [
+    { material: 'Copper Bar', qty: 10 },
+    { material: 'Stone',      qty: 50 },
+  ],
+  'Irrigation Pipe': [
+    { material: 'Tin Bar', qty: 1 },
+  ],
+  'Fermentation Barrel': [
+    { material: 'Plank',     qty: 32 },
+    { material: 'Iron Bar',  qty: 6  },
+    { material: 'Nickel Bar', qty: 6 },
+  ],
+  'Press': [
     { material: 'Iron Bar',  qty: 5  },
     { material: 'Plank',     qty: 20 },
     { material: 'Hard Wood', qty: 20 },
   ],
-  Icebox: [
+  'Icebox': [
     { material: 'Ice Chunk', qty: 100 },
     { material: 'Hard Wood', qty: 50  },
     { material: 'Tin Bar',   qty: 25  },
     { material: 'Ice Gem',   qty: 5   },
+  ],
+  'Kiln': [
+    { material: 'Clay',  qty: 50 },
+    { material: 'Stone', qty: 30 },
+  ],
+  'Mushroom Log': [
+    { material: 'Medium Wood', qty: 8 },
+    { material: 'Compost',     qty: 7 },
+  ],
+  'Seed Maker': [
+    { material: 'Emerald', qty: 5  },
+    { material: 'Shell',   qty: 1  },
+    { material: 'Plank',   qty: 15 },
+  ],
+  'Iron Water Pump': [
+    { material: 'Copper Water Pump', qty: 1  },
+    { material: 'Iron Bar',          qty: 10 },
+    { material: 'Clay',              qty: 25 },
+  ],
+  'Titanium Water Pump': [
+    { material: 'Iron Water Pump', qty: 1  },
+    { material: 'Titanium Bar',    qty: 10 },
+    { material: 'Marble',          qty: 25 },
   ],
 };
 
