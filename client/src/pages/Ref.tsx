@@ -2,8 +2,9 @@ import Critters from './Critters';
 import Forageables from './Forageables';
 import Quests from './Quests';
 import Events from './Events';
+import Donations from './Donations';
 
-type RefTab = 'critters' | 'forageables' | 'quests' | 'events';
+type RefTab = 'critters' | 'forageables' | 'quests' | 'events' | 'donations';
 const REF_TAB_KEY = 'ref-active-tab';
 
 const TABS: [RefTab, string, string, string][] = [
@@ -11,6 +12,7 @@ const TABS: [RefTab, string, string, string][] = [
   ['forageables', 'Forageables', 'bg-lime-300 dark:bg-lime-600',     'bg-lime-100 hover:bg-lime-200 dark:bg-lime-900/50 dark:hover:bg-lime-800/70'],
   ['quests',      'Quests',      'bg-sky-300 dark:bg-sky-600',       'bg-sky-100 hover:bg-sky-200 dark:bg-sky-900/50 dark:hover:bg-sky-800/70'],
   ['events',      'Events',      'bg-violet-300 dark:bg-violet-600', 'bg-violet-100 hover:bg-violet-200 dark:bg-violet-900/50 dark:hover:bg-violet-800/70'],
+  ['donations',   'Donations',   'bg-amber-300 dark:bg-amber-600',   'bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 dark:hover:bg-amber-800/70'],
 ];
 
 function getInitialTab(): RefTab {
@@ -49,6 +51,7 @@ export default function Ref() {
       {activeTab === 'forageables' && <Forageables />}
       {activeTab === 'quests'      && <Quests />}
       {activeTab === 'events'      && <Events />}
+      {activeTab === 'donations'   && <Donations />}
     </div>
   );
 }

@@ -3010,7 +3010,7 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
   );
 }
 
-function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
+function YearGoalsCard({ items, mutexPairs }: { items: ChecklistItem[]; mutexPairs: number[][] }) {
   const [collapsed, setCollapsed] = useState(true);
   const [checked, setChecked] = useState<Set<string>>(() => {
     try {
@@ -3021,8 +3021,35 @@ function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
     }
   });
 
+  // Per-pair selection: which crisis option is currently displayed
+  function pairStorageKey(ids: number[]) { return 'grimshire-yg-mx-' + [...ids].sort((a, b) => a - b).join('_'); }
+  const [mutexSelections, setMutexSelections] = useState<Record<string, number>>(() => {
+    const result: Record<string, number> = {};
+    for (const pair of mutexPairs) {
+      const k = pairStorageKey(pair);
+      try { const raw = sessionStorage.getItem(k); if (raw !== null) result[k] = JSON.parse(raw) as number; } catch { /* ignore */ }
+    }
+    return result;
+  });
+  function getSelectedForPair(pair: number[]): number { return mutexSelections[pairStorageKey(pair)] ?? pair[0]; }
+  function selectInPair(pair: number[], questId: number) {
+    const k = pairStorageKey(pair);
+    setMutexSelections((prev) => {
+      const next = { ...prev, [k]: questId };
+      try { sessionStorage.setItem(k, JSON.stringify(questId)); } catch { /* storage full */ }
+      return next;
+    });
+  }
+
+  // Map groupKey → index into mutexPairs (for undecided pairs only)
+  const mutexPairByGroupKey = new Map<string, number>();
+  for (let i = 0; i < mutexPairs.length; i++) {
+    for (const qId of mutexPairs[i]) mutexPairByGroupKey.set(`ygq-${qId}`, i);
+  }
+
   // Group items by groupKey, preserving insertion order (already chronologically sorted)
-  const questGroups: Array<{ key: string; title: string; opensStr: string; items: ChecklistItem[] }> = [];
+  type QuestGroup = { key: string; title: string; opensStr: string; items: ChecklistItem[] };
+  const questGroups: QuestGroup[] = [];
   const seenKeys = new Map<string, number>();
   for (const item of items) {
     const key = item.groupKey ?? item.id;
@@ -3035,6 +3062,29 @@ function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
       questGroups.push({ key, title, opensStr, items: [] });
     }
     questGroups[seenKeys.get(key)!].items.push(item);
+  }
+
+  // Combine mutex-paired groups into single render entries
+  type RenderItem =
+    | { type: 'normal'; group: QuestGroup }
+    | { type: 'mutex'; pairIndex: number; pairIds: number[]; groups: QuestGroup[] };
+  const seenMutexPairIndices = new Set<number>();
+  const renderList: RenderItem[] = [];
+  for (const group of questGroups) {
+    const pairIdx = mutexPairByGroupKey.get(group.key);
+    if (pairIdx !== undefined) {
+      if (!seenMutexPairIndices.has(pairIdx)) {
+        seenMutexPairIndices.add(pairIdx);
+        renderList.push({
+          type: 'mutex',
+          pairIndex: pairIdx,
+          pairIds: mutexPairs[pairIdx],
+          groups: questGroups.filter(g => mutexPairByGroupKey.get(g.key) === pairIdx),
+        });
+      }
+    } else {
+      renderList.push({ type: 'normal', group });
+    }
   }
 
   function toggle(id: string) {
@@ -3051,14 +3101,68 @@ function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
   const totalCheckable = checkableItems.length;
   const allDone = totalCheckable > 0 && doneCount === totalCheckable;
 
-  const n = questGroups.length;
+  const n = renderList.length;
   const gridCols =
     n <= 1 ? 'grid-cols-1' :
     n === 2 ? 'grid-cols-1 sm:grid-cols-2' :
     n === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
     'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
 
-  function renderQuestGroup(group: { key: string; title: string; opensStr: string; items: ChecklistItem[] }) {
+  function renderItemsList(groupItems: ChecklistItem[]) {
+    return (
+      <ul className="space-y-2">
+        {groupItems.map((item) => {
+          if (item.kind === 'info') {
+            return (
+              <li key={item.id}>
+                <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2.5 dark:border-amber-600/50 dark:bg-amber-900/20">
+                  <div className="flex items-center gap-2 mb-1">
+                    {item.iconNode}
+                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">{item.label}</p>
+                  </div>
+                  {item.detail && (
+                    <p className="text-sm text-amber-700 dark:text-amber-400 leading-snug">{item.detail}</p>
+                  )}
+                </div>
+              </li>
+            );
+          }
+          const done = checked.has(item.id);
+          return (
+            <li key={item.id}>
+              <label className={`flex cursor-pointer select-none gap-2 ${item.iconNode ? 'items-center' : 'items-start'}`}>
+                <input
+                  type="checkbox"
+                  checked={done}
+                  onChange={() => toggle(item.id)}
+                  className={`h-4 w-4 flex-none rounded border-slate-300 accent-emerald-500 cursor-pointer ${item.iconNode ? '' : 'mt-0.5'}`}
+                />
+                {item.iconNode}
+                <span className={`text-base leading-snug ${done ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                  {item.label}
+                  {item.detail && (
+                    <span className="mt-0.5 block text-sm text-slate-400 dark:text-slate-500">
+                      {item.detail}
+                    </span>
+                  )}
+                  {item.perishableWarning && !done && (
+                    <span className="mt-1.5 flex items-start gap-1.5 rounded border border-orange-300 bg-orange-50 px-2.5 py-1.5 text-sm text-orange-700 dark:border-orange-600/50 dark:bg-orange-900/20 dark:text-orange-300 leading-snug not-italic">
+                      <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 flex-none mt-0.5 shrink-0" aria-hidden>
+                        <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                      </svg>
+                      {item.perishableWarning}
+                    </span>
+                  )}
+                </span>
+              </label>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+
+  function renderQuestGroup(group: QuestGroup) {
     return (
       <div key={group.key} className="min-w-0">
         <div className="mb-2">
@@ -3069,51 +3173,45 @@ function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{group.opensStr}</p>
           )}
         </div>
-        <ul className="space-y-2">
-          {group.items.map((item) => {
-            if (item.kind === 'info') {
+        {renderItemsList(group.items)}
+      </div>
+    );
+  }
+
+  function renderMutexGroup(ri: Extract<RenderItem, { type: 'mutex' }>) {
+    const selectedQuestId = getSelectedForPair(ri.pairIds);
+    const selectedGroup = ri.groups.find(g => g.key === `ygq-${selectedQuestId}`) ?? ri.groups[0];
+    return (
+      <div key={`mutex-${ri.pairIndex}`} className="min-w-0">
+        <div className="mb-2">
+          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-rose-500 dark:text-rose-400">
+            Crisis Choice — pick one
+          </p>
+          <div className="flex flex-wrap gap-1.5 mb-1.5">
+            {ri.groups.map(g => {
+              const qId = parseInt(g.key.slice(4)); // 'ygq-123' → 123
+              const isSelected = qId === selectedQuestId;
               return (
-                <li key={item.id}>
-                  <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2.5 dark:border-amber-600/50 dark:bg-amber-900/20">
-                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">{item.label}</p>
-                    {item.detail && (
-                      <p className="text-sm text-amber-700 dark:text-amber-400 leading-snug">{item.detail}</p>
-                    )}
-                  </div>
-                </li>
+                <button
+                  key={g.key}
+                  type="button"
+                  onClick={() => selectInPair(ri.pairIds, qId)}
+                  className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                    isSelected
+                      ? 'bg-rose-100 text-rose-700 ring-1 ring-rose-300 dark:bg-rose-900/40 dark:text-rose-300 dark:ring-rose-600'
+                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
+                  }`}
+                >
+                  {g.title}
+                </button>
               );
-            }
-            const done = checked.has(item.id);
-            return (
-              <li key={item.id}>
-                <label className="flex cursor-pointer select-none items-start gap-2.5">
-                  <input
-                    type="checkbox"
-                    checked={done}
-                    onChange={() => toggle(item.id)}
-                    className="h-4 w-4 flex-none mt-0.5 rounded border-slate-300 accent-emerald-500 cursor-pointer"
-                  />
-                  <span className={`text-base leading-snug ${done ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
-                    {item.label}
-                    {item.detail && (
-                      <span className="mt-0.5 block text-sm text-slate-400 dark:text-slate-500">
-                        {item.detail}
-                      </span>
-                    )}
-                    {item.perishableWarning && !done && (
-                      <span className="mt-1.5 flex items-start gap-1.5 rounded border border-orange-300 bg-orange-50 px-2.5 py-1.5 text-sm text-orange-700 dark:border-orange-600/50 dark:bg-orange-900/20 dark:text-orange-300 leading-snug not-italic">
-                        <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 flex-none mt-0.5 shrink-0" aria-hidden>
-                          <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                        </svg>
-                        {item.perishableWarning}
-                      </span>
-                    )}
-                  </span>
-                </label>
-              </li>
-            );
-          })}
-        </ul>
+            })}
+          </div>
+          {selectedGroup.opensStr && (
+            <p className="text-xs text-slate-400 dark:text-slate-500">{selectedGroup.opensStr}</p>
+          )}
+        </div>
+        {renderItemsList(selectedGroup.items)}
       </div>
     );
   }
@@ -3130,7 +3228,7 @@ function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
             Year Goals
           </span>
           <span className="rounded-full bg-sky-100 px-2.5 py-0.5 text-base font-medium text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">
-            {questGroups.length} quest{questGroups.length !== 1 ? 's' : ''}
+            {renderList.length} quest{renderList.length !== 1 ? 's' : ''}
           </span>
           {totalCheckable > 0 && (
             <span className={`rounded-full px-2.5 py-0.5 text-base font-medium ${allDone ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}`}>
@@ -3146,7 +3244,9 @@ function YearGoalsCard({ items }: { items: ChecklistItem[] }) {
       {!collapsed && (
         <div className="px-5 pb-5 pt-2">
           <div className={`grid gap-5 items-start ${gridCols}`}>
-            {questGroups.map(renderQuestGroup)}
+            {renderList.map((ri) =>
+              ri.type === 'normal' ? renderQuestGroup(ri.group) : renderMutexGroup(ri)
+            )}
           </div>
         </div>
       )}
@@ -3715,7 +3815,9 @@ export default function Tips() {
   // Town crisis quests come in mutually exclusive A/B pairs sharing the same start date.
   // If the player has accepted or completed one option, the other is permanently locked out
   // and will never appear in their quest_data — so we must exclude it explicitly.
+  // Undecided pairs (neither accepted yet) are tracked so Year Goals can offer a toggle.
   const excludedByMutexIds = new Set<number>();
+  const undecidedMutexPairs: number[][] = [];
   (() => {
     const byStart = new Map<string, Quest[]>();
     for (const q of allQuests) {
@@ -3727,13 +3829,16 @@ export default function Tips() {
     }
     for (const [, group] of byStart) {
       if (group.length < 2) continue;
+      let anyDecided = false;
       for (const q of group) {
         if (inProgressQuestIds.has(q.id) || completedOrFailedQuestIds.has(q.id)) {
+          anyDecided = true;
           for (const other of group) {
             if (other.id !== q.id) excludedByMutexIds.add(other.id);
           }
         }
       }
+      if (!anyDecided) undecidedMutexPairs.push(group.map((q) => q.id));
     }
   })();
 
@@ -3945,43 +4050,67 @@ export default function Tips() {
           }
         }
 
+        // Processor recipes → "making"; farmable crops → "harvesting"; everything else (forageables, animal products) → "gathering"
+        const forageEntry = !recipe ? forageableByName.get(req.name.toLowerCase()) : undefined;
+        const actionVerb = recipe
+          ? 'making'
+          : forageEntry?.source === 'farmable'
+            ? 'harvesting'
+            : 'gathering';
+
+        const have = invCount + storCount;
+        const iconNode = (
+          <QuestItemIcon
+            name={req.name}
+            stillNeed={Math.max(0, req.amount - have)}
+            have={have}
+            amount={req.amount}
+            questName={questTitle}
+            invCount={invCount}
+            storCount={storCount}
+            processorCount={processorNameMap.get(req.name) ?? 0}
+            forageableInfo={forageEntry}
+            processorRecipe={recipe}
+          />
+        );
+
         if (haveEnough) {
           if (tooSoon) {
             // Current stock may expire before the quest opens — flip to a warning instead of "ready"
             items.push({
               id: itemId,
               label: `${req.amount}× ${req.name} — in ${whereLabel}`,
-              detail: `For "${questTitle}" (opens ${opensLabel}). Current stock may expire before then.`,
               dividerLabel,
               groupKey,
-              perishableWarning: `${shelfLife}-day shelf life — don't rely on current stock. Make a fresh batch on or after ${safeStartLabel}.`,
+              iconNode,
+              perishableWarning: `${shelfLife}-day shelf life — don't rely on current stock. Get a fresh batch on or after ${safeStartLabel}.`,
             });
           } else {
             items.push({
               id: itemId,
               kind: 'info' as const,
               label: `${req.amount}× ${req.name} — in ${whereLabel}`,
-              detail: `Ready for "${questTitle}" (opens ${opensLabel}). Don't sell or use these!${isPerishable && shelfLife ? ` (${shelfLife}-day shelf life — still fresh at quest open)` : ''}`,
+              detail: `Don't sell or use these!${isPerishable && shelfLife ? ` (${shelfLife}-day shelf life — still fresh at quest open)` : ''}`,
               dividerLabel,
               groupKey,
+              iconNode,
             });
           }
         } else {
-          const have = invCount + storCount;
           const haveStr = have > 0
             ? ` (have ${have}${invCount > 0 && storCount > 0 ? `: ${invCount} inv + ${storCount} storage` : invCount > 0 ? ' in inventory' : ' in storage'})`
             : '';
           const perishableWarning = tooSoon
-            ? `${shelfLife}-day shelf life — don't stock up yet. Start making on or after ${safeStartLabel}.`
+            ? `${shelfLife}-day shelf life — don't stock up yet. Start ${actionVerb} on or after ${safeStartLabel}.`
             : isPerishable && shelfLife !== null
-              ? `Perishable (${shelfLife}-day shelf life) — safe to start making now.`
+              ? `Perishable (${shelfLife}-day shelf life) — safe to start ${actionVerb} now.`
               : undefined;
           items.push({
             id: itemId,
             label: `${req.amount}× ${req.name}${haveStr}`,
-            detail: `For "${questTitle}" — opens ${opensLabel}`,
             dividerLabel,
             groupKey,
+            iconNode,
             perishableWarning,
           });
         }
@@ -4599,9 +4728,13 @@ export default function Tips() {
     if (!availableQuestsByLoc.has(loc)) availableQuestsByLoc.set(loc, []);
     const questName = quest.display_title || quest.name;
     const reqs = quest.requirements ?? [];
+    const rewardItems = quest.reward_items ?? [];
+    const rewardSuffix = rewardItems.length > 0
+      ? ` — you will receive ${rewardItems.map((r) => `${r.amount > 1 ? `${r.amount}× ` : ''}${r.name}`).join(', ')} as a quest reward upon turn-in`
+      : '';
     const detail = reqs.length === 1
-      ? `Bring along ${reqs[0].amount}× ${reqs[0].name}`
-      : `Bring: ${reqs.map((r) => `${r.amount}× ${r.name}`).join(', ')}`;
+      ? `Bring along ${reqs[0].amount}× ${reqs[0].name}${rewardSuffix}`
+      : `Bring: ${reqs.map((r) => `${r.amount}× ${r.name}`).join(', ')}${rewardSuffix}`;
     availableQuestsByLoc.get(loc)!.push({
       id: `available-quest-${quest.id}`,
       label: `Talk to ${giver} to accept "${questName}"`,
@@ -4633,6 +4766,9 @@ export default function Tips() {
   const pickEntry = selectedCharacter?.tool_data?.find((t) => t.toolName === 'pick');
   const pickaxeMaxTier = pickEntry?.maxTier ?? 4;
   const pickaxeNeedsUpgrade = selectedCharacter != null && pickaxeTier < pickaxeMaxTier && !(pickEntry?.upgrading ?? false);
+  // Only prompt for a mine-access upgrade when there are still mines gated behind the pickaxe tier.
+  // Tier 3 unlocks the final mine (Mountain); upgrades beyond that don't unlock new content.
+  const pickaxeUnlocksMine = pickaxeNeedsUpgrade && pickaxeTier < 3;
   const nextPickReq = pickaxeNeedsUpgrade ? TOOL_UPGRADE_REQ[pickaxeTier] : undefined;
   const minesUpgradeDetails: MinesUpgradeDetails | undefined = nextPickReq ? (() => {
     const oreName = ORE_FOR_BAR[nextPickReq.material] ?? '';
@@ -4922,10 +5058,14 @@ export default function Tips() {
       location: 'In the Mines',
       colorClass: 'text-cyan-600 dark:text-cyan-400',
       items: [
-        ...(pickaxeNeedsUpgrade ? [{
+        ...(pickaxeUnlocksMine ? [{
           id: 'mining-upgrade',
-          label: 'You need to upgrade your pickaxe to access new ores/minerals.',
-          detail: 'Do you want to accept this quest today?',
+          label: pickaxeTier === 0
+            ? `Upgrade your pickaxe (Copper Bars) to unlock the Marsh Mine.`
+            : pickaxeTier === 1
+              ? `Upgrade your pickaxe (Iron Bars) — one more upgrade after this unlocks the Mountain Mine.`
+              : `Upgrade your pickaxe (Titanium Bars) to unlock the Mountain Mine.`,
+          detail: 'Bring the materials to Gruff to start the upgrade.',
           upgradeDetails: minesUpgradeDetails,
           subtaskIds: ['mining-upgrade-req-bar', 'mining-upgrade-req-coins', 'mining-upgrade-gruff'],
         }] : []),
@@ -5011,7 +5151,7 @@ export default function Tips() {
 
       <DailyChecklist groups={dailyGroups} />
 
-      {yearGoalItems.length > 0 && <YearGoalsCard items={yearGoalItems} />}
+      {yearGoalItems.length > 0 && <YearGoalsCard items={yearGoalItems} mutexPairs={undecidedMutexPairs} />}
 
       {/* Tab Bar */}
       <div className="flex flex-wrap gap-1.5 items-end border-b-2 border-slate-300 dark:border-slate-600">

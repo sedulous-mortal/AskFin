@@ -25,6 +25,7 @@ const SUBTABS: Record<string, { value: string; label: string }[]> = {
     { value: 'forageables', label: 'Forageables' },
     { value: 'quests',      label: 'Quests' },
     { value: 'events',      label: 'Events' },
+    { value: 'donations',   label: 'Donations' },
   ],
 };
 
