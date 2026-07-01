@@ -2985,9 +2985,10 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
               {bottomRowGroups.length > 0 && (
                 <div className="grid gap-5 items-start sm:grid-cols-2 lg:grid-cols-4">
                   {bottomRowGroups.map(renderGroupColumn)}
+                  {docksGroup && topRowGroups.length + bottomRowGroups.length === 7 && renderGroupColumn(docksGroup)}
                 </div>
               )}
-              {docksGroup && (
+              {docksGroup && topRowGroups.length + bottomRowGroups.length !== 7 && (
                 <div className="grid gap-5 items-start sm:grid-cols-2 lg:grid-cols-4">
                   {renderGroupColumn(docksGroup)}
                 </div>
