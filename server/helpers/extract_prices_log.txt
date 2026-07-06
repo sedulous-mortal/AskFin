@@ -1,0 +1,17 @@
+Loaded 701 known item names from game_id_maps.json
+Loading TypeTreeGenerator from Managed DLLs...
+Assets loaded
+Found 680 InventoryItem entries in resources.assets
+
+=== Seed vs. Raw Crop Sell Prices ===
+Crop               Crop buy Crop sell  |  Seed buy Seed sell   Seeds > Crop?
+--------------------------------------------------------------------------------
+Asparagus                 7         6  |        10         8             YES
+Carrot                    7         6  |        12        10             YES
+Cabbage                  12        10  |        15        12             YES
+Radish                    6         5  |        10         8             YES
+Rhubarb                   7         6  |        15        12             YES
+Onion                     7         6  |        15        12             YES
+Sunroot                   7         6  |        15        12             YES
+
+Written to C:\Users\ansob\claude-tests\AskFin\server\helpers\item_prices.json

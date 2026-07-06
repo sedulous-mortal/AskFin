@@ -75,7 +75,7 @@ To load your game data into AskFin:
 1. Open the localhost in the browser (ideally Chrome)
 2. Create or log into your profile
 3. Click the **Load Files** button in the header
-4. Upload your `.grimshire` save file(s), typically found at `C:\Program Files (x86)\Steam\steamapps\common\Grimshire\Grimshire_Data`
+4. Upload your `.grimshire` save file(s), typically found at `C:\Users\<YourUsername>\AppData\LocalLow\AcuteOwlStudio\GrimshireSaves`
 5. Wait for AskFin to process and import your data ✨
 
 Once uploaded, your critters, items, and other game information should appear throughout the app.

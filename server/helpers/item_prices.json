@@ -1,0 +1,4836 @@
+{
+  "note": "sellPrice = round(costPrice * 0.8); skill 874 adds +5% on top",
+  "all_items": {
+    "Barn Foundation": {
+      "costPrice": 1,
+      "sellPrice": 1,
+      "game_ids": [
+        11
+      ]
+    },
+    "Coop Foundation": {
+      "costPrice": 1,
+      "sellPrice": 1,
+      "game_ids": [
+        10
+      ]
+    },
+    "Hutch Foundation": {
+      "costPrice": 1,
+      "sellPrice": 1,
+      "game_ids": [
+        1250
+      ]
+    },
+    "Pen Foundation": {
+      "costPrice": 1,
+      "sellPrice": 1,
+      "game_ids": [
+        1251
+      ]
+    },
+    "Amur Catfish": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        211
+      ]
+    },
+    "Arctic Char": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        222
+      ]
+    },
+    "Arctic Grayling": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        223
+      ]
+    },
+    "Asp": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        206
+      ]
+    },
+    "Atlantic Salmon": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        228
+      ]
+    },
+    "Balkhash Perch": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        386
+      ]
+    },
+    "Black Bullhead": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        387
+      ]
+    },
+    "Bluegill": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        215
+      ]
+    },
+    "Bottled Surprise": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        827
+      ]
+    },
+    "Brook Trout": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        213
+      ]
+    },
+    "Brown Trout": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        207
+      ]
+    },
+    "Burbot": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        186
+      ]
+    },
+    "Blue Catfish": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        28
+      ]
+    },
+    "Chinook Salmon": {
+      "costPrice": 38,
+      "sellPrice": 30,
+      "game_ids": [
+        388
+      ]
+    },
+    "Chub": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        208
+      ]
+    },
+    "Clam": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        672
+      ]
+    },
+    "Coho Salmon": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        227
+      ]
+    },
+    "Bleak": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        198
+      ]
+    },
+    "Common Bream": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        188
+      ]
+    },
+    "Common Carp": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        195
+      ]
+    },
+    "Common Dace": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        29
+      ]
+    },
+    "Minnow": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        210
+      ]
+    },
+    "Brown Crab": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        669
+      ]
+    },
+    "Crappie": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        217
+      ]
+    },
+    "Crayfish": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        480
+      ]
+    },
+    "Crucian Carp": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        395
+      ]
+    },
+    "Danube Salmon": {
+      "costPrice": 42,
+      "sellPrice": 34,
+      "game_ids": [
+        209
+      ]
+    },
+    "Sickly Fish": {
+      "costPrice": 0,
+      "sellPrice": 0,
+      "game_ids": [
+        581
+      ]
+    },
+    "Eel": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        197
+      ]
+    },
+    "Pool Frog": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        666
+      ]
+    },
+    "Gar": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        218
+      ]
+    },
+    "Gobie": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        389
+      ]
+    },
+    "Golden Trout": {
+      "costPrice": 242,
+      "sellPrice": 194,
+      "game_ids": [
+        390
+      ]
+    },
+    "Grass Carp": {
+      "costPrice": 38,
+      "sellPrice": 30,
+      "game_ids": [
+        185
+      ]
+    },
+    "Gudgeon": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        182
+      ]
+    },
+    "Halibut": {
+      "costPrice": 38,
+      "sellPrice": 30,
+      "game_ids": [
+        204
+      ]
+    },
+    "Ide": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        184
+      ]
+    },
+    "Lake Trout": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        226
+      ]
+    },
+    "Lamprey": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        221
+      ]
+    },
+    "Lobster": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        668
+      ]
+    },
+    "Madtom Catfish": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        391
+      ]
+    },
+    "Mirror Carp": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        194
+      ]
+    },
+    "Mottled Eel": {
+      "costPrice": 42,
+      "sellPrice": 34,
+      "game_ids": [
+        214
+      ]
+    },
+    "Nase": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        392
+      ]
+    },
+    "Northern Pike": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        225
+      ]
+    },
+    "Oyster": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        671
+      ]
+    },
+    "Perch": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        183
+      ]
+    },
+    "Pink Salmon": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        393
+      ]
+    },
+    "Powan": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        212
+      ]
+    },
+    "Rainbow Trout": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        199
+      ]
+    },
+    "Rock Bass": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        216
+      ]
+    },
+    "Rudd": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        189
+      ]
+    },
+    "Scallop": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        482
+      ]
+    },
+    "Sea Trout": {
+      "costPrice": 38,
+      "sellPrice": 30,
+      "game_ids": [
+        200
+      ]
+    },
+    "Seaweed": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        481
+      ]
+    },
+    "Shorthorn Sculpin": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        203
+      ]
+    },
+    "Shrimp": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        670
+      ]
+    },
+    "Siberian Sturgeon": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        224
+      ]
+    },
+    "Silver Bream": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        191
+      ]
+    },
+    "Smelt": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        190
+      ]
+    },
+    "Spined Loach": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        202
+      ]
+    },
+    "Stick": {
+      "costPrice": 3,
+      "sellPrice": 2,
+      "game_ids": [
+        674
+      ]
+    },
+    "Stickleback": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        201
+      ]
+    },
+    "Stone Loach": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        219
+      ]
+    },
+    "Tadpole": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        673
+      ]
+    },
+    "Tench": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        193
+      ]
+    },
+    "Tiger Trout": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        30
+      ]
+    },
+    "Common Toad": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        667
+      ]
+    },
+    "Trash": {
+      "costPrice": 0,
+      "sellPrice": 0,
+      "game_ids": [
+        483
+      ]
+    },
+    "Vendace": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        394
+      ]
+    },
+    "Vimba": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        192
+      ]
+    },
+    "Walleye": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        220
+      ]
+    },
+    "Wels Catfish": {
+      "costPrice": 42,
+      "sellPrice": 34,
+      "game_ids": [
+        196
+      ]
+    },
+    "Whitefish": {
+      "costPrice": 34,
+      "sellPrice": 27,
+      "game_ids": [
+        205
+      ]
+    },
+    "Zander": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        187
+      ]
+    },
+    "Blood": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        648
+      ]
+    },
+    "Bone": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        645
+      ]
+    },
+    "Cooking Oil": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        450
+      ]
+    },
+    "Egg": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        3
+      ]
+    },
+    "GirtleShroom": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        841
+      ]
+    },
+    "Apple": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        283
+      ]
+    },
+    "Asparagus": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        170
+      ]
+    },
+    "Beans": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        230
+      ]
+    },
+    "Bellpepper": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        172
+      ]
+    },
+    "Blackberry": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        303
+      ]
+    },
+    "Cabbage": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        38
+      ]
+    },
+    "Cantaloupe": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        237
+      ]
+    },
+    "Carrot": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        34
+      ]
+    },
+    "Cattail": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        163
+      ]
+    },
+    "Chamomile": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        310
+      ]
+    },
+    "Chanterelle": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        313
+      ]
+    },
+    "Cherry": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        278
+      ]
+    },
+    "Chicory": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        319
+      ]
+    },
+    "Corn": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        35
+      ]
+    },
+    "Cranberry": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        335
+      ]
+    },
+    "Cucumber": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        240
+      ]
+    },
+    "Dandelions": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        36
+      ]
+    },
+    "Daylily Flower": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        177
+      ]
+    },
+    "Elderberry": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        305
+      ]
+    },
+    "Fiddlehead Fern": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        165
+      ]
+    },
+    "Ginger": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        317
+      ]
+    },
+    "Hawthorn Berry": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        294
+      ]
+    },
+    "Hay": {
+      "costPrice": 2,
+      "sellPrice": 2,
+      "game_ids": [
+        48
+      ]
+    },
+    "Juniper Berry": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        291
+      ]
+    },
+    "Lavender": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        234
+      ]
+    },
+    "Mint": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        180
+      ]
+    },
+    "Morel": {
+      "costPrice": 11,
+      "sellPrice": 9,
+      "game_ids": [
+        169
+      ]
+    },
+    "Oats": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        327
+      ]
+    },
+    "Onion": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        307
+      ]
+    },
+    "Oyster Mushroom": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        245
+      ]
+    },
+    "Peanut": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        40
+      ]
+    },
+    "Pear": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        277
+      ]
+    },
+    "Pepperwort Flower": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        339
+      ]
+    },
+    "Pepperwort Leaves": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        338
+      ]
+    },
+    "Plum": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        288
+      ]
+    },
+    "Potato": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        41
+      ]
+    },
+    "Pumpkin": {
+      "costPrice": 18,
+      "sellPrice": 14,
+      "game_ids": [
+        42
+      ]
+    },
+    "Radish": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        43
+      ]
+    },
+    "Ramp": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        167
+      ]
+    },
+    "Raspberry": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        302
+      ]
+    },
+    "Red Sorrel": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        341
+      ]
+    },
+    "Red Clover": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        329
+      ]
+    },
+    "Rhubarb": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        160
+      ]
+    },
+    "Rosehip": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        301
+      ]
+    },
+    "Strawberry": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        45
+      ]
+    },
+    "Sunflower": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        243
+      ]
+    },
+    "Sunroot Flowers": {
+      "costPrice": 3,
+      "sellPrice": 2,
+      "game_ids": [
+        324
+      ]
+    },
+    "Sunroot": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        323
+      ]
+    },
+    "Winter Mushroom": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        315
+      ]
+    },
+    "Yarrow": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        333
+      ]
+    },
+    "Honey": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        449
+      ]
+    },
+    "Lean Meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        643
+      ]
+    },
+    "Milk": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        7
+      ]
+    },
+    "Offal": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        959
+      ]
+    },
+    "Dried Apple": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        684
+      ]
+    },
+    "Honeyed Apples": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        761
+      ]
+    },
+    "Apple Juice": {
+      "costPrice": 11,
+      "sellPrice": 9,
+      "game_ids": [
+        775
+      ]
+    },
+    "Dried Asparagus": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        696
+      ]
+    },
+    "Pickled Asparagus": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        746
+      ]
+    },
+    "Dried Beans": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        703
+      ]
+    },
+    "Pickled Beans": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        754
+      ]
+    },
+    "Birchseed Flour": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        727
+      ]
+    },
+    "Dried Blackberries": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        691
+      ]
+    },
+    "Honeyed Blackberries": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        768
+      ]
+    },
+    "Blackberry Juice": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        782
+      ]
+    },
+    "Butter": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        963,
+        999
+      ]
+    },
+    "Dried Cabbage": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        695
+      ]
+    },
+    "Pickled Cabbage": {
+      "costPrice": 13,
+      "sellPrice": 10,
+      "game_ids": [
+        745
+      ]
+    },
+    "Dried Cantaloupe": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        692
+      ]
+    },
+    "Honeyed Cantaloupe": {
+      "costPrice": 18,
+      "sellPrice": 14,
+      "game_ids": [
+        769
+      ]
+    },
+    "Cantaloupe Juice": {
+      "costPrice": 18,
+      "sellPrice": 14,
+      "game_ids": [
+        783
+      ]
+    },
+    "Dried Carrots": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        835
+      ]
+    },
+    "Carrot Juice": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        756
+      ]
+    },
+    "Pickled Carrots": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        739
+      ]
+    },
+    "Dried Cattail Shoots": {
+      "costPrice": 3,
+      "sellPrice": 2,
+      "game_ids": [
+        697
+      ]
+    },
+    "Pickled Cattail": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        747
+      ]
+    },
+    "Dried Chamomile": {
+      "costPrice": 3,
+      "sellPrice": 2,
+      "game_ids": [
+        706
+      ]
+    },
+    "Chamomile in Oil": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        731
+      ]
+    },
+    "Dried Chanterelle": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        714
+      ]
+    },
+    "Chanterelle in Oil": {
+      "costPrice": 11,
+      "sellPrice": 9,
+      "game_ids": [
+        836
+      ]
+    },
+    "Cheese": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        799
+      ]
+    },
+    "Smoked Cheese": {
+      "costPrice": 43,
+      "sellPrice": 34,
+      "game_ids": [
+        1080
+      ]
+    },
+    "Dried Cherry": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        683
+      ]
+    },
+    "Honeyed Cherries": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        760
+      ]
+    },
+    "Cherry Juice": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        774
+      ]
+    },
+    "Dried Chicory": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        710
+      ]
+    },
+    "Chicory in Oil": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        734
+      ]
+    },
+    "Dried Corn": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        694
+      ]
+    },
+    "Pickled Corn": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        738
+      ]
+    },
+    "Dried Cranberries": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        688
+      ]
+    },
+    "Honeyed Cranberries": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        765
+      ]
+    },
+    "Cranberry Juice": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        779
+      ]
+    },
+    "Dried Cucumbers": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        699
+      ]
+    },
+    "Pickled Cucumbers": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        749
+      ]
+    },
+    "Dried Dandelions": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        711
+      ]
+    },
+    "Dandelions in Oil": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        735
+      ]
+    },
+    "Dried Daylily": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        712
+      ]
+    },
+    "Daylily in Oil": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        736
+      ]
+    },
+    "Mayonnaise": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        801
+      ]
+    },
+    "Salted Eggs": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        800
+      ]
+    },
+    "Pickled Eggs": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        802
+      ]
+    },
+    "Dried Elderberries": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        686
+      ]
+    },
+    "Honeyed Elderberries": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        763
+      ]
+    },
+    "Elderberry Juice": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        777
+      ]
+    },
+    "Dried Fiddlehead": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        700
+      ]
+    },
+    "Pickled Fiddleheads": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        750
+      ]
+    },
+    "Large Dried Fish": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        795
+      ]
+    },
+    "Large Salted Fish": {
+      "costPrice": 32,
+      "sellPrice": 26,
+      "game_ids": [
+        796
+      ]
+    },
+    "Large Smoked Fish": {
+      "costPrice": 39,
+      "sellPrice": 31,
+      "game_ids": [
+        794
+      ]
+    },
+    "Large Pickled Fish": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        798
+      ]
+    },
+    "Small Dried Fish": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        790
+      ]
+    },
+    "Small Salted Fish": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        791
+      ]
+    },
+    "Small Smoked Fish": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        789
+      ]
+    },
+    "Small Pickled Fish": {
+      "costPrice": 13,
+      "sellPrice": 10,
+      "game_ids": [
+        793
+      ]
+    },
+    "Medium Smoked Fish": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        462
+      ]
+    },
+    "Medium Dried Fish": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        479
+      ]
+    },
+    "Medium Salted Fish": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        453
+      ]
+    },
+    "Medium Pickled Fish": {
+      "costPrice": 22,
+      "sellPrice": 18,
+      "game_ids": [
+        452
+      ]
+    },
+    "Dried Ginger": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        837
+      ]
+    },
+    "Pickled Ginger": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        744
+      ]
+    },
+    "Dried Girtleshroom": {
+      "costPrice": 19,
+      "sellPrice": 15,
+      "game_ids": [
+        842
+      ]
+    },
+    "Girtleshroom in Oil": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        843
+      ]
+    },
+    "Dried Hawthorn Berries": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        690
+      ]
+    },
+    "Honeyed Hawthorns": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        767
+      ]
+    },
+    "Hawthorn Juice": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        781
+      ]
+    },
+    "Dried Juniper": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        689
+      ]
+    },
+    "Honeyed Juniper": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        766
+      ]
+    },
+    "Juniper Juice": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        780
+      ]
+    },
+    "Dried Lavender": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        707
+      ]
+    },
+    "Lavender in Oil": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        732
+      ]
+    },
+    "Dried Lean Meat": {
+      "costPrice": 29,
+      "sellPrice": 23,
+      "game_ids": [
+        814
+      ]
+    },
+    "Salted Lean Meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        815
+      ]
+    },
+    "Smoked Lean Meat": {
+      "costPrice": 43,
+      "sellPrice": 34,
+      "game_ids": [
+        813
+      ]
+    },
+    "Pickled Lean Meat": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        817
+      ]
+    },
+    "Mapleseed Flour": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        724
+      ]
+    },
+    "Smoked Maple Seeds": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        718
+      ]
+    },
+    "Mead": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1079
+      ]
+    },
+    "Dried Mint": {
+      "costPrice": 3,
+      "sellPrice": 2,
+      "game_ids": [
+        705
+      ]
+    },
+    "Mint in Oil": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        730
+      ]
+    },
+    "Dried Morels": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        526
+      ]
+    },
+    "Morels in Oil": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        838
+      ]
+    },
+    "Acorn Flour": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        726
+      ]
+    },
+    "Smoked Acorns": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        720
+      ]
+    },
+    "Oat Flour": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        823
+      ]
+    },
+    "Dried Offal": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        1247
+      ]
+    },
+    "Dried Onions": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        839
+      ]
+    },
+    "Pickled Onions": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        743
+      ]
+    },
+    "Dried Oyster Mushroom": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        840
+      ]
+    },
+    "Oyster mushroom in Oil": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        713
+      ]
+    },
+    "Peanut butter": {
+      "costPrice": 11,
+      "sellPrice": 9,
+      "game_ids": [
+        722
+      ]
+    },
+    "Smoked Peanuts": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        716
+      ]
+    },
+    "Dried Pear": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        687
+      ]
+    },
+    "Honeyed Pears": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        764
+      ]
+    },
+    "Pear Juice": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        778
+      ]
+    },
+    "Dried Peppers": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        693
+      ]
+    },
+    "Pickled Peppers": {
+      "costPrice": 11,
+      "sellPrice": 9,
+      "game_ids": [
+        737
+      ]
+    },
+    "Pepper Oil": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        1382
+      ]
+    },
+    "Dried Pepperwort": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        828
+      ]
+    },
+    "Dried Pepperwort Leaves": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        1381
+      ]
+    },
+    "Pepperwort in Oil": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        753
+      ]
+    },
+    "Pineseed butter": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        725
+      ]
+    },
+    "Smoked Pine Nuts": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        719
+      ]
+    },
+    "Plum Juice": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        773
+      ]
+    },
+    "Pickled Potatoes": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        741
+      ]
+    },
+    "Dried Pumpkin": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        702
+      ]
+    },
+    "Pickled Pumpkin": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        752
+      ]
+    },
+    "Dried Radish": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        830
+      ]
+    },
+    "Pickled Radish": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        740
+      ]
+    },
+    "Dried Ramps": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        698
+      ]
+    },
+    "Ramps in Oil": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        748
+      ]
+    },
+    "Dried Raspberries": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        682
+      ]
+    },
+    "Honeyed Raspberries": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        759
+      ]
+    },
+    "Raspberry Juice": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        772
+      ]
+    },
+    "Dried Red Clover": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        704
+      ]
+    },
+    "Clovers in Oil": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        755
+      ]
+    },
+    "Dried Rhubarb": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        681
+      ]
+    },
+    "Honeyed Rhubarb": {
+      "costPrice": 11,
+      "sellPrice": 9,
+      "game_ids": [
+        758
+      ]
+    },
+    "Rhubarb Juice": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        771
+      ]
+    },
+    "Dried Rich Meat": {
+      "costPrice": 29,
+      "sellPrice": 23,
+      "game_ids": [
+        809
+      ]
+    },
+    "Salted Rich Meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        810
+      ]
+    },
+    "Smoked Rich Meat": {
+      "costPrice": 43,
+      "sellPrice": 34,
+      "game_ids": [
+        808
+      ]
+    },
+    "Pickled Rich Meat": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        812
+      ]
+    },
+    "Dried Rosehips": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        685
+      ]
+    },
+    "Honeyed Rosehips": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        762
+      ]
+    },
+    "Rosehip Juice": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        776
+      ]
+    },
+    "Smoked Sausage": {
+      "costPrice": 56,
+      "sellPrice": 45,
+      "game_ids": [
+        1380
+      ]
+    },
+    "Dried Seaweed": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        1204
+      ]
+    },
+    "Pickled Seaweed": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        1205
+      ]
+    },
+    "Sorrel in Oil": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        751
+      ]
+    },
+    "Dried Sorrels": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        701
+      ]
+    },
+    "Dried Strawberry": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        680
+      ]
+    },
+    "Honeyed Strawberries": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        757
+      ]
+    },
+    "Strawberry Juice": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        770
+      ]
+    },
+    "Dried Sunflower": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        709
+      ]
+    },
+    "Salted Sunflower Seeds": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        728
+      ]
+    },
+    "Dried Sunroot Flower": {
+      "costPrice": 2,
+      "sellPrice": 2,
+      "game_ids": [
+        832
+      ]
+    },
+    "Dried Sunroot": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        831
+      ]
+    },
+    "Pickled Sunroot": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        742
+      ]
+    },
+    "Dried Tender Meat": {
+      "costPrice": 29,
+      "sellPrice": 23,
+      "game_ids": [
+        819
+      ]
+    },
+    "Salted Tender Meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        820
+      ]
+    },
+    "Smoked Tender Meat": {
+      "costPrice": 43,
+      "sellPrice": 34,
+      "game_ids": [
+        818
+      ]
+    },
+    "Pickled Tender Meat": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        822
+      ]
+    },
+    "Dried Tough Meat": {
+      "costPrice": 29,
+      "sellPrice": 23,
+      "game_ids": [
+        804
+      ]
+    },
+    "Salted Tough meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        805
+      ]
+    },
+    "Smoked Tough meat": {
+      "costPrice": 43,
+      "sellPrice": 34,
+      "game_ids": [
+        803
+      ]
+    },
+    "Pickled Tough Meat": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        807
+      ]
+    },
+    "Walnut Butter": {
+      "costPrice": 11,
+      "sellPrice": 9,
+      "game_ids": [
+        723
+      ]
+    },
+    "Smoked Walnuts": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        717
+      ]
+    },
+    "Fruit Wine": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1078
+      ]
+    },
+    "Dried Wintershroom": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        715
+      ]
+    },
+    "Dried Yarrow": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        708
+      ]
+    },
+    "Yarrow in Oil": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        733
+      ]
+    },
+    "Honeyed Plums": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        444
+      ]
+    },
+    "Dried Plum": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        523
+      ]
+    },
+    "Dried Potatoes": {
+      "costPrice": 7,
+      "sellPrice": 6,
+      "game_ids": [
+        829
+      ]
+    },
+    "Sunroot flower in Oil": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        833
+      ]
+    },
+    "Wintershroom in Oil": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        834
+      ]
+    },
+    "Rich Meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        644
+      ]
+    },
+    "Tender Meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        255
+      ]
+    },
+    "Tough Meat": {
+      "costPrice": 36,
+      "sellPrice": 29,
+      "game_ids": [
+        6
+      ]
+    },
+    "Vinegar": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        451
+      ]
+    },
+    "Worm": {
+      "costPrice": 2,
+      "sellPrice": 2,
+      "game_ids": [
+        960
+      ]
+    },
+    "Bonfire": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        1218
+      ]
+    },
+    "Hay Bale": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        1210
+      ]
+    },
+    "Cherry Flower Painting": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1202
+      ]
+    },
+    "Mountain Sunrise Painting": {
+      "costPrice": 150,
+      "sellPrice": 120,
+      "game_ids": [
+        1215
+      ]
+    },
+    "Pinwheel": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1216
+      ]
+    },
+    "Cherry Bonsai": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        1191
+      ]
+    },
+    "Spring Flower Pot": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        1201
+      ]
+    },
+    "Community Rug": {
+      "costPrice": 0,
+      "sellPrice": 0,
+      "game_ids": [
+        1224
+      ]
+    },
+    "Harvest Wreath": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        1209
+      ]
+    },
+    "Floral Wreath": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        1217
+      ]
+    },
+    "Firefly Lights": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1219
+      ]
+    },
+    "Cherry Tree Wallpaper": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1212
+      ]
+    },
+    "Log Cabin Wallpaper": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1214
+      ]
+    },
+    "Starry Sky Wallpaper": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1211
+      ]
+    },
+    "Lilypad Wallpaper": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1213
+      ]
+    },
+    "Wicker Alpheep Effigy": {
+      "costPrice": 150,
+      "sellPrice": 120,
+      "game_ids": [
+        1207
+      ]
+    },
+    "Wicker Bluggy Effigy": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1208
+      ]
+    },
+    "Plank": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        658
+      ]
+    },
+    "Charcoal": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1319
+      ]
+    },
+    "Compost": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        52
+      ]
+    },
+    "Fat": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        649
+      ]
+    },
+    "Hide": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        652
+      ]
+    },
+    "Copper Bar": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        246
+      ]
+    },
+    "Gold Bar": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        247
+      ]
+    },
+    "Iron Bar": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        248
+      ]
+    },
+    "Mithril Bar": {
+      "costPrice": 31,
+      "sellPrice": 25,
+      "game_ids": [
+        371
+      ]
+    },
+    "Nickel Bar": {
+      "costPrice": 28,
+      "sellPrice": 22,
+      "game_ids": [
+        372
+      ]
+    },
+    "Silver Bar": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        373
+      ]
+    },
+    "Tin Bar": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        374
+      ]
+    },
+    "Titanium Bar": {
+      "costPrice": 29,
+      "sellPrice": 23,
+      "game_ids": [
+        375
+      ]
+    },
+    "Coal": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        276
+      ]
+    },
+    "Mithril Ore": {
+      "costPrice": 35,
+      "sellPrice": 28,
+      "game_ids": [
+        381
+      ]
+    },
+    "Silver Ore": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        383
+      ]
+    },
+    "Copper Ore": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        49
+      ]
+    },
+    "Gold Ore": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        50
+      ]
+    },
+    "Iron Ore": {
+      "costPrice": 17,
+      "sellPrice": 14,
+      "game_ids": [
+        51
+      ]
+    },
+    "Nickel Ore": {
+      "costPrice": 18,
+      "sellPrice": 14,
+      "game_ids": [
+        382
+      ]
+    },
+    "Tin Ore": {
+      "costPrice": 16,
+      "sellPrice": 13,
+      "game_ids": [
+        384
+      ]
+    },
+    "Titanium Ore": {
+      "costPrice": 19,
+      "sellPrice": 15,
+      "game_ids": [
+        385
+      ]
+    },
+    "Ice Gem": {
+      "costPrice": 60,
+      "sellPrice": 48,
+      "game_ids": [
+        861
+      ]
+    },
+    "Amethyst": {
+      "costPrice": 45,
+      "sellPrice": 36,
+      "game_ids": [
+        396
+      ]
+    },
+    "Diamond": {
+      "costPrice": 55,
+      "sellPrice": 44,
+      "game_ids": [
+        397
+      ]
+    },
+    "Emerald": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        398
+      ]
+    },
+    "Obsidian": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        399
+      ]
+    },
+    "Quartz": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        400
+      ]
+    },
+    "Ruby": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        401
+      ]
+    },
+    "Sapphire": {
+      "costPrice": 35,
+      "sellPrice": 28,
+      "game_ids": [
+        402
+      ]
+    },
+    "Guano": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        403
+      ]
+    },
+    "Clay": {
+      "costPrice": 3,
+      "sellPrice": 2,
+      "game_ids": [
+        44
+      ]
+    },
+    "Ice Chunk": {
+      "costPrice": 6,
+      "sellPrice": 5,
+      "game_ids": [
+        860
+      ]
+    },
+    "Marble": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        377
+      ]
+    },
+    "Salt": {
+      "costPrice": 2,
+      "sellPrice": 2,
+      "game_ids": [
+        378
+      ]
+    },
+    "Sandstone": {
+      "costPrice": 4,
+      "sellPrice": 3,
+      "game_ids": [
+        379
+      ]
+    },
+    "Stone": {
+      "costPrice": 1,
+      "sellPrice": 1,
+      "game_ids": [
+        380
+      ]
+    },
+    "Mush": {
+      "costPrice": 0,
+      "sellPrice": 0,
+      "game_ids": [
+        54
+      ]
+    },
+    "Plant Debris": {
+      "costPrice": 0,
+      "sellPrice": 0,
+      "game_ids": [
+        657
+      ]
+    },
+    "Shell": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        650
+      ]
+    },
+    "Hard Wood": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        656
+      ]
+    },
+    "Medium Wood": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        39
+      ]
+    },
+    "Soft Wood": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        655
+      ]
+    },
+    "Alpheep Wool": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        9
+      ]
+    },
+    "Blue Paint": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        862
+      ]
+    },
+    "Rejected": {
+      "costPrice": 1,
+      "sellPrice": 1,
+      "game_ids": []
+    },
+    "Bottled Coins": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1190
+      ]
+    },
+    "Critters Delight": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        1225
+      ]
+    },
+    "Milk Bucket": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        1029
+      ]
+    },
+    "Bomb": {
+      "costPrice": 300,
+      "sellPrice": 240,
+      "game_ids": [
+        1451
+      ]
+    },
+    "Blue Feather": {
+      "costPrice": 0,
+      "sellPrice": 0,
+      "game_ids": [
+        55
+      ]
+    },
+    "Shears": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        25,
+        1028,
+        1109
+      ]
+    },
+    "FlowerBouget": {
+      "costPrice": 0,
+      "sellPrice": 0,
+      "game_ids": [
+        56
+      ]
+    },
+    "Black Pudding": {
+      "costPrice": 19,
+      "sellPrice": 15,
+      "game_ids": [
+        948
+      ]
+    },
+    "Blood Soup": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        956
+      ]
+    },
+    "Cake": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        957
+      ]
+    },
+    "Cheese Loaf": {
+      "costPrice": 39,
+      "sellPrice": 31,
+      "game_ids": [
+        934
+      ]
+    },
+    "Cheesy Flatbread": {
+      "costPrice": 43,
+      "sellPrice": 34,
+      "game_ids": [
+        941
+      ]
+    },
+    "Cheesy Pasta": {
+      "costPrice": 44,
+      "sellPrice": 35,
+      "game_ids": [
+        952
+      ]
+    },
+    "Cheesy Roasted Vegetables": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        927
+      ]
+    },
+    "Creamy Fruit Pudding": {
+      "costPrice": 33,
+      "sellPrice": 26,
+      "game_ids": [
+        933
+      ]
+    },
+    "Creamy Mushroom Soup": {
+      "costPrice": 28,
+      "sellPrice": 22,
+      "game_ids": [
+        932
+      ]
+    },
+    "Creamy Root Stew": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        936
+      ]
+    },
+    "Egg Custard": {
+      "costPrice": 32,
+      "sellPrice": 26,
+      "game_ids": [
+        943
+      ]
+    },
+    "Fish Root Chowder": {
+      "costPrice": 34,
+      "sellPrice": 27,
+      "game_ids": [
+        951
+      ]
+    },
+    "Fried Egg": {
+      "costPrice": 19,
+      "sellPrice": 15,
+      "game_ids": [
+        944
+      ]
+    },
+    "Fried Fish": {
+      "costPrice": 22,
+      "sellPrice": 18,
+      "game_ids": [
+        946
+      ]
+    },
+    "Fried Mushrooms": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        914
+      ]
+    },
+    "Fried Vegetables": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        921
+      ]
+    },
+    "Fruit Porridge": {
+      "costPrice": 29,
+      "sellPrice": 23,
+      "game_ids": [
+        935
+      ]
+    },
+    "Fruit Salad": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        463,
+        916
+      ]
+    },
+    "Honeyed Fruit Skewers": {
+      "costPrice": 17,
+      "sellPrice": 14,
+      "game_ids": [
+        931
+      ]
+    },
+    "Girtle Ribs": {
+      "costPrice": 48,
+      "sellPrice": 38,
+      "game_ids": [
+        949
+      ]
+    },
+    "Glazed Meat Skewers": {
+      "costPrice": 42,
+      "sellPrice": 34,
+      "game_ids": [
+        945
+      ]
+    },
+    "Grilled Meat": {
+      "costPrice": 34,
+      "sellPrice": 27,
+      "game_ids": [
+        465,
+        911
+      ]
+    },
+    "Grilled Vegetables": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        466,
+        915
+      ]
+    },
+    "Honey Glazed Root Gratin": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        939
+      ]
+    },
+    "Honey Nut Tart": {
+      "costPrice": 39,
+      "sellPrice": 31,
+      "game_ids": [
+        938
+      ]
+    },
+    "Mushroom Frittata": {
+      "costPrice": 41,
+      "sellPrice": 33,
+      "game_ids": [
+        950
+      ]
+    },
+    "Mushroom Loaf": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        923
+      ]
+    },
+    "Mushroom Scramble": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        942
+      ]
+    },
+    "Mushroom Stew": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        925
+      ]
+    },
+    "Nutty Cheese Wedges": {
+      "costPrice": 26,
+      "sellPrice": 21,
+      "game_ids": [
+        930
+      ]
+    },
+    "Nutty Fruit Bar": {
+      "costPrice": 17,
+      "sellPrice": 14,
+      "game_ids": [
+        920
+      ]
+    },
+    "Roast Bluggy": {
+      "costPrice": 54,
+      "sellPrice": 43,
+      "game_ids": [
+        954
+      ]
+    },
+    "Roasted Roots": {
+      "costPrice": 18,
+      "sellPrice": 14,
+      "game_ids": [
+        913
+      ]
+    },
+    "Sausage": {
+      "costPrice": 17,
+      "sellPrice": 14,
+      "game_ids": [
+        947
+      ]
+    },
+    "Seasoned Root Mash": {
+      "costPrice": 24,
+      "sellPrice": 19,
+      "game_ids": [
+        918
+      ]
+    },
+    "Sheperd's Stew": {
+      "costPrice": 67,
+      "sellPrice": 54,
+      "game_ids": [
+        955
+      ]
+    },
+    "Spiced Berry Pie": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        924
+      ]
+    },
+    "Spiced Fruit Stew": {
+      "costPrice": 39,
+      "sellPrice": 31,
+      "game_ids": [
+        937
+      ]
+    },
+    "Spiced Nuts": {
+      "costPrice": 14,
+      "sellPrice": 11,
+      "game_ids": [
+        919
+      ]
+    },
+    "Stuffed Mushrooms": {
+      "costPrice": 46,
+      "sellPrice": 37,
+      "game_ids": [
+        940
+      ]
+    },
+    "Sweet Herb Tea": {
+      "costPrice": 17,
+      "sellPrice": 14,
+      "game_ids": [
+        928
+      ]
+    },
+    "Sweet Milk Pudding": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        929
+      ]
+    },
+    "Vegetable Fritter": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        922
+      ]
+    },
+    "Vegetable Salad": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        958
+      ]
+    },
+    "Vegetable Stir fry": {
+      "costPrice": 29,
+      "sellPrice": 23,
+      "game_ids": [
+        917
+      ]
+    },
+    "Vegetable Tart": {
+      "costPrice": 42,
+      "sellPrice": 34,
+      "game_ids": [
+        926
+      ]
+    },
+    "Alpheep Painting": {
+      "costPrice": 116,
+      "sellPrice": 93,
+      "game_ids": [
+        515
+      ]
+    },
+    "Candelabra": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        1170
+      ]
+    },
+    "Mounted Fish": {
+      "costPrice": 116,
+      "sellPrice": 93,
+      "game_ids": [
+        516
+      ]
+    },
+    "Flowerpot": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        431
+      ]
+    },
+    "Eastern Small Mat": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1049
+      ]
+    },
+    "Hunter's Rug": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        989
+      ]
+    },
+    "Eastern Vertical Mat": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1048
+      ]
+    },
+    "Eastern Horizontal Mat": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1047
+      ]
+    },
+    "Basic Rug": {
+      "costPrice": 201,
+      "sellPrice": 161,
+      "game_ids": [
+        491
+      ]
+    },
+    "Nature Rug": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        493
+      ]
+    },
+    "Noble Rug": {
+      "costPrice": 302,
+      "sellPrice": 242,
+      "game_ids": [
+        495
+      ]
+    },
+    "Herbalist Rug": {
+      "costPrice": 201,
+      "sellPrice": 161,
+      "game_ids": [
+        983
+      ]
+    },
+    "Nature Large Rug": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        494
+      ]
+    },
+    "Cast Iron Rug": {
+      "costPrice": 403,
+      "sellPrice": 322,
+      "game_ids": [
+        504
+      ]
+    },
+    "Basic Large Rug": {
+      "costPrice": 605,
+      "sellPrice": 484,
+      "game_ids": [
+        492
+      ]
+    },
+    "Eastern Fan": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        1107
+      ]
+    },
+    "Eastern Scroll": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        1108
+      ]
+    },
+    "Drying Herbs": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1172
+      ]
+    },
+    "Mounted Display": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        1453
+      ]
+    },
+    "Shelf Display": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        1454
+      ]
+    },
+    "Cast Iron Window": {
+      "costPrice": 52,
+      "sellPrice": 42,
+      "game_ids": [
+        1167
+      ]
+    },
+    "Large Eastern Window": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1169
+      ]
+    },
+    "Fruity Window": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1166
+      ]
+    },
+    "Gilded Stone Window": {
+      "costPrice": 75,
+      "sellPrice": 60,
+      "game_ids": [
+        1165
+      ]
+    },
+    "Large Tree Window": {
+      "costPrice": 176,
+      "sellPrice": 141,
+      "game_ids": [
+        1163
+      ]
+    },
+    "Nature Window": {
+      "costPrice": 106,
+      "sellPrice": 85,
+      "game_ids": [
+        1162
+      ]
+    },
+    "Noble Window": {
+      "costPrice": 121,
+      "sellPrice": 97,
+      "game_ids": [
+        1161
+      ]
+    },
+    "Pastel Window": {
+      "costPrice": 151,
+      "sellPrice": 121,
+      "game_ids": [
+        1168
+      ]
+    },
+    "Wooden Window": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1160
+      ]
+    },
+    "Dress": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Dress Apron": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Fancy Dress": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Pants": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Head Scarf": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Spectacles": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Straw Hat": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Torque": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Collared Shirt": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Fancy Shirt": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Overalls": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Shirt": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Tunic": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Vest": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": []
+    },
+    "Citrus Flooring": {
+      "costPrice": 60,
+      "sellPrice": 48,
+      "game_ids": [
+        1068
+      ]
+    },
+    "Dark Wood Plank Flooring": {
+      "costPrice": 126,
+      "sellPrice": 101,
+      "game_ids": [
+        510
+      ]
+    },
+    "Fancy Stone Flooring": {
+      "costPrice": 45,
+      "sellPrice": 36,
+      "game_ids": [
+        530
+      ]
+    },
+    "Fancy Wood Flooring": {
+      "costPrice": 104,
+      "sellPrice": 83,
+      "game_ids": [
+        1010
+      ]
+    },
+    "Four Panel Flooring": {
+      "costPrice": 212,
+      "sellPrice": 170,
+      "game_ids": [
+        1007
+      ]
+    },
+    "Gothic Flooring": {
+      "costPrice": 126,
+      "sellPrice": 101,
+      "game_ids": [
+        528
+      ]
+    },
+    "Grass Flooring": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        1015
+      ]
+    },
+    "Herringbone Flooring": {
+      "costPrice": 116,
+      "sellPrice": 93,
+      "game_ids": [
+        1014
+      ]
+    },
+    "Mosaic Flooring": {
+      "costPrice": 95,
+      "sellPrice": 76,
+      "game_ids": [
+        1009
+      ]
+    },
+    "Stone Brick Flooring": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        1008
+      ]
+    },
+    "Cobblestone Flooring": {
+      "costPrice": 35,
+      "sellPrice": 28,
+      "game_ids": [
+        513
+      ]
+    },
+    "Stone Tile Flooring": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        1013
+      ]
+    },
+    "Wood Inlaid Stone Flooring": {
+      "costPrice": 95,
+      "sellPrice": 76,
+      "game_ids": [
+        1012
+      ]
+    },
+    "Vine Flooring": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        1069
+      ]
+    },
+    "Woven Wood Flooring": {
+      "costPrice": 181,
+      "sellPrice": 145,
+      "game_ids": [
+        1011
+      ]
+    },
+    "Cubic Wood Flooring": {
+      "costPrice": 179,
+      "sellPrice": 143,
+      "game_ids": [
+        1006
+      ]
+    },
+    "Wood Plank Flooring": {
+      "costPrice": 75,
+      "sellPrice": 60,
+      "game_ids": [
+        509
+      ]
+    },
+    "Worn Wood Flooring": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        531
+      ]
+    },
+    "Gilded Stone Bed": {
+      "costPrice": 424,
+      "sellPrice": 339,
+      "game_ids": [
+        1055
+      ]
+    },
+    "Noble Bed": {
+      "costPrice": 353,
+      "sellPrice": 282,
+      "game_ids": [
+        487
+      ]
+    },
+    "Pastel Bed": {
+      "costPrice": 353,
+      "sellPrice": 282,
+      "game_ids": [
+        1050
+      ]
+    },
+    "Cast Iron bed": {
+      "costPrice": 550,
+      "sellPrice": 440,
+      "game_ids": [
+        503
+      ]
+    },
+    "Eastern Bed": {
+      "costPrice": 277,
+      "sellPrice": 222,
+      "game_ids": [
+        1042
+      ]
+    },
+    "Herbalist's Bed": {
+      "costPrice": 176,
+      "sellPrice": 141,
+      "game_ids": [
+        979
+      ]
+    },
+    "Hunter's bed": {
+      "costPrice": 242,
+      "sellPrice": 194,
+      "game_ids": [
+        984
+      ]
+    },
+    "Nature bed": {
+      "costPrice": 136,
+      "sellPrice": 109,
+      "game_ids": [
+        486
+      ]
+    },
+    "Simple Double Bed": {
+      "costPrice": 277,
+      "sellPrice": 222,
+      "game_ids": [
+        425
+      ]
+    },
+    "Bed of Straw": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        427
+      ]
+    },
+    "Gilded Stone Bookcase": {
+      "costPrice": 222,
+      "sellPrice": 178,
+      "game_ids": [
+        1056
+      ]
+    },
+    "Pastel Bookcase": {
+      "costPrice": 176,
+      "sellPrice": 141,
+      "game_ids": [
+        1051
+      ]
+    },
+    "Cast Iron Bookcase": {
+      "costPrice": 196,
+      "sellPrice": 157,
+      "game_ids": [
+        508
+      ]
+    },
+    "Eastern Bookcase": {
+      "costPrice": 60,
+      "sellPrice": 48,
+      "game_ids": [
+        1043
+      ]
+    },
+    "Herbalist Bookcase": {
+      "costPrice": 136,
+      "sellPrice": 109,
+      "game_ids": [
+        978
+      ]
+    },
+    "Hunter's Bookcase": {
+      "costPrice": 227,
+      "sellPrice": 182,
+      "game_ids": [
+        985
+      ]
+    },
+    "Wooden Bookcase": {
+      "costPrice": 60,
+      "sellPrice": 48,
+      "game_ids": [
+        488
+      ]
+    },
+    "Stone Fireplace": {
+      "costPrice": 65,
+      "sellPrice": 52,
+      "game_ids": [
+        1171
+      ]
+    },
+    "Bush Planter": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        1038
+      ]
+    },
+    "Flower Planter A": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        1039
+      ]
+    },
+    "Flower Planter B": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        1040
+      ]
+    },
+    "Flower Planter C": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        1041
+      ]
+    },
+    "Gilded Stone Stool": {
+      "costPrice": 232,
+      "sellPrice": 186,
+      "game_ids": [
+        1057
+      ]
+    },
+    "Log Stool": {
+      "costPrice": 27,
+      "sellPrice": 22,
+      "game_ids": [
+        497
+      ]
+    },
+    "Mushroom Stool": {
+      "costPrice": 65,
+      "sellPrice": 52,
+      "game_ids": [
+        498
+      ]
+    },
+    "Noble Stool": {
+      "costPrice": 176,
+      "sellPrice": 141,
+      "game_ids": [
+        499
+      ]
+    },
+    "Cast Iron Stool": {
+      "costPrice": 128,
+      "sellPrice": 102,
+      "game_ids": [
+        505
+      ]
+    },
+    "Eastern Seat": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1044
+      ]
+    },
+    "Fruity Stool": {
+      "costPrice": 90,
+      "sellPrice": 72,
+      "game_ids": [
+        1062
+      ]
+    },
+    "Herbalist Stool": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        980
+      ]
+    },
+    "Hunter's Stool": {
+      "costPrice": 126,
+      "sellPrice": 101,
+      "game_ids": [
+        986
+      ]
+    },
+    "Pastel Stool": {
+      "costPrice": 131,
+      "sellPrice": 105,
+      "game_ids": [
+        1052
+      ]
+    },
+    "Wooden Stool": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        496
+      ]
+    },
+    "Display Shelf": {
+      "costPrice": 178,
+      "sellPrice": 142,
+      "game_ids": [
+        1452
+      ]
+    },
+    "Gilded Stone Small Table": {
+      "costPrice": 212,
+      "sellPrice": 170,
+      "game_ids": [
+        1058
+      ]
+    },
+    "Noble End Table": {
+      "costPrice": 151,
+      "sellPrice": 121,
+      "game_ids": [
+        501
+      ]
+    },
+    "Wooden End Table": {
+      "costPrice": 75,
+      "sellPrice": 60,
+      "game_ids": [
+        502
+      ]
+    },
+    "Cast Iron End Table": {
+      "costPrice": 128,
+      "sellPrice": 102,
+      "game_ids": [
+        507
+      ]
+    },
+    "Eastern Small Table": {
+      "costPrice": 75,
+      "sellPrice": 60,
+      "game_ids": [
+        1045
+      ]
+    },
+    "Orange Table": {
+      "costPrice": 75,
+      "sellPrice": 60,
+      "game_ids": [
+        1063
+      ]
+    },
+    "Herbalist End Table": {
+      "costPrice": 75,
+      "sellPrice": 60,
+      "game_ids": [
+        982
+      ]
+    },
+    "Hunter's End Table": {
+      "costPrice": 60,
+      "sellPrice": 48,
+      "game_ids": [
+        987
+      ]
+    },
+    "Nature End Table": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        500
+      ]
+    },
+    "Pastel End Table": {
+      "costPrice": 176,
+      "sellPrice": 141,
+      "game_ids": [
+        1053
+      ]
+    },
+    "Gilded Stone Table": {
+      "costPrice": 222,
+      "sellPrice": 178,
+      "game_ids": [
+        1059
+      ]
+    },
+    "Noble Table": {
+      "costPrice": 227,
+      "sellPrice": 182,
+      "game_ids": [
+        485
+      ]
+    },
+    "Cast Iron Table": {
+      "costPrice": 272,
+      "sellPrice": 218,
+      "game_ids": [
+        506
+      ]
+    },
+    "Eastern Table": {
+      "costPrice": 151,
+      "sellPrice": 121,
+      "game_ids": [
+        1046
+      ]
+    },
+    "Watermelon Table": {
+      "costPrice": 151,
+      "sellPrice": 121,
+      "game_ids": [
+        1064
+      ]
+    },
+    "Herbalist Table": {
+      "costPrice": 151,
+      "sellPrice": 121,
+      "game_ids": [
+        981
+      ]
+    },
+    "Hunter's Table": {
+      "costPrice": 121,
+      "sellPrice": 97,
+      "game_ids": [
+        988
+      ]
+    },
+    "Nature Table": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        484
+      ]
+    },
+    "Pastel Table": {
+      "costPrice": 227,
+      "sellPrice": 182,
+      "game_ids": [
+        1054
+      ]
+    },
+    "Simple Table": {
+      "costPrice": 151,
+      "sellPrice": 121,
+      "game_ids": [
+        432
+      ]
+    },
+    "Pineapple Bed": {
+      "costPrice": 176,
+      "sellPrice": 141,
+      "game_ids": [
+        1060
+      ]
+    },
+    "Nature Bookcase": {
+      "costPrice": 136,
+      "sellPrice": 109,
+      "game_ids": [
+        489
+      ]
+    },
+    "Noble Bookcase": {
+      "costPrice": 227,
+      "sellPrice": 182,
+      "game_ids": [
+        490
+      ]
+    },
+    "Pear Bookcase": {
+      "costPrice": 60,
+      "sellPrice": 48,
+      "game_ids": [
+        1061
+      ]
+    },
+    "Hedgerow": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": []
+    },
+    "Iron Fence": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": []
+    },
+    "SandStone wall": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": []
+    },
+    "Stone Wall": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        367
+      ]
+    },
+    "Wattle Fence": {
+      "costPrice": 8,
+      "sellPrice": 6,
+      "game_ids": [
+        366
+      ]
+    },
+    "White Fence": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        421
+      ]
+    },
+    "Fence": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        60
+      ]
+    },
+    "Iron Gate": {
+      "costPrice": 52,
+      "sellPrice": 42,
+      "game_ids": []
+    },
+    "Sandstone Gate": {
+      "costPrice": 52,
+      "sellPrice": 42,
+      "game_ids": []
+    },
+    "Stone Gate": {
+      "costPrice": 28,
+      "sellPrice": 22,
+      "game_ids": [
+        369
+      ]
+    },
+    "Wattle Gate": {
+      "costPrice": 49,
+      "sellPrice": 39,
+      "game_ids": [
+        368
+      ]
+    },
+    "White Gate": {
+      "costPrice": 52,
+      "sellPrice": 42,
+      "game_ids": [
+        422
+      ]
+    },
+    "Gate": {
+      "costPrice": 52,
+      "sellPrice": 42,
+      "game_ids": [
+        61
+      ]
+    },
+    "Brazier": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        992
+      ]
+    },
+    "Chest": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        57
+      ]
+    },
+    "Large Chest": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1323
+      ]
+    },
+    "Fish Chum Abundant": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        1002
+      ]
+    },
+    "Fish Chum Common": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1003
+      ]
+    },
+    "Fish Chum Rare": {
+      "costPrice": 40,
+      "sellPrice": 32,
+      "game_ids": [
+        1005
+      ]
+    },
+    "Fish Chum Uncommon": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        1004
+      ]
+    },
+    "Icebox": {
+      "costPrice": 1000,
+      "sellPrice": 800,
+      "game_ids": [
+        995
+      ]
+    },
+    "Breeder's Kibble": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        1033
+      ]
+    },
+    "Happy Kibble": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        1034
+      ]
+    },
+    "Medicated Kibble": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        1032
+      ]
+    },
+    "Kibble Nibbles": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        158
+      ]
+    },
+    "Bulk Bites": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        1030
+      ]
+    },
+    "Chonker Chow": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1031
+      ]
+    },
+    "Lantern": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        64
+      ]
+    },
+    "Irrigation pipe": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        347
+      ]
+    },
+    "Scarecrow": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        991
+      ]
+    },
+    "Directional Sign Post": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        1203
+      ]
+    },
+    "Torch": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        1206
+      ]
+    },
+    "Copper Water Pump": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        346
+      ]
+    },
+    "Iron Water Pump": {
+      "costPrice": 400,
+      "sellPrice": 320,
+      "game_ids": [
+        641
+      ]
+    },
+    "Titanium Water Pump": {
+      "costPrice": 700,
+      "sellPrice": 560,
+      "game_ids": [
+        642
+      ]
+    },
+    "Red Brick Path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Cobblestone Path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        358
+      ]
+    },
+    "Flower Path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Grass Path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Marble Bricks": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Fairy Path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Plank Path": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        359
+      ]
+    },
+    "Salt Stepping Stones": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Sandstone Tiles": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Stone Path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        360
+      ]
+    },
+    "Stone Brick path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": []
+    },
+    "Wooden Path": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        361
+      ]
+    },
+    "Compost Bin": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        175
+      ]
+    },
+    "Cooking Station": {
+      "costPrice": 500,
+      "sellPrice": 400,
+      "game_ids": [
+        267
+      ]
+    },
+    "Crafting Table": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        58
+      ]
+    },
+    "Dry Rack": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        59
+      ]
+    },
+    "Fermentation Barrel": {
+      "costPrice": 300,
+      "sellPrice": 240,
+      "game_ids": [
+        266
+      ]
+    },
+    "Fish Trap": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        1112
+      ]
+    },
+    "Kiln": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        1316
+      ]
+    },
+    "Mushroom Log": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        1317
+      ]
+    },
+    "Press": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        675
+      ]
+    },
+    "Saw": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        676
+      ]
+    },
+    "Seed Maker": {
+      "costPrice": 300,
+      "sellPrice": 240,
+      "game_ids": [
+        1318
+      ]
+    },
+    "Butcher Table": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        62
+      ]
+    },
+    "Smelter": {
+      "costPrice": 300,
+      "sellPrice": 240,
+      "game_ids": [
+        63
+      ]
+    },
+    "Smoking hut": {
+      "costPrice": 200,
+      "sellPrice": 160,
+      "game_ids": [
+        265
+      ]
+    },
+    "Cave Wallpaper": {
+      "costPrice": 108,
+      "sellPrice": 86,
+      "game_ids": [
+        1070
+      ]
+    },
+    "Citrus Wallpaper": {
+      "costPrice": 55,
+      "sellPrice": 44,
+      "game_ids": [
+        1065
+      ]
+    },
+    "Grey Wood Plank Wallpaper": {
+      "costPrice": 277,
+      "sellPrice": 222,
+      "game_ids": [
+        511
+      ]
+    },
+    "Fancy Wood Wallpaper": {
+      "costPrice": 181,
+      "sellPrice": 145,
+      "game_ids": [
+        1016
+      ]
+    },
+    "Gothic Wallpaper": {
+      "costPrice": 205,
+      "sellPrice": 164,
+      "game_ids": [
+        527
+      ]
+    },
+    "Greenhouse Wallpaper": {
+      "costPrice": 228,
+      "sellPrice": 182,
+      "game_ids": [
+        529
+      ]
+    },
+    "Herringbone Wallpaper": {
+      "costPrice": 193,
+      "sellPrice": 154,
+      "game_ids": [
+        1026
+      ]
+    },
+    "Library Wallpaper": {
+      "costPrice": 184,
+      "sellPrice": 147,
+      "game_ids": [
+        1022
+      ]
+    },
+    "Log Wallpaper": {
+      "costPrice": 146,
+      "sellPrice": 117,
+      "game_ids": [
+        1021
+      ]
+    },
+    "Pink Wallpaper": {
+      "costPrice": 75,
+      "sellPrice": 60,
+      "game_ids": [
+        1067
+      ]
+    },
+    "Warm Plaster Wallpaper": {
+      "costPrice": 86,
+      "sellPrice": 69,
+      "game_ids": [
+        1019
+      ]
+    },
+    "White Plaster Wallpaper": {
+      "costPrice": 58,
+      "sellPrice": 46,
+      "game_ids": [
+        1020
+      ]
+    },
+    "Shoji Wallpaper": {
+      "costPrice": 262,
+      "sellPrice": 210,
+      "game_ids": [
+        1024
+      ]
+    },
+    "Stone Brick Wallpaper": {
+      "costPrice": 108,
+      "sellPrice": 86,
+      "game_ids": [
+        514
+      ]
+    },
+    "Strawberry Wallpaper": {
+      "costPrice": 55,
+      "sellPrice": 44,
+      "game_ids": [
+        1066
+      ]
+    },
+    "Trellis Wallpaper": {
+      "costPrice": 104,
+      "sellPrice": 83,
+      "game_ids": [
+        1018
+      ]
+    },
+    "Ivy Trellis Wallpaper": {
+      "costPrice": 136,
+      "sellPrice": 109,
+      "game_ids": [
+        1023
+      ]
+    },
+    "Wood Plank Wallpaper": {
+      "costPrice": 206,
+      "sellPrice": 165,
+      "game_ids": [
+        512
+      ]
+    },
+    "Wood Slat Wallpaper": {
+      "costPrice": 193,
+      "sellPrice": 154,
+      "game_ids": [
+        1025
+      ]
+    },
+    "Stone Plaster Wallpaper": {
+      "costPrice": 141,
+      "sellPrice": 113,
+      "game_ids": [
+        1017
+      ]
+    },
+    "Apple Seed": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        284
+      ]
+    },
+    "Asparagus Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        67
+      ]
+    },
+    "Bean Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        231
+      ]
+    },
+    "Bellpepper Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        173
+      ]
+    },
+    "Birch Seeds": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        281
+      ]
+    },
+    "Cabbage Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        73
+      ]
+    },
+    "Cantaloupe Seeds": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        236
+      ]
+    },
+    "Carrot Seeds": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        68
+      ]
+    },
+    "Chamomile Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        311
+      ]
+    },
+    "Cherry Seed": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        256
+      ]
+    },
+    "Chicory Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        320
+      ]
+    },
+    "Corn Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        69
+      ]
+    },
+    "Cucumber Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        239
+      ]
+    },
+    "Dandelion Seeds": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        70
+      ]
+    },
+    "Daylily Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        176
+      ]
+    },
+    "Ginger Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        1027
+      ]
+    },
+    "Hawthorn Seeds": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        295
+      ]
+    },
+    "Hay Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        414
+      ]
+    },
+    "Juniper Seeds": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        292
+      ]
+    },
+    "Lavender Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        232
+      ]
+    },
+    "Maple Seed": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        159
+      ]
+    },
+    "Mint Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        178
+      ]
+    },
+    "Acorn": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        257
+      ]
+    },
+    "Oat Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        326
+      ]
+    },
+    "Onion Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        308
+      ]
+    },
+    "Peanut Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        76
+      ]
+    },
+    "Pear Seed": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        258
+      ]
+    },
+    "Pepperwort Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        337
+      ]
+    },
+    "Pine Seed": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        74
+      ]
+    },
+    "Plum Seeds": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        289
+      ]
+    },
+    "Potato Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        77
+      ]
+    },
+    "Pumpkin Seeds": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        78
+      ]
+    },
+    "Radish Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        79
+      ]
+    },
+    "Red Clover Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        330
+      ]
+    },
+    "Rhubarb Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        161
+      ]
+    },
+    "Strawberry Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        81
+      ]
+    },
+    "Sunflower Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        242
+      ]
+    },
+    "Sunroot Seeds": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        322
+      ]
+    },
+    "Walnut": {
+      "costPrice": 5,
+      "sellPrice": 4,
+      "game_ids": [
+        286
+      ]
+    },
+    "Yarrow Seeds": {
+      "costPrice": 10,
+      "sellPrice": 8,
+      "game_ids": [
+        332
+      ]
+    },
+    "Chisel": {
+      "costPrice": 400,
+      "sellPrice": 320,
+      "game_ids": [
+        677
+      ]
+    },
+    "Feather": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        4
+      ]
+    },
+    "Large Fish in Oil": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        797
+      ]
+    },
+    "Small Fish in Oil": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        792
+      ]
+    },
+    "Medium Fish in Oil": {
+      "costPrice": 25,
+      "sellPrice": 20,
+      "game_ids": [
+        455
+      ]
+    },
+    "Honeycomb": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        1035
+      ]
+    },
+    "Lean meat in Oil": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        816
+      ]
+    },
+    "Leather": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        653
+      ]
+    },
+    "Rich meat in Oil": {
+      "costPrice": 20,
+      "sellPrice": 16,
+      "game_ids": [
+        811
+      ]
+    },
+    "Slime": {
+      "costPrice": 15,
+      "sellPrice": 12,
+      "game_ids": [
+        647
+      ]
+    },
+    "Spinning Wheel": {
+      "costPrice": 100,
+      "sellPrice": 80,
+      "game_ids": [
+        264
+      ]
+    },
+    "Sunflower Oil": {
+      "costPrice": 9,
+      "sellPrice": 7,
+      "game_ids": [
+        729
+      ]
+    },
+    "Tender meat in oil": {
+      "costPrice": 30,
+      "sellPrice": 24,
+      "game_ids": [
+        821
+      ]
+    },
+    "Tough meat in oil": {
+      "costPrice": 35,
+      "sellPrice": 28,
+      "game_ids": [
+        806
+      ]
+    },
+    "Wintergreen Berry": {
+      "costPrice": 12,
+      "sellPrice": 10,
+      "game_ids": [
+        304
+      ]
+    },
+    "Bluggy fluff": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        275
+      ]
+    },
+    "Bluggy thread": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        274
+      ]
+    },
+    "Alpheep thread": {
+      "costPrice": 50,
+      "sellPrice": 40,
+      "game_ids": [
+        270
+      ]
+    }
+  },
+  "seed_crop_comparison": {
+    "Asparagus": {
+      "crop": {
+        "buy": 7,
+        "sell": 6,
+        "game_ids": [
+          170
+        ]
+      },
+      "seeds": {
+        "buy": 10,
+        "sell": 8,
+        "game_ids": [
+          67
+        ]
+      },
+      "seeds_sell_more": true
+    },
+    "Carrot": {
+      "crop": {
+        "buy": 7,
+        "sell": 6,
+        "game_ids": [
+          34
+        ]
+      },
+      "seeds": {
+        "buy": 12,
+        "sell": 10,
+        "game_ids": [
+          68
+        ]
+      },
+      "seeds_sell_more": true
+    },
+    "Cabbage": {
+      "crop": {
+        "buy": 12,
+        "sell": 10,
+        "game_ids": [
+          38
+        ]
+      },
+      "seeds": {
+        "buy": 15,
+        "sell": 12,
+        "game_ids": [
+          73
+        ]
+      },
+      "seeds_sell_more": true
+    },
+    "Radish": {
+      "crop": {
+        "buy": 6,
+        "sell": 5,
+        "game_ids": [
+          43
+        ]
+      },
+      "seeds": {
+        "buy": 10,
+        "sell": 8,
+        "game_ids": [
+          79
+        ]
+      },
+      "seeds_sell_more": true
+    },
+    "Rhubarb": {
+      "crop": {
+        "buy": 7,
+        "sell": 6,
+        "game_ids": [
+          160
+        ]
+      },
+      "seeds": {
+        "buy": 15,
+        "sell": 12,
+        "game_ids": [
+          161
+        ]
+      },
+      "seeds_sell_more": true
+    },
+    "Onion": {
+      "crop": {
+        "buy": 7,
+        "sell": 6,
+        "game_ids": [
+          307
+        ]
+      },
+      "seeds": {
+        "buy": 15,
+        "sell": 12,
+        "game_ids": [
+          308
+        ]
+      },
+      "seeds_sell_more": true
+    },
+    "Sunroot": {
+      "crop": {
+        "buy": 7,
+        "sell": 6,
+        "game_ids": [
+          323
+        ]
+      },
+      "seeds": {
+        "buy": 15,
+        "sell": 12,
+        "game_ids": [
+          322
+        ]
+      },
+      "seeds_sell_more": true
+    }
+  }
+}

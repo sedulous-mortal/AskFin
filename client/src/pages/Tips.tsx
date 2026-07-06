@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useContext, createContext, type ReactNode } from 'react';
+﻿import { useEffect, useState, useContext, createContext, useMemo, type ReactNode } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useDate } from '../context/DateContext';
 import { useAuth, ToolData, BarnData, MuseumItem, type MatPileEntry, type CropEntry, type ChestEntry, buildStorageMap, buildStorageMapByName, buildProcessorMapByName, buildContributedMapByName, buildInventoryMapByName } from '../context/AuthContext';
@@ -2179,7 +2179,7 @@ type ProcessorRecipe = {
   perishable: boolean;
 };
 
-type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; townQuestReadyLabel?: string; kind?: 'callout' | 'research' | 'hold-warning' | 'info'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; questAcceptItems?: Array<{name: string; amount: number; invCount: number; storCount: number; questName: string; forageableInfo?: ForageableEntry; processorRecipe?: ProcessorRecipe}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[]; perishableWarning?: string };
+type ChecklistItem = { id: string; label: string; detail?: string; dividerLabel?: string; asterisk?: boolean; townQuestReadyLabel?: string; kind?: 'callout' | 'research' | 'hold-warning' | 'info' | 'pick-one-header'; iconNode?: ReactNode; museumItemId?: number; rejectCheckbox?: boolean; upgradeDetails?: MinesUpgradeDetails; birthdayFavorites?: Array<{name: string; storageCount?: number}>; questAcceptItems?: Array<{name: string; amount: number; invCount: number; storCount: number; questName: string; forageableInfo?: ForageableEntry; processorRecipe?: ProcessorRecipe}>; groupKey?: string; subtaskIds?: string[]; holdItems?: Array<{ name: string; amount: number }>; pickupSuggestions?: string[]; perishableWarning?: string; pickOneGroupKey?: string; pickOneQuestId?: number; pickOneOptions?: Array<{questId: number; label: string; opensLabel: string; daysUntilStart: number}> };
 type ChecklistGroup = { location: string; colorClass: string; items: ChecklistItem[] };
 
 function sceneToStorageLabel(scene: string): string {
@@ -2375,8 +2375,24 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
     }
   });
   const [collapsed, setCollapsed] = useState(false);
+  const [pickOneOverrides, setPickOneOverrides] = useState<Record<string, number>>({});
+  const pickOneDefaults = useMemo(() => {
+    const result: Record<string, number> = {};
+    for (const group of groups) {
+      for (const item of group.items) {
+        if (item.kind === 'pick-one-header' && item.pickOneGroupKey && item.pickOneOptions?.length) {
+          result[item.pickOneGroupKey] = item.pickOneOptions[0].questId;
+        }
+      }
+    }
+    return result;
+  }, [groups]);
+  const pickOneSelections = { ...pickOneDefaults, ...pickOneOverrides };
+  function getPickOneSelected(groupKey: string): number {
+    return pickOneSelections[groupKey] ?? -1;
+  }
 
-  const allRegularItems = groups.flatMap((g) => g.items).filter((i) => i.kind !== 'callout' && i.kind !== 'research');
+  const allRegularItems = groups.flatMap((g) => g.items).filter((i) => i.kind !== 'callout' && i.kind !== 'research' && i.kind !== 'pick-one-header');
   const allResearchIds = new Set(
     groups.flatMap((g) => g.items)
       .filter((i) => i.kind === 'research' && i.museumItemId !== undefined)
@@ -2496,7 +2512,8 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
     const researchItems: Array<{ museumItemId: number }> = [];
     const extraIds: string[] = [];
     for (const item of group.items) {
-      if (item.kind === 'callout' || item.kind === 'hold-warning' || item.kind === 'info') continue;
+      if (item.kind === 'callout' || item.kind === 'hold-warning' || item.kind === 'info' || item.kind === 'pick-one-header') continue;
+      if (item.pickOneGroupKey && item.pickOneQuestId !== undefined && item.pickOneQuestId !== getPickOneSelected(item.pickOneGroupKey)) continue;
       if (item.kind === 'research' && item.museumItemId !== undefined) {
         researchItems.push({ museumItemId: item.museumItemId });
         continue;
@@ -2594,6 +2611,46 @@ function DailyChecklist({ groups, debugColumn }: { groups: ChecklistGroup[]; deb
         </div>
         <ul className="space-y-2">
           {group.items.map((item) => {
+            if (item.kind === 'pick-one-header') {
+              const opts = item.pickOneOptions ?? [];
+              const selectedId = getPickOneSelected(item.pickOneGroupKey!);
+              const selectedOpt = opts.find((o) => o.questId === selectedId) ?? opts[0];
+              return (
+                <li key={item.id}>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-rose-500 dark:text-rose-400">
+                    Crisis Choice — pick one
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 mb-1">
+                    {opts.map((opt) => {
+                      const isSel = opt.questId === selectedId;
+                      return (
+                        <button
+                          key={opt.questId}
+                          type="button"
+                          onClick={() => setPickOneOverrides((prev) => ({ ...prev, [item.pickOneGroupKey!]: opt.questId }))}
+                          className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                            isSel
+                              ? 'bg-rose-100 text-rose-700 ring-1 ring-rose-300 dark:bg-rose-900/40 dark:text-rose-300 dark:ring-rose-600'
+                              : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {selectedOpt && (
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">
+                      Opens {selectedOpt.opensLabel} (in {selectedOpt.daysUntilStart} day{selectedOpt.daysUntilStart !== 1 ? 's' : ''})
+                    </p>
+                  )}
+                </li>
+              );
+            }
+            if (item.pickOneGroupKey && item.pickOneQuestId !== undefined &&
+                item.pickOneQuestId !== getPickOneSelected(item.pickOneGroupKey)) {
+              return null;
+            }
             if (item.kind === 'callout') {
               return (
                 <li key={item.id}>
@@ -3813,35 +3870,27 @@ export default function Tips() {
     (selectedCharacter?.quest_data ?? []).filter((q) => q.status === 2 || q.status === 3).map((q) => q.id),
   );
 
-  // Town crisis quests come in mutually exclusive A/B pairs sharing the same start date.
-  // If the player has accepted or completed one option, the other is permanently locked out
-  // and will never appear in their quest_data — so we must exclude it explicitly.
-  // Undecided pairs (neither accepted yet) are tracked so Year Goals can offer a toggle.
+  // Mutually exclusive quest pairs — matches Quests.tsx MUTEX_PAIRS.
+  // If one option is chosen (in progress or completed), the other is excluded everywhere.
+  // Undecided pairs (neither accepted yet) are passed to YearGoalsCard for the toggle UI.
+  const MUTEX_PAIRS: number[][] = [
+    [350, 439],  // Herb Garden / Mushroom Hut
+    [582, 583],  // Fish Farm / Redtide Remediation
+    [584, 585],  // Crow Repellent / Crow Traps
+    [586, 587],  // Predator Taming / Hunting Party
+  ];
   const excludedByMutexIds = new Set<number>();
   const undecidedMutexPairs: number[][] = [];
-  (() => {
-    const byStart = new Map<string, Quest[]>();
-    for (const q of allQuests) {
-      if (!q.is_town_quest) continue;
-      if (q.available_start_season === null || q.available_first_day === null) continue;
-      const key = `${q.available_start_season}_${q.available_first_day}`;
-      if (!byStart.has(key)) byStart.set(key, []);
-      byStart.get(key)!.push(q);
-    }
-    for (const [, group] of byStart) {
-      if (group.length < 2) continue;
-      let anyDecided = false;
-      for (const q of group) {
-        if (inProgressQuestIds.has(q.id) || completedOrFailedQuestIds.has(q.id)) {
-          anyDecided = true;
-          for (const other of group) {
-            if (other.id !== q.id) excludedByMutexIds.add(other.id);
-          }
-        }
+  for (const pair of MUTEX_PAIRS) {
+    const decided = pair.filter((id) => inProgressQuestIds.has(id) || completedOrFailedQuestIds.has(id));
+    if (decided.length > 0) {
+      for (const id of pair) {
+        if (!decided.includes(id)) excludedByMutexIds.add(id);
       }
-      if (!anyDecided) undecidedMutexPairs.push(group.map((q) => q.id));
+    } else {
+      undecidedMutexPairs.push(pair);
     }
-  })();
+  }
 
   const matPileByQuest = new Map<number, Map<string, number>>();
   for (const pile of (selectedCharacter?.project_mat_pile_data ?? []) as MatPileEntry[]) {
@@ -3860,57 +3909,7 @@ export default function Tips() {
   const RAW_SHELF_LIVES = (processorDataJson as unknown as { shelfLives: Record<string, number> }).shelfLives;
   const PREP_ALERT_DAYS = 7;
 
-  const upcomingQuestPrepItems: ChecklistItem[] = (() => {
-    if (!selectedCharacter) return [];
-    const items: ChecklistItem[] = [];
-
-    for (const quest of allQuests) {
-      if (inProgressQuestIds.has(quest.id)) continue; // already active — shown elsewhere
-      if (completedOrFailedQuestIds.has(quest.id)) continue;
-      if (excludedByMutexIds.has(quest.id)) continue; // other option of a town crisis pair was chosen
-      if (!quest.available_start_season || !quest.available_first_day) continue;
-      if (!(quest.requirements ?? []).some((r) => PROCESSOR_RECIPES[r.name])) continue;
-
-      // Try current year and next year so the alert works correctly in year 2+
-      let daysUntilStart: number | null = null;
-      for (const yearOff of [currentYearOffset, currentYearOffset + 1]) {
-        const startAbs = toAbsDay(yearOff, quest.available_start_season, quest.available_first_day);
-        const delta = startAbs - currentAbs;
-        if (delta >= 1 && delta <= PREP_ALERT_DAYS) {
-          daysUntilStart = delta;
-          break;
-        }
-      }
-      if (daysUntilStart === null) continue;
-
-      const questTitle = quest.display_title || quest.name;
-      const opensLabel = `${SEASON_NAMES[quest.available_start_season]} ${quest.available_first_day}`;
-
-      for (const req of (quest.requirements ?? [])) {
-        const recipe = PROCESSOR_RECIPES[req.name];
-        if (!recipe) continue;
-
-        const amtPrefix = req.amount > 1 ? `${req.amount}× ` : '';
-        const label = `Prep for "${questTitle}": make ${amtPrefix}${req.name} now (quest opens in ${daysUntilStart} day${daysUntilStart !== 1 ? 's' : ''})`;
-
-        let detail = `"${questTitle}" opens on ${opensLabel} and requires ${amtPrefix}${req.name}.`;
-        detail += ` Use a ${recipe.processorLabel}`;
-        if (recipe.ingredients) detail += ` — ${recipe.ingredients}`;
-        detail += '.';
-        if (recipe.perishable && recipe.shelfLifeDays > 0) {
-          detail += ` Lasts ${recipe.shelfLifeDays} days once made, so don't produce it more than ${recipe.shelfLifeDays} days before you plan to turn in the quest.`;
-        }
-
-        items.push({
-          id: `prep-${quest.id}-${req.name.replace(/\s+/g, '-').toLowerCase()}`,
-          label,
-          detail,
-        });
-      }
-    }
-
-    return items;
-  })();
+  // upcomingQuestPrepItems is built after inventory/storage maps are defined (below)
 
   const donatedCount = selectedCharacter?.donated_specimen_count ?? 0;
 
@@ -3929,6 +3928,119 @@ export default function Tips() {
   const processorNameMap = buildProcessorMapByName(selectedCharacter?.chest_data ?? []);
   const contributedNameMap = buildContributedMapByName(selectedCharacter?.project_mat_pile_data ?? []);
   const inventoryNameMap = buildInventoryMapByName(selectedCharacter?.player_inventory ?? []);
+
+  const upcomingQuestPrepItems: ChecklistItem[] = (() => {
+    if (!selectedCharacter) return [];
+
+    // First pass: collect all qualifying quests
+    type PrepQuest = { quest: Quest; daysUntilStart: number; opensLabel: string };
+    const prepQuests: PrepQuest[] = [];
+    for (const quest of allQuests) {
+      if (inProgressQuestIds.has(quest.id)) continue;
+      if (completedOrFailedQuestIds.has(quest.id)) continue;
+      if (excludedByMutexIds.has(quest.id)) continue;
+      if (!quest.available_start_season || !quest.available_first_day) continue;
+      if (!(quest.requirements ?? []).some((r) => PROCESSOR_RECIPES[r.name])) continue;
+      let daysUntilStart: number | null = null;
+      for (const yearOff of [currentYearOffset, currentYearOffset + 1]) {
+        const startAbs = toAbsDay(yearOff, quest.available_start_season, quest.available_first_day);
+        const delta = startAbs - currentAbs;
+        if (delta >= 1 && delta <= PREP_ALERT_DAYS) { daysUntilStart = delta; break; }
+      }
+      if (daysUntilStart === null) continue;
+      const opensLabel = `${SEASON_NAMES[quest.available_start_season]} ${quest.available_first_day}`;
+      prepQuests.push({ quest, daysUntilStart, opensLabel });
+    }
+
+    // Identify which prep quests share a mutex pair with another prep quest
+    const prepQuestIds = new Set(prepQuests.map((pq) => pq.quest.id));
+    const prepMutexPairKey = new Map<number, string>(); // questId → pairKey
+    for (const pair of MUTEX_PAIRS) {
+      const inPrep = pair.filter((id) => prepQuestIds.has(id));
+      if (inPrep.length >= 2) {
+        const pairKey = [...pair].sort((a, b) => a - b).join('-');
+        for (const id of inPrep) prepMutexPairKey.set(id, pairKey);
+      }
+    }
+
+    const items: ChecklistItem[] = [];
+    const processedPairKeys = new Set<string>();
+
+    function emitPrepItems(pq: PrepQuest, pickOneGroupKey?: string) {
+      const { quest, opensLabel, daysUntilStart } = pq;
+      const questTitle = quest.display_title || quest.name;
+      const prepReqs = (quest.requirements ?? []).filter((r) => PROCESSOR_RECIPES[r.name]);
+      let firstEmitted = true;
+      prepReqs.forEach((req) => {
+        const recipe = PROCESSOR_RECIPES[req.name];
+        if (!recipe) return;
+        const invCount = inventoryNameMap.get(req.name) ?? 0;
+        const storCount = storageNameMap.get(req.name) ?? 0;
+        const procCount = processorNameMap.get(req.name) ?? 0;
+        const have = invCount + storCount;
+        const stillNeed = Math.max(0, req.amount - have);
+        if (stillNeed === 0) return; // already have enough — skip
+        const amtPrefix = req.amount > 1 ? `${req.amount}× ` : '';
+        const isFirst = firstEmitted;
+        firstEmitted = false;
+        items.push({
+          id: `prep-${quest.id}-${req.name.replace(/\s+/g, '-').toLowerCase()}`,
+          label: `Make ${amtPrefix}${req.name}`,
+          dividerLabel: !pickOneGroupKey && isFirst
+            ? `"${questTitle}" — opens ${opensLabel} (in ${daysUntilStart} day${daysUntilStart !== 1 ? 's' : ''})`
+            : undefined,
+          groupKey: `prep-${quest.id}`,
+          pickOneGroupKey,
+          pickOneQuestId: pickOneGroupKey ? quest.id : undefined,
+          detail: recipe.perishable && recipe.shelfLifeDays > 0
+            ? `⚠ Lasts ${recipe.shelfLifeDays} days once made`
+            : undefined,
+          iconNode: (
+            <QuestItemIcon
+              name={req.name}
+              stillNeed={stillNeed}
+              have={have}
+              amount={req.amount}
+              questName={questTitle}
+              invCount={invCount}
+              storCount={storCount}
+              processorCount={procCount}
+              processorRecipe={recipe}
+            />
+          ),
+        });
+      });
+    }
+
+    for (const pq of prepQuests) {
+      const pairKey = prepMutexPairKey.get(pq.quest.id);
+      if (pairKey) {
+        if (processedPairKeys.has(pairKey)) continue;
+        processedPairKeys.add(pairKey);
+        const pairPrepQuests = MUTEX_PAIRS
+          .find((p) => p.includes(pq.quest.id) && p.some((id) => prepQuestIds.has(id) && id !== pq.quest.id))!
+          .map((id) => prepQuests.find((x) => x.quest.id === id)!)
+          .filter(Boolean);
+        items.push({
+          id: `mutex-prep-${pairKey}`,
+          kind: 'pick-one-header',
+          label: '',
+          pickOneGroupKey: pairKey,
+          pickOneOptions: pairPrepQuests.map((x) => ({
+            questId: x.quest.id,
+            label: x.quest.display_title || x.quest.name,
+            opensLabel: x.opensLabel,
+            daysUntilStart: x.daysUntilStart,
+          })),
+        });
+        for (const pairPq of pairPrepQuests) emitPrepItems(pairPq, pairKey);
+      } else {
+        emitPrepItems(pq);
+      }
+    }
+
+    return items;
+  })();
 
   // ── Year-round non-urgent quest goals ──────────────────────────────────────
   // Lists every non-perishable item needed for future (not-yet-open) quests,
@@ -4649,7 +4761,7 @@ export default function Tips() {
           items.push({
             id: `quest-req-${r.name.replace(/\s+/g, '-').toLowerCase()}-${questName.replace(/\s+/g, '-').toLowerCase()}`,
             label: `${r.amount}× ${r.name}`,
-            dividerLabel: i === 0 ? questName : undefined,
+            dividerLabel: i === 0 ? (giver ? `${questName} — ${giver}` : questName) : undefined,
             groupKey: `quest-${questName}`,
             townQuestReadyLabel: (r.isTownQuest && r.stillNeed === 0)
               ? (r.invCount >= r.amount ? 'in hand' : 'in storage')

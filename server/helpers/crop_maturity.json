@@ -1,6 +1,6 @@
 {
   "91":  { "name": "Asparagus",   "daysToMaturity": 5,  "goneToSeedDays": 6,    "canGoToSeed": true,  "isMultiHarvest": false, "image": "/edibles/Asparagus.png"   },
-  "92":  { "name": "Bell Pepper", "daysToMaturity": 8,  "goneToSeedDays": null, "canGoToSeed": false, "isMultiHarvest": true,  "image": "/edibles/Bell_Pepper.png" },
+  "92":  { "name": "Bell Pepper", "daysToMaturity": 8,  "goneToSeedDays": null, "canGoToSeed": false, "isMultiHarvest": true,  "image": "/items/Bellpepper.png" },
   "93":  { "name": "Carrot",      "daysToMaturity": 5,  "goneToSeedDays": 6,    "canGoToSeed": true,  "isMultiHarvest": false, "image": "/edibles/Carrot.png"      },
   "94":  { "name": "Corn",        "daysToMaturity": 10, "goneToSeedDays": null, "canGoToSeed": false, "isMultiHarvest": true,  "image": "/edibles/Corn.png"        },
   "98":  { "name": "Cabbage",     "daysToMaturity": 6,  "goneToSeedDays": 7,    "canGoToSeed": true,  "isMultiHarvest": false, "image": "/edibles/Cabbage.png"     },
